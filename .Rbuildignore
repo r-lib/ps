@@ -1,0 +1,4 @@
+^\.github$
+^\.travis\.yml$
+^codecov\.yml$
+^appveyor\.yml$
