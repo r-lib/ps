@@ -176,3 +176,22 @@ SEXP ps__build_named_list(const char *template, ...) {
   UNPROTECT(1);
   return res;
 }
+
+static const R_CallMethodDef callMethods[]  = {
+  { "ps__pids",       (DL_FUNC) ps__pids,       0 },
+  { "ps__pid_exists", (DL_FUNC) ps__pid_exists2, 1 },
+
+  { NULL, NULL, 0 }
+};
+
+/*
+ * Called on module import on all platforms.
+ */
+void R_init_ps(DllInfo *dll) {
+  if (getenv("R_PS_DEBUG") != NULL) PS__DEBUG = 1;
+  if (getenv("R_PS_TESTING") != NULL) PS__TESTING = 1;
+
+  R_registerRoutines(dll, NULL, callMethods, NULL, NULL);
+  R_useDynamicSymbols(dll, FALSE);
+  R_forceSymbols(dll, TRUE);
+}
