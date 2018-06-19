@@ -2,4 +2,6 @@
 ^\.travis\.yml$
 ^codecov\.yml$
 ^appveyor\.yml$
+^src/Makevars$
+^src/config\.h$
 .o$
