@@ -5,7 +5,7 @@ Description: List all system processes, on Windows, Linux, macOS,
     Solaris and BSD systems.
 Authors@R:
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", c("aut", "cre"))
-License: BSD-3
+License: BSD_3_clause + file LICENSE
 URL: https://github.com/r-lib/ps#readme
 BugReports: https://github.com/r-lib/issues
 Encoding: UTF-8
