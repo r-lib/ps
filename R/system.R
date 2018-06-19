@@ -2,16 +2,20 @@
 #' @export
 
 ps_pids <- function() {
-  ls <- .Call(ps__pids)
-  if (! 0L %in% ls && ps_pid_exists(0L)) {
-    ls <- c(ls, 0L)
-  }
-  ls
+  os <- ps_os_type()
+  if (os[["OSX"]])
+    ps_pids_osx()
+  else
+    stop("Not implemented for this platform")
 }
 
 #' @export
 
 ps_pid_exists <- function(pid) {
   assert_that(is_pid(pid))
-  .Call(ps__pid_exists, as.integer(pid))
+  os <- ps_os_type()
+  if (os[["OSX"]])
+    ps_pid_exists_osx(pid)
+  else
+    stop("Not implemented for this platform")
 }
