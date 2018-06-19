@@ -24,4 +24,6 @@ SEXP ps__str_to_utf8_size(const char *str, size_t size);
 SEXP ps__build_list(const char *template, ...);
 SEXP ps__build_named_list(const  char *template, ...);
 
+SEXP ps__os_type();
+
 #endif
