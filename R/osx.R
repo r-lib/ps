@@ -26,7 +26,11 @@ process_osx <- R6Class(
     get_cmdline = function()
       p_osx_get_cmdline(self, private),
     get_environ = function(cached = TRUE)
-      p_osx_get_environ(self, private, cached)
+      p_osx_get_environ(self, private, cached),
+    get_ppid = function()
+      p_osx_get_ppid(self, private),
+    get_cwd = function()
+      p_osx_get_cwd(self, private)
   ),
 
   private = list(
@@ -69,6 +73,14 @@ p_osx_get_environ <- function(self, private, cached) {
     private$environ <- parse_envs(.Call(ps__proc_environ, private$pid))
   }
   private$environ
+}
+
+p_osx_get_ppid <- function(self, private) {
+  private$get_kinfo_proc()$ppid
+}
+
+p_osx_get_cwd <- function(self, private) {
+  .Call(ps__proc_cwd, private$pid)
 }
 
 ## -----------------------------------------------------------------------
