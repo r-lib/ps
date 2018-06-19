@@ -1,5 +1,11 @@
 
 #' Create a system process object
+#'
+#' TODO
+#'
+#' @param pid  Process id, integer scalar.
+#' @return `process` object.
+#'
 #' @export
 
 process <- function(pid) {

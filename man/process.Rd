@@ -6,6 +6,12 @@
 \usage{
 process(pid)
 }
+\arguments{
+\item{pid}{Process id, integer scalar.}
+}
+\value{
+\code{process} object.
+}
 \description{
-Create a system process object
+TODO
 }
