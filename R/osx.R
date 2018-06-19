@@ -24,7 +24,9 @@ process_osx <- R6Class(
     get_exe = function()
       p_osx_get_exe(self, private),
     get_cmdline = function()
-      p_osx_get_cmdline(self, private)
+      p_osx_get_cmdline(self, private),
+    get_environ = function(cached = TRUE)
+      p_osx_get_environ(self, private, cached)
   ),
 
   private = list(
@@ -35,6 +37,7 @@ process_osx <- R6Class(
 
     kinfo_proc = NULL,
     pidtaskinfo = NULL,
+    environ = NULL,
 
     get_kinfo_proc = function()
       p_osx__get_kinfo_proc(self, private),
@@ -60,6 +63,17 @@ p_osx_get_exe <- function(self, private) {
 p_osx_get_cmdline <- function(self, private) {
   .Call(ps__proc_cmdline, private$pid)
 }
+
+p_osx_get_environ <- function(self, private, cached) {
+  if (is.null(private$environ) || !cached) {
+    private$environ <- parse_envs(.Call(ps__proc_environ, private$pid))
+  }
+  private$environ
+}
+
+## -----------------------------------------------------------------------
+## Private mathods
+## -----------------------------------------------------------------------
 
 p_osx__get_kinfo_proc <- function(self, private) {
   if (is.null(private$kinfo_proc)) {

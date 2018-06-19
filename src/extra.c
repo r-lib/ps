@@ -240,6 +240,7 @@ static const R_CallMethodDef callMethods[]  = {
   { "ps__pid_exists",   (DL_FUNC) ps__pid_exists2,  1 },
   { "ps__proc_exe",     (DL_FUNC) ps__proc_exe,     1 },
   { "ps__proc_cmdline", (DL_FUNC) ps__proc_cmdline, 1 },
+  { "ps__proc_environ", (DL_FUNC) ps__proc_environ, 1 },
 
   { "ps__proc_kinfo_oneshot",
     (DL_FUNC) ps__proc_kinfo_oneshot, 1 },

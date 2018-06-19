@@ -191,9 +191,8 @@ SEXP ps__get_cmdline(long pid) {
 // return process environment as a python string
 SEXP ps__get_environ(long pid) {
   int mib[3];
-  int nargs;
+  int nargs, nenv;
   char *procargs = NULL;
-  char *procenv = NULL;
   char *arg_ptr;
   char *arg_end;
   char *env_start;
@@ -259,33 +258,40 @@ SEXP ps__get_environ(long pid) {
   // build an environment variable block
   env_start = arg_ptr;
 
-  procenv = calloc(1, arg_end - arg_ptr);
-  if (procenv == NULL) {
-    ps__set_error("Out of memory");
-    ps__throw_error();
-  }
-
-  PROTECT_FREE(procenv);
-
+  /* Count the number of env vars first */
+  nenv = 0;
   while (*arg_ptr != '\0' && arg_ptr < arg_end) {
     char *s = memchr(arg_ptr + 1, '\0', arg_end - arg_ptr);
 
     if (s == NULL)
       break;
 
-    memcpy(procenv + (arg_ptr - env_start), arg_ptr, s - arg_ptr);
-
+    nenv++;
     arg_ptr = s + 1;
   }
 
-  ret = ps__str_to_utf8_size(procenv, arg_ptr - env_start + 1);
+
+  /*  */
+  PROTECT(ret = allocVector(STRSXP, nenv));
+  arg_ptr = env_start;
+  nenv = 0;
+  while (*arg_ptr != '\0' && arg_ptr < arg_end) {
+    char *s = memchr(arg_ptr + 1, '\0', arg_end - arg_ptr);
+
+    if (s == NULL)
+      break;
+
+    SET_STRING_ELT(ret, nenv++, Rf_mkCharLen(arg_ptr, (int)(s - arg_ptr)));
+
+    arg_ptr = s + 1;
+  }
 
   UNPROTECT(2);
   return ret;
 
  empty:
   UNPROTECT(1);
-  return mkString("");
+  return allocVector(STRSXP, 0);
 }
 
 
