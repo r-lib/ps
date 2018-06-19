@@ -12,7 +12,8 @@ Encoding: UTF-8
 Depends:
     R (>= 3.1)
 Imports:
-    assertthat
+    assertthat,
+    R6
 Suggests:
     covr,
     testthat

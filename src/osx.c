@@ -181,12 +181,12 @@ SEXP ps__proc_kinfo_oneshot(SEXP r_pid) {
     "ppid",          (long) kp.kp_eproc.e_ppid,
     "real_uid",      (long) kp.kp_eproc.e_pcred.p_ruid,
     "effective_uid", (long) kp.kp_eproc.e_ucred.cr_uid,
-    "saved uid",     (long) kp.kp_eproc.e_pcred.p_svuid,
+    "saved_uid",     (long) kp.kp_eproc.e_pcred.p_svuid,
     "real_gid",      (long) kp.kp_eproc.e_pcred.p_rgid,
     "effective_gid", (long) kp.kp_eproc.e_ucred.cr_groups[0],
     "saved_gid",     (long) kp.kp_eproc.e_pcred.p_svgid,
-    "tty_num",       kp.kp_eproc.e_tdev,
-    "create_time",   PS__TV2DOUBLE(kp.kp_proc.p_starttime),
+    "tty_num",       (int) kp.kp_eproc.e_tdev,
+    "create_time",   (double) PS__TV2DOUBLE(kp.kp_proc.p_starttime),
     "status",        (int) kp.kp_proc.p_stat,
     "name",          name));
 
@@ -212,22 +212,22 @@ SEXP ps__proc_pidtaskinfo_oneshot(SEXP r_pid) {
 
   return ps__build_named_list(
     "ddKKkkkk",
-    "cpu_user_time", (float) pti.pti_total_user / 1000000000.0,
-    "cpu_sys_time", (float)pti.pti_total_system / 1000000000.0,
+    "cpu_user_time",          (double) pti.pti_total_user / 1000000000.0,
+    "cpu_sys_time",           (double) pti.pti_total_system / 1000000000.0,
     // Note about memory: determining other mem stats on OSX is a mess:
     // http://www.opensource.apple.com/source/top/top-67/libtop.c?txt
     // I just give up.
     // struct proc_regioninfo pri;
     // psutil_proc_pidinfo(pid, PROC_PIDREGIONINFO, 0, &pri, sizeof(pri))
-    "rss", pti.pti_resident_size,
-    "vms", pti.pti_virtual_size,
-    "page_faults", pti.pti_faults,
-    "page_ins", pti.pti_pageins,
-    "num_theads", pti.pti_threadnum,
+    "rss",                    (unsigned long long) pti.pti_resident_size,
+    "vms",                    (unsigned long long) pti.pti_virtual_size,
+    "page_faults",            (unsigned long) pti.pti_faults,
+    "page_ins",               (unsigned long) pti.pti_pageins,
+    "num_theads",             (unsigned long) pti.pti_threadnum,
     // Unvoluntary value seems not to be available;
     // pti.pti_csw probably refers to the sum of the two;
     // getrusage() numbers seems to confirm this theory.
-    "voluntary_ctx_switches", pti.pti_csw);
+    "voluntary_ctx_switches", (unsigned long) pti.pti_csw);
 }
 
 
@@ -337,7 +337,7 @@ SEXP ps__proc_memory_maps(SEXP r_pid) {
   }
   *task = MACH_PORT_NULL;
 
-  PROTECT_WITH_INDEX(list = allocVector(LISTSXP, 0), &ipx);
+  PROTECT_WITH_INDEX(list = allocVector(VECSXP, 0), &ipx);
 
   if (ps__task_for_pid(pid, task) != 0)
     ps__throw_error();

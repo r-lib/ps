@@ -51,7 +51,7 @@ static SEXP ps__build_list_impl(const char *template, int named,
 				va_list args) {
   size_t slen = strlen(template);
   size_t len = ps__build_template_length(template);
-  SEXP res = PROTECT(allocVector(LISTSXP, len));
+  SEXP res = PROTECT(allocVector(VECSXP, len));
   SEXP names = named ? PROTECT(allocVector(STRSXP, len)) : R_NilValue;
   int ptr = 0, lptr = 0;
 
@@ -61,7 +61,7 @@ static SEXP ps__build_list_impl(const char *template, int named,
 
   while (ptr < slen) {
     if (named) {
-      SET_STRING_ELT(names, lptr, mkString(va_arg(args, const char*)));
+      SET_STRING_ELT(names, lptr, mkChar(va_arg(args, const char*)));
     }
 
     switch(template[ptr]) {
@@ -88,7 +88,6 @@ static SEXP ps__build_list_impl(const char *template, int named,
     case 'h':
     case 'B':
     case 'H':
-      SET_VECTOR_ELT(res, lptr, ScalarInteger(va_arg(args, int)));
       SET_VECTOR_ELT(res, lptr, ScalarInteger(va_arg(args, int)));
       break;
 
@@ -235,10 +234,17 @@ SEXP ps__os_type() {
 }
 
 static const R_CallMethodDef callMethods[]  = {
-  { "ps__os_type",    (DL_FUNC) ps__os_type,     0 },
+  { "ps__os_type",      (DL_FUNC) ps__os_type,      0 },
 
-  { "ps__pids",       (DL_FUNC) ps__pids,        0 },
-  { "ps__pid_exists", (DL_FUNC) ps__pid_exists2, 1 },
+  { "ps__pids",         (DL_FUNC) ps__pids,         0 },
+  { "ps__pid_exists",   (DL_FUNC) ps__pid_exists2,  1 },
+  { "ps__proc_exe",     (DL_FUNC) ps__proc_exe,     1 },
+  { "ps__proc_cmdline", (DL_FUNC) ps__proc_cmdline, 1 },
+
+  { "ps__proc_kinfo_oneshot",
+    (DL_FUNC) ps__proc_kinfo_oneshot, 1 },
+  { "ps__proc_pidtaskinfo_oneshot",
+    (DL_FUNC) ps__proc_pidtaskinfo_oneshot, 1 },
 
   { NULL, NULL, 0 }
 };

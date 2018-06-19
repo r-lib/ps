@@ -259,7 +259,7 @@ SEXP ps__net_if_addrs() {
   SEXP broadcast = NULL;
   SEXP ptp = NULL;
 
-  PROTECT_WITH_INDEX(retlist = allocVector(LISTSXP, 0), &ipx);
+  PROTECT_WITH_INDEX(retlist = allocVector(VECSXP, 0), &ipx);
 
   if (getifaddrs(&ifaddr) == -1) {
     ps__set_error_from_errno();

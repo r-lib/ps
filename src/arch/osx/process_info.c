@@ -105,6 +105,7 @@ int ps__get_argmax() {
 SEXP ps__get_cmdline(long pid) {
   int mib[3];
   int nargs;
+  int idx;
   size_t len;
   char *procargs = NULL;
   char *arg_ptr;
@@ -112,7 +113,6 @@ SEXP ps__get_cmdline(long pid) {
   char *curr_arg;
   size_t argmax;
 
-  PROTECT_INDEX ipx;
   SEXP arg = R_NilValue;
   SEXP retlist = R_NilValue;
 
@@ -142,10 +142,11 @@ SEXP ps__get_cmdline(long pid) {
   if (sysctl(mib, 3, procargs, &argmax, NULL, 0) < 0) {
     // In case of zombie process we'll get EINVAL. We translate it
     // to NSP and _psosx.py will translate it to ZP.
-    if ((errno == EINVAL) && (ps__pid_exists(pid)))
+    if ((errno == EINVAL) && (ps__pid_exists(pid))) {
       ps__no_such_process("");
-    else
+    } else {
       ps__set_error_from_errno();
+    }
     ps__throw_error();
   }
 
@@ -158,8 +159,8 @@ SEXP ps__get_cmdline(long pid) {
   arg_ptr += len + 1;
 
   if (arg_ptr == arg_end) {
-    free(procargs);
-    return ps__build_list("");
+    UNPROTECT(1);
+    return allocVector(STRSXP, 0);
   }
 
   // skip ahead to the first argument
@@ -170,12 +171,13 @@ SEXP ps__get_cmdline(long pid) {
 
   // iterate through arguments
   curr_arg = arg_ptr;
-  PROTECT_WITH_INDEX(retlist = allocVector(LISTSXP, 0), &ipx);
-
+  idx = 0;
+  PROTECT(retlist = allocVector(STRSXP, nargs));
   while (arg_ptr < arg_end && nargs > 0) {
     if (*arg_ptr++ == '\0') {
-      arg = ps__str_to_utf8(curr_arg);
-      REPROTECT(retlist = Rf_listAppend(retlist, arg), ipx);
+      PROTECT(arg = ps__str_to_utf8(curr_arg));
+      SET_STRING_ELT(retlist, idx++, STRING_ELT(arg, 0));
+      UNPROTECT(1);
       // iterate to next arg and decrement # of args
       curr_arg = arg_ptr;
       nargs--;
