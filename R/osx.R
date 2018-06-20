@@ -16,6 +16,7 @@ ps_pid_exists_osx <- function(pid) {
 
 process_osx <- R6Class(
   "process_osx",
+  cloneable = FALSE,
   public = list(
     initialize = function(pid)
       p_osx_init(self, private, pid),
