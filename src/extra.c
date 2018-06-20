@@ -3,6 +3,7 @@
 #include <errno.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "extra.h"
 
@@ -233,20 +234,98 @@ SEXP ps__os_type() {
   return res;
 }
 
+#ifdef PS__LINUX
+
+/* The lstat() version in readline(2) does not work here,
+   because /proc files do not report their size. We just
+   need to keep tying with readline(), until the buffer
+   size is big enough. */
+
+SEXP ps__readlink(SEXP r_path) {
+  const char *path = CHAR(STRING_ELT(r_path, 0));
+  char *linkname;
+  size_t size = 1024;
+  ssize_t r;
+  SEXP result;
+
+  linkname = R_alloc(size, 1);
+
+  while (1) {
+
+    r = readlink(path, linkname, size - 1);
+
+    if (r == (ssize_t)-1) {
+      ps__set_error_from_errno();
+      ps__throw_error();
+
+    } else if (r < (ssize_t)1) {
+      errno = ENOENT;
+      ps__set_error_from_errno();
+      ps__throw_error();
+
+    } else if (r < (ssize_t)(size - 1)) {
+      break;
+    }
+
+    linkname = S_realloc(linkname, size + 1024, size, 1);
+    size += 1024;
+  }
+
+  linkname[r] = '\0';
+
+  /* readlink() might return paths containing null bytes ('\x00')
+     resulting in "TypeError: must be encoded string without NULL
+     bytes, not str" errors when the string is passed to other
+     fs-related functions (os.*, open(), ...).
+     Apparently everything after '\x00' is garbage (we can have
+     ' (deleted)', 'new' and possibly others), see:
+     https://github.com/giampaolo/psutil/issues/717
+
+     For us this is not a problem, because mkString uses the string
+     up to the first zero byte, anyway.
+
+     The path might still have a ' (deleted)' suffix, we handle
+     this in R. */
+
+  PROTECT(result = mkString(linkname));
+
+  UNPROTECT(1);
+  return result;
+}
+
+SEXP ps__linux_clk_tck() {
+  long tck = sysconf(_SC_CLK_TCK);
+  return ScalarReal(tck);
+}
+
+SEXP ps__linux_pagesize() {
+  long ps = sysconf(_SC_PAGE_SIZE);
+  return ScalarReal(ps);
+}
+
+#endif
+
 static const R_CallMethodDef callMethods[]  = {
   { "ps__os_type",      (DL_FUNC) ps__os_type,      0 },
-
-  { "ps__pids",         (DL_FUNC) ps__pids,         0 },
   { "ps__pid_exists",   (DL_FUNC) ps__pid_exists2,  1 },
+
+#ifdef PS__OSX
+  { "ps__pids",         (DL_FUNC) ps__pids,         0 },
   { "ps__proc_exe",     (DL_FUNC) ps__proc_exe,     1 },
   { "ps__proc_cmdline", (DL_FUNC) ps__proc_cmdline, 1 },
   { "ps__proc_environ", (DL_FUNC) ps__proc_environ, 1 },
   { "ps__proc_cwd",     (DL_FUNC) ps__proc_cwd,     1 },
-
   { "ps__proc_kinfo_oneshot",
     (DL_FUNC) ps__proc_kinfo_oneshot, 1 },
   { "ps__proc_pidtaskinfo_oneshot",
     (DL_FUNC) ps__proc_pidtaskinfo_oneshot, 1 },
+#endif
+
+#ifdef PS__LINUX
+  { "ps__readlink",       (DL_FUNC) ps__readlink,       1 },
+  { "ps__linux_clk_tck",  (DL_FUNC) ps__linux_clk_tck,  0 },
+  { "ps__linux_pagesize", (DL_FUNC) ps__linux_pagesize, 0 },
+#endif
 
   { NULL, NULL, 0 }
 };

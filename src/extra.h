@@ -26,4 +26,10 @@ SEXP ps__build_named_list(const  char *template, ...);
 
 SEXP ps__os_type();
 
+#ifdef PS__LINUX
+SEXP ps__readlink(SEXP path);
+SEXP ps__linux_clk_tck();
+SEXP ps__linux_pagesize();
+#endif
+
 #endif

@@ -122,7 +122,7 @@ elif [ -n "$NETBSD" ]; then
     LIBRARIES="kvm"
 
 elif [ -n "$LINUX" ]; then
-    MACROS="${MACROS} PS__LINUIX"
+    MACROS="${MACROS} PS__LINUX"
     PS__LINUX=1
     OBJECTS="${OBJECTS} linux.o"
 

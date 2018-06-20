@@ -12,6 +12,8 @@ process <- function(pid) {
   os <- ps_os_type()
   if (os[["OSX"]])
     process_osx$new(pid)
+  else if (os[["LINUX"]])
+    process_linux$new(pid)
   else
     stop("Not implemented for this platform")
 }

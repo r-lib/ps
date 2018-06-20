@@ -18,14 +18,14 @@
 /* API from R                                                           */
 /* ---------------------------------------------------------------------*/
 
-SEXP ps__pids();
 SEXP ps__pid_exists2(SEXP r_pid);
+
+#ifdef PS__OSX
+SEXP ps__pids();
 SEXP ps__proc_exe(SEXP r_pid);
 SEXP ps__proc_cmdline(SEXP r_pid);
 SEXP ps__proc_environ(SEXP r_pid);
 SEXP ps__proc_cwd(SEXP r_pid);
-
-#ifdef PS__OSX
 SEXP ps__proc_kinfo_oneshot(SEXP r_pid);
 SEXP ps__proc_pidtaskinfo_oneshot(SEXP r_pid);
 #endif

@@ -8,6 +8,8 @@ ps_pids <- function() {
   os <- ps_os_type()
   if (os[["OSX"]])
     ps_pids_osx()
+  else if (os[["LINUX"]])
+    ps_pids_linux()
   else
     stop("Not implemented for this platform")
 }
@@ -26,6 +28,18 @@ ps_pid_exists <- function(pid) {
   os <- ps_os_type()
   if (os[["OSX"]])
     ps_pid_exists_osx(pid)
+  else if (os[["LINUX"]])
+    ps_pid_exists_linux(pid)
+  else
+    stop("Not implemented for this platform")
+}
+
+#' @export
+
+ps_boot_time <- function() {
+  os <- ps_os_type()
+  if (os[["LINUX"]])
+    ps_boot_time_linux()
   else
     stop("Not implemented for this platform")
 }
