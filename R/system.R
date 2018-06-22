@@ -38,6 +38,10 @@ ps_pid_exists <- function(pid) {
     stop("Not implemented for this platform")
 }
 
+#' Boot time of the system
+#'
+#' @return A `POSIXct` object.
+#'
 #' @export
 
 ps_boot_time <- function() {

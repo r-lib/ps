@@ -469,7 +469,7 @@ static const R_CallMethodDef callMethods[]  = {
 #endif
 
 #ifdef PS__WINDOWS
-  { "ps__pids",              (DL_FUNC) ps__pids,            0 },
+  { "ps__pids",             (DL_FUNC) ps__pids,             0 },
   { "ps__ppid_map",         (DL_FUNC) ps__ppid_map,         0 },
   { "ps__pid_exists",       (DL_FUNC) ps__pid_exists,       1 },
   { "ps__boot_time",        (DL_FUNC) ps__boot_time,        0 },
@@ -481,6 +481,8 @@ static const R_CallMethodDef callMethods[]  = {
   { "ps__proc_username",    (DL_FUNC) ps__proc_username,    1 },
   { "ps__proc_info",        (DL_FUNC) ps__proc_info,        1 },
   { "ps__proc_memory_info", (DL_FUNC) ps__proc_memory_info, 1 },
+  { "ps__proc_cpu_times",   (DL_FUNC) ps__proc_cpu_times,   1 },
+  { "ps__proc_create_time", (DL_FUNC) ps__proc_create_time, 1 },
   { "ps__win32_QueryDosDevice",
     (DL_FUNC) ps__win32_QueryDosDevice, 1 },
 #endif
