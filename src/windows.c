@@ -837,7 +837,7 @@ SEXP ps__proc_memory_info(SEXP r_pid) {
     "peak_pagefile",       (unsigned long long) cnt.PeakPagefileUsage,
     "mem_private",         (unsigned long long) private);
 #else
-  return Py_BuildValue(
+  return ps__build_named_list(
     "kIIIIIIIII",
     "num_page_faults",     cnt.PageFaultCount,    // unsigned long
     "peak_wget",           (unsigned int) cnt.PeakWorkingSetSize,
