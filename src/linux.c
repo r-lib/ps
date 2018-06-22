@@ -23,6 +23,7 @@
 #include <sys/socket.h>
 #include <linux/sockios.h>
 #include <linux/if.h>
+#include <limits.h>
 
 // see: https://github.com/giampaolo/psutil/issues/659
 #ifdef PSUTIL_ETHTOOL_MISSING_TYPES
