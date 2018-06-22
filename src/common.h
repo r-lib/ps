@@ -45,6 +45,8 @@ SEXP ps__proc_cwd(SEXP r_pid);
 SEXP ps__proc_username(SEXP r_pid);
 SEXP ps__proc_info(SEXP r_pid);
 SEXP ps__proc_memory_info(SEXP r_pid);
+SEXP ps__proc_cpu_times(SEXP r_pid);
+SEXP ps__proc_create_time(SEXP r_pid);
 SEXP ps__win32_QueryDosDevice(SEXP r_path);
 #endif
 
