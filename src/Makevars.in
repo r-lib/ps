@@ -1,2 +1,4 @@
 
 OBJECTS = @OBJECTS@
+
+PKG_LIBS = @LIBS@

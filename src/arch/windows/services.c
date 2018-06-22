@@ -4,19 +4,32 @@
  * found in the LICENSE file.
  */
 
-#include <Python.h>
 #include <windows.h>
 #include <Winsvc.h>
 
 #include "services.h"
-#include "../../_psutil_common.h"
+#include "../../common.h"
+
+#ifdef __MINGW32__
+#if !defined(_UNICODE) && !defined(_MBCS)
+#define _tcslen(x) strlen(x)
+#elif defined(_UNICODE)
+#define _tclsen(x) wcslen(x)
+#elif defined(_MBCS)
+#define _tclsen(x) strlen(x)
+#else
+#error "Invalid value"
+#endif
+#endif //__MINGW32__
 
 // ==================================================================
 // utils
 // ==================================================================
 
+#if (0)
+
 SC_HANDLE
-psutil_get_service_handler(char *service_name, DWORD scm_access, DWORD access)
+ps__get_service_handler(char *service_name, DWORD scm_access, DWORD access)
 {
     ENUM_SERVICE_STATUS_PROCESSW *lpService = NULL;
     SC_HANDLE sc = NULL;
@@ -24,13 +37,13 @@ psutil_get_service_handler(char *service_name, DWORD scm_access, DWORD access)
 
     sc = OpenSCManager(NULL, NULL, scm_access);
     if (sc == NULL) {
-        PyErr_SetFromWindowsErr(0);
+      ps__set_error_from_windows_error(0);
         return NULL;
     }
     hService = OpenService(sc, service_name, access);
     if (hService == NULL) {
         CloseServiceHandle(sc);
-        PyErr_SetFromWindowsErr(0);
+        ps__set_error_from_windows_error(0);
         return NULL;
     }
     CloseServiceHandle(sc);
@@ -93,8 +106,7 @@ get_state_string(DWORD state) {
 /*
  * Enumerate all services.
  */
-PyObject *
-psutil_winservice_enumerate(PyObject *self, PyObject *args) {
+SEXP ps__winservice_enumerate(PyObject *self, PyObject *args) {
     ENUM_SERVICE_STATUS_PROCESSW *lpService = NULL;
     BOOL ok;
     SC_HANDLE sc = NULL;
@@ -113,7 +125,7 @@ psutil_winservice_enumerate(PyObject *self, PyObject *args) {
 
     sc = OpenSCManager(NULL, NULL, SC_MANAGER_ENUMERATE_SERVICE);
     if (sc == NULL) {
-        PyErr_SetFromWindowsErr(0);
+        ps__set_error_from_windows_error(0);
         return NULL;
     }
 
@@ -188,7 +200,7 @@ error:
  * - startup_type
  */
 PyObject *
-psutil_winservice_query_config(PyObject *self, PyObject *args) {
+ps__winservice_query_config(PyObject *self, PyObject *args) {
     char *service_name;
     SC_HANDLE hService = NULL;
     BOOL ok;
@@ -203,7 +215,7 @@ psutil_winservice_query_config(PyObject *self, PyObject *args) {
 
     if (!PyArg_ParseTuple(args, "s", &service_name))
         return NULL;
-    hService = psutil_get_service_handler(
+    hService = ps__get_service_handler(
         service_name, SC_MANAGER_ENUMERATE_SERVICE, SERVICE_QUERY_CONFIG);
     if (hService == NULL)
         goto error;
@@ -213,13 +225,13 @@ psutil_winservice_query_config(PyObject *self, PyObject *args) {
     bytesNeeded = 0;
     QueryServiceConfigW(hService, NULL, 0, &bytesNeeded);
     if (GetLastError() != ERROR_INSUFFICIENT_BUFFER) {
-        PyErr_SetFromWindowsErr(0);
+        ps__set_error_from_windows_error(0);
         goto error;
     }
     qsc = (QUERY_SERVICE_CONFIGW *)malloc(bytesNeeded);
     ok = QueryServiceConfigW(hService, qsc, bytesNeeded, &bytesNeeded);
     if (ok == 0) {
-        PyErr_SetFromWindowsErr(0);
+        ps__set_error_from_windows_error(0);
         goto error;
     }
 
@@ -279,7 +291,7 @@ error:
  * - pid
  */
 PyObject *
-psutil_winservice_query_status(PyObject *self, PyObject *args) {
+ps__winservice_query_status(PyObject *self, PyObject *args) {
     char *service_name;
     SC_HANDLE hService = NULL;
     BOOL ok;
@@ -291,7 +303,7 @@ psutil_winservice_query_status(PyObject *self, PyObject *args) {
 
     if (!PyArg_ParseTuple(args, "s", &service_name))
         return NULL;
-    hService = psutil_get_service_handler(
+    hService = ps__get_service_handler(
         service_name, SC_MANAGER_ENUMERATE_SERVICE, SERVICE_QUERY_STATUS);
     if (hService == NULL)
         goto error;
@@ -307,7 +319,7 @@ psutil_winservice_query_status(PyObject *self, PyObject *args) {
         return Py_BuildValue("s", "");
     }
     if (GetLastError() != ERROR_INSUFFICIENT_BUFFER) {
-        PyErr_SetFromWindowsErr(0);
+        ps__set_error_from_windows_error(0);
         goto error;
     }
     ssp = (SERVICE_STATUS_PROCESS *)HeapAlloc(
@@ -321,7 +333,7 @@ psutil_winservice_query_status(PyObject *self, PyObject *args) {
     ok = QueryServiceStatusEx(hService, SC_STATUS_PROCESS_INFO, (LPBYTE)ssp,
                               bytesNeeded, &bytesNeeded);
     if (ok == 0) {
-        PyErr_SetFromWindowsErr(0);
+        ps__set_error_from_windows_error(0);
         goto error;
     }
 
@@ -351,7 +363,7 @@ error:
  * Get service description.
  */
 PyObject *
-psutil_winservice_query_descr(PyObject *self, PyObject *args) {
+ps__winservice_query_descr(PyObject *self, PyObject *args) {
     ENUM_SERVICE_STATUS_PROCESSW *lpService = NULL;
     BOOL ok;
     DWORD bytesNeeded = 0;
@@ -364,7 +376,7 @@ psutil_winservice_query_descr(PyObject *self, PyObject *args) {
 
     if (!PyArg_ParseTuple(args, "s", &service_name))
         return NULL;
-    hService = psutil_get_service_handler(
+    hService = ps__get_service_handler(
         service_name, SC_MANAGER_ENUMERATE_SERVICE, SERVICE_QUERY_CONFIG);
     if (hService == NULL)
         goto error;
@@ -381,7 +393,7 @@ psutil_winservice_query_descr(PyObject *self, PyObject *args) {
         return Py_BuildValue("s", "");
     }
     if (GetLastError() != ERROR_INSUFFICIENT_BUFFER) {
-        PyErr_SetFromWindowsErr(0);
+        ps__set_error_from_windows_error(0);
         goto error;
     }
 
@@ -389,7 +401,7 @@ psutil_winservice_query_descr(PyObject *self, PyObject *args) {
     ok = QueryServiceConfig2W(hService, SERVICE_CONFIG_DESCRIPTION,
                               (LPBYTE)scd, bytesNeeded, &bytesNeeded);
     if (ok == 0) {
-        PyErr_SetFromWindowsErr(0);
+        ps__set_error_from_windows_error(0);
         goto error;
     }
 
@@ -421,21 +433,21 @@ error:
  * XXX - note: this is exposed but not used.
  */
 PyObject *
-psutil_winservice_start(PyObject *self, PyObject *args) {
+ps__winservice_start(PyObject *self, PyObject *args) {
     char *service_name;
     BOOL ok;
     SC_HANDLE hService = NULL;
 
     if (!PyArg_ParseTuple(args, "s", &service_name))
         return NULL;
-    hService = psutil_get_service_handler(
+    hService = ps__get_service_handler(
         service_name, SC_MANAGER_ALL_ACCESS, SERVICE_START);
     if (hService == NULL) {
         goto error;
     }
     ok = StartService(hService, 0, NULL);
     if (ok == 0) {
-        PyErr_SetFromWindowsErr(0);
+        ps__set_error_from_windows_error(0);
         goto error;
     }
 
@@ -453,7 +465,7 @@ error:
  * XXX - note: this is exposed but not used.
  */
 PyObject *
-psutil_winservice_stop(PyObject *self, PyObject *args) {
+ps__winservice_stop(PyObject *self, PyObject *args) {
     char *service_name;
     BOOL ok;
     SC_HANDLE hService = NULL;
@@ -461,7 +473,7 @@ psutil_winservice_stop(PyObject *self, PyObject *args) {
 
     if (!PyArg_ParseTuple(args, "s", &service_name))
         return NULL;
-    hService = psutil_get_service_handler(
+    hService = ps__get_service_handler(
         service_name, SC_MANAGER_ALL_ACCESS, SERVICE_STOP);
     if (hService == NULL)
         goto error;
@@ -471,7 +483,7 @@ psutil_winservice_stop(PyObject *self, PyObject *args) {
     ok = ControlService(hService, SERVICE_CONTROL_STOP, &ssp);
     Py_END_ALLOW_THREADS
     if (ok == 0) {
-        PyErr_SetFromWindowsErr(0);
+        ps__set_error_from_windows_error(0);
         goto error;
     }
 
@@ -483,3 +495,5 @@ error:
         CloseServiceHandle(hService);
     return NULL;
 }
+
+#endif

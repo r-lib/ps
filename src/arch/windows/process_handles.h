@@ -11,13 +11,13 @@
 #define UNICODE
 #endif
 
-#include <Python.h>
 #include <stdio.h>
 #include <windows.h>
 #include <strsafe.h>
 #include <winternl.h>
 #include <psapi.h>
 
+#include <Rinternals.h>
 
 #ifndef NT_SUCCESS
 #define NT_SUCCESS(x) ((x) >= 0)
@@ -75,6 +75,7 @@ typedef enum _POOL_TYPE {
     NonPagedPoolCacheAlignedMustS
 } POOL_TYPE, *PPOOL_TYPE;
 
+#ifndef __MINGW32__
 typedef struct _OBJECT_TYPE_INFORMATION {
     UNICODE_STRING Name;
     ULONG TotalNumberOfObjects;
@@ -99,12 +100,13 @@ typedef struct _OBJECT_TYPE_INFORMATION {
     ULONG PagedPoolUsage;
     ULONG NonPagedPoolUsage;
 } OBJECT_TYPE_INFORMATION, *POBJECT_TYPE_INFORMATION;
+#endif
 
 PVOID GetLibraryProcAddress(PSTR LibraryName, PSTR ProcName);
-VOID psutil_get_open_files_init(BOOL threaded);
-PyObject* psutil_get_open_files(long pid, HANDLE processHandle);
-PyObject* psutil_get_open_files_ntqueryobject(long dwPid, HANDLE hProcess);
-PyObject* psutil_get_open_files_getmappedfilename(long dwPid, HANDLE hProcess);
+VOID ps__get_open_files_init(BOOL threaded);
+SEXP ps__get_open_files(long pid, HANDLE processHandle);
+SEXP ps__get_open_files_ntqueryobject(long dwPid, HANDLE hProcess);
+SEXP ps__get_open_files_getmappedfilename(long dwPid, HANDLE hProcess);
 DWORD psutil_NtQueryObject(void);
 DWORD WINAPI psutil_NtQueryObjectThread(LPVOID lpvParam);
 

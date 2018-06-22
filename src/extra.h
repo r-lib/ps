@@ -7,19 +7,29 @@
 
 #include "common.h"
 
-void ps__protect_free_finalizer(SEXP ptr);
+#ifdef PS__WINDOWS
+#include <windows.h>
+#endif
 
-#define PROTECT_FREE(x) do {						  \
-  SEXP x ## _ptr = PROTECT(R_MakeExternalPtr(x, R_NilValue, R_NilValue)); \
-  R_RegisterCFinalizerEx(x ## _ptr, ps__protect_free_finalizer, 1);	  \
-  } while (0)
+void PROTECT_PTR(void *ptr);
 
-void ps__set_error_from_errno();
+void *ps__set_error_from_errno();
 void ps__clear_error();
 void ps__throw_error();
 
+#ifdef PS__WINDOWS
+void *ps__set_error_from_windows_error(long err);
+#endif
+
 SEXP ps__str_to_utf8(const char *str);
 SEXP ps__str_to_utf8_size(const char *str, size_t size);
+
+#ifdef PS__WINDOWS
+SEXP ps__utf16_to_rawsxp(const WCHAR* ws, int size);
+SEXP ps__utf16_to_charsxp(const WCHAR* ws, int size);
+SEXP ps__utf16_to_strsxp(const WCHAR* ws, int size);
+int ps__utf8_to_utf16(const char* s, WCHAR** ws_ptr);
+#endif
 
 SEXP ps__build_list(const char *template, ...);
 SEXP ps__build_named_list(const  char *template, ...);

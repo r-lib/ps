@@ -5,7 +5,7 @@
  *
  */
 #include "process_handles.h"
-#include "../../_psutil_common.h"
+#include "../../common.h"
 
 static _NtQuerySystemInformation __NtQuerySystemInformation = NULL;
 static _NtQueryObject __NtQueryObject = NULL;
@@ -21,6 +21,7 @@ PUNICODE_STRING g_pNameBuffer = NULL;
 ULONG g_dwSize = 0;
 ULONG g_dwLength = 0;
 
+#if (0)
 
 PVOID
 GetLibraryProcAddress(PSTR LibraryName, PSTR ProcName) {
@@ -28,8 +29,7 @@ GetLibraryProcAddress(PSTR LibraryName, PSTR ProcName) {
 }
 
 
-PyObject *
-psutil_get_open_files(long dwPid, HANDLE hProcess) {
+SEXP ps__get_open_files(long dwPid, HANDLE hProcess) {
     OSVERSIONINFO osvi;
 
     ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
@@ -38,14 +38,14 @@ psutil_get_open_files(long dwPid, HANDLE hProcess) {
 
     // Threaded version only works for Vista+
     if (osvi.dwMajorVersion >= 6)
-        return psutil_get_open_files_ntqueryobject(dwPid, hProcess);
+        return ps__get_open_files_ntqueryobject(dwPid, hProcess);
     else
-        return psutil_get_open_files_getmappedfilename(dwPid, hProcess);
+        return ps__get_open_files_getmappedfilename(dwPid, hProcess);
 }
 
 
 VOID
-psutil_get_open_files_init(BOOL threaded) {
+ps__get_open_files_init(BOOL threaded) {
     if (g_initialized == TRUE)
         return;
 
@@ -65,8 +65,7 @@ psutil_get_open_files_init(BOOL threaded) {
 }
 
 
-PyObject *
-psutil_get_open_files_ntqueryobject(long dwPid, HANDLE hProcess) {
+SEXP ps__get_open_files_ntqueryobject(long dwPid, HANDLE hProcess) {
     NTSTATUS                            status;
     PSYSTEM_HANDLE_INFORMATION_EX       pHandleInfo = NULL;
     DWORD                               dwInfoSize = 0x10000;
@@ -75,14 +74,14 @@ psutil_get_open_files_ntqueryobject(long dwPid, HANDLE hProcess) {
     DWORD                               i = 0;
     BOOLEAN                             error = FALSE;
     DWORD                               dwWait = 0;
-    PyObject*                           py_retlist = NULL;
-    PyObject*                           py_path = NULL;
+    SEXP                                retlist = R_NilValue;
+    SEXP                                path = R_NilValue;
 
     if (g_initialized == FALSE)
-        psutil_get_open_files_init(TRUE);
+        ps__get_open_files_init(TRUE);
 
     // Due to the use of global variables, ensure only 1 call
-    // to psutil_get_open_files() is running
+    // to ps__get_open_files() is running
     EnterCriticalSection(&g_cs);
 
     if (__NtQuerySystemInformation == NULL ||
@@ -91,7 +90,7 @@ psutil_get_open_files_ntqueryobject(long dwPid, HANDLE hProcess) {
         g_hEvtFinish == NULL)
 
     {
-        PyErr_SetFromWindowsErr(0);
+      ps__set_error_from_windows_error(0);
         error = TRUE;
         goto cleanup;
     }
@@ -184,7 +183,7 @@ psutil_get_open_files_ntqueryobject(long dwPid, HANDLE hProcess) {
                     goto loop_cleanup;
             }
 
-            dwWait = psutil_NtQueryObject();
+            dwWait = ps__NtQueryObject();
 
             // If the call does not return, skip this handle
             if (dwWait != WAIT_OBJECT_0)
@@ -273,14 +272,14 @@ cleanup:
 
 
 DWORD
-psutil_NtQueryObject() {
+ps__NtQueryObject() {
     DWORD dwWait = 0;
 
     if (g_hThread == NULL)
         g_hThread = CreateThread(
             NULL,
             0,
-            psutil_NtQueryObjectThread,
+            ps__NtQueryObjectThread,
             NULL,
             0,
             NULL);
@@ -308,7 +307,7 @@ psutil_NtQueryObject() {
 
 
 DWORD WINAPI
-psutil_NtQueryObjectThread(LPVOID lpvParam) {
+ps__NtQueryObjectThread(LPVOID lpvParam) {
     // Loop infinitely waiting for work
     while (TRUE) {
         WaitForSingleObject(g_hEvtStart, INFINITE);
@@ -324,7 +323,7 @@ psutil_NtQueryObjectThread(LPVOID lpvParam) {
 
 
 PyObject *
-psutil_get_open_files_getmappedfilename(long dwPid, HANDLE hProcess) {
+ps__get_open_files_getmappedfilename(long dwPid, HANDLE hProcess) {
     NTSTATUS                            status;
     PSYSTEM_HANDLE_INFORMATION_EX       pHandleInfo = NULL;
     DWORD                               dwInfoSize = 0x10000;
@@ -341,7 +340,7 @@ psutil_get_open_files_getmappedfilename(long dwPid, HANDLE hProcess) {
     TCHAR                               pszFilename[MAX_PATH+1];
 
     if (g_initialized == FALSE)
-        psutil_get_open_files_init(FALSE);
+        ps__get_open_files_init(FALSE);
 
     if (__NtQuerySystemInformation == NULL || __NtQueryObject == NULL) {
         PyErr_SetFromWindowsErr(0);
@@ -521,3 +520,5 @@ cleanup:
 
     return py_retlist;
 }
+
+#endif
