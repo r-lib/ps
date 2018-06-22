@@ -462,31 +462,30 @@ ps__proc_wait(PyObject *self, PyObject *args) {
 #endif
 }
 
+#endif
 
 /*
  * Return a Python tuple (user_time, kernel_time)
  */
-static PyObject *
-ps__proc_cpu_times(PyObject *self, PyObject *args) {
-  long        pid;
+SEXP ps__proc_cpu_times(SEXP r_pid) {
+  long        pid = INTEGER(r_pid)[0];
   HANDLE      hProcess;
   FILETIME    ftCreate, ftExit, ftKernel, ftUser;
 
-  if (! PyArg_ParseTuple(args, "l", &pid))
-    return NULL;
-
   hProcess = ps__handle_from_pid(pid);
   if (hProcess == NULL)
-    return NULL;
+    ps__throw_error();
   if (! GetProcessTimes(hProcess, &ftCreate, &ftExit, &ftKernel, &ftUser)) {
     CloseHandle(hProcess);
     if (GetLastError() == ERROR_ACCESS_DENIED) {
       // usually means the process has died so we throw a NoSuchProcess
       // here
-      return NoSuchProcess("");
+      ps__no_such_process("");
+      ps__throw_error();
     }
     else {
-      return PyErr_SetFromWindowsErr(0);
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
     }
   }
 
@@ -501,13 +500,10 @@ ps__proc_cpu_times(PyObject *self, PyObject *args) {
    * process has executed in user/kernel mode I borrowed the code
    * below from Python's Modules/posixmodule.c
    */
-  return Py_BuildValue(
-		       "(dd)",
-		       (double)(ftUser.dwHighDateTime * 429.4967296 + \
-				ftUser.dwLowDateTime * 1e-7),
-		       (double)(ftKernel.dwHighDateTime * 429.4967296 + \
-				ftKernel.dwLowDateTime * 1e-7)
-		       );
+  return ps__build_list(
+    "dd",
+    (double)(ftUser.dwHighDateTime * 429.4967296 + ftUser.dwLowDateTime * 1e-7),
+    (double)(ftKernel.dwHighDateTime * 429.4967296 + ftKernel.dwLowDateTime * 1e-7));
 }
 
 
@@ -515,32 +511,30 @@ ps__proc_cpu_times(PyObject *self, PyObject *args) {
  * Return a Python float indicating the process create time expressed in
  * seconds since the epoch.
  */
-static PyObject *
-ps__proc_create_time(PyObject *self, PyObject *args) {
-  long        pid;
+SEXP ps__proc_create_time(SEXP r_pid) {
+  long        pid = INTEGER(r_pid)[0];
   long long   unix_time;
   HANDLE      hProcess;
   FILETIME    ftCreate, ftExit, ftKernel, ftUser;
 
-  if (! PyArg_ParseTuple(args, "l", &pid))
-    return NULL;
-
   // special case for PIDs 0 and 4, return system boot time
   if (0 == pid || 4 == pid)
-    return ps__boot_time(NULL, NULL);
+    return ps__boot_time();
 
   hProcess = ps__handle_from_pid(pid);
   if (hProcess == NULL)
-    return NULL;
+    ps__throw_error();
   if (! GetProcessTimes(hProcess, &ftCreate, &ftExit, &ftKernel, &ftUser)) {
     CloseHandle(hProcess);
     if (GetLastError() == ERROR_ACCESS_DENIED) {
       // usually means the process has died so we throw a
       // NoSuchProcess here
-      return NoSuchProcess("");
+      ps__no_such_process("");
+      ps__throw_error();
     }
     else {
-      return PyErr_SetFromWindowsErr(0);
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
     }
   }
 
@@ -572,9 +566,10 @@ ps__proc_create_time(PyObject *self, PyObject *args) {
   unix_time = ((LONGLONG)ftCreate.dwHighDateTime) << 32;
   unix_time += ftCreate.dwLowDateTime - 116444736000000000LL;
   unix_time /= 10000000;
-  return Py_BuildValue("d", (double)unix_time);
+  return ScalarReal((double)unix_time);
 }
 
+#if (0)
 
 /*
  * Return the number of active, logical CPUs.
