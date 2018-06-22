@@ -120,7 +120,7 @@ typedef enum _KTHREAD_STATE {
     MaximumThreadState
 } KTHREAD_STATE, *PKTHREAD_STATE;
 
-
+#ifndef __MINGW32__
 typedef enum _KWAIT_REASON {
     Executive = 0,
     FreePage = 1,
@@ -162,7 +162,6 @@ typedef enum _KWAIT_REASON {
     MaximumWaitReason = 37
 } KWAIT_REASON, *PKWAIT_REASON;
 
-
 typedef struct _CLIENT_ID2 {
     HANDLE UniqueProcess;
     HANDLE UniqueThread;
@@ -170,6 +169,8 @@ typedef struct _CLIENT_ID2 {
 
 #define CLIENT_ID CLIENT_ID2
 #define PCLIENT_ID PCLIENT_ID2
+
+#endif
 
 typedef struct _SYSTEM_THREAD_INFORMATION2 {
     LARGE_INTEGER KernelTime;
@@ -290,7 +291,7 @@ typedef NTSTATUS (NTAPI *_NtSetInformationProcess)(
     DWORD ProcessInformationLength
 );
 
-
+#ifndef __MINGW32__
 typedef enum _PROCESSINFOCLASS2 {
     _ProcessBasicInformation,
     ProcessQuotaLimits,
@@ -334,12 +335,20 @@ typedef enum _PROCESSINFOCLASS2 {
     MaxProcessInfoClass
 } PROCESSINFOCLASS2;
 
-
 #define PROCESSINFOCLASS PROCESSINFOCLASS2
 #define ProcessBasicInformation _ProcessBasicInformation
 #define ProcessWow64Information _ProcessWow64Information
 #define ProcessDebugPort _ProcessDebugPort
 #define ProcessImageFileName _ProcessImageFileName
 #define ProcessBreakOnTermination _ProcessBreakOnTermination
+
+#else
+// values from https://msdn.microsoft.com/en-us/library/windows/desktop/ms684280(v=vs.85).aspx
+#define ProcessBasicInformation 0
+#define ProcessWow64Information 26
+#define ProcessDebugPort 7
+#define ProcessImageFileName 27
+#define ProcessBreakOnTermination 29
+#endif
 
 #endif // __NTEXTAPI_H__

@@ -133,7 +133,7 @@ SEXP ps__get_cmdline(long pid) {
     ps__throw_error();
   }
 
-  PROTECT_FREE(procargs);
+  PROTECT_PTR(procargs);
 
   // read argument space
   mib[0] = CTL_KERN;
@@ -216,7 +216,7 @@ SEXP ps__get_environ(long pid) {
     ps__throw_error();
   }
 
-  PROTECT_FREE(procargs);
+  PROTECT_PTR(procargs);
 
   // read argument space
   mib[0] = CTL_KERN;

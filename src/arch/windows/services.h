@@ -4,14 +4,15 @@
  * found in the LICENSE file.
  */
 
-#include <Python.h>
 #include <Winsvc.h>
+
+#include <Rinternals.h>
 
 SC_HANDLE psutil_get_service_handle(
 char service_name, DWORD scm_access, DWORD access);
-PyObject *psutil_winservice_enumerate(PyObject *self, PyObject *args);
-PyObject *psutil_winservice_query_config(PyObject *self, PyObject *args);
-PyObject *psutil_winservice_query_status(PyObject *self, PyObject *args);
-PyObject *psutil_winservice_query_descr(PyObject *self, PyObject *args);
-PyObject *psutil_winservice_start(PyObject *self, PyObject *args);
-PyObject *psutil_winservice_stop(PyObject *self, PyObject *args);
+SEXP psutil_winservice_enumerate(SEXP self, SEXP args);
+SEXP psutil_winservice_query_config(SEXP self, SEXP args);
+SEXP psutil_winservice_query_status(SEXP self, SEXP args);
+SEXP psutil_winservice_query_descr(SEXP self, SEXP args);
+SEXP psutil_winservice_start(SEXP self, SEXP args);
+SEXP psutil_winservice_stop(SEXP self, SEXP args);

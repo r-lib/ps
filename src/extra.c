@@ -7,15 +7,32 @@
 
 #include "extra.h"
 
+#ifdef PS__WINDOWS
+#include <windows.h>
+#endif
+
 void ps__protect_free_finalizer(SEXP ptr) {
   void *vptr = R_ExternalPtrAddr(ptr);
   if (!vptr) return;
   free(vptr);
 }
 
-void ps__set_error_from_errno() {
-  ps__set_error("System error: %s", strerror(errno));
+void PROTECT_PTR(void *ptr) {
+  SEXP x = PROTECT(R_MakeExternalPtr(ptr, R_NilValue, R_NilValue));
+  R_RegisterCFinalizerEx(x, ps__protect_free_finalizer, 1);
 }
+
+void *ps__set_error_from_errno() {
+  return ps__set_error("System error: %s", strerror(errno));
+}
+
+#ifdef PS__WINDOWS
+void *ps__set_error_from_windows_error(long err) {
+  /* TODO: get the actual message */
+  if (!err) err = GetLastError();
+  return ps__set_error("System error: %i", err);
+}
+#endif
 
 void ps__clear_error() {
   ps__set_error("");
@@ -36,13 +53,134 @@ SEXP ps__str_to_utf8_size(const char *str, size_t size) {
   return ScalarString(Rf_mkCharLen(str, (int) size));
 }
 
+#ifdef PS__WINDOWS
+
+int ps__utf8_to_utf16(const char* s, WCHAR** ws_ptr) {
+  int ws_len, r;
+  WCHAR* ws;
+
+  ws_len = MultiByteToWideChar(
+    /* CodePage =       */ CP_UTF8,
+    /* dwFlags =        */ 0,
+    /* lpMultiByteStr = */ s,
+    /* cbMultiByte =    */ -1,
+    /* lpWideCharStr =  */ NULL,
+    /* cchWideChar =    */ 0);
+
+  if (ws_len <= 0) { return GetLastError(); }
+
+  ws = (WCHAR*) R_alloc(ws_len,  sizeof(WCHAR));
+  if (ws == NULL) { return ERROR_OUTOFMEMORY; }
+
+  r = MultiByteToWideChar(
+    /* CodePage =       */ CP_UTF8,
+    /* dwFlags =        */ 0,
+    /* lpMultiByteStr = */ s,
+    /* cbMultiBytes =   */ -1,
+    /* lpWideCharStr =  */ ws,
+    /* cchWideChar =    */ ws_len);
+
+  if (r != ws_len) {
+    error("processx error interpreting UTF8 command or arguments");
+  }
+
+  *ws_ptr = ws;
+  return 0;
+}
+
+SEXP ps__utf16_to_rawsxp(const WCHAR* ws, int size) {
+  int s_len, r;
+  SEXP s;
+
+  s_len = WideCharToMultiByte(
+    /* CodePage =           */ CP_UTF8,
+    /* dwFlags =            */ 0,
+    /* lpWideCharStr =      */ ws,
+    /* cchWideChar =        */ size,
+    /* lpMultiByteStr =     */ NULL,
+    /* cbMultiByte =        */ 0,
+    /* lpDefaultChar =      */ NULL,
+    /* lpUsedDefaultChar  = */ NULL);
+
+  if (s_len <= 0) {
+    error("error converting wide chars to UTF-8");
+  }
+
+  PROTECT(s = allocVector(RAWSXP, s_len));
+
+  r = WideCharToMultiByte(
+    /* CodePage =           */ CP_UTF8,
+    /* dwFlags =            */ 0,
+    /* lpWideCharStr =      */ ws,
+    /* cchWideChar =        */ size,
+    /* lpMultiByteStr =     */ (char*) RAW(s),
+    /* cbMultiByte =        */ s_len,
+    /* lpDefaultChar =      */ NULL,
+    /* lpUsedDefaultChar  = */ NULL);
+
+  if (r != s_len) {
+    error("error converting wide chars to UTF-8");
+  }
+
+  UNPROTECT(1);
+  return s;
+}
+
+SEXP ps__utf16_to_strsxp(const WCHAR* ws, int size) {
+  SEXP r, s;
+  int r_len, s_len, idx, notr = 0;
+  char *ptr, *end, *prev;
+
+  PROTECT(r = ps__utf16_to_rawsxp(ws, size));
+
+  r_len = LENGTH(r);
+  ptr = (char*) RAW(r);
+  end = ptr + r_len;
+  s_len = 0;
+  while (ptr < end) {
+    if (!*ptr) s_len++;
+    ptr++;
+  }
+
+  /* If ther is no \0 at the end */
+  if (r_len > 0 && *(end - 1) !=  '\0') notr = 1;
+
+  PROTECT(s = allocVector(STRSXP, s_len + notr));
+
+  prev = ptr = (char*) RAW(r);
+  idx = 0;
+  while (ptr < end) {
+    while (ptr < end && *ptr) ptr++;
+    SET_STRING_ELT(s, idx++, mkCharLen(prev, ptr - prev));
+    prev = ++ptr;
+  }
+
+  if (notr) {
+    SET_STRING_ELT(s, idx++, mkCharLen(prev, end - prev));
+  }
+
+  UNPROTECT(2);
+  return s;
+}
+
+SEXP ps__utf16_to_charsxp(const WCHAR* ws, int size) {
+  SEXP r, s;
+
+  PROTECT(r = ps__utf16_to_rawsxp(ws, size));
+  PROTECT(s = mkCharLen((char*) RAW(r), LENGTH(r) - 1));
+  UNPROTECT(2);
+  return s;
+}
+
+#endif
+
 static size_t ps__build_template_length(const char *template) {
   size_t len = 0;
   size_t n = strlen(template);
   size_t i;
 
   for (i = 0; i < n; i++) {
-    len += isalpha(template[i]);
+    len += isalpha(template[i]) != 0;
   }
 
   return len;
@@ -307,7 +445,10 @@ SEXP ps__linux_pagesize() {
 
 static const R_CallMethodDef callMethods[]  = {
   { "ps__os_type",      (DL_FUNC) ps__os_type,      0 },
+
+#ifdef PS__POSIX
   { "ps__pid_exists",   (DL_FUNC) ps__pid_exists2,  1 },
+#endif
 
 #ifdef PS__OSX
   { "ps__pids",         (DL_FUNC) ps__pids,         0 },
@@ -325,6 +466,23 @@ static const R_CallMethodDef callMethods[]  = {
   { "ps__readlink",       (DL_FUNC) ps__readlink,       1 },
   { "ps__linux_clk_tck",  (DL_FUNC) ps__linux_clk_tck,  0 },
   { "ps__linux_pagesize", (DL_FUNC) ps__linux_pagesize, 0 },
+#endif
+
+#ifdef PS__WINDOWS
+  { "ps__pids",              (DL_FUNC) ps__pids,            0 },
+  { "ps__ppid_map",         (DL_FUNC) ps__ppid_map,         0 },
+  { "ps__pid_exists",       (DL_FUNC) ps__pid_exists,       1 },
+  { "ps__boot_time",        (DL_FUNC) ps__boot_time,        0 },
+  { "ps__proc_name",        (DL_FUNC) ps__proc_name,        1 },
+  { "ps__proc_exe",         (DL_FUNC) ps__proc_exe,         1 },
+  { "ps__proc_cmdline",     (DL_FUNC) ps__proc_cmdline,     1 },
+  { "ps__proc_environ",     (DL_FUNC) ps__proc_environ,     1 },
+  { "ps__proc_cwd",         (DL_FUNC) ps__proc_cwd,         1 },
+  { "ps__proc_username",    (DL_FUNC) ps__proc_username,    1 },
+  { "ps__proc_info",        (DL_FUNC) ps__proc_info,        1 },
+  { "ps__proc_memory_info", (DL_FUNC) ps__proc_memory_info, 1 },
+  { "ps__win32_QueryDosDevice",
+    (DL_FUNC) ps__win32_QueryDosDevice, 1 },
 #endif
 
   { NULL, NULL, 0 }

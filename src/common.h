@@ -18,7 +18,9 @@
 /* API from R                                                           */
 /* ---------------------------------------------------------------------*/
 
+#ifdef PS__POSIX
 SEXP ps__pid_exists2(SEXP r_pid);
+#endif
 
 #ifdef PS__OSX
 SEXP ps__pids();
@@ -28,6 +30,22 @@ SEXP ps__proc_environ(SEXP r_pid);
 SEXP ps__proc_cwd(SEXP r_pid);
 SEXP ps__proc_kinfo_oneshot(SEXP r_pid);
 SEXP ps__proc_pidtaskinfo_oneshot(SEXP r_pid);
+#endif
+
+#ifdef PS__WINDOWS
+SEXP ps__pids();
+SEXP ps__ppid_map();
+SEXP ps__pid_exists(SEXP r_pid);
+SEXP ps__boot_time();
+SEXP ps__proc_name(SEXP r_pid);
+SEXP ps__proc_exe(SEXP r_pid);
+SEXP ps__proc_cmdline(SEXP r_pid);
+SEXP ps__proc_environ(SEXP r_pid);
+SEXP ps__proc_cwd(SEXP r_pid);
+SEXP ps__proc_username(SEXP r_pid);
+SEXP ps__proc_info(SEXP r_pid);
+SEXP ps__proc_memory_info(SEXP r_pid);
+SEXP ps__win32_QueryDosDevice(SEXP r_path);
 #endif
 
 /* ---------------------------------------------------------------------*/
@@ -41,11 +59,12 @@ extern int PS__DEBUG;
 static const int PS__CONN_NONE = 128;
 
 const char *ps__get_error();
-void ps__set_error(const char *msg, ...);
+void *ps__set_error(const char *msg, ...);
 
-void ps__access_denied(const char *msg);
-void ps__no_such_process(const char *msg);
-void ps__zombie_process(const char *msg);
+void *ps__access_denied(const char *msg);
+void *ps__no_such_process(const char *msg);
+void *ps__zombie_process(const char *msg);
+void *ps__no_memory(const char *msg);
 
 void ps__set_testing();
 void ps__debug(const char* format, ...);

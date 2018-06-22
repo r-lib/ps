@@ -14,6 +14,8 @@ process <- function(pid) {
     process_osx$new(pid)
   else if (os[["LINUX"]])
     process_linux$new(pid)
+  else if (os[["WINDOWS"]])
+    process_windows$new(pid)
   else
     stop("Not implemented for this platform")
 }

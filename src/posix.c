@@ -266,7 +266,7 @@ SEXP ps__net_if_addrs() {
     ps__throw_error();
   }
 
-  PROTECT_FREE(ifaddr);
+  PROTECT_PTR(ifaddr);
 
   for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
     if (!ifa->ifa_addr)
