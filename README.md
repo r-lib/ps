@@ -25,4 +25,4 @@ By participating in this project you agree to abide by its terms.
 
 ## License
 
-LGPL © RStudio
+BSD © RStudio

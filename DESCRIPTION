@@ -3,8 +3,12 @@ Version: 0.0.0.9000
 Title: List System Processes
 Description: List all system processes, on Windows, Linux, macOS,
     Solaris and BSD systems.
-Authors@R:
-    person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", c("aut", "cre"))
+Authors@R: c(
+    person("Jay", "Loden", role = "aut"),
+    person("Dave", "Daeschler", role = "aut"),
+    person("Giampaolo", "Rodola'", role = "aut"),
+    person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", c("aut", "cre")),
+    person("RStudio", role = "cph"))
 License: BSD_3_clause + file LICENSE
 URL: https://github.com/r-lib/ps#readme
 BugReports: https://github.com/r-lib/issues
