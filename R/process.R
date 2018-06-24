@@ -9,13 +9,12 @@
 #' @export
 
 process <- function(pid) {
-  os <- ps_os_type()
-  if (os[["OSX"]])
-    process_osx$new(pid)
-  else if (os[["LINUX"]])
-    process_linux$new(pid)
-  else if (os[["WINDOWS"]])
-    process_windows$new(pid)
-  else
-    stop("Not implemented for this platform")
+  osname <- ps_os_name()
+  if (is.na(osname)) stop("Unsupported platform")
+  switch(
+    osname,
+    OSX = process_osx()$new(pid),
+    LINUX = process_linux()$new(pid),
+    WINDOWS = process_windows()$new(pid)
+  )
 }

@@ -87,3 +87,9 @@ ps_os_is_sunos <- function() {
 ps_os_is_aix <- function() {
   ps_os_type()[["AIX"]]
 }
+
+ps_os_name <- function() {
+  os <- ps_os_type()
+  os <- os[setdiff(names(os), c("BSD", "POSIX"))]
+  names(os)[which(os)]
+}

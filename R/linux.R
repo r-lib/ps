@@ -43,171 +43,116 @@ ps_boot_time_linux <- function() {
 
 #' @importFrom R6 R6Class
 
-process_linux <- R6Class(
-  "process_linux",
-  cloneable = FALSE,
-  public = list(
-    initialize = function(pid)
-      p_linux_init(self, private, pid),
-    get_name = function()
-      p_linux_get_name(self, private),
-    get_exe = function()
-      p_linux_get_exe(self, private),
-    get_cmdline = function()
-      p_linux_get_cmdline(self, private),
-    get_environ = function(cached = TRUE)
-      p_linux_get_environ(self, private, cached),
-    get_ppid = function()
-      p_linux_get_ppid(self, private),
-    get_cwd = function()
-      p_linux_get_cwd(self, private),
-    get_uids = function()
-      p_linux_get_uids(self, private),
-    get_gids = function()
-      p_linux_get_gids(self, private),
-    get_memory_info = function()
-      p_linux_get_memory_info(self, private),
-    get_cpu_times = function()
-      p_linux_get_cpu_times(self, private),
-    get_create_time = function()
-      p_linux_get_create_time(self, private),
-    get_num_threads = function()
-      p_linux_get_num_threads (self, private)
+process_linux <- function() {
+  if (is.null(ps_env$process_linux)) {
+    ps_env$process_linux <- R6Class(
+      "process_linux",
+      cloneable = FALSE,
+      inherit = process_posix(),
+      public = list(
 
-    ## TODO:
-    ## - cpu_num (?)
-    ## - terminal
-    ## - wait
-    ## - memory_full_info
-    ## - num_ctx_switches
-    ## - threads
-    ## - nice_get
-    ## - nice_set
-    ## - cpu_affinity_get
-    ## - cpu_affinity_set
-    ## - status
-    ## - open_files
-    ## - connections
-    ## - num_fds
-    ## - memory_maps
-    ## - ionice_get
-    ## - ionice_set
-    ## - rlimit
-  ),
+        name = function() {
+          self$.parse_stat_file()[[1]]
+        },
 
-  private = list(
-    pid = NULL,
-    ppid = NULL,
-    name = NULL,
-    start = NULL,
-    procfs_path = NULL,
+        exe = function() {
+          readlink(sprintf("%s/%i/exe", get_procfs_path(), self$.pid))
+        },
 
-    parse_stat_file = function()
-      p_linux__parse_stat_file(self, private),
-    read_status_file = function()
-      p_linux__read_status_file(self, private)
-  )
-)
+        cmdline = function() {
+          path <- sprintf("%s/%i/cmdline", get_procfs_path(), self$.pid)
+          data <- read_binary_file(path)
 
-p_linux_init <- function(self, private, pid) {
-  assert_that(is_pid(pid))
-  private$pid <- as.integer(pid)
-  private$procfs_path <- get_procfs_path()
-  invisible(self)
-}
+          ## May happen in case of a zombie process
+          if (!length(data)) return(character())
 
-p_linux_get_name <- function(self, private) {
-  private$parse_stat_file()[[1]]
-}
+          ## 'man proc' states that args are separated by null bytes '\0'
+          ## and last char is supposed to be a null byte. Nevertheless
+          ## some processes may change their cmdline after being started
+          ## (via setproctitle() or similar), they are usually not
+          ## compliant with this rule and use spaces instead. Google
+          ## Chrome process is an example. See:
+          ## https://github.com/giampaolo/psutil/issues/1179
+          sep <-  if (data[length(data)] == 0x00) 0x00 else charToRaw(" ")
+          map_chr(raw_split(data[-length(data)], sep), rawToChar)
+        },
 
-p_linux_get_exe <- function(self, private) {
-  ## TODO: better errors, i.e. no such process or access denied
-  readlink(sprintf("%s/%i/exe", private$procfs_path, private$pid))
-}
+        environ = function() {
+          path <- sprintf("%s/%i/environ", get_procfs_path(), self$.pid)
+          data <- read_binary_file(path)
+          parse_envs(map_chr(raw_split(data[-length(data)], 0x00), rawToChar))
+        },
 
-p_linux_get_cmdline <- function(self, private) {
-  path <- sprintf("%s/%i/cmdline", private$procfs_path, private$pid)
-  data <- read_binary_file(path)
+        ppid = function() {
+          as.integer(self$.parse_stat_file()[[3]])
+        },
 
-  ## May happen in case of a zombie process
-  if (!length(data)) return(character())
+        cwd = function() {
+          readlink(sprintf("%s/%i/cwd", get_procfs_path(), self$.pid))
+        },
 
-  ## 'man proc' states that args are separated by null bytes '\0'
-  ## and last char is supposed to be a null byte. Nevertheless
-  ## some processes may change their cmdline after being started
-  ## (via setproctitle() or similar), they are usually not
-  ## compliant with this rule and use spaces instead. Google
-  ## Chrome process is an example. See:
-  ## https://github.com/giampaolo/psutil/issues/1179
-  sep <-  if (data[length(data)] == 0x00) 0x00 else charToRaw(" ")
-  map_chr(raw_split(data[-length(data)], sep), rawToChar)
-}
+        uids = function() {
+          status <- self$.read_status_file()
+          line <- grep("^Uid:", status, value = TRUE)[1]
+          match <- re_match(line, "^Uid:\\t(\\d+)\\t(\\d+)\\t(\\d+)")
+          self$.common_puids(c(match[[1]], match[[2]], match[[3]]))
+        },
 
-p_linux_get_environ <- function(self, private, cached) {
-  path <- sprintf("%s/%i/environ", private$procfs_path, private$pid)
-  data <- read_binary_file(path)
-  parse_envs(map_chr(raw_split(data[-length(data)], 0x00), rawToChar))
-}
+        gids = function() {
+          status <- self$.read_status_file()
+          line <- grep("^Gid:", status, value = TRUE)[1]
+          match <- re_match(line, "^Gid:\\t(\\d+)\\t(\\d+)\\t(\\d+)")
+          self$.common_puids(c(match[[1]], match[[2]], match[[3]]))
+        },
 
-p_linux_get_ppid <- function(self, private) {
-  as.integer(private$parse_stat_file()[[3]])
-}
+        memory_info = function() {
+          path <- sprintf("%s/%i/statm", get_procfs_path(), self$.pid)
+          mi <- scan(path, n = 7, quiet = TRUE)
+          names(mi) <- c("rss", "vms", "shared", "text", "lib", "data",
+                         "dirty")
+          mi
+        },
 
-p_linux_get_cwd <- function(self, private) {
-  ## TODO: better errors
-  readlink(sprintf("%s/%i/cwd", private$procfs_path, private$pid))
-}
+        cpu_times = function() {
+          stat <- self$.parse_stat_file()
+          self$.common_pcputimes(
+                 as.numeric(stat[c(13:16)]) / linux_clock_ticks())
+        },
 
-p_linux_get_uids <- function(self, private) {
-  status <- private$read_status_file()
-  line <- grep("^Uid:", status, value = TRUE)[1]
-  match <- re_match(line, "^Uid:\\t(\\d+)\\t(\\d+)\\t(\\d+)")
-  common_puids(c(match[[1]], match[[2]], match[[3]]))
-}
+        create_time = function() {
+          stat <- self$.parse_stat_file()
+          bt <- ps_boot_time()
+          bt + as.numeric(stat[[21]]) / linux_clock_ticks()
+        },
 
-p_linux_get_gids <- function(self, private) {
-  status <- private$read_status_file()
-  line <- grep("^Gid:", status, value = TRUE)[1]
-  match <- re_match(line, "^Gid:\\t(\\d+)\\t(\\d+)\\t(\\d+)")
-  common_puids(c(match[[1]], match[[2]], match[[3]]))
-}
+        num_threads = function() {
+          status <- self$.read_status_file()
+          line <- grep("^Threads:", status, value = TRUE)[1]
+          match <- re_match(line, "^Threads:\\t(\\d+)")
+          as.integer(match[[1]])
+        },
 
-p_linux_get_memory_info <- function(self, private) {
-  path <- sprintf("%s/%i/statm", private$procfs_path, private$pid)
-  mi <- scan(path, n = 7, quiet = TRUE)
-  names(mi) <- c("rss", "vms", "shared", "text", "lib", "data", "dirty")
-  mi
-}
+        ## Internal methods
+        .parse_stat_file = function() {
+          path <- sprintf("%s/%i/stat", get_procfs_path(), self$.pid)
+          stat <- paste(readLines(path), collapse = "\n")
+          name <- sub("^.*[(](.*)[)].*$", "\\1", stat, perl = TRUE)
+          fields <- strsplit(sub("^.*[)]\\s+", "", stat), "\\s+")[[1]]
+          c(name, fields)
+        },
 
-p_linux_get_cpu_times <- function(self, private) {
-  stat <- private$parse_stat_file()
-  common_pcputimes(as.numeric(stat[c(13:16)]) / linux_clock_ticks())
-}
+        .read_status_file = function()  {
+          path <-  sprintf("%s/%i/status", get_procfs_path(), self$.pid)
+          readLines(path)
+        },
 
-p_linux_get_create_time <- function(self, private) {
-  stat <- private$parse_stat_file()
-  bt <- ps_boot_time()
-  bt + as.numeric(stat[[21]]) / linux_clock_ticks()
-}
+        ## Internal data
+        .procfs_path = NULL
+      )
+    )
+  }
 
-p_linux_get_num_threads <- function(self, private) {
-  status <- private$read_status_file()
-  line <- grep("^Threads:", status, value = TRUE)[1]
-  match <- re_match(line, "^Threads:\\t(\\d+)")
-  as.integer(match[[1]])
-}
-
-p_linux__parse_stat_file <- function(self, private) {
-  path <- sprintf("%s/%i/stat", private$procfs_path, private$pid)
-  stat <- paste(readLines(path), collapse = "\n")
-  name <- sub("^.*[(](.*)[)].*$", "\\1", stat, perl = TRUE)
-  fields <- strsplit(sub("^.*[)]\\s+", "", stat), "\\s+")[[1]]
-  c(name, fields)
-}
-
-p_linux__read_status_file <- function(self, private) {
-  path <-  sprintf("%s/%i/status", private$procfs_path, private$pid)
-  readLines(path)
+  ps_env$process_linux
 }
 
 linux_clock_ticks <- function() {
@@ -219,7 +164,7 @@ linux_clock_ticks <- function() {
 
 linux_pagesize <- function() {
   if (is.null(ps_env$pagesize)) {
-    ps_env$pagesie  <- .Call(ps__linux_pagesize)
+    ps_env$pagesie <- .Call(ps__linux_pagesize)
   }
   ps_env$pagesize
 }

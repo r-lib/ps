@@ -14,145 +14,79 @@ ps_pid_exists_osx <- function(pid) {
 
 #' @importFrom R6 R6Class
 
-process_osx <- R6Class(
-  "process_osx",
-  cloneable = FALSE,
-  public = list(
-    initialize = function(pid)
-      p_osx_init(self, private, pid),
-    get_name = function()
-      p_osx_get_name(self, private),
-    get_exe = function()
-      p_osx_get_exe(self, private),
-    get_cmdline = function()
-      p_osx_get_cmdline(self, private),
-    get_environ = function(cached = TRUE)
-      p_osx_get_environ(self, private, cached),
-    get_ppid = function()
-      p_osx_get_ppid(self, private),
-    get_cwd = function()
-      p_osx_get_cwd(self, private),
-    get_uids = function()
-      p_osx_get_uids(self, private),
-    get_gids = function()
-      p_osx_get_gids(self, private),
-    get_memory_info = function()
-      p_osx_get_memory_info(self, private),
-    get_cpu_times = function()
-      p_osx_get_cpu_times(self, private),
-    get_create_time = function()
-      p_osx_get_create_time(self, private),
-    get_num_threads = function()
-      p_osx_get_num_threads (self, private)
+process_osx <- function() {
+  if (is.null(ps_env$process_osx)) {
+    ps_env$process_osx <- R6Class(
+      "process_osx",
+      cloneable = FALSE,
+      inherit = process_posix(),
+      public = list(
 
-    ## TODO:
-    ## - terminal
-    ## - memory_full_info
-    ## - num_ctx_switches
-    ## - open_files
-    ## - connections
-    ## - num_fds
-    ## - wait
-    ## - nice_get
-    ## - nice_set
-    ## - status
-    ## - threads
-    ## - memory_maps
-  ),
+        name = function() {
+          self$.get_kinfo_proc()$name
+        },
 
-  private = list(
-    pid = NULL,
-    ppid = NULL,
-    name = NULL,
-    start = NULL,
+        exe = function() {
+          .Call(ps__proc_exe, self$.pid)
+        },
 
-    kinfo_proc = NULL,
-    pidtaskinfo = NULL,
-    environ = NULL,
+        cmdline = function() {
+          .Call(ps__proc_cmdline, self$.pid)
+        },
 
-    get_kinfo_proc = function(update = FALSE)
-      p_osx__get_kinfo_proc(self, private, update),
-    get_pidtaskinfo = function(update = FALSE)
-      p_osx__get_pidtaskinfo(self, private, update)
-  )
-)
+        environ = function() {
+          parse_envs(.Call(ps__proc_environ, self$.pid))
+        },
 
-p_osx_init <- function(self, private, pid) {
-  assert_that(is_pid(pid))
-  private$pid <- as.integer(pid)
-  invisible(self)
-}
+        ppid = function() {
+          as.integer(self$.get_kinfo_proc()$ppid)
+        },
 
-p_osx_get_name <- function(self, private) {
-  private$get_kinfo_proc()$name
-}
+        cwd = function() {
+          .Call(ps__proc_cwd, self$.pid)
+        },
 
-p_osx_get_exe <- function(self, private) {
-  .Call(ps__proc_exe, private$pid)
-}
+        uids = function() {
+          kinfo <- self$.get_kinfo_proc()
+          self$.common_puids(c(kinfo$ruid, kinfo$euid, kinfo$suid))
+        },
 
-p_osx_get_cmdline <- function(self, private) {
-  .Call(ps__proc_cmdline, private$pid)
-}
+        gids = function() {
+          kinfo <- self$.get_kinfo_proc()
+          self$.common_puids(c(kinfo$rgid, kinfo$egid, kinfo$sgid))
+        },
 
-p_osx_get_environ <- function(self, private, cached) {
-  if (is.null(private$environ) || !cached) {
-    private$environ <- parse_envs(.Call(ps__proc_environ, private$pid))
+        memory_info = function() {
+          tinf <- self$.get_pidtaskinfo()
+          tinf[c("rss", "vms", "pfaults", "pageins")]
+        },
+
+        cpu_times = function() {
+          tinf <- self$.get_pidtaskinfo()
+          self$.common_pcputimes(
+                 c(tinf$cpuutime, tinf$cpustime, NA_real_, NA_real_))
+        },
+
+        create_time = function() {
+          z <- self$.get_kinfo_proc()$ctime
+          self$.format_unix_time(z)
+        },
+
+        num_threads = function() {
+          self$.get_pidtaskinfo()$numthreads
+        },
+
+        ## Internal methods
+        .get_kinfo_proc = function() {
+          .Call(ps__proc_kinfo_oneshot, self$.pid)
+        },
+
+        .get_pidtaskinfo = function() {
+          .Call(ps__proc_pidtaskinfo_oneshot, self$.pid)
+        }
+      )
+    )
   }
-  private$environ
-}
 
-p_osx_get_ppid <- function(self, private) {
-  private$get_kinfo_proc()$ppid
-}
-
-p_osx_get_cwd <- function(self, private) {
-  .Call(ps__proc_cwd, private$pid)
-}
-
-p_osx_get_uids <- function(self, private) {
-  kinfo <- private$get_kinfo_proc()
-  common_puids(c(kinfo$ruid, kinfo$euid, kinfo$suid))
-}
-
-p_osx_get_gids <- function(self, private) {
-  kinfo <- private$get_kinfo_proc()
-  common_puids(c(kinfo$rgid, kinfo$egid, kinfo$sgid))
-}
-
-p_osx_get_memory_info <- function(self, private) {
-  tinf <- private$get_pidtaskinfo(update = TRUE)
-  tinf[c("rss", "vms", "pfaults", "pageins")]
-}
-
-p_osx_get_cpu_times <- function(self, private) {
-  tinf <- private$get_pidtaskinfo(update = TRUE)
-  common_pcputimes(c(tinf$cpuutime, tinf$cpustime, NA_real_, NA_real_))
-}
-
-p_osx_get_create_time <- function(self, private) {
-  z <- private$get_kinfo_proc()$ctime
-  as.POSIXct(z, origin = "1970-01-01", tz = "GMT")
-}
-
-p_osx_get_num_threads <- function(self, private) {
-  private$get_pidtaskinfo(update = TRUE)$numthreads
-}
-
-## -----------------------------------------------------------------------
-## Private mathods
-## -----------------------------------------------------------------------
-
-p_osx__get_kinfo_proc <- function(self, private, update) {
-  if (update || is.null(private$kinfo_proc)) {
-    private$kinfo_proc <- .Call(ps__proc_kinfo_oneshot, private$pid)
-  }
-  private$kinfo_proc
-}
-
-p_osx__get_pidtaskinfo <- function(self, private, update) {
-  if (update || is.null(private$pidtaskinfo)) {
-    private$pidtaskinfo <- .Call(ps__proc_pidtaskinfo_oneshot, private$pid)
-  }
-  private$pidtaskinfo
+  ps_env$process_osx
 }

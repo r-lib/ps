@@ -1,4 +1,6 @@
 
+`%||%` <-  function(l, r) if (is.null(l)) r else l
+
 map_chr <- function(.x, .f, ...) {
   vapply(X = .x, FUN = .f, FUN.VALUE = character(1), ...)
 }
@@ -12,7 +14,12 @@ parse_envs <- function(x) {
   structure(vls[ord], names = nms[ord], class = "Dlist")
 }
 
-## This is fully vectorized
+## These two are fully vectorized
+
+str_starts_with <- function(x, p) {
+  ncp <- nchar(p)
+  substr(x, 1, nchar(p)) == p
+}
 
 str_ends_with <- function(x, p) {
   ncx <- nchar(x)
@@ -61,4 +68,41 @@ read_binary_file <- function(x) {
     ret <- c(ret, new)
   }
   ret
+}
+
+path_is_absolute <- function(path) {
+  if (ps_os_is_windows()) {
+    path_is_absolute_win(path)
+  } else {
+    path_is_absolute_posix(path)
+  }
+}
+
+path_is_absolute_win <- function(path) {
+  p <- windows_path_split_drive(path)
+  p$drive != "" | substr(p$path, 1L, 1L) %in% c("/", "\\")
+}
+
+windows_path_split_drive <- function(path) {
+  npath <- gsub("/", "\\", path, fixed = TRUE)
+  drive <- subpath <- character(length(path))
+  na <- is.na(path)
+  drive[na] <- subpath[na] <- NA_character_
+  i <- !na & str_starts_with(npath, "\\\\") & substr(npath, 3, 3) != "\\"
+  nunc <- ifelse(
+    grepl("^\\\\\\\\[^\\\\]+\\\\[^\\\\]+.*$", npath[i]),
+    nchar(sub("^(\\\\\\\\[^\\\\]+\\\\[^\\\\]+).*$", "\\1", npath[i])),
+    0L)
+  drive[i] <- substr(path[i], 1L, nunc)
+  subpath[i] <- substr(path[i], nunc + 1L, nchar(path[i]))
+  j <- !na & !i & substr(npath, 2L, 2L) == ":"
+  drive[j] <- substr(path[j], 1L, 2L)
+  subpath[j] <- substr(path[j], 3, nchar(path[j]))
+  k <- !na & !i & !j
+  subpath[k] <- path[k]
+  list(drive = drive, path = subpath)
+}
+
+path_is_absolute_posix <- function(path) {
+  str_starts_with(path, "/")
 }

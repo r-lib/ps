@@ -1,20 +1,205 @@
 
-get_procfs_path <- function() {
-  os <- ps_os_type()
-  if (os[["LINUX"]] || os[["SUNOS"]] || os[["AIX"]]) {
-      "/proc"
+not_implemented_function <- function(...) {
+  stop("Not implemented on this platform")
+}
+
+#' @importFrom R6 R6Class
+
+process_common <- function() {
+  if (is.null(ps_env$process_common)) {
+    ps_env$process_common <- R6Class(
+      "process_common",
+      cloneable = FALSE,
+      public = list(
+
+        initialize = function(pid = NULL) self$.init(pid),
+
+        pid = function() self$.pid,
+
+        format = function(...) {
+          info <- list()
+          info$pid <- self$.pid
+          tryCatch({
+            info$name <- self$name()
+            if (!is.null(self$.create_time))
+              info$create_time <- format(self$.create_time) },
+            zombie_process = function(e) info$status <<- "zombie",
+            no_such_process = function(e) info$status <<- "terminated",
+            access_denied = function(e) e
+          )
+
+          paste0(
+            "ps::process, ",
+            paste(names(info), unlist(info), sep = "=", collapse = ", "))
+        },
+
+        print = function(...) {
+          cat(self$format(...))
+          invisible(self)
+        },
+
+        parent = function() {
+          ppid <- self$ppid()
+          if (!is.null(ppid)) {
+            ctime <- self$create_time()
+            tryCatch({
+              parent <- process(ppid)
+              if (parent$create_time() <= ctime) return(parent) },
+              no_such_process = function(e) e)
+          }
+        },
+
+        is_running = function() {
+          if (self$.gone) return(FALSE)
+          tryCatch(
+            process(self$.pid)$create_time() == self$create_time(),
+            zombie_process = function(e) TRUE,
+            no_such_processs = function(e) {
+              self$.gone <- TRUE
+              FALSE
+            }
+          )
+        },
+
+        ppid = not_implemented_function,
+
+        name = not_implemented_function,
+
+        exe = function() {
+          cmdline <- self$cmdline()
+          exe <-  cmdline[[1]]
+          if (path_is_absolute(exe) && file.exists(exe)) {
+            ## TODO: check if executable
+            return(exe)
+          }
+        },
+
+        cmdline = not_implemented_function,
+
+        status = not_implemented_function,
+
+        username = not_implemented_function,
+
+        create_time = not_implemented_function,
+
+        cwd = not_implemented_function,
+
+        nice = not_implemented_function,
+
+        uids = not_implemented_function,
+
+        gids = not_implemented_function,
+
+        terminal = not_implemented_function,
+
+        num_fds = not_implemented_function,
+
+        io_counters = not_implemented_function,
+
+        ionice_get = not_implemented_function,
+
+        rlimit = not_implemented_function,
+
+        cpu_affinity_get = not_implemented_function,
+
+        cpu_num = not_implemented_function,
+
+        environ = not_implemented_function,
+
+        num_handles = not_implemented_function,
+
+        num_ctx_switches = not_implemented_function,
+
+        num_threads = not_implemented_function,
+
+        threads = not_implemented_function,
+
+        children = function() {
+          ##  TODO
+        },
+
+        cpu_percent = function() {
+          ##  TODO
+        },
+
+        cpu_times = not_implemented_function,
+
+        memory_info = not_implemented_function,
+
+        memory_full_info = not_implemented_function,
+
+        memory_percent = function(memtype = "rss") {
+          ## TODO
+        },
+
+        memory_maps = not_implemented_function,
+
+        open_files = not_implemented_function,
+
+        connections = not_implemented_function,
+
+        send_signal = not_implemented_function,
+
+        suspend = not_implemented_function,
+
+        resume = not_implemented_function,
+
+        terminate = not_implemented_function,
+
+        kill = not_implemented_function,
+
+        wait = not_implemented_function,
+
+        ## Internal methods
+
+        .init = function(pid, ignore_nsp = FALSE) {
+          pid <- pid %||% Sys.getpid()
+          assert_that(is_pid(pid))
+          self$.pid <- pid
+          tryCatch(
+            self$.create_time <- self$create_time(),
+            ## We should never get here as AFAIK we're able to get
+            ## process creation time on all platforms even as a
+            ## limited user.
+            access_denied = function(e) e,
+            ## Zombies can still be queried by this class (although
+            ## not always) and pids() return them so just go on.
+            zombie_process = function(e) e,
+            no_such_process = function(e) {
+              if (!ignore_nsp) {
+                e$message <- paste("no process found with pid", pid)
+                stop(e)
+              } else {
+                self$.gone <- TRUE
+              }
+            }
+          )
+        },
+
+        ## Internal methods
+        .common_pcputimes = function(values) {
+          values <- as.numeric(values)
+          names(values) <-
+            c("user", "system", "children_user", "children_system")
+          values
+        },
+
+        .format_unix_time = function(z) {
+          as.POSIXct(z, origin = "1970-01-01", tz = "GMT")
+        },
+
+        ## Internal data
+        .pid = NULL,
+        .name = NULL,
+        .exe = NULL,
+        .create_time = NULL,
+        .gone = FALSE,
+        .ppid = NULL,
+        .last_sys_cpu_times = NULL,
+        .last_proc_cpu_times = NULL
+      )
+    )
   }
-}
 
-common_puids <- function(values) {
-  values <- as.integer(values)
-  names(values) <- c("real", "effective", "saved")
-  values
-}
-
-common_pcputimes <- function(values) {
-  values <- as.numeric(values)
-  names(values) <-
-    c("user", "system", "children_user", "children_system")
-  values
+  ps_env$process_common
 }

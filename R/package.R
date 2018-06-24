@@ -2,9 +2,13 @@
 ps_env <- new.env(parent = emptyenv())
 
 utils::globalVariables(unique(c(
+  "self",
+
   "ps__os_type",
+
   ## POSIX
   "ps__pid_exists",
+
   ## OSX
   "ps__pids",
   "ps__proc_exe",
@@ -13,10 +17,12 @@ utils::globalVariables(unique(c(
   "ps__proc_cwd",
   "ps__proc_kinfo_oneshot",
   "ps__proc_pidtaskinfo_oneshot",
-  ##  LINUX
+
+  ## LINUX
   "ps__readlink",
   "ps__linux_clk_tck",
   "ps__linux_pagesize",
+
   ## WINDOWS
   "ps__pids",
   "ps__ppid_map",
