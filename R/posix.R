@@ -42,7 +42,7 @@ process_posix <- function() {
         username = function() {
           real_uid <- self$uids()[["real"]]
           tryCatch(
-            get_pwd_uid(real_uid)[["pw_name"]],
+            get_pw_uid(real_uid)[["pw_name"]],
             ## the uid can't be resolved by the system
             error = function(e) as.character(real_uid)
           )
@@ -89,8 +89,8 @@ process_posix <- function() {
   ps_env$process_posix
 }
 
-get_pwd_uid <- function(uid) {
-  ## TODO
+get_pw_uid <- function(uid) {
+  .Call(ps__get_pw_uid, as.integer(uid))
 }
 
 signals <- function() {

@@ -536,6 +536,7 @@ static const R_CallMethodDef callMethods[]  = {
 
 #ifdef PS__POSIX
   { "ps__pid_exists",   (DL_FUNC) ps__pid_exists2,  1 },
+  { "ps__get_pw_uid",   (DL_FUNC) ps__get_pw_uid,   1 },
 #endif
 
 #ifdef PS__OSX

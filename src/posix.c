@@ -16,6 +16,7 @@
 #include <net/if.h>
 #include <string.h>
 #include <unistd.h>
+#include <pwd.h>
 
 #include "common.h"
 
@@ -579,3 +580,22 @@ SEXP ps__net_if_duplex_speed(SEXP r_nic_name) {
   return R_NilValue;
 }
 #endif  // net_if_stats() OSX/BSD implementation
+
+SEXP ps__get_pw_uid(SEXP r_uid) {
+  struct passwd *pwd;
+  errno = 0;
+  pwd = getpwuid(INTEGER(r_uid)[0]);
+  if (pwd == NULL) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  return ps__build_named_list(
+    "ssiiss",
+    "pw_name",   pwd->pw_name,
+    "pw_passwd", pwd->pw_passwd,
+    "pw_uid",    pwd->pw_uid,
+    "pw_gid",    pwd->pw_gid,
+    "pw_dir",    pwd->pw_dir,
+    "pw_shell",  pwd->pw_shell);
+}
