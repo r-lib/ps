@@ -16,38 +16,6 @@
 int PS__DEBUG = 0;
 int PS__TESTING = 0;
 
-char ps__last_error[500];
-
-/* TODO: these should throw real error objects */
-
-const char *ps__get_error() {
-  return ps__last_error;
-}
-
-void *ps__set_error(const char *msg, ...) {
-  va_list args;
-  va_start(args, msg);
-  vsnprintf(ps__last_error, sizeof(ps__last_error) - 1, msg, args);
-  va_end(args);
-  return NULL;
-}
-
-void *ps__no_such_process(const char *msg) {
-  return ps__set_error(msg && strlen(msg) ? msg : "No such process");
-}
-
-void *ps__access_denied(const char *msg) {
-  return ps__set_error(msg && strlen(msg) ? msg : "Permission denied");
-}
-
-void *ps__zombie_process(const char *msg) {
-  return ps__set_error(msg && strlen(msg) ? msg : "Process is a zombie");
-}
-
-void *ps__no_memory(const char *msg) {
-  return ps__set_error(msg && strlen(msg) ? msg : "Out of memory");
-}
-
 /*
  * Enable testing mode. This has the same effect as setting PS__TESTING
  * env var. This dual method exists because updating os.environ on

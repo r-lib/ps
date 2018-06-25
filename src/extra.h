@@ -13,9 +13,14 @@
 
 void PROTECT_PTR(void *ptr);
 
+void *ps__set_error(const char *msg, ...);
 void *ps__set_error_from_errno();
-void ps__clear_error();
-void ps__throw_error();
+SEXP ps__throw_error();
+
+void *ps__access_denied(const char *msg);
+void *ps__no_such_process(const char *msg);
+void *ps__zombie_process(const char *msg);
+void *ps__no_memory(const char *msg);
 
 #ifdef PS__WINDOWS
 void *ps__set_error_from_windows_error(long err);
@@ -31,6 +36,7 @@ SEXP ps__utf16_to_strsxp(const WCHAR* ws, int size);
 int ps__utf8_to_utf16(const char* s, WCHAR** ws_ptr);
 #endif
 
+SEXP ps__build_string(const char *str, ...);
 SEXP ps__build_list(const char *template, ...);
 SEXP ps__build_named_list(const  char *template, ...);
 

@@ -51,7 +51,7 @@ process_windows <- function() {
 
           ## see https://github.com/giampaolo/psutil/issues/414
           ## see https://github.com/giampaolo/psutil/issues/528
-          if (self$.pid == 0L || self$.pid == 4L) stop("Access denied")
+          if (self$.pid == 0L || self$.pid == 4L) stop(ps__access_denied())
           convert_dos_path(.Call(ps__proc_exe, self$.pid))
         },
 
@@ -66,13 +66,13 @@ process_windows <- function() {
         ppid = function() {
           map <- windows_ppid_map()
           idx <- match(self$.pid, map[,1])
-          if (is.na(idx)) stop("Process does not exist")
+          if (is.na(idx)) stop(ps__no_such_process())
           map[idx, 2]
         },
 
         cwd = function() {
           if (self$.pid == 0L || self$.pid == 4L) {
-            stop("Access denied")
+            stop(ps__access_denied())
           }
           sub("\\\\$", "", .Call(ps__proc_cwd, self$.pid))
         },

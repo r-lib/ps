@@ -60,14 +60,6 @@ extern int PS__DEBUG;
 // a signaler for connections without an actual status
 static const int PS__CONN_NONE = 128;
 
-const char *ps__get_error();
-void *ps__set_error(const char *msg, ...);
-
-void *ps__access_denied(const char *msg);
-void *ps__no_such_process(const char *msg);
-void *ps__zombie_process(const char *msg);
-void *ps__no_memory(const char *msg);
-
 void ps__set_testing();
 void ps__debug(const char* format, ...);
 void R_init_ps(DllInfo *dll);

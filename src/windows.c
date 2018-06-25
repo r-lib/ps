@@ -172,7 +172,7 @@ ps__get_nic_addresses() {
   do {
     pAddresses = (IP_ADAPTER_ADDRESSES *) malloc(outBufLen);
     if (pAddresses == NULL) {
-      ps__set_error("Out of memory");
+      ps__no_memory("");
       ps__throw_error();
     }
 

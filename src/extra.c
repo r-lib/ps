@@ -11,6 +11,89 @@
 #include <windows.h>
 #endif
 
+char ps__last_error_string[1024];
+SEXP ps__last_error;
+
+/* TODO: these should throw real error objects */
+
+void *ps__set_error_impl(const char *class, int system_errno,
+			 const char *msg, ...) {
+  va_list args;
+
+  va_start(args, msg);
+  vsnprintf(ps__last_error_string,
+	    sizeof(ps__last_error_string) - 1, msg, args);
+  va_end(args);
+
+  Rf_PrintValue(ps__build_string(class, "ps_error", "error", "condition", 0));
+
+  SET_VECTOR_ELT(ps__last_error, 0, mkString(ps__last_error_string));
+  SET_VECTOR_ELT(
+    ps__last_error, 1,
+    ps__build_string(class, "ps_error", "error", "condition", 0));
+  SET_VECTOR_ELT(ps__last_error, 2, ScalarInteger(system_errno));
+  return NULL;
+}
+
+void *ps__set_error(const char *msg, ...) {
+  va_list args;
+
+  va_start(args, msg);
+  ps__set_error_impl("ps_error", 0, msg, args);
+  va_end(args);
+
+  return NULL;
+}
+
+void *ps__no_such_process(const char *msg) {
+  return ps__set_error_impl("no_such_process", 0,
+			    msg && strlen(msg) ? msg : "No such process");
+}
+
+void *ps__access_denied(const char *msg) {
+  return ps__set_error_impl("access_denied", 0,
+			    msg && strlen(msg) ? msg : "Permission denied");
+}
+
+void *ps__zombie_process(const char *msg) {
+  return ps__set_error_impl("zombie_process", 0,
+			    msg && strlen(msg) ? msg : "Process is a zombie");
+}
+
+void *ps__no_memory(const char *msg) {
+  return ps__set_error_impl("no_memory",
+#ifdef PS__WINDOWS
+			    ERROR_NOT_ENOUGH_MEMORY,
+#else
+			    ENOMEM,
+#endif
+			    msg && strlen(msg) ? msg : "Out of memory");
+}
+
+void *ps__set_error_from_errno() {
+  return ps__set_error_impl("os_error", errno, "%s", strerror(errno));
+}
+
+#ifdef PS__WINDOWS
+void *ps__set_error_from_windows_error(long err) {
+  /* TODO: get the actual message */
+  if (!err) err = GetLastError();
+  return ps__set_error_impl("os_error", err, "System error: %i", err);
+}
+#endif
+
+SEXP ps__throw_error() {
+  SEXP stopfun, call, out;
+
+  Rf_setAttrib(ps__last_error, R_ClassSymbol, VECTOR_ELT(ps__last_error, 1));
+  PROTECT(stopfun = Rf_findFun(Rf_install("stop"), R_BaseEnv));
+  PROTECT(call = Rf_lang2(stopfun, ps__last_error));
+  PROTECT(out = Rf_eval(call, R_GlobalEnv));
+
+  UNPROTECT(3);
+  return out;
+}
+
 void ps__protect_free_finalizer(SEXP ptr) {
   void *vptr = R_ExternalPtrAddr(ptr);
   if (!vptr) return;
@@ -20,27 +103,6 @@ void ps__protect_free_finalizer(SEXP ptr) {
 void PROTECT_PTR(void *ptr) {
   SEXP x = PROTECT(R_MakeExternalPtr(ptr, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(x, ps__protect_free_finalizer, 1);
-}
-
-void *ps__set_error_from_errno() {
-  return ps__set_error("System error: %s", strerror(errno));
-}
-
-#ifdef PS__WINDOWS
-void *ps__set_error_from_windows_error(long err) {
-  /* TODO: get the actual message */
-  if (!err) err = GetLastError();
-  return ps__set_error("System error: %i", err);
-}
-#endif
-
-void ps__clear_error() {
-  ps__set_error("");
-}
-
-void ps__throw_error() {
-  const char *last  = ps__get_error();
-  error(last && last[0] ? last : "Unknown error");
 }
 
 SEXP ps__str_to_utf8(const char *str) {
@@ -184,6 +246,31 @@ static size_t ps__build_template_length(const char *template) {
   }
 
   return len;
+}
+
+SEXP ps__build_string(const char *str, ...) {
+  va_list args;
+  size_t len = 1;
+  SEXP res;
+  char *s;
+
+  /* Length 0 character */
+  if (!str) return(allocVector(STRSXP, 0));
+
+  /* Count the length first */
+  va_start(args, str);
+  while (va_arg(args, char*)) len++;
+  va_end(args);
+
+  PROTECT(res = allocVector(STRSXP, len));
+  SET_STRING_ELT(res, 0, mkChar(str));
+  len = 1;
+  va_start(args, str);
+  while ((s = va_arg(args, char*))) SET_STRING_ELT(res, len++, mkChar(s));
+  va_end(args);
+
+  UNPROTECT(1);
+  return res;
 }
 
 static SEXP ps__build_list_impl(const char *template, int named,
@@ -496,6 +583,16 @@ static const R_CallMethodDef callMethods[]  = {
 void R_init_ps(DllInfo *dll) {
   if (getenv("R_PS_DEBUG") != NULL) PS__DEBUG = 1;
   if (getenv("R_PS_TESTING") != NULL) PS__TESTING = 1;
+
+  PROTECT(ps__last_error = ps__build_named_list(
+    "ssii",
+    "message", "Unknown error",
+    "class", "fs_error",
+    "errno", 0
+  ));
+
+  R_PreserveObject(ps__last_error);
+  UNPROTECT(1);
 
   R_registerRoutines(dll, NULL, callMethods, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
