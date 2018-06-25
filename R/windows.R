@@ -66,7 +66,7 @@ process_windows <- function() {
         ppid = function() {
           map <- windows_ppid_map()
           idx <- match(self$.pid, map[,1])
-          if (is.na(idx)) stop(ps__no_such_process())
+          if (is.na(idx)) stop(ps__no_such_process(self$.pid))
           map[idx, 2]
         },
 
@@ -116,6 +116,21 @@ process_windows <- function() {
 
         num_threads = function() {
           self$.oneshot_info()[["num_threads"]]
+        },
+
+        suspend = function() {
+          self$.assert_pid_not_reused()
+          ## TODO
+        },
+
+        resume = function() {
+          self$.assert_pid_not_reused()
+          ## TODO
+        },
+
+        kill = function() {
+          self$.assert_pid_not_reused()
+          ## TODO
         },
 
         .oneshot_info = function() {

@@ -49,25 +49,38 @@ process_posix <- function() {
         },
 
         send_signal = function(sig) {
-          ## TODO
+          self$.assert_pid_not_reused()
+          self$.send_signal(sig)
         },
 
         suspend = function() {
-          self$send_signal(signals()$SIGSTOP)
+          self$.assert_pid_not_reused()
+          self$.send_signal(signals()$SIGSTOP)
         },
 
         resume = function() {
-          self$send_signal(signals()$SIGCONT)
+          self$.assert_pid_not_reused()
+          self$.send_signal(signals()$SIGCONT)
         },
 
         terminate = function() {
+          self$.assert_pid_not_reused()
           self$send_signal(signals()$SIGTERM)
+        },
+
+        kill = function() {
+          self$.assert_pid_not_reused()
+          self$send_signal(signals()$SIGKILL)
         },
 
         .common_puids = function(values) {
           values <- as.integer(values)
           names(values) <- c("real", "effective", "saved")
           values
+        },
+
+        .send_signal = function(sig) {
+          ##  TODO
         }
       )
     )
