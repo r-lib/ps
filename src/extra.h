@@ -11,6 +11,8 @@
 #include <windows.h>
 #endif
 
+SEXP ps__init(SEXP psenv, SEXP constenv);
+
 void PROTECT_PTR(void *ptr);
 
 void *ps__set_error(const char *msg, ...);

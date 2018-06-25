@@ -76,6 +76,11 @@ process_osx <- function() {
           self$.get_pidtaskinfo()$numthreads
         },
 
+        status = function() {
+          code <- self$.get_kinfo_proc()$status
+          self$.proc_statuses()[code]
+        },
+
         ## Internal methods
         .get_kinfo_proc = function() {
           .Call(ps__proc_kinfo_oneshot, self$.pid)
@@ -83,6 +88,16 @@ process_osx <- function() {
 
         .get_pidtaskinfo = function() {
           .Call(ps__proc_pidtaskinfo_oneshot, self$.pid)
+        },
+
+        .proc_statuses = function() {
+          x <- numeric()
+          x[ps_env$constants$SIDL]   <- "idle"
+          x[ps_env$constants$SRUN]   <- "running"
+          x[ps_env$constants$SSLEEP] <- "sleeping"
+          x[ps_env$constants$SSTOP]  <- "stopped"
+          x[ps_env$constants$SZOMB]  <- "zombie"
+          x
         }
       )
     )

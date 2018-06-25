@@ -1,6 +1,11 @@
 
 ps_env <- new.env(parent = emptyenv())
 
+.onLoad <- function(libname, pkgname) {
+  ps_env$constants <- new.env(parent  = emptyenv())
+  .Call(ps__init, asNamespace("ps"), ps_env$constants)
+}
+
 utils::globalVariables(unique(c(
   "self",
 

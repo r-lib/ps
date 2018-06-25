@@ -531,6 +531,7 @@ SEXP ps__linux_pagesize() {
 #endif
 
 static const R_CallMethodDef callMethods[]  = {
+  { "ps__init",         (DL_FUNC) ps__init,         2 },
   { "ps__os_type",      (DL_FUNC) ps__os_type,      0 },
 
 #ifdef PS__POSIX

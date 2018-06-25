@@ -3586,3 +3586,7 @@ ps__sensors_battery(PyObject *self, PyObject *args) {
 }
 
 #endif
+
+SEXP ps__init(SEXP psenv, SEXP constenv) {
+  return R_NilValue;
+}
