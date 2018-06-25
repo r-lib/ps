@@ -25,8 +25,6 @@ void *ps__set_error_impl(const char *class, int system_errno,
 	    sizeof(ps__last_error_string) - 1, msg, args);
   va_end(args);
 
-  Rf_PrintValue(ps__build_string(class, "ps_error", "error", "condition", 0));
-
   SET_VECTOR_ELT(ps__last_error, 0, mkString(ps__last_error_string));
   SET_VECTOR_ELT(
     ps__last_error, 1,

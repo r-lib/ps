@@ -22,10 +22,6 @@ process_osx <- function() {
       inherit = process_posix(),
       public = list(
 
-        name = function() {
-          self$.get_kinfo_proc()$name
-        },
-
         exe = function() {
           .Call(ps__proc_exe, self$.pid)
         },
@@ -69,7 +65,7 @@ process_osx <- function() {
 
         create_time = function() {
           z <- self$.get_kinfo_proc()$ctime
-          self$.format_unix_time(z)
+          format_unix_time(z)
         },
 
         num_threads = function() {
@@ -88,6 +84,10 @@ process_osx <- function() {
 
         .get_pidtaskinfo = function() {
           .Call(ps__proc_pidtaskinfo_oneshot, self$.pid)
+        },
+
+        .proc_name = function() {
+          self$.get_kinfo_proc()$name
         },
 
         .proc_statuses = function() {

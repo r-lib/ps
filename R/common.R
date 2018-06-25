@@ -185,10 +185,6 @@ process_common <- function() {
           values
         },
 
-        .format_unix_time = function(z) {
-          as.POSIXct(z, origin = "1970-01-01", tz = "GMT")
-        },
-
         .assert_pid_not_reused = function() {
           if (!self$is_running()) {
             stop(ps__no_such_process(self$.pid, self$.name))

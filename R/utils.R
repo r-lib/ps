@@ -1,8 +1,22 @@
 
 `%||%` <-  function(l, r) if (is.null(l)) r else l
 
+not_null <- function(x) x[!map_lgl(x, is.null)]
+
 map_chr <- function(.x, .f, ...) {
   vapply(X = .x, FUN = .f, FUN.VALUE = character(1), ...)
+}
+
+map_lgl <- function(.x, .f, ...) {
+  vapply(X = .x, FUN = .f, FUN.VALUE = logical(1), ...)
+}
+
+map_int <- function(.x, .f, ...) {
+  vapply(X = .x, FUN = .f, FUN.VALUE = integer(1), ...)
+}
+
+map_dbl <- function(.x, .f, ...) {
+  vapply(X = .x, FUN = .f, FUN.VALUE = double(1), ...)
 }
 
 parse_envs <- function(x) {
@@ -105,4 +119,20 @@ windows_path_split_drive <- function(path) {
 
 path_is_absolute_posix <- function(path) {
   str_starts_with(path, "/")
+}
+
+format_unix_time <- function(z) {
+  as.POSIXct(z, origin = "1970-01-01", tz = "GMT")
+}
+
+NA_time <- function() {
+  x <- Sys.time()
+  x[] <- NA
+  x
+}
+
+#' @importFrom prettyunits pretty_bytes
+
+pretty_bytes_na <- function(x) {
+  ifelse(is.na(x), NA_character_,  pretty_bytes(x))
 }
