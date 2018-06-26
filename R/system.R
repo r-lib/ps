@@ -82,13 +82,6 @@ ps <- function(user = NULL, after = NULL) {
   assert_that(is.null(user) || is_string(user))
   assert_that(is.null(after) || inherits(after, "POSIXt"))
 
-  fallback <- function(expr, alternative) {
-    tryCatch(
-      expr,
-      error = function(e) alternative
-    )
-  }
-
   pids <- ps_pids()
   processes <- not_null(lapply(pids, function(p) {
     tryCatch(process(p), no_such_process = function(e) NULL) }))
@@ -142,4 +135,33 @@ ps <- function(user = NULL, after = NULL) {
 
   class(pss) <- unique(c("tbl_df", "tbl", class(pss)))
   pss
+}
+
+#' Parent proccesses for each process
+#'
+#' On Windows systems the parent process might not exist any more, and
+#' its pid might have been reused, potentially.
+#'
+#' On POSIX systems, if the parent process exited already, usually PID 1
+#' is shown instead of its id.
+#'
+#' @return A two-column data frame with integer columns `pid` and `ppid`.
+#'
+#' @export
+
+ps_ppid_map <- function() {
+  os <- ps_os_type()
+  if (os[["WINDOWS"]]) {
+    ps_ppid_map_windows()
+  } else {
+    pids <- ps_pids()
+    processes <- not_null(lapply(pids, function(p) {
+      tryCatch(process(p), no_such_process = function(e) NULL) }))
+    pd <- map_int(processes, function(p) fallback(p$pid(), NA_integer_))
+    pp <- map_int(processes, function(p) fallback(p$ppid(), NA_integer_))
+    data.frame(
+      pid = pd,
+      ppid = pp
+    )
+  }
 }

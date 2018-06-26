@@ -64,7 +64,7 @@ process_windows <- function() {
         },
 
         ppid = function() {
-          map <- windows_ppid_map()
+          map <- ps_ppid_map_windows()
           idx <- match(self$.pid, map[,1])
           if (is.na(idx)) stop(ps__no_such_process(self$.pid))
           map[idx, 2]
@@ -163,7 +163,7 @@ convert_dos_path <- function(path) {
   paste0(driveletter, substr(path, nchar(rawdrive) + 1, nchar(path)))
 }
 
-windows_ppid_map <- function() {
+ps_ppid_map_windows <- function() {
   pids <- .Call(ps__ppid_map)
   pidx <- seq(2L, length(pids), by = 2L)
   data.frame(

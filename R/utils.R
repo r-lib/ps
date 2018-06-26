@@ -136,3 +136,10 @@ NA_time <- function() {
 pretty_bytes_na <- function(x) {
   ifelse(is.na(x), NA_character_,  pretty_bytes(x))
 }
+
+fallback <- function(expr, alternative) {
+  tryCatch(
+    expr,
+    error = function(e) alternative
+  )
+}
