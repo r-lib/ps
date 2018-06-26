@@ -132,6 +132,12 @@ process_linux <- function() {
           as.integer(match[[1]])
         },
 
+        terminal = function() {
+          num <- self$.parse_stat_file()[[6]]
+          tmap <- get_terminal_map()
+          tmap[[as.character(num)]]
+        },
+
         ## Internal methods
         .parse_stat_file = function() {
           path <- sprintf("%s/%i/stat", get_procfs_path(), self$.pid)
