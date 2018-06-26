@@ -9,8 +9,6 @@ ps_env <- new.env(parent = emptyenv())
 utils::globalVariables(unique(c(
   "self",
 
-  "ps__os_type",
-
   ## POSIX
   "ps__pid_exists",
 
@@ -43,5 +41,6 @@ utils::globalVariables(unique(c(
   "ps__proc_memory_info",
   "ps__proc_cpu_times",
   "ps__proc_create_time",
+  "ps__proc_is_suspended",
   "ps__win32_QueryDosDevice"
 )))

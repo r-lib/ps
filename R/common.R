@@ -4,6 +4,7 @@ not_implemented_function <- function(...) {
 }
 
 #' @importFrom R6 R6Class
+#' @importFrom utils head tail
 
 process_common <- function() {
   if (is.null(ps_env$process_common)) {
