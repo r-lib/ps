@@ -588,7 +588,7 @@ void R_init_ps(DllInfo *dll) {
   if (getenv("R_PS_TESTING") != NULL) PS__TESTING = 1;
 
   PROTECT(ps__last_error = ps__build_named_list(
-    "ssii",
+    "ssi",
     "message", "Unknown error",
     "class", "fs_error",
     "errno", 0
