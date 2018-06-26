@@ -156,7 +156,7 @@ process_common <- function() {
         .init = function(pid, ignore_nsp = FALSE) {
           pid <- pid %||% Sys.getpid()
           assert_that(is_pid(pid))
-          self$.pid <- pid
+          self$.pid <- as.integer(pid)
           tryCatch(
             self$.create_time <- self$create_time(),
             ## We should never get here as AFAIK we're able to get
