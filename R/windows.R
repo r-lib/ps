@@ -92,13 +92,13 @@ process_windows <- function() {
         },
 
         cpu_times = function() {
-          tryCatch(
-            .Call(ps__proc_cpu_times, self$.pid),
+          ct <- tryCatch(
+            c(.Call(ps__proc_cpu_times, self$.pid), NA_real_, NA_real_),
             error = function(e) {
               info <- self$.oneshot_info(cached = FALSE)
-              self$.common_pcputimes(
-                     c(info[["user_time"]], info[["kernel_time"]], 0, 0))
-            })
+              c(info[["user_time"]], info[["kernel_time"]], NA_real_, NA_real_)
+          })
+          self$.common_pcputimes(ct)
         },
 
         create_time = function() {
