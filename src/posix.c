@@ -600,6 +600,17 @@ SEXP ps__get_pw_uid(SEXP r_uid) {
     "pw_shell",  pwd->pw_shell);
 }
 
+SEXP ps__kill(SEXP r_pid, SEXP r_sig) {
+  pid_t pid = INTEGER(r_pid)[0];
+  int sig = INTEGER(r_sig)[0];
+  int ret = kill(pid, sig);
+  if (ret == -1) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+  return R_NilValue;
+}
+
 SEXP ps__define_signals() {
 
   SEXP signalenv = PROTECT(Rf_allocSExp(ENVSXP));

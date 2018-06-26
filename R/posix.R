@@ -80,7 +80,25 @@ process_posix <- function() {
         },
 
         .send_signal = function(sig) {
-          ##  TODO
+          assert_that(self$.pid >= 0L)
+          if (self$.pid == 0L) {
+            stop("preventing sending signal to process with PID 0 as it ",
+                 "would affect every process in the process group of the ",
+                 "calling process (Sys.getpid()) instead of PID 0")
+          }
+          tryCatch(
+            .Call(ps__kill, self$.pid, sig),
+            os_error = function(e) {
+              if (e$errno == errno()$ESRCH) {
+                stop(ps__no_such_process(self$.pid, self$.name))
+              } else if (e$errno == errno()$EPERM ||
+                         e$errno == errno()$EACCES) {
+                stop(ps__access_denied(self$.pid, self$.name))
+              } else {
+                stop(e)
+              }
+            }
+          )
         }
       )
     )

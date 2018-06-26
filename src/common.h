@@ -21,6 +21,7 @@
 #ifdef PS__POSIX
 SEXP ps__pid_exists2(SEXP r_pid);
 SEXP ps__get_pw_uid(SEXP r_uid);
+SEXP ps__kill(SEXP r_pid, SEXP r_sig);
 #endif
 
 #ifdef PS__OSX
