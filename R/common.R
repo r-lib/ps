@@ -158,9 +158,7 @@ process_common <- function() {
           ret
         },
 
-        cpu_percent = function() {
-          ##  TODO
-        },
+        ## cpu_percent = not_implemented_function,
 
         cpu_times = not_implemented_function,
 
@@ -168,9 +166,7 @@ process_common <- function() {
 
         ## memory_full_info = not_implemented_function,
 
-        memory_percent = function(memtype = "rss") {
-          ## TODO
-        },
+        ## memory_percent = not_implemented_function,
 
         ## memory_maps = not_implemented_function,
 
@@ -188,7 +184,7 @@ process_common <- function() {
 
         kill = not_implemented_function,
 
-        wait = not_implemented_function,
+        ## wait = not_implemented_function,
 
         ## Internal methods
 
