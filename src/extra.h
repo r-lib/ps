@@ -44,6 +44,11 @@ SEXP ps__build_named_list(const  char *template, ...);
 
 SEXP ps__os_type();
 
+#ifdef PS__POSIX
+SEXP ps__define_signals();
+SEXP ps__define_errno();
+#endif
+
 #ifdef PS__LINUX
 SEXP ps__readlink(SEXP path);
 SEXP ps__linux_clk_tck();
