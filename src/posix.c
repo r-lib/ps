@@ -17,6 +17,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <pwd.h>
+#include <sys/stat.h>
 
 #include "common.h"
 
@@ -609,6 +610,32 @@ SEXP ps__kill(SEXP r_pid, SEXP r_sig) {
     ps__throw_error();
   }
   return R_NilValue;
+}
+
+SEXP ps__stat_st_rdev(SEXP files) {
+  size_t i, len = LENGTH(files);
+  struct stat buf;
+  SEXP result;
+  int ret;
+
+  PROTECT(result = allocVector(INTSXP, len));
+
+  for (i = 0; i < len; i++) {
+    ret = stat(CHAR(STRING_ELT(files, i)), &buf);
+    if (ret == -1) {
+      if (errno == ENOENT) {
+	INTEGER(result)[i] = 0;
+      } else {
+	ps__set_error_from_errno();
+	ps__throw_error();
+      }
+    } else {
+      INTEGER(result)[i] = (int) buf.st_rdev;
+    }
+  }
+
+  UNPROTECT(1);
+  return result;
 }
 
 SEXP ps__define_signals() {

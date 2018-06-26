@@ -22,6 +22,7 @@
 SEXP ps__pid_exists2(SEXP r_pid);
 SEXP ps__get_pw_uid(SEXP r_uid);
 SEXP ps__kill(SEXP r_pid, SEXP r_sig);
+SEXP ps__stat_st_rdev(SEXP files);
 #endif
 
 #ifdef PS__OSX

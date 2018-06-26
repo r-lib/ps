@@ -77,6 +77,12 @@ process_osx <- function() {
           self$.proc_statuses()[code]
         },
 
+        terminal = function() {
+          num <- self$.get_kinfo_proc()$ttynr
+          tmap <- get_terminal_map()
+          tmap[[as.character(num)]]
+        },
+
         ## Internal methods
         .get_kinfo_proc = function() {
           .Call(ps__proc_kinfo_oneshot, self$.pid)
