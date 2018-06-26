@@ -138,6 +138,11 @@ process_linux <- function() {
           tmap[[as.character(num)]]
         },
 
+        status = function() {
+          letter <- self$.parse_stat_file()[[2]]
+          self$.proc_statuses()[[letter]]
+        },
+
         ## Internal methods
         .parse_stat_file = function() {
           path <- sprintf("%s/%i/stat", get_procfs_path(), self$.pid)
@@ -150,6 +155,19 @@ process_linux <- function() {
         .read_status_file = function()  {
           path <-  sprintf("%s/%i/status", get_procfs_path(), self$.pid)
           readLines(path)
+        },
+
+        .proc_statuses = function() {
+          c("R" = "running",
+            "S" = "sleeping",
+            "D" = "disk_sleep",
+            "T" = "stopped",
+            "t" = "tracing_stop",
+            "Z" = "zombie",
+            "X" = "dead",
+            "x" = "dead",
+            "K" = "wake_kill",
+            "W" = "waking")
         },
 
         ## Internal data
