@@ -570,5 +570,12 @@ ps__net_if_duplex_speed(PyObject* self, PyObject* args) {
 #endif
 
 SEXP ps__init(SEXP psenv, SEXP constenv) {
+
+  /* Signals */
+  defineVar(install("signals"), ps__define_signals(), constenv);
+
+  /* errno values */
+  defineVar(install("errno"), ps__define_errno(), constenv);
+
   return R_NilValue;
 }
