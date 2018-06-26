@@ -84,7 +84,7 @@ process_common <- function() {
 
         cwd = not_implemented_function,
 
-        nice = not_implemented_function,
+        ## nice = not_implemented_function,
 
         uids = not_implemented_function,
 
@@ -92,27 +92,27 @@ process_common <- function() {
 
         terminal = not_implemented_function,
 
-        num_fds = not_implemented_function,
+        ## num_fds = not_implemented_function,
 
-        io_counters = not_implemented_function,
+        ## io_counters = not_implemented_function,
 
-        ionice_get = not_implemented_function,
+        ## ionice_get = not_implemented_function,
 
-        rlimit = not_implemented_function,
+        ## rlimit = not_implemented_function,
 
-        cpu_affinity_get = not_implemented_function,
+        ## cpu_affinity_get = not_implemented_function,
 
-        cpu_num = not_implemented_function,
+        ## cpu_num = not_implemented_function,
 
         environ = not_implemented_function,
 
-        num_handles = not_implemented_function,
+        ## num_handles = not_implemented_function,
 
-        num_ctx_switches = not_implemented_function,
+        ## num_ctx_switches = not_implemented_function,
 
         num_threads = not_implemented_function,
 
-        threads = not_implemented_function,
+        ## threads = not_implemented_function,
 
         children = function() {
           self$.assert_pid_not_reused()
@@ -127,17 +127,17 @@ process_common <- function() {
 
         memory_info = not_implemented_function,
 
-        memory_full_info = not_implemented_function,
+        ## memory_full_info = not_implemented_function,
 
         memory_percent = function(memtype = "rss") {
           ## TODO
         },
 
-        memory_maps = not_implemented_function,
+        ## memory_maps = not_implemented_function,
 
-        open_files = not_implemented_function,
+        ## open_files = not_implemented_function,
 
-        connections = not_implemented_function,
+        ## connections = not_implemented_function,
 
         send_signal = not_implemented_function,
 
