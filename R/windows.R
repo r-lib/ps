@@ -87,7 +87,7 @@ process_windows <- function() {
         },
 
         memory_info = function() {
-          t <- self$.get_raw_meminfo()
+          t <- self$.raw_meminfo()
           c(list(rss = t[["wset"]], vms = t[["pagefile"]]), t)
         },
 
