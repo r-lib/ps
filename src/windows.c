@@ -2203,35 +2203,34 @@ ps__proc_cpu_affinity_set(PyObject *self, PyObject *args) {
   Py_RETURN_NONE;
 }
 
+#endif
 
 /*
  * Return True if one of the process threads is in a waiting or
  * suspended status.
  */
-static PyObject *
-ps__proc_is_suspended(PyObject *self, PyObject *args) {
-  DWORD pid;
+SEXP ps__proc_is_suspended(SEXP r_pid) {
+  DWORD pid = INTEGER(r_pid)[0];
   ULONG i;
   PSYSTEM_PROCESS_INFORMATION process;
   PVOID buffer;
 
-  if (! PyArg_ParseTuple(args, "l", &pid))
-    return NULL;
   if (! ps__get_proc_info(pid, &process, &buffer)) {
-    return NULL;
+    ps__throw_error();
   }
   for (i = 0; i < process->NumberOfThreads; i++) {
     if (process->Threads[i].ThreadState != Waiting ||
 	process->Threads[i].WaitReason != Suspended)
       {
 	free(buffer);
-	Py_RETURN_FALSE;
+	return ScalarLogical(FALSE);
       }
   }
   free(buffer);
-  Py_RETURN_TRUE;
+  return ScalarLogical(TRUE);
 }
 
+#if (0)
 
 /*
  * Return path's disk total and free as a Python tuple.

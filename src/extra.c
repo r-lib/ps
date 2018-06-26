@@ -572,6 +572,7 @@ static const R_CallMethodDef callMethods[]  = {
   { "ps__proc_memory_info", (DL_FUNC) ps__proc_memory_info, 1 },
   { "ps__proc_cpu_times",   (DL_FUNC) ps__proc_cpu_times,   1 },
   { "ps__proc_create_time", (DL_FUNC) ps__proc_create_time, 1 },
+  { "ps__proc_is_suspended",(DL_FUNC) ps__proc_is_suspended,1 },
   { "ps__win32_QueryDosDevice",
     (DL_FUNC) ps__win32_QueryDosDevice, 1 },
 #endif

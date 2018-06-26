@@ -133,6 +133,11 @@ process_windows <- function() {
           ## TODO
         },
 
+        status = function() {
+          susp <- .Call(ps__proc_is_suspended, self$.pid)
+          if (susp) "stopped" else "running"
+        },
+
         .oneshot_info = function() {
           .Call(ps__proc_info, self$.pid)
         },
