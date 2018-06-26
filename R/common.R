@@ -114,9 +114,48 @@ process_common <- function() {
 
         ## threads = not_implemented_function,
 
-        children = function() {
+        children = function(recursive = FALSE) {
+          assert_that(is_flag(recursive))
           self$.assert_pid_not_reused()
-          ##  TODO
+          map <- ps_ppid_map()
+          ret <- list()
+          if (!recursive) {
+            for (i in seq_len(nrow(map))) {
+              if (map$ppid[i] == self$.pid) {
+                tryCatch({
+                  child  <- process(map$pid[i])
+                  if (self$create_time() <= child$create_time()) {
+                    ret <- c(ret, child)
+                  } },
+                  no_such_process = function(e) NULL,
+                  zombie_process = function(e) NULL)
+              }
+            }
+
+          } else {
+            seen <- integer()
+            stack <- self$.pid
+            while (length(stack)) {
+              pid <- tail(stack, 1)
+              stack <- head(stack, -1)
+              if (pid %in% seen) next
+              seen <- c(seen, pid)
+              child_pids <- map[ map[,2] ==  pid, 1]
+              for (child_pid in child_pids) {
+                tryCatch({
+                  child = process(child_pid)
+                  if (self$create_time() <= child$create_time()) {
+                    ret <- c(ret, child)
+                    stack <- c(stack, child_pid)
+                  } },
+                  no_such_process = function(e) NULL,
+                  zombie_process = function(e) NULL
+                )
+              }
+            }
+          }
+
+          ret
         },
 
         cpu_percent = function() {
