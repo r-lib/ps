@@ -34,7 +34,7 @@ process_common <- function() {
         },
 
         print = function(...) {
-          cat(self$format(...))
+          cat(self$format(...), sep =  "", "\n")
           invisible(self)
         },
 
