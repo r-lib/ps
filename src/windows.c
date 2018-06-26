@@ -3059,8 +3059,9 @@ SEXP ps__ppid_map() {
   }
 
   if (Process32First(handle, &pe)) {
-    num_proc++;
-    while (Process32Next(handle, &pe)) num_proc++;
+    do {
+      num_proc++;
+    } while (Process32Next(handle, &pe));
   }
 
   PROTECT(ret = allocVector(INTSXP, 2 * num_proc));
