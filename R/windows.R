@@ -105,12 +105,12 @@ process_windows <- function() {
           if (self$.pid == 0L || self$.pid == 4L) {
             ps_boot_time()
           } else {
-            tryCatch(
+            ct <- tryCatch(
               .Call(ps__proc_create_time, self$.pid),
               error = function(e) {
-                ct <- self$.oneshot_info()[["create_time"]]
-                as.POSIXct(ct, origin = "1970-01-01", tz = "GMT")
+                self$.oneshot_info()[["create_time"]]
               })
+            format_unix_time(ct)
           }
         },
 
