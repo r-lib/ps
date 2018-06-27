@@ -17,3 +17,9 @@ ps__no_such_process <- function(pid = NULL, name = NULL) {
       errno = 0),
     class = c("no_such_process", "ps_error", "error", "condition"))
 }
+
+ps__not_implemented <- function() {
+  structure(list(
+    message = "Not implemented on this platform", errno = 0),
+    class = c("not_implemented", "ps_error", "error",  "condition"))
+}

@@ -1,6 +1,6 @@
 
 not_implemented_function <- function(...) {
-  stop("Not implemented on this platform")
+  stop(ps__not_implemented())
 }
 
 #' @importFrom R6 R6Class
