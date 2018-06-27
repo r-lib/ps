@@ -152,6 +152,16 @@ process_windows <- function() {
             })
         },
 
+        .oneshot_enter = function() {
+          super$.oneshot_enter()
+          self$.oneshot_info$activate()
+        },
+
+        .oneshot_exit = function() {
+          super$.oneshot_exit()
+          self$.oneshot_info$deactivate()
+        },
+
         .ppid = NULL
       )
     )

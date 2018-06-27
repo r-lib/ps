@@ -205,6 +205,18 @@ process_linux <- function() {
             "x" = "dead",
             "K" = "wake_kill",
             "W" = "waking")
+        },
+
+        .oneshot_enter = function() {
+          super$.oneshot_enter()
+          self$.parse_stat_file$activate()
+          self$.read_status_file$activate()
+        },
+
+        .oneshot_exit = function() {
+          super$.oneshot_exit()
+          self$.parse_stat_file$deactivate()
+          self$.read_status_file$deactivate()
         }
       )
     )

@@ -15,7 +15,7 @@ memoize <- function(fun) {
 `$.memoize`  <- function(x, name) {
   switch(
     name,
-    "clear" = attr(x, "clear")(),
+    "clear" = attr(x, "clear"),
     stop("unknown memoize method")
   )
 }
@@ -39,8 +39,8 @@ memoize_when_activated <- function(fun) {
 `$.memoize_when_activated` <- function(x, name) {
   switch(
     name,
-    "activate" = attr(x, "activate")(),
-    "deactivate" = attr(x, "deactivate")(),
+    "activate" = attr(x, "activate"),
+    "deactivate" = attr(x, "deactivate"),
     stop("unknown memoize method")
   )
 }

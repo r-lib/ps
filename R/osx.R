@@ -104,6 +104,18 @@ process_osx <- function() {
           x[ps_env$constants$SSTOP]  <- "stopped"
           x[ps_env$constants$SZOMB]  <- "zombie"
           x
+        },
+
+        .oneshot_enter = function() {
+          super$.oneshot_enter()
+          self$.get_kinfo_proc$activate()
+          self$.get_pidtaskinfo$activate()
+        },
+
+        .oneshot_exit = function() {
+          super$.oneshot_exit()
+          self$.get_kinfo_proc$deactivate()
+          self$.get_pidtaskinfo$deactivate()
         }
       )
     )

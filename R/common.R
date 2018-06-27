@@ -231,6 +231,10 @@ process_common <- function() {
           values
         },
 
+        .oneshot_enter = function() NULL,
+
+        .oneshot_exit = function() NULL,
+
         ## Internal data
         .pid = NULL,
         .name = NULL,
@@ -244,4 +248,21 @@ process_common <- function() {
   }
 
   ps_env$process_common
+}
+
+#' Query process properties with caching
+#'
+#' Avoid quering process information multiple time, as much as possible.
+#'
+#' @param process Process object to cache information for.
+#' @param expr Expression to evaluate in the context of the cache.
+#'   Typically it contains `process` queries.
+#' @return Value of `expr`.
+#'
+#' @export
+
+with_process <- function(process, expr) {
+  process$.oneshot_enter()
+  on.exit(process$.oneshot_exit(), add = TRUE)
+  expr
 }
