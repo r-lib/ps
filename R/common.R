@@ -252,7 +252,6 @@ process_common <- function() {
         .exe = NULL,
         .create_time = NULL,
         .gone = FALSE,
-        .ppid = NULL,
         .last_sys_cpu_times = NULL,
         .last_proc_cpu_times = NULL
       )

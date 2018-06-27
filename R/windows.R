@@ -64,10 +64,12 @@ process_windows <- function() {
         },
 
         ppid = decorator(memoize_when_activated, function() {
+          if (!is.null(self$.ppid)) return(self$.ppid)
           map <- ps_ppid_map_windows()
           idx <- match(self$.pid, map[,1])
           if (is.na(idx)) stop(ps__no_such_process(self$.pid))
-          map[idx, 2]
+          self$.ppid <- map[idx, 2]
+          self$.ppid
         }),
 
         cwd = function() {
@@ -148,7 +150,9 @@ process_windows <- function() {
                      "paged_pool", "peak_non_paged_pool", "non_paged_pool",
                      "pagefile", "peak_pagefile", "mem_private")]
             })
-        }
+        },
+
+        .ppid = NULL
       )
     )
   }
