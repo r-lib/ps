@@ -4,6 +4,8 @@ ps_env <- new.env(parent = emptyenv())
 .onLoad <- function(libname, pkgname) {
   ps_env$constants <- new.env(parent  = emptyenv())
   .Call(ps__init, asNamespace("ps"), ps_env$constants)
+
+  get_terminal_map <<- memoize(get_terminal_map)
 }
 
 utils::globalVariables(unique(c(
