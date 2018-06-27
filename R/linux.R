@@ -41,6 +41,24 @@ ps_boot_time_linux <- function() {
   ps_env$boot_time
 }
 
+linux_wrap_exceptions <- function(fun) {
+  fun
+  function(...) {
+    tryCatch(
+      fun(...),
+      error = function(e) {
+        print(e)
+        path <- sprintf("%s/%i", get_procfs_path(), self$.pid)
+        if (file.exists(path)) {
+          stop(ps__access_denied(self$.pid, self$.name))
+        } else {
+          stop(ps__no_such_process(self$.pid, self$.name))
+        }
+      }
+    )
+  }
+}
+
 #' @importFrom R6 R6Class
 
 process_linux <- function() {
@@ -51,7 +69,7 @@ process_linux <- function() {
       inherit = process_posix(),
       public = list(
 
-        name = function() self$.wrap_exceptions({
+        name = decorator(linux_wrap_exceptions, function() {
             self$.parse_stat_file()[[1]]
         }),
 
@@ -79,7 +97,7 @@ process_linux <- function() {
             })
         },
 
-        cmdline = function() self$.wrap_exceptions({
+        cmdline = decorator(linux_wrap_exceptions, function() {
           path <- sprintf("%s/%i/cmdline", get_procfs_path(), self$.pid)
           data <- read_binary_file(path)
 
@@ -97,35 +115,35 @@ process_linux <- function() {
           map_chr(raw_split(data[-length(data)], sep), rawToChar)
         }),
 
-        environ = function() self$.wrap_exceptions({
+        environ = decorator(linux_wrap_exceptions, function() {
           path <- sprintf("%s/%i/environ", get_procfs_path(), self$.pid)
           data <- read_binary_file(path)
           parse_envs(map_chr(raw_split(data[-length(data)], 0x00), rawToChar))
         }),
 
-        ppid = function() self$.wrap_exceptions({
+        ppid = decorator(linux_wrap_exceptions, function() {
           as.integer(self$.parse_stat_file()[[3]])
         }),
 
-        cwd = function() self$.wrap_exceptions({
+        cwd = decorator(linux_wrap_exceptions, function() {
           readlink(sprintf("%s/%i/cwd", get_procfs_path(), self$.pid))
         }),
 
-        uids = function() self$.wrap_exceptions({
+        uids = decorator(linux_wrap_exceptions, function() {
           status <- self$.read_status_file()
           line <- grep("^Uid:", status, value = TRUE)[1]
           match <- re_match(line, "^Uid:\\t(\\d+)\\t(\\d+)\\t(\\d+)")
           self$.common_puids(c(match[[1]], match[[2]], match[[3]]))
         }),
 
-        gids = function() self$.wrap_exceptions({
+        gids = decorator(linux_wrap_exceptions, function() {
           status <- self$.read_status_file()
           line <- grep("^Gid:", status, value = TRUE)[1]
           match <- re_match(line, "^Gid:\\t(\\d+)\\t(\\d+)\\t(\\d+)")
           self$.common_puids(c(match[[1]], match[[2]], match[[3]]))
         }),
 
-        memory_info = function() self$.wrap_exceptions({
+        memory_info = decorator(linux_wrap_exceptions, function() {
           path <- sprintf("%s/%i/statm", get_procfs_path(), self$.pid)
           mi <- scan(path, n = 7, quiet = TRUE)
           names(mi) <- c("rss", "vms", "shared", "text", "lib", "data",
@@ -133,32 +151,32 @@ process_linux <- function() {
           mi
         }),
 
-        cpu_times = function() self$.wrap_exceptions({
+        cpu_times = decorator(linux_wrap_exceptions, function() {
           stat <- self$.parse_stat_file()
           self$.common_pcputimes(
                  as.numeric(stat[c(13:16)]) / linux_clock_ticks())
         }),
 
-        create_time = function() self$.wrap_exceptions({
+        create_time = decorator(linux_wrap_exceptions, function() {
           stat <- self$.parse_stat_file()
           bt <- ps_boot_time()
           bt + as.numeric(stat[[21]]) / linux_clock_ticks()
         }),
 
-        num_threads = function() self$.wrap_exceptions({
+        num_threads = decorator(linux_wrap_exceptions, function() {
           status <- self$.read_status_file()
           line <- grep("^Threads:", status, value = TRUE)[1]
           match <- re_match(line, "^Threads:\\t(\\d+)")
           as.integer(match[[1]])
         }),
 
-        terminal = function() self$.wrap_exceptions({
+        terminal = decorator(linux_wrap_exceptions, function() {
           num <- self$.parse_stat_file()[[6]]
           tmap <- get_terminal_map()
           tmap[[as.character(num)]]
         }),
 
-        status = function() self$.wrap_exceptions({
+        status = decorator(linux_wrap_exceptions, function() {
           letter <- self$.parse_stat_file()[[2]]
           self$.proc_statuses()[[letter]]
         }),
@@ -188,24 +206,7 @@ process_linux <- function() {
             "x" = "dead",
             "K" = "wake_kill",
             "W" = "waking")
-        },
-
-        .wrap_exceptions = function(expr) {
-          tryCatch(
-            expr,
-            error = function(e) {
-              path <- sprintf("%s/%i", get_procfs_path(), self$.pid)
-              if (file.exists(path)) {
-                stop(ps__access_denied(self$.pid, self$.name))
-              } else {
-                stop(ps__no_such_process(self$.pid, self$.name))
-              }
-            }
-          )
-        },
-
-        ## Internal data
-        .procfs_path = NULL
+        }
       )
     )
   }

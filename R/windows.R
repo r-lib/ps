@@ -118,20 +118,17 @@ process_windows <- function() {
           self$.oneshot_info()[["num_threads"]]
         },
 
-        suspend = function() {
-          self$.assert_pid_not_reused()
+        suspend = decorator(assert_pid_not_reused, function() {
           ## TODO
-        },
+        }),
 
-        resume = function() {
-          self$.assert_pid_not_reused()
+        resume = decorator(assert_pid_not_reused, function() {
           ## TODO
-        },
+        }),
 
-        kill = function() {
-          self$.assert_pid_not_reused()
+        kill = decorator(assert_pid_not_reused, function() {
           ## TODO
-        },
+        }),
 
         status = function() {
           susp <- .Call(ps__proc_is_suspended, self$.pid)

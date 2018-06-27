@@ -3,6 +3,16 @@ not_implemented_function <- function(...) {
   stop(ps__not_implemented())
 }
 
+assert_pid_not_reused <- function(fun) {
+  fun
+  function(...) {
+    if (!self$is_running()) {
+      stop(ps__no_such_process(self$.pid, self$.name))
+    }
+    fun(...)
+  }
+}
+
 #' @importFrom R6 R6Class
 #' @importFrom utils head tail
 
@@ -115,9 +125,8 @@ process_common <- function() {
 
         ## threads = not_implemented_function,
 
-        children = function(recursive = FALSE) {
+        children = decorator(assert_pid_not_reused, function(recursive = FALSE) {
           assert_that(is_flag(recursive))
-          self$.assert_pid_not_reused()
           map <- ps_ppid_map()
           ret <- list()
           if (!recursive) {
@@ -157,7 +166,7 @@ process_common <- function() {
           }
 
           ret
-        },
+        }),
 
         ## cpu_percent = not_implemented_function,
 
@@ -190,6 +199,7 @@ process_common <- function() {
         ## Internal methods
 
         .init = function(pid, ignore_nsp = FALSE) {
+          decorate(self)
           pid <- pid %||% Sys.getpid()
           assert_that(is_pid(pid))
           self$.pid <- as.integer(pid)
@@ -219,12 +229,6 @@ process_common <- function() {
           names(values) <-
             c("user", "system", "children_user", "children_system")
           values
-        },
-
-        .assert_pid_not_reused = function() {
-          if (!self$is_running()) {
-            stop(ps__no_such_process(self$.pid, self$.name))
-          }
         },
 
         ## Internal data
