@@ -20,7 +20,7 @@ decorate <- function(x) {
     meth
   }
 
-  method_names <- ls(x)
+  method_names <- ls(x, all.names = TRUE)
   for (mnm in method_names) {
     if (inherits(x[[mnm]], "decorator")) {
       get("unlockBinding", baseenv())(mnm, x)
