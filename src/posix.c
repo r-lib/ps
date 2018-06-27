@@ -776,7 +776,7 @@ SEXP ps__define_errno() {
   SEXP env = PROTECT(Rf_allocSExp(ENVSXP));
 
 #define PS_ADD_ERRNO(err,str) \
-  defineVar(install(#err), list2(ScalarInteger(err), mkString(str)), env)
+  defineVar(install(#err), ScalarInteger(err), env)
 
   /* OSX */
 
