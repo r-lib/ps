@@ -10,6 +10,7 @@ ps_env <- new.env(parent = emptyenv())
 
 utils::globalVariables(unique(c(
   "self",
+  "super",
 
   ## POSIX
   "ps__pid_exists",
