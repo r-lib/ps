@@ -63,12 +63,12 @@ process_windows <- function() {
           parse_envs(.Call(ps__proc_environ, self$.pid))
         },
 
-        ppid = function() {
+        ppid = decorator(memoize_when_activated, function() {
           map <- ps_ppid_map_windows()
           idx <- match(self$.pid, map[,1])
           if (is.na(idx)) stop(ps__no_such_process(self$.pid))
           map[idx, 2]
-        },
+        }),
 
         cwd = function() {
           if (self$.pid == 0L || self$.pid == 4L) {
@@ -86,12 +86,12 @@ process_windows <- function() {
           }
         },
 
-        memory_info = function() {
+        memory_info = decorator(memoize_when_activated, function() {
           t <- self$.raw_meminfo()
           c(list(rss = t[["wset"]], vms = t[["pagefile"]]), t)
-        },
+        }),
 
-        cpu_times = function() {
+        cpu_times = decorator(memoize_when_activated, function() {
           ct <- tryCatch(
             c(.Call(ps__proc_cpu_times, self$.pid), NA_real_, NA_real_),
             error = function(e) {
@@ -99,7 +99,7 @@ process_windows <- function() {
               c(info[["user_time"]], info[["kernel_time"]], NA_real_, NA_real_)
           })
           self$.common_pcputimes(ct)
-        },
+        }),
 
         create_time = function() {
           if (self$.pid == 0L || self$.pid == 4L) {
@@ -135,9 +135,9 @@ process_windows <- function() {
           if (susp) "stopped" else "running"
         },
 
-        .oneshot_info = function() {
+        .oneshot_info = decorator(memoize_when_activated, function() {
           .Call(ps__proc_info, self$.pid)
-        },
+        }),
 
         .raw_meminfo = function() {
           tryCatch(

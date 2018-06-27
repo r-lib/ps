@@ -1,4 +1,3 @@
-
 ps_pids_linux <- function() {
   sort(as.integer(dir(get_procfs_path(), pattern =  "^[0-9]+$")))
 }
@@ -182,18 +181,18 @@ process_linux <- function() {
         }),
 
         ## Internal methods
-        .parse_stat_file = function() {
+        .parse_stat_file = decorator(memoize_when_activated, function() {
           path <- sprintf("%s/%i/stat", get_procfs_path(), self$.pid)
           stat <- paste(read_lines(path), collapse = "\n")
           name <- sub("^.*[(](.*)[)].*$", "\\1", stat, perl = TRUE)
           fields <- strsplit(sub("^.*[)]\\s+", "", stat), "\\s+")[[1]]
           c(name, fields)
-        },
+        }),
 
-        .read_status_file = function()  {
+        .read_status_file = decorator(memoize_when_activated, function()  {
           path <-  sprintf("%s/%i/status", get_procfs_path(), self$.pid)
           read_lines(path)
-        },
+        }),
 
         .proc_statuses = function() {
           c("R" = "running",

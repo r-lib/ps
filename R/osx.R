@@ -34,9 +34,9 @@ process_osx <- function() {
           parse_envs(.Call(ps__proc_environ, self$.pid))
         },
 
-        ppid = decorator(memoize_when_activated, function() {
+        ppid = function() {
           as.integer(self$.get_kinfo_proc()$ppid)
-        }),
+        },
 
         cwd = function() {
           .Call(ps__proc_cwd, self$.pid)
@@ -84,13 +84,13 @@ process_osx <- function() {
         },
 
         ## Internal methods
-        .get_kinfo_proc = function() {
+        .get_kinfo_proc = decorator(memoize_when_activated, function() {
           .Call(ps__proc_kinfo_oneshot, self$.pid)
-        },
+        }),
 
-        .get_pidtaskinfo = function() {
+        .get_pidtaskinfo = decorator(memoize_when_activated, function() {
           .Call(ps__proc_pidtaskinfo_oneshot, self$.pid)
-        },
+        }),
 
         .proc_name = function() {
           self$.get_kinfo_proc()$name
