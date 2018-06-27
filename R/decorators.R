@@ -15,7 +15,6 @@ decorator <- function(deco, ...) {
 decorate <- function(x) {
 
   decorate_method <- function(deco, fun, env) {
-    environment(fun) <- env
     meth <- deco(fun)
     parent.env(environment(meth)) <- env
     meth
@@ -25,10 +24,16 @@ decorate <- function(x) {
   for (mnm in method_names) {
     if (inherits(x[[mnm]], "decorator")) {
       get("unlockBinding", baseenv())(mnm, x)
-      deco <- attr(x[[mnm]], "deco")[[1]]
+      deco <- attr(x[[mnm]], "deco")
       fun <- attr(x[[mnm]], "fun")
       env <- environment(x[[mnm]])
-      x[[mnm]] <- decorate_method(deco, fun, env)
+      environment(fun) <- env
+
+      for (d in deco) {
+        fun <- decorate_method(d, fun, env)
+      }
+
+      x[[mnm]] <- fun
       lockBinding(mnm, x)
     }
   }
