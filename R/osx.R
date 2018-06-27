@@ -34,9 +34,9 @@ process_osx <- function() {
           parse_envs(.Call(ps__proc_environ, self$.pid))
         },
 
-        ppid = function() {
+        ppid = decorator(memoize_when_activated, function() {
           as.integer(self$.get_kinfo_proc()$ppid)
-        },
+        }),
 
         cwd = function() {
           .Call(ps__proc_cwd, self$.pid)
