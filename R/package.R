@@ -11,6 +11,9 @@ utils::globalVariables(unique(c(
 
   ## POSIX
   "ps__pid_exists",
+  "ps__get_pw_uid",
+  "ps__kill",
+  "ps__stat_st_rdev",
 
   ## OSX
   "ps__pids",
