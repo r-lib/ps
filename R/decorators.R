@@ -13,7 +13,7 @@ decorator <- function(deco, fun) {
   method_names <- ls(x)
   for (mnm in method_names) {
     if (inherits(x[[mnm]], "decorator")) {
-      unlockBinding(mnm, x)
+      get("unlockBinding", baseenv())(mnm, x)
       env <- environment(x[[mnm]])
       deco <- attr(x[[mnm]], "deco")
       fun <- attr(x[[mnm]], "fun")
