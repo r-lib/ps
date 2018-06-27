@@ -25,7 +25,7 @@ SEXP ps__kill(SEXP r_pid, SEXP r_sig);
 SEXP ps__stat_st_rdev(SEXP files);
 #endif
 
-#ifdef PS__OSX
+#ifdef PS__MACOS
 SEXP ps__pids();
 SEXP ps__proc_exe(SEXP r_pid);
 SEXP ps__proc_cmdline(SEXP r_pid);

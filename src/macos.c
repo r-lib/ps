@@ -3,7 +3,7 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  *
- * OS X platform-specific module methods for osx
+ * OS X platform-specific module methods for macos
  */
 
 #include <assert.h>
@@ -42,7 +42,7 @@
 
 #include "common.h"
 #include "posix.h"
-#include "arch/osx/process_info.h"
+#include "arch/macos/process_info.h"
 
 
 #define PS__TV2DOUBLE(t) ((t).tv_sec + (t).tv_usec / 1000000.0)
@@ -214,7 +214,7 @@ SEXP ps__proc_pidtaskinfo_oneshot(SEXP r_pid) {
     "ddKKkkkk",
     "cpuutime",   (double) pti.pti_total_user / 1000000000.0,
     "cpustime",   (double) pti.pti_total_system / 1000000000.0,
-    // Note about memory: determining other mem stats on OSX is a mess:
+    // Note about memory: determining other mem stats on MACOS is a mess:
     // http://www.opensource.apple.com/source/top/top-67/libtop.c?txt
     // I just give up.
     // struct proc_regioninfo pri;
@@ -287,7 +287,7 @@ SEXP ps__proc_exe(SEXP r_pid) {
 SEXP ps__proc_cmdline(SEXP r_pid) {
   long pid = INTEGER(r_pid)[0];
 
-  // get the commandline, defined in arch/osx/process_info.c
+  // get the commandline, defined in arch/macos/process_info.c
   return ps__get_cmdline(pid);
 }
 
@@ -298,7 +298,7 @@ SEXP ps__proc_cmdline(SEXP r_pid) {
 SEXP ps__proc_environ(SEXP r_pid) {
   long pid = INTEGER(r_pid)[0];
 
-  // get the environment block, defined in arch/osx/process_info.c
+  // get the environment block, defined in arch/macos/process_info.c
   return ps__get_environ(pid);
 }
 

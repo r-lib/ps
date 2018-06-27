@@ -5,7 +5,6 @@
 \alias{ps_os_is_posix}
 \alias{ps_os_is_windows}
 \alias{ps_os_is_linux}
-\alias{ps_os_is_osx}
 \alias{ps_os_is_macos}
 \alias{ps_os_is_freebsd}
 \alias{ps_os_is_openbsd}
@@ -22,8 +21,6 @@ ps_os_is_posix()
 ps_os_is_windows()
 
 ps_os_is_linux()
-
-ps_os_is_osx()
 
 ps_os_is_macos()
 

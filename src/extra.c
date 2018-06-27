@@ -409,7 +409,7 @@ SEXP ps__os_type() {
   SET_STRING_ELT(names, 0, mkChar("POSIX"));
   SET_STRING_ELT(names, 1, mkChar("WINDOWS"));
   SET_STRING_ELT(names, 2, mkChar("LINUX"));
-  SET_STRING_ELT(names, 3, mkChar("OSX"));
+  SET_STRING_ELT(names, 3, mkChar("MACOS"));
   SET_STRING_ELT(names, 4, mkChar("FREEBSD"));
   SET_STRING_ELT(names, 5, mkChar("OPENBSD"));
   SET_STRING_ELT(names, 6, mkChar("NETBSD"));
@@ -430,7 +430,7 @@ SEXP ps__os_type() {
 #ifdef PS__LINUX
   LOGICAL(res)[2] = 1;
 #endif
-#ifdef PS__OSX
+#ifdef PS__MACOS
   LOGICAL(res)[3] = 1;
 #endif
 #ifdef PS__FREEBSD
@@ -539,7 +539,7 @@ static const R_CallMethodDef callMethods[]  = {
   { "ps__stat_st_rdev", (DL_FUNC) ps__stat_st_rdev, 1 },
 #endif
 
-#ifdef PS__OSX
+#ifdef PS__MACOS
   { "ps__pids",         (DL_FUNC) ps__pids,         0 },
   { "ps__proc_exe",     (DL_FUNC) ps__proc_exe,     1 },
   { "ps__proc_cmdline", (DL_FUNC) ps__proc_cmdline, 1 },

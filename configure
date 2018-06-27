@@ -31,8 +31,8 @@ if [ "$R_OSTYPE" = "windows" ]; then WINDOWS=true; fi
 unset LINUX
 if [ "$UNAME" = "Linux" ]; then LINUX=true; fi
 
-unset OSX
-if [ "$UNAME" = "Darwin" ]; then OSX=true; fi
+unset MACOS
+if [ "$UNAME" = "Darwin" ]; then MACOS=true; fi
 
 unset FREEBSD
 if [ "UNAME" = "FreeBSD" ]; then FREEBSD=true; fi
@@ -97,10 +97,10 @@ if [ -n "$WINDOWS" ]; then
     LIBRARIES="psapi kernel32 advapi32 shell32 netapi32 iphlpapi wtsapi32"
     LIBRARIES="${LIBRARIES} ws2_32 PowrProf"
 
-elif [ -n "$OSX" ]; then
-    MACROS="${MACROS} PS__OSX"
-    PS__OSX=1
-    OBJECTS="${OBJECTS} osx.o arch/osx/process_info.o"
+elif [ -n "$MACOS" ]; then
+    MACROS="${MACROS} PS__MACOS"
+    PS__MACOS=1
+    OBJECTS="${OBJECTS} macos.o arch/macos/process_info.o"
     EXTRA_LINK_ARGS="-framework CoreFoundation -framework IOKit"
 
 elif [ -n "$FREEBSD" ]; then

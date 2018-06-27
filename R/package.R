@@ -17,7 +17,7 @@ utils::globalVariables(unique(c(
   "ps__kill",
   "ps__stat_st_rdev",
 
-  ## OSX
+  ## MACOS
   "ps__pids",
   "ps__proc_exe",
   "ps__proc_cmdline",

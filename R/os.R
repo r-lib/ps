@@ -35,15 +35,8 @@ ps_os_is_linux <- function() {
 #' @export
 #' @rdname ps_os_type
 
-ps_os_is_osx <- function() {
-  ps_os_type()[["OSX"]]
-}
-
-#' @export
-#' @rdname ps_os_type
-
 ps_os_is_macos <- function() {
-  ps_os_type()[["OSX"]]
+  ps_os_type()[["MACOS"]]
 }
 
 #' @export

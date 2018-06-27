@@ -1,5 +1,5 @@
 
-ps_pids_osx <- function() {
+ps_pids_macos <- function() {
   ls <- .Call(ps__pids)
   ## 0 is missing from the list, usually, even though it is a process
   if (! 0L %in% ls && ps_pid_exists(0L)) {
@@ -8,16 +8,16 @@ ps_pids_osx <- function() {
   ls
 }
 
-ps_pid_exists_osx <- function(pid) {
+ps_pid_exists_macos <- function(pid) {
   .Call(ps__pid_exists, as.integer(pid))
 }
 
 #' @importFrom R6 R6Class
 
-process_osx <- function() {
-  if (is.null(ps_env$process_osx)) {
-    ps_env$process_osx <- R6Class(
-      "process_osx",
+process_macos <- function() {
+  if (is.null(ps_env$process_macos)) {
+    ps_env$process_macos <- R6Class(
+      "process_macos",
       cloneable = FALSE,
       inherit = process_posix(),
       public = list(
@@ -121,5 +121,5 @@ process_osx <- function() {
     )
   }
 
-  ps_env$process_osx
+  ps_env$process_macos
 }

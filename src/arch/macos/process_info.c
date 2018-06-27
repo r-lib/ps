@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  *
  * Helper functions related to fetching process information.
- * Used by _psutil_osx module methods.
+ * Used by _psutil_macos module methods.
  */
 
 
@@ -141,7 +141,7 @@ SEXP ps__get_cmdline(long pid) {
   mib[2] = (pid_t)pid;
   if (sysctl(mib, 3, procargs, &argmax, NULL, 0) < 0) {
     // In case of zombie process we'll get EINVAL. We translate it
-    // to NSP and _psosx.py will translate it to ZP.
+    // to NSP and _psmacos.py will translate it to ZP.
     if ((errno == EINVAL) && (ps__pid_exists(pid))) {
       ps__no_such_process("");
     } else {
@@ -224,7 +224,7 @@ SEXP ps__get_environ(long pid) {
   mib[2] = (pid_t)pid;
   if (sysctl(mib, 3, procargs, &argmax, NULL, 0) < 0) {
     // In case of zombie process we'll get EINVAL. We translate it
-    // to NSP and _psosx.py will translate it to ZP.
+    // to NSP and _psmacos.py will translate it to ZP.
     if ((errno == EINVAL) && (ps__pid_exists(pid)))
       ps__no_such_process("");
     else

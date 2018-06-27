@@ -6,8 +6,8 @@
 
 ps_pids <- function() {
   os <- ps_os_type()
-  if (os[["OSX"]])
-    ps_pids_osx()
+  if (os[["MACOS"]])
+    ps_pids_macos()
   else if (os[["LINUX"]])
     ps_pids_linux()
   else if (os[["WINDOWS"]])
@@ -28,8 +28,8 @@ ps_pids <- function() {
 ps_pid_exists <- function(pid) {
   assert_that(is_pid(pid))
   os <- ps_os_type()
-  if (os[["OSX"]])
-    ps_pid_exists_osx(pid)
+  if (os[["MACOS"]])
+    ps_pid_exists_macos(pid)
   else if (os[["LINUX"]])
     ps_pid_exists_linux(pid)
   else if (os[["WINDOWS"]])

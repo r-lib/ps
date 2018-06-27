@@ -33,7 +33,7 @@
 #include <netdb.h>
 #include <linux/types.h>
 #include <linux/if_packet.h>
-#elif defined(PS__BSD) || defined(PS__OSX)
+#elif defined(PS__BSD) || defined(PS__MACOS)
 #include <netdb.h>
 #include <netinet/in.h>
 #include <net/if_dl.h>
@@ -73,7 +73,7 @@ int ps__pid_exists(long pid) {
 #endif
   }
 
-#if defined(PS__OSX)
+#if defined(PS__MACOS)
   ret = kill((pid_t)pid , 0);
 #else
   ret = kill(pid , 0);
@@ -143,7 +143,7 @@ SEXP ps__posix_getpriority(SEXP r_pid) {
   int priority;
   errno = 0;
 
-#ifdef PS__OSX
+#ifdef PS__MACOS
   priority = getpriority(PRIO_PROCESS, (id_t)pid);
 #else
   priority = getpriority(PRIO_PROCESS, pid);
@@ -164,7 +164,7 @@ SEXP ps__posix_setpriority(SEXP r_pid, SEXP r_priority) {
   int priority = INTEGER(r_priority)[0];
   int retval;
 
-#ifdef PS__OSX
+#ifdef PS__MACOS
   retval = setpriority(PRIO_PROCESS, (id_t)pid, priority);
 #else
   retval = setpriority(PRIO_PROCESS, pid, priority);
@@ -215,7 +215,7 @@ SEXP ps__convert_ipaddr(struct sockaddr *addr, int family) {
     len = lladdr->sll_halen;
     data = (const char *)lladdr->sll_addr;
   }
-#elif defined(PS__BSD) || defined(PS__OSX)
+#elif defined(PS__BSD) || defined(PS__MACOS)
   else if (addr->sa_family == AF_LINK) {
     // Note: prior to Python 3.4 socket module does not expose
     // AF_LINK so we'll do.
@@ -393,9 +393,9 @@ SEXP ps__net_if_flags(SEXP r_nic_name) {
 
 
 /*
- * net_if_stats() OSX/BSD implementation.
+ * net_if_stats() MACOS/BSD implementation.
  */
-#if defined(PS__BSD) || defined(PS__OSX)
+#if defined(PS__BSD) || defined(PS__MACOS)
 
 int ps__get_nic_speed(int ifm_active) {
   // Determine NIC speed. Taken from:
@@ -580,7 +580,7 @@ SEXP ps__net_if_duplex_speed(SEXP r_nic_name) {
   ps__throw_error();
   return R_NilValue;
 }
-#endif  // net_if_stats() OSX/BSD implementation
+#endif  // net_if_stats() MACOS/BSD implementation
 
 SEXP ps__get_pw_uid(SEXP r_uid) {
   struct passwd *pwd;
@@ -778,7 +778,7 @@ SEXP ps__define_errno() {
 #define PS_ADD_ERRNO(err,str) \
   defineVar(install(#err), ScalarInteger(err), env)
 
-  /* OSX */
+  /* MACOS */
 
 #ifdef EPERM
   PS_ADD_ERRNO(EPERM, "Operation not permitted.");

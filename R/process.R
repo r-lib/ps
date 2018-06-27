@@ -13,7 +13,7 @@ process <- function(pid) {
   if (is.na(osname)) stop("Unsupported platform")
   switch(
     osname,
-    OSX = process_osx()$new(pid),
+    MACOS = process_macos()$new(pid),
     LINUX = process_linux()$new(pid),
     WINDOWS = process_windows()$new(pid)
   )
