@@ -76,7 +76,7 @@ file_size <- function(x) {
 
 read_binary_file <- function(x) {
   ret <- raw()
-  con <- file(x, open = "rb")
+  suppressWarnings(con <- file(x, open = "rb"))
   on.exit(close(con), add = TRUE)
   while (length(new <- readBin(con, raw(), n = 1024))) {
     ret <- c(ret, new)
@@ -142,4 +142,10 @@ fallback <- function(expr, alternative) {
     expr,
     error = function(e) alternative
   )
+}
+
+read_lines <- function(path) {
+  suppressWarnings(con <- file(path, open = "r"))
+  on.exit(close(con), add = TRUE)
+  readLines(con)
 }
