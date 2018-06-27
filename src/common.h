@@ -51,6 +51,9 @@ SEXP ps__proc_memory_info(SEXP r_pid);
 SEXP ps__proc_cpu_times(SEXP r_pid);
 SEXP ps__proc_create_time(SEXP r_pid);
 SEXP ps__proc_is_suspended(SEXP r_pid);
+SEXP ps__proc_suspend(SEXP r_pid);
+SEXP ps__proc_resume(SEXP r_pid);
+SEXP ps__proc_kill(SEXP r_pid);
 SEXP ps__win32_QueryDosDevice(SEXP r_path);
 #endif
 

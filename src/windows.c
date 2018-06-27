@@ -347,21 +347,18 @@ SEXP ps__pids() {
   return retlist;
 }
 
-#if (0)
-
 /*
  * Kill a process given its PID.
  */
-static PyObject *
-ps__proc_kill(PyObject *self, PyObject *args) {
+SEXP ps__proc_kill(SEXP r_pid) {
   HANDLE hProcess;
   DWORD err;
-  long pid;
+  long pid = INTEGER(r_pid)[0];
 
-  if (! PyArg_ParseTuple(args, "l", &pid))
-    return NULL;
-  if (pid == 0)
-    return AccessDenied("");
+  if (pid == 0) {
+    ps__access_denied("");
+    ps__throw_error();
+  }
 
   hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
   if (hProcess == NULL) {
@@ -369,10 +366,10 @@ ps__proc_kill(PyObject *self, PyObject *args) {
       // see https://github.com/giampaolo/psutil/issues/24
       ps__debug("OpenProcess -> ERROR_INVALID_PARAMETER turned "
 		   "into NoSuchProcess");
-      NoSuchProcess("");
+      ps__no_such_process("");
     }
     else {
-      PyErr_SetFromWindowsErr(0);
+      ps__set_error_from_windows_error(0);
     }
     return NULL;
   }
@@ -383,15 +380,16 @@ ps__proc_kill(PyObject *self, PyObject *args) {
     // See: https://github.com/giampaolo/psutil/issues/1099
     if (err != ERROR_ACCESS_DENIED) {
       CloseHandle(hProcess);
-      PyErr_SetFromWindowsErr(err);
+      ps__set_error_from_windows_error(0);
       return NULL;
     }
   }
 
   CloseHandle(hProcess);
-  Py_RETURN_NONE;
+  return R_NilValue;
 }
 
+#if (0)
 
 /*
  * Wait for process to terminate and return its exit code.
@@ -1114,26 +1112,23 @@ SEXP ps__proc_cwd(SEXP r_pid)  {
   return ps__get_cwd(pid);
 }
 
-#if (0)
-
 /*
  * Resume or suspends a process
  */
-int
-ps__proc_suspend_or_resume(DWORD pid, int suspend) {
+int ps__proc_suspend_or_resume(DWORD pid, int suspend) {
   // a huge thanks to http://www.codeproject.com/KB/threads/pausep.aspx
   HANDLE hThreadSnap = NULL;
   HANDLE hThread;
   THREADENTRY32  te32 = {0};
 
   if (pid == 0) {
-    AccessDenied("");
+    ps__access_denied("");
     return FALSE;
   }
 
   hThreadSnap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
   if (hThreadSnap == INVALID_HANDLE_VALUE) {
-    PyErr_SetFromWindowsErr(0);
+    ps__set_error_from_windows_error(0);
     return FALSE;
   }
 
@@ -1141,7 +1136,7 @@ ps__proc_suspend_or_resume(DWORD pid, int suspend) {
   te32.dwSize = sizeof(THREADENTRY32);
 
   if (! Thread32First(hThreadSnap, &te32)) {
-    PyErr_SetFromWindowsErr(0);
+    ps__set_error_from_windows_error(0);
     CloseHandle(hThreadSnap);
     return FALSE;
   }
@@ -1154,14 +1149,14 @@ ps__proc_suspend_or_resume(DWORD pid, int suspend) {
       hThread = OpenThread(THREAD_SUSPEND_RESUME, FALSE,
 			   te32.th32ThreadID);
       if (hThread == NULL) {
-	PyErr_SetFromWindowsErr(0);
+	ps__set_error_from_windows_error(0);
 	CloseHandle(hThread);
 	CloseHandle(hThreadSnap);
 	return FALSE;
       }
       if (suspend == 1) {
 	if (SuspendThread(hThread) == (DWORD) - 1) {
-	  PyErr_SetFromWindowsErr(0);
+	  ps__set_error_from_windows_error(0);
 	  CloseHandle(hThread);
 	  CloseHandle(hThreadSnap);
 	  return FALSE;
@@ -1169,7 +1164,7 @@ ps__proc_suspend_or_resume(DWORD pid, int suspend) {
       }
       else {
 	if (ResumeThread(hThread) == (DWORD) - 1) {
-	  PyErr_SetFromWindowsErr(0);
+	  ps__set_error_from_windows_error(0);
 	  CloseHandle(hThread);
 	  CloseHandle(hThreadSnap);
 	  return FALSE;
@@ -1184,31 +1179,28 @@ ps__proc_suspend_or_resume(DWORD pid, int suspend) {
 }
 
 
-static PyObject *
-ps__proc_suspend(PyObject *self, PyObject *args) {
-  long pid;
+SEXP ps__proc_suspend(SEXP r_pid) {
+  long pid = INTEGER(r_pid)[0];
   int suspend = 1;
 
-  if (! PyArg_ParseTuple(args, "l", &pid))
-    return NULL;
   if (! ps__proc_suspend_or_resume(pid, suspend))
-    return NULL;
-  Py_RETURN_NONE;
+    ps__throw_error();
+
+  return R_NilValue;
 }
 
 
-static PyObject *
-ps__proc_resume(PyObject *self, PyObject *args) {
-  long pid;
+SEXP ps__proc_resume(SEXP r_pid)  {
+  long pid = INTEGER(r_pid)[0];
   int suspend = 0;
 
-  if (! PyArg_ParseTuple(args, "l", &pid))
-    return NULL;
   if (! ps__proc_suspend_or_resume(pid, suspend))
-    return NULL;
-  Py_RETURN_NONE;
+    ps__throw_error();
+
+  return R_NilValue;
 }
 
+#if (0)
 
 static PyObject *
 ps__proc_threads(PyObject *self, PyObject *args) {

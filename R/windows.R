@@ -121,15 +121,15 @@ process_windows <- function() {
         },
 
         suspend = decorator(assert_pid_not_reused, function() {
-          ## TODO
+          .Call(ps__proc_suspend, self$.pid)
         }),
 
         resume = decorator(assert_pid_not_reused, function() {
-          ## TODO
+          .Call(ps__proc_resume, self$.pid)
         }),
 
         kill = decorator(assert_pid_not_reused, function() {
-          ## TODO
+          .Call(ps__proc_kill, self$.pid)
         }),
 
         status = function() {

@@ -47,5 +47,8 @@ utils::globalVariables(unique(c(
   "ps__proc_cpu_times",
   "ps__proc_create_time",
   "ps__proc_is_suspended",
+  "ps__proc_suspend",
+  "ps__proc_resume",
+  "ps__proc_kill",
   "ps__win32_QueryDosDevice"
 )))
