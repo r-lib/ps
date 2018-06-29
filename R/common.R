@@ -31,9 +31,9 @@ process_common <- function() {
           info <- list()
           info$pid <- self$.pid
           tryCatch({
-            info$name <- self$name()
-            if (!is.null(self$.create_time))
-              info$create_time <- format(self$.create_time) },
+              info$name <- self$name()
+              info$create_time <- format(format_unix_time(self$.create_time))
+            },
             zombie_process = function(e) info$status <<- "zombie",
             no_such_process = function(e) info$status <<- "terminated",
             access_denied = function(e) e
@@ -52,10 +52,10 @@ process_common <- function() {
         parent = function() {
           ppid <- self$ppid()
           if (!is.null(ppid)) {
-            ctime <- self$create_time()
+            ctime <- self$.create_time
             tryCatch({
               parent <- process(ppid)
-              if (parent$create_time() <= ctime) return(parent) },
+              if (parent$.create_time <= ctime) return(parent) },
               no_such_process = function(e) e)
           }
         },
@@ -63,7 +63,7 @@ process_common <- function() {
         is_running = function() {
           if (self$.gone) return(FALSE)
           tryCatch(
-            process(self$.pid)$create_time() == self$create_time(),
+            process(self$.pid)$.create_time == self$.create_time,
             zombie_process = function(e) TRUE,
             no_such_processs = function(e) {
               self$.gone <- TRUE
@@ -91,7 +91,9 @@ process_common <- function() {
 
         username = not_implemented_function,
 
-        create_time = not_implemented_function,
+        create_time = function() {
+          format_unix_time(self$.create_time)
+        },
 
         cwd = not_implemented_function,
 
@@ -134,7 +136,7 @@ process_common <- function() {
               if (map$ppid[i] == self$.pid) {
                 tryCatch({
                   child  <- process(map$pid[i])
-                  if (self$create_time() <= child$create_time()) {
+                  if (self$.create_time <= child$.create_time) {
                     ret <- c(ret, child)
                   } },
                   no_such_process = function(e) NULL,
@@ -154,7 +156,7 @@ process_common <- function() {
               for (child_pid in child_pids) {
                 tryCatch({
                   child = process(child_pid)
-                  if (self$create_time() <= child$create_time()) {
+                  if (self$.create_time <= child$.create_time) {
                     ret <- c(ret, child)
                     stack <- c(stack, child_pid)
                   } },
@@ -204,7 +206,7 @@ process_common <- function() {
           assert_that(is_pid(pid))
           self$.pid <- as.integer(pid)
           tryCatch(
-            self$.create_time <- self$create_time(),
+            self$.create_time <- self$.create_time_raw(),
             ## We should never get here as AFAIK we're able to get
             ## process creation time on all platforms even as a
             ## limited user.
@@ -230,6 +232,8 @@ process_common <- function() {
             c("user", "system", "children_user", "children_system")
           values
         },
+
+        .create_time_raw = not_implemented_function,
 
         .oneshot_enter = function() NULL,
 

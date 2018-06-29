@@ -7,10 +7,9 @@ ps_pid_exists_windows <- function(pid) {
   .Call(ps__pid_exists, as.integer(pid))
 }
 
-ps_boot_time_windows <- function() {
+ps_boot_time_raw_windows <- function() {
   if (is.null(ps_env$boot_time)) {
-    bt <- .Call(ps__boot_time)
-    ps_env$boot_time <- as.POSIXct(bt, origin = "1970-01-01", tz = "GMT")
+    ps_env$boot_time <- .Call(ps__boot_time)
   }
   ps_env$boot_time
 }
@@ -103,16 +102,16 @@ process_windows <- function() {
           self$.common_pcputimes(ct)
         }),
 
-        create_time = function() {
+        .create_time_raw = function() {
           if (self$.pid == 0L || self$.pid == 4L) {
-            ps_boot_time()
+            ps_boot_time_raw()
           } else {
-            ct <- tryCatch(
+            tryCatch(
               .Call(ps__proc_create_time, self$.pid),
               error = function(e) {
                 self$.oneshot_info()[["create_time"]]
-              })
-            format_unix_time(ct)
+              }
+            )
           }
         },
 

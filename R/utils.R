@@ -122,7 +122,7 @@ path_is_absolute_posix <- function(path) {
 }
 
 format_unix_time <- function(z) {
-  as.POSIXct(z, origin = "1970-01-01", tz = "GMT")
+  structure(z, class = c("POSIXct", "POSIXt"), tzone = "GMT")
 }
 
 NA_time <- function() {

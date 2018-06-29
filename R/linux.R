@@ -30,12 +30,12 @@ ps_pid_exists_linux <- function(pid) {
   }
 }
 
-ps_boot_time_linux <- function() {
+ps_boot_time_raw_linux <- function() {
   if (is.null(ps_env$boot_time)) {
     path <- sprintf("%s/stat", get_procfs_path())
     btime <- grep("btime", read_lines(path), value = TRUE)
-    bt <- as.numeric(strsplit(str_strip(btime), "\\s+")[[1]][[2]])
-    ps_env$boot_time <- as.POSIXct(bt, origin = "1970-01-01", tz = "GMT")
+    ps_env$boot_time <-
+      as.numeric(strsplit(str_strip(btime), "\\s+")[[1]][[2]])
   }
   ps_env$boot_time
 }
@@ -156,9 +156,9 @@ process_linux <- function() {
                  as.numeric(stat[c(13:16)]) / linux_clock_ticks())
         }),
 
-        create_time = decorator(linux_wrap_exceptions, function() {
+        .create_time_raw = decorator(linux_wrap_exceptions, function() {
           stat <- self$.parse_stat_file()
-          bt <- ps_boot_time()
+          bt <- ps_boot_time_raw()
           bt + as.numeric(stat[[21]]) / linux_clock_ticks()
         }),
 

@@ -63,9 +63,8 @@ process_macos <- function() {
                  c(tinf$cpuutime, tinf$cpustime, NA_real_, NA_real_))
         },
 
-        create_time = function() {
-          z <- self$.get_kinfo_proc()$ctime
-          format_unix_time(z)
+        .create_time_raw = function() {
+          self$.get_kinfo_proc()$ctime
         },
 
         num_threads = function() {
