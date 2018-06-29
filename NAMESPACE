@@ -3,6 +3,8 @@
 export(process)
 export(ps)
 export(ps_boot_time)
+export(ps_kill_tree)
+export(ps_mark_tree)
 export(ps_os_is_aix)
 export(ps_os_is_bsd)
 export(ps_os_is_freebsd)
