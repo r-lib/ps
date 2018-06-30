@@ -69,3 +69,11 @@ ps_kill_tree_macos <- function(marker, exclude_me, sig) {
   ret <- unlist(not_null(ret))
   if (length(ret)) ret else structure(integer(), names = character())
 }
+
+ps_kill_tree_linux <- function(marker, exclude_me, sig) {
+  stop(ps__not_implememnted())
+}
+
+ps_kill_tree_windows <- function(maker, exclude_me) {
+  stop(ps__not_implememnted())
+}
