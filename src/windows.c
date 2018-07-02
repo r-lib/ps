@@ -371,7 +371,7 @@ SEXP ps__proc_kill(SEXP r_pid) {
     else {
       ps__set_error_from_windows_error(0);
     }
-    return NULL;
+    ps__throw_error();
   }
 
   // kill the process
@@ -381,7 +381,7 @@ SEXP ps__proc_kill(SEXP r_pid) {
     if (err != ERROR_ACCESS_DENIED) {
       CloseHandle(hProcess);
       ps__set_error_from_windows_error(0);
-      return NULL;
+      ps__throw_error();
     }
   }
 
