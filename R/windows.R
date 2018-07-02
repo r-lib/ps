@@ -1,15 +1,15 @@
 
 ps_pids_windows <- function() {
-  sort(.Call(ps__pids))
+  sort(.Call(psw__pids))
 }
 
 ps_pid_exists_windows <- function(pid) {
-  .Call(ps__pid_exists, as.integer(pid))
+  .Call(psw__pid_exists, as.integer(pid))
 }
 
 ps_boot_time_raw_windows <- function() {
   if (is.null(ps_env$boot_time)) {
-    ps_env$boot_time <- .Call(ps__boot_time)
+    ps_env$boot_time <- .Call(psw__boot_time)
   }
   ps_env$boot_time
 }
@@ -37,7 +37,7 @@ process_windows <- function() {
               ## by another user but it's faster.
               basename(self$get_exe()),
               error = function(e) {
-                .Call(ps__proc_name, as.integer(self$.pid))
+                .Call(psw__proc_name, as.integer(self$.pid))
               }
             )
           }
@@ -51,15 +51,15 @@ process_windows <- function() {
           ## see https://github.com/giampaolo/psutil/issues/414
           ## see https://github.com/giampaolo/psutil/issues/528
           if (self$.pid == 0L || self$.pid == 4L) stop(ps__access_denied())
-          convert_dos_path(.Call(ps__proc_exe, self$.pid))
+          convert_dos_path(.Call(psw__proc_exe, self$.pid))
         },
 
         cmdline = function() {
-          .Call(ps__proc_cmdline, as.integer(self$.pid))
+          .Call(psw__proc_cmdline, as.integer(self$.pid))
         },
 
         environ = function(cached = TRUE) {
-          parse_envs(.Call(ps__proc_environ, self$.pid))
+          parse_envs(.Call(psw__proc_environ, self$.pid))
         },
 
         ppid = decorator(memoize_when_activated, function() {
@@ -75,14 +75,14 @@ process_windows <- function() {
           if (self$.pid == 0L || self$.pid == 4L) {
             stop(ps__access_denied())
           }
-          sub("\\\\$", "", .Call(ps__proc_cwd, self$.pid))
+          sub("\\\\$", "", .Call(psw__proc_cwd, self$.pid))
         },
 
         username = function() {
           if (self$.pid == 0L || self$.pid == 4L) {
             "NT AUTHORITY\\SYSTEM"
           } else {
-            domain_user <- .Call(ps__proc_username, self$.pid)
+            domain_user <- .Call(psw__proc_username, self$.pid)
             paste0(domain_user[[1]], "\\", domain_user[[2]])
           }
         },
@@ -94,7 +94,7 @@ process_windows <- function() {
 
         cpu_times = decorator(memoize_when_activated, function() {
           ct <- tryCatch(
-            c(.Call(ps__proc_cpu_times, self$.pid), NA_real_, NA_real_),
+            c(.Call(psw__proc_cpu_times, self$.pid), NA_real_, NA_real_),
             error = function(e) {
               info <- self$.oneshot_info(cached = FALSE)
               c(info[["user_time"]], info[["kernel_time"]], NA_real_, NA_real_)
@@ -107,7 +107,7 @@ process_windows <- function() {
             ps_boot_time_raw()
           } else {
             tryCatch(
-              .Call(ps__proc_create_time, self$.pid),
+              .Call(psw__proc_create_time, self$.pid),
               error = function(e) {
                 self$.oneshot_info()[["create_time"]]
               }
@@ -120,29 +120,29 @@ process_windows <- function() {
         },
 
         suspend = decorator(assert_pid_not_reused, function() {
-          .Call(ps__proc_suspend, self$.pid)
+          .Call(psw__proc_suspend, self$.pid)
         }),
 
         resume = decorator(assert_pid_not_reused, function() {
-          .Call(ps__proc_resume, self$.pid)
+          .Call(psw__proc_resume, self$.pid)
         }),
 
         kill = decorator(assert_pid_not_reused, function() {
-          .Call(ps__proc_kill, self$.pid)
+          .Call(psw__proc_kill, self$.pid)
         }),
 
         status = function() {
-          susp <- .Call(ps__proc_is_suspended, self$.pid)
+          susp <- .Call(psw__proc_is_suspended, self$.pid)
           if (susp) "stopped" else "running"
         },
 
         .oneshot_info = decorator(memoize_when_activated, function() {
-          .Call(ps__proc_info, self$.pid)
+          .Call(psw__proc_info, self$.pid)
         }),
 
         .raw_meminfo = function() {
           tryCatch(
-            .Call(ps__proc_memory_info, self$.pid),
+            .Call(psw__proc_memory_info, self$.pid),
             error = function(e) {
               info <- self$.oneshot_info()
               info[c("num_page_faults", "peak_wset", "wset", "peak_paged_pool",
@@ -174,12 +174,12 @@ process_windows <- function() {
 convert_dos_path <- function(path) {
   pcs <- strsplit(path, "\\", fixed =  TRUE)[[1]]
   rawdrive <- paste(head(pcs, 3), collapse = "\\")
-  driveletter <- .Call(ps__win32_QueryDosDevice, rawdrive)
+  driveletter <- .Call(psw__win32_QueryDosDevice, rawdrive)
   paste0(driveletter, substr(path, nchar(rawdrive) + 1, nchar(path)))
 }
 
 ps_ppid_map_windows <- function() {
-  pids <- .Call(ps__ppid_map)
+  pids <- .Call(psw__ppid_map)
   pidx <- seq(2L, length(pids), by = 2L)
   data.frame(
     pid = pids[pidx],

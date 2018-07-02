@@ -102,7 +102,7 @@ int ps__pid_exists(long pid) {
   }
 }
 
-SEXP ps__pid_exists2(SEXP r_pid) {
+SEXP psp__pid_exists2(SEXP r_pid) {
   return ScalarLogical(ps__pid_exists(INTEGER(r_pid)[0]));
 }
 
@@ -582,7 +582,7 @@ SEXP ps__net_if_duplex_speed(SEXP r_nic_name) {
 }
 #endif  // net_if_stats() MACOS/BSD implementation
 
-SEXP ps__get_pw_uid(SEXP r_uid) {
+SEXP psp__get_pw_uid(SEXP r_uid) {
   struct passwd *pwd;
   errno = 0;
   pwd = getpwuid(INTEGER(r_uid)[0]);
@@ -601,7 +601,7 @@ SEXP ps__get_pw_uid(SEXP r_uid) {
     "pw_shell",  pwd->pw_shell);
 }
 
-SEXP ps__kill(SEXP r_pid, SEXP r_sig) {
+SEXP psp__kill(SEXP r_pid, SEXP r_sig) {
   pid_t pid = INTEGER(r_pid)[0];
   int sig = INTEGER(r_sig)[0];
   int ret = kill(pid, sig);
@@ -612,7 +612,7 @@ SEXP ps__kill(SEXP r_pid, SEXP r_sig) {
   return R_NilValue;
 }
 
-SEXP ps__stat_st_rdev(SEXP files) {
+SEXP psp__stat_st_rdev(SEXP files) {
   size_t i, len = LENGTH(files);
   struct stat buf;
   SEXP result;
@@ -638,7 +638,7 @@ SEXP ps__stat_st_rdev(SEXP files) {
   return result;
 }
 
-SEXP ps__define_signals() {
+SEXP psp__define_signals() {
 
   SEXP signalenv = PROTECT(Rf_allocSExp(ENVSXP));
 
@@ -771,7 +771,7 @@ SEXP ps__define_signals() {
   return signalenv;
 }
 
-SEXP ps__define_errno() {
+SEXP psp__define_errno() {
 
   SEXP env = PROTECT(Rf_allocSExp(ENVSXP));
 

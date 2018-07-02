@@ -464,7 +464,7 @@ SEXP ps__os_type() {
    need to keep tying with readline(), until the buffer
    size is big enough. */
 
-SEXP ps__readlink(SEXP r_path) {
+SEXP psl__readlink(SEXP r_path) {
   const char *path = CHAR(STRING_ELT(r_path, 0));
   char *linkname;
   size_t size = 1024;
@@ -516,12 +516,12 @@ SEXP ps__readlink(SEXP r_path) {
   return result;
 }
 
-SEXP ps__linux_clk_tck() {
+SEXP psl__linux_clk_tck() {
   long tck = sysconf(_SC_CLK_TCK);
   return ScalarReal(tck);
 }
 
-SEXP ps__linux_pagesize() {
+SEXP psl__linux_pagesize() {
   long ps = sysconf(_SC_PAGE_SIZE);
   return ScalarReal(ps);
 }
@@ -532,58 +532,54 @@ static const R_CallMethodDef callMethods[]  = {
   { "ps__init",         (DL_FUNC) ps__init,         2 },
   { "ps__os_type",      (DL_FUNC) ps__os_type,      0 },
 
-#ifdef PS__POSIX
-  { "ps__pid_exists",   (DL_FUNC) ps__pid_exists2,  1 },
-  { "ps__get_pw_uid",   (DL_FUNC) ps__get_pw_uid,   1 },
-  { "ps__kill",         (DL_FUNC) ps__kill,         2 },
-  { "ps__stat_st_rdev", (DL_FUNC) ps__stat_st_rdev, 1 },
-#endif
+  /* POSIX */
+  { "psp__pid_exists",   (DL_FUNC) psp__pid_exists2,  1 },
+  { "psp__get_pw_uid",   (DL_FUNC) psp__get_pw_uid,   1 },
+  { "psp__kill",         (DL_FUNC) psp__kill,         2 },
+  { "psp__stat_st_rdev", (DL_FUNC) psp__stat_st_rdev, 1 },
 
-#ifdef PS__MACOS
-  { "ps__pids",         (DL_FUNC) ps__pids,         0 },
-  { "ps__proc_exe",     (DL_FUNC) ps__proc_exe,     1 },
-  { "ps__proc_cmdline", (DL_FUNC) ps__proc_cmdline, 1 },
-  { "ps__proc_environ", (DL_FUNC) ps__proc_environ, 1 },
-  { "ps__proc_cwd",     (DL_FUNC) ps__proc_cwd,     1 },
-  { "ps__proc_kinfo_oneshot",
-    (DL_FUNC) ps__proc_kinfo_oneshot, 1 },
-  { "ps__proc_pidtaskinfo_oneshot",
-    (DL_FUNC) ps__proc_pidtaskinfo_oneshot, 1 },
-#endif
+  /* MACOS */
+  { "psm__pids",         (DL_FUNC) psm__pids,         0 },
+  { "psm__proc_exe",     (DL_FUNC) psm__proc_exe,     1 },
+  { "psm__proc_cmdline", (DL_FUNC) psm__proc_cmdline, 1 },
+  { "psm__proc_environ", (DL_FUNC) psm__proc_environ, 1 },
+  { "psm__proc_cwd",     (DL_FUNC) psm__proc_cwd,     1 },
+  { "psm__proc_kinfo_oneshot",
+    (DL_FUNC) psm__proc_kinfo_oneshot, 1 },
+  { "psm__proc_pidtaskinfo_oneshot",
+    (DL_FUNC) psm__proc_pidtaskinfo_oneshot, 1 },
 
-#ifdef PS__LINUX
-  { "ps__readlink",            (DL_FUNC) ps__readlink,            1 },
-  { "ps__linux_clk_tck",       (DL_FUNC) ps__linux_clk_tck,       0 },
-  { "ps__linux_pagesize",      (DL_FUNC) ps__linux_pagesize,      0 },
-  { "ps__parse_stat_file",     (DL_FUNC) ps__parse_stat_file,     2 },
-  { "ps__linux_parse_environ", (DL_FUNC) ps__linux_parse_environ, 2 },
-  { "ps__linux_match_environ", (DL_FUNC) ps__linux_match_environ, 3 },
-  { "ps__kill_tree_process",   (DL_FUNC) ps__kill_tree_process,   4 },
-#endif
+  /* LINUX */
+  { "psl__readlink",            (DL_FUNC) psl__readlink,            1 },
+  { "psl__linux_clk_tck",       (DL_FUNC) psl__linux_clk_tck,       0 },
+  { "psl__linux_pagesize",      (DL_FUNC) psl__linux_pagesize,      0 },
+  { "psl__parse_stat_file",     (DL_FUNC) psl__parse_stat_file,     2 },
+  { "psl__linux_parse_environ", (DL_FUNC) psl__linux_parse_environ, 2 },
+  { "psl__linux_match_environ", (DL_FUNC) psl__linux_match_environ, 3 },
+  { "psl__kill_tree_process",   (DL_FUNC) psl__kill_tree_process,   4 },
 
-#ifdef PS__WINDOWS
-  { "ps__pids",             (DL_FUNC) ps__pids,             0 },
-  { "ps__ppid_map",         (DL_FUNC) ps__ppid_map,         0 },
-  { "ps__pid_exists",       (DL_FUNC) ps__pid_exists,       1 },
-  { "ps__boot_time",        (DL_FUNC) ps__boot_time,        0 },
-  { "ps__proc_name",        (DL_FUNC) ps__proc_name,        1 },
-  { "ps__proc_exe",         (DL_FUNC) ps__proc_exe,         1 },
-  { "ps__proc_cmdline",     (DL_FUNC) ps__proc_cmdline,     1 },
-  { "ps__proc_environ",     (DL_FUNC) ps__proc_environ,     1 },
-  { "ps__proc_cwd",         (DL_FUNC) ps__proc_cwd,         1 },
-  { "ps__proc_username",    (DL_FUNC) ps__proc_username,    1 },
-  { "ps__proc_info",        (DL_FUNC) ps__proc_info,        1 },
-  { "ps__proc_memory_info", (DL_FUNC) ps__proc_memory_info, 1 },
-  { "ps__proc_cpu_times",   (DL_FUNC) ps__proc_cpu_times,   1 },
-  { "ps__proc_create_time", (DL_FUNC) ps__proc_create_time, 1 },
-  { "ps__proc_is_suspended",(DL_FUNC) ps__proc_is_suspended,1 },
-  { "ps__proc_suspend",     (DL_FUNC) ps__proc_suspend,     1 },
-  { "ps__proc_resume",      (DL_FUNC) ps__proc_resume,      1 },
-  { "ps__proc_kill",        (DL_FUNC) ps__proc_kill,        1 },
-  { "ps__win32_QueryDosDevice",
-    (DL_FUNC) ps__win32_QueryDosDevice, 1 },
-  { "ps__kill_tree_process", (DL_FUNC) ps__kill_tree_process, 2 },
-#endif
+  /* WINDOWS */
+  { "psw__pids",             (DL_FUNC) psw__pids,             0 },
+  { "psw__ppid_map",         (DL_FUNC) psw__ppid_map,         0 },
+  { "psw__pid_exists",       (DL_FUNC) psw__pid_exists,       1 },
+  { "psw__boot_time",        (DL_FUNC) psw__boot_time,        0 },
+  { "psw__proc_name",        (DL_FUNC) psw__proc_name,        1 },
+  { "psw__proc_exe",         (DL_FUNC) psw__proc_exe,         1 },
+  { "psw__proc_cmdline",     (DL_FUNC) psw__proc_cmdline,     1 },
+  { "psw__proc_environ",     (DL_FUNC) psw__proc_environ,     1 },
+  { "psw__proc_cwd",         (DL_FUNC) psw__proc_cwd,         1 },
+  { "psw__proc_username",    (DL_FUNC) psw__proc_username,    1 },
+  { "psw__proc_info",        (DL_FUNC) psw__proc_info,        1 },
+  { "psw__proc_memory_info", (DL_FUNC) psw__proc_memory_info, 1 },
+  { "psw__proc_cpu_times",   (DL_FUNC) psw__proc_cpu_times,   1 },
+  { "psw__proc_create_time", (DL_FUNC) psw__proc_create_time, 1 },
+  { "psw__proc_is_suspended",(DL_FUNC) psw__proc_is_suspended,1 },
+  { "psw__proc_suspend",     (DL_FUNC) psw__proc_suspend,     1 },
+  { "psw__proc_resume",      (DL_FUNC) psw__proc_resume,      1 },
+  { "psw__proc_kill",        (DL_FUNC) psw__proc_kill,        1 },
+  { "psw__win32_QueryDosDevice",
+    (DL_FUNC) psw__win32_QueryDosDevice, 1 },
+  { "psw__kill_tree_process", (DL_FUNC) psw__kill_tree_process, 2 },
 
   { NULL, NULL, 0 }
 };

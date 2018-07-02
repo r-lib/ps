@@ -613,7 +613,7 @@ int ps__read_file(const char *path, char **buffer, size_t buffer_size) {
   return -1;
 }
 
-SEXP ps__parse_stat_file(SEXP r_procfs, SEXP r_pid) {
+SEXP psl__parse_stat_file(SEXP r_procfs, SEXP r_pid) {
   const char *procfs = CHAR(STRING_ELT(r_procfs, 0));
   pid_t pid = INTEGER(r_pid)[0];
   char path[512];
@@ -654,7 +654,7 @@ SEXP ps__parse_stat_file(SEXP r_procfs, SEXP r_pid) {
   return result;
 }
 
-SEXP ps__linux_parse_environ(SEXP r_procfs, SEXP r_pid) {
+SEXP psl__linux_parse_environ(SEXP r_procfs, SEXP r_pid) {
   const char *procfs = CHAR(STRING_ELT(r_procfs, 0));
   pid_t pid = INTEGER(r_pid)[0];
   char path[512];
@@ -713,7 +713,7 @@ void *ps__memmem(const void *haystack, size_t n1,
   return NULL;
 }
 
-SEXP ps__linux_match_environ(SEXP r_procfs, SEXP r_marker, SEXP r_pid) {
+SEXP psl__linux_match_environ(SEXP r_procfs, SEXP r_marker, SEXP r_pid) {
   const char *procfs = CHAR(STRING_ELT(r_procfs, 0));
   const char *marker = CHAR(STRING_ELT(r_marker, 0));
   pid_t pid = INTEGER(r_pid)[0];
@@ -743,7 +743,7 @@ SEXP ps__linux_match_environ(SEXP r_procfs, SEXP r_marker, SEXP r_pid) {
   }
 }
 
-SEXP ps__kill_tree_process(SEXP r_procfs, SEXP r_marker, SEXP r_pid,
+SEXP psl__kill_tree_process(SEXP r_procfs, SEXP r_marker, SEXP r_pid,
 			   SEXP r_sig) {
 
   const char *procfs = CHAR(STRING_ELT(r_procfs, 0));
@@ -755,7 +755,7 @@ SEXP ps__kill_tree_process(SEXP r_procfs, SEXP r_marker, SEXP r_pid,
   char *buf;
   SEXP match;
 
-  PROTECT(match = ps__linux_match_environ(r_procfs, r_marker, r_pid));
+  PROTECT(match = psl__linux_match_environ(r_procfs, r_marker, r_pid));
 
   if (LOGICAL(match)[0]) {
     UNPROTECT(1);
@@ -775,10 +775,10 @@ SEXP ps__kill_tree_process(SEXP r_procfs, SEXP r_marker, SEXP r_pid,
 SEXP ps__init(SEXP psenv, SEXP constenv) {
 
   /* Signals */
-  defineVar(install("signals"), ps__define_signals(), constenv);
+  defineVar(install("signals"), psp__define_signals(), constenv);
 
   /* errno values */
-  defineVar(install("errno"), ps__define_errno(), constenv);
+  defineVar(install("errno"), psp__define_errno(), constenv);
 
   return R_NilValue;
 }
