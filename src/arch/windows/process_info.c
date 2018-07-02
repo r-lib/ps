@@ -259,7 +259,7 @@ ps__check_phandle(HANDLE hProcess, DWORD pid) {
     ps__no_such_process("");
     return NULL;
   } else if (ret == -1) {
-    ps__set_error_from_windows_error(0);
+    psw__set_error_from_windows_error(0);
     return NULL;
   } else { // -2
     return NULL;
@@ -326,7 +326,7 @@ ps__get_pids(DWORD *numberOfReturnedPIDs) {
     }
     if (! EnumProcesses(procArray, procArrayByteSz, &enumReturnSz)) {
       free(procArray);
-      ps__set_error_from_windows_error(0);
+      psw__set_error_from_windows_error(0);
       return NULL;
     }
   } while (enumReturnSz == procArraySz * sizeof(DWORD));
@@ -402,7 +402,7 @@ ps__pid_is_running(DWORD pid) {
     // Be strict and raise an exception; the caller is supposed
     // to take -1 into account.
     else {
-      ps__set_error_from_windows_error(err);
+      psw__set_error_from_windows_error(err);
       return -1;
     }
   }
@@ -436,7 +436,7 @@ ps__pid_is_running(DWORD pid) {
       return 1;
     }
     else {
-      ps__set_error_from_windows_error(0);
+      psw__set_error_from_windows_error(0);
       return -1;
     }
   }
@@ -451,7 +451,7 @@ static int ps__get_process_region_size(HANDLE hProcess,
   MEMORY_BASIC_INFORMATION info;
 
   if (!VirtualQueryEx(hProcess, src, &info, sizeof(info))) {
-    ps__set_error_from_windows_error(0);
+    psw__set_error_from_windows_error(0);
     return -1;
   }
 
@@ -488,7 +488,7 @@ static int ps__get_process_region_size64(HANDLE hProcess,
 					      &info64,
 					      sizeof(info64),
 					      NULL))) {
-    ps__set_error_from_windows_error(0);
+    psw__set_error_from_windows_error(0);
     return -1;
   }
 
@@ -572,7 +572,7 @@ static int ps__get_process_data(long pid,
 					    &ppeb32,
 					    sizeof(LPVOID),
 					    NULL))) {
-    ps__set_error_from_windows_error(0);
+    psw__set_error_from_windows_error(0);
     goto error;
   }
 
@@ -583,7 +583,7 @@ static int ps__get_process_data(long pid,
 
     // read PEB
     if (!ReadProcessMemory(hProcess, ppeb32, &peb32, sizeof(peb32), NULL)) {
-      ps__set_error_from_windows_error(0);
+      psw__set_error_from_windows_error(0);
       goto error;
     }
 
@@ -593,7 +593,7 @@ static int ps__get_process_data(long pid,
 			   &procParameters32,
 			   sizeof(procParameters32),
 			   NULL)) {
-      ps__set_error_from_windows_error(0);
+      psw__set_error_from_windows_error(0);
       goto error;
     }
 
@@ -615,7 +615,7 @@ static int ps__get_process_data(long pid,
     /* 32 bit case.  Check if the target is also 32 bit. */
     if (!IsWow64Process(GetCurrentProcess(), &weAreWow64) ||
         !IsWow64Process(hProcess, &theyAreWow64)) {
-      ps__set_error_from_windows_error(0);
+      psw__set_error_from_windows_error(0);
       goto error;
     }
 
@@ -643,7 +643,7 @@ static int ps__get_process_data(long pid,
 						     &pbi64,
 						     sizeof(pbi64),
 						     NULL))) {
-      ps__set_error_from_windows_error(0);
+      psw__set_error_from_windows_error(0);
       goto error;
     }
 
@@ -665,7 +665,7 @@ static int ps__get_process_data(long pid,
 					       &peb64,
 					       sizeof(peb64),
 					       NULL))) {
-      ps__set_error_from_windows_error(0);
+      psw__set_error_from_windows_error(0);
       goto error;
     }
 
@@ -675,7 +675,7 @@ static int ps__get_process_data(long pid,
 					       &procParameters64,
 					       sizeof(procParameters64),
 					       NULL))) {
-      ps__set_error_from_windows_error(0);
+      psw__set_error_from_windows_error(0);
       goto error;
     }
 
@@ -706,7 +706,7 @@ static int ps__get_process_data(long pid,
 						&pbi,
 						sizeof(pbi),
 						NULL))) {
-	ps__set_error_from_windows_error(0);
+	psw__set_error_from_windows_error(0);
 	goto error;
       }
 
@@ -716,7 +716,7 @@ static int ps__get_process_data(long pid,
 			     &peb,
 			     sizeof(peb),
 			     NULL)) {
-	ps__set_error_from_windows_error(0);
+	psw__set_error_from_windows_error(0);
 	goto error;
       }
 
@@ -726,7 +726,7 @@ static int ps__get_process_data(long pid,
 			     &procParameters,
 			     sizeof(procParameters),
 			     NULL)) {
-	ps__set_error_from_windows_error(0);
+	psw__set_error_from_windows_error(0);
 	goto error;
       }
 
@@ -775,13 +775,13 @@ static int ps__get_process_data(long pid,
 					       buffer,
 					       size,
 					       NULL))) {
-      ps__set_error_from_windows_error(0);
+      psw__set_error_from_windows_error(0);
       goto error;
     }
   } else
 #endif
     if (!ReadProcessMemory(hProcess, src, buffer, size, NULL)) {
-      ps__set_error_from_windows_error(0);
+      psw__set_error_from_windows_error(0);
       goto error;
     }
 
@@ -819,7 +819,7 @@ SEXP ps__get_cmdline(long pid) {
   // attempt to parse the command line using Win32 API
   szArglist = CommandLineToArgvW(data, &nArgs);
   if (szArglist == NULL) {
-    ps__set_error_from_windows_error(0);
+    psw__set_error_from_windows_error(0);
     free(data);
     error("Cannot get command line");
   }
@@ -831,7 +831,7 @@ SEXP ps__get_cmdline(long pid) {
   // Python string object and add to arg list
   PROTECT(retlist = allocVector(STRSXP, nArgs));
   for (i = 0; i < nArgs; i++) {
-    SET_STRING_ELT(retlist, i, ps__utf16_to_charsxp(szArglist[i], -1));
+    SET_STRING_ELT(retlist, i, psw__utf16_to_charsxp(szArglist[i], -1));
   }
 
   LocalFree(szArglist);
@@ -851,7 +851,7 @@ SEXP ps__get_cwd(long pid) {
   PROTECT_PTR(data);
 
   // convert wchar array to a Python unicode string
-  PROTECT(ret = ScalarString(ps__utf16_to_charsxp(data, -1)));
+  PROTECT(ret = ScalarString(psw__utf16_to_charsxp(data, -1)));
 
   UNPROTECT(2);
   return ret;
@@ -888,7 +888,7 @@ SEXP ps__get_environ(long pid) {
   }
 
   // convert wchar array to a Python unicode string
-  PROTECT(ret = ps__utf16_to_strsxp(data, (ptr - data)));
+  PROTECT(ret = psw__utf16_to_strsxp(data, (ptr - data)));
 
   UNPROTECT(2);
   return ret;

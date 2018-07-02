@@ -90,7 +90,7 @@ SEXP ps__get_open_files_ntqueryobject(long dwPid, HANDLE hProcess) {
         g_hEvtFinish == NULL)
 
     {
-      ps__set_error_from_windows_error(0);
+      psw__set_error_from_windows_error(0);
         error = TRUE;
         goto cleanup;
     }

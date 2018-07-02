@@ -73,7 +73,7 @@ void *ps__set_error_from_errno() {
 }
 
 #ifdef PS__WINDOWS
-void *ps__set_error_from_windows_error(long err) {
+void *psw__set_error_from_windows_error(long err) {
   /* TODO: get the actual message */
   if (!err) err = GetLastError();
   return ps__set_error_impl("os_error", err, "System error: %i", err);
@@ -115,7 +115,7 @@ SEXP ps__str_to_utf8_size(const char *str, size_t size) {
 
 #ifdef PS__WINDOWS
 
-int ps__utf8_to_utf16(const char* s, WCHAR** ws_ptr) {
+int psw__utf8_to_utf16(const char* s, WCHAR** ws_ptr) {
   int ws_len, r;
   WCHAR* ws;
 
@@ -148,7 +148,7 @@ int ps__utf8_to_utf16(const char* s, WCHAR** ws_ptr) {
   return 0;
 }
 
-SEXP ps__utf16_to_rawsxp(const WCHAR* ws, int size) {
+SEXP psw__utf16_to_rawsxp(const WCHAR* ws, int size) {
   int s_len, r;
   SEXP s;
 
@@ -186,12 +186,12 @@ SEXP ps__utf16_to_rawsxp(const WCHAR* ws, int size) {
   return s;
 }
 
-SEXP ps__utf16_to_strsxp(const WCHAR* ws, int size) {
+SEXP psw__utf16_to_strsxp(const WCHAR* ws, int size) {
   SEXP r, s;
   int r_len, s_len, idx, notr = 0;
   char *ptr, *end, *prev;
 
-  PROTECT(r = ps__utf16_to_rawsxp(ws, size));
+  PROTECT(r = psw__utf16_to_rawsxp(ws, size));
 
   r_len = LENGTH(r);
   ptr = (char*) RAW(r);
@@ -223,10 +223,10 @@ SEXP ps__utf16_to_strsxp(const WCHAR* ws, int size) {
   return s;
 }
 
-SEXP ps__utf16_to_charsxp(const WCHAR* ws, int size) {
+SEXP psw__utf16_to_charsxp(const WCHAR* ws, int size) {
   SEXP r, s;
 
-  PROTECT(r = ps__utf16_to_rawsxp(ws, size));
+  PROTECT(r = psw__utf16_to_rawsxp(ws, size));
   PROTECT(s = mkCharLen((char*) RAW(r), LENGTH(r) - 1));
   UNPROTECT(2);
   return s;

@@ -19,7 +19,7 @@ psutil_token_from_handle(HANDLE hProcess) {
   HANDLE hToken = NULL;
 
   if (! OpenProcessToken(hProcess, TOKEN_QUERY, &hToken))
-    return ps__set_error_from_windows_error(0);
+    return psw__set_error_from_windows_error(0);
   return hToken;
 }
 
@@ -56,7 +56,7 @@ psutil_has_system_privilege(HANDLE hProcess) {
     dwRetval = GetLastError();
     // if it failed for a reason other than the buffer, bail out
     if (dwRetval != ERROR_INSUFFICIENT_BUFFER ) {
-      ps__set_error_from_windows_error(dwRetval);
+      psw__set_error_from_windows_error(dwRetval);
       return 0;
     }
   }
@@ -72,7 +72,7 @@ psutil_has_system_privilege(HANDLE hProcess) {
   if (! GetTokenInformation(hToken, TokenPrivileges, pBuffer,
 			    dwSize, &dwSize))
     {
-      ps__set_error_from_windows_error(0);
+      psw__set_error_from_windows_error(0);
       free(pBuffer);
       return -1;
     }
@@ -90,7 +90,7 @@ psutil_has_system_privilege(HANDLE hProcess) {
 			      (LPTSTR)privName,
 			      &dwNameSize))
       {
-	ps__set_error_from_windows_error(0);
+	psw__set_error_from_windows_error(0);
 	free(pBuffer);
 	return -1;
       }
