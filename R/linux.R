@@ -46,7 +46,6 @@ linux_wrap_exceptions <- function(fun) {
     tryCatch(
       fun(...),
       error = function(e) {
-        print(e)
         path <- sprintf("%s/%i", get_procfs_path(), self$.pid)
         if (file.exists(path)) {
           stop(ps__access_denied(self$.pid, self$.name))
