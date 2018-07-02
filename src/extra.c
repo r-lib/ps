@@ -582,6 +582,7 @@ static const R_CallMethodDef callMethods[]  = {
   { "ps__proc_kill",        (DL_FUNC) ps__proc_kill,        1 },
   { "ps__win32_QueryDosDevice",
     (DL_FUNC) ps__win32_QueryDosDevice, 1 },
+  { "ps__kill_tree_process", (DL_FUNC) ps__kill_tree_process, 2 },
 #endif
 
   { NULL, NULL, 0 }

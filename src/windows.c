@@ -3579,6 +3579,58 @@ ps__sensors_battery(PyObject *self, PyObject *args) {
 
 #endif
 
+SEXP ps__kill_tree_process(SEXP r_marker, SEXP r_pid) {
+  const char *marker = CHAR(STRING_ELT(r_marker, 0));
+  long pid = INTEGER(r_pid)[0];
+  SEXP env;
+  HANDLE hProcess;
+  int i, n;
+  DWORD err;
+
+  if (pid == 0) {
+    ps__access_denied("");
+    ps__throw_error();
+  }
+
+  hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
+  if (hProcess == NULL) {
+    if (GetLastError() == ERROR_INVALID_PARAMETER) {
+      // see https://github.com/giampaolo/psutil/issues/24
+      ps__debug("OpenProcess -> ERROR_INVALID_PARAMETER turned "
+		   "into NoSuchProcess");
+      ps__no_such_process("");
+    }
+    else {
+      ps__set_error_from_windows_error(0);
+    }
+    ps__throw_error();
+  }
+
+  /* Check environment again, to avoid racing */
+  PROTECT(env = ps__proc_environ(r_pid));
+  n = LENGTH(env);
+  for (i = 0; i < n; i++) {
+    if (strstr(CHAR(STRING_ELT(env, i)), marker)) {
+      if (! TerminateProcess(hProcess, SIGTERM)) {
+	err = GetLastError();
+	// See: https://github.com/giampaolo/psutil/issues/1099
+	if (err != ERROR_ACCESS_DENIED) {
+	  CloseHandle(hProcess);
+	  ps__set_error_from_windows_error(0);
+	  ps__throw_error();
+	}
+      }
+      CloseHandle(hProcess);
+      UNPROTECT(1);
+      return ScalarLogical(1);
+    }
+  }
+
+  CloseHandle(hProcess);
+  UNPROTECT(1);
+  return ScalarLogical(0);
+}
+
 SEXP ps__init(SEXP psenv, SEXP constenv) {
   return R_NilValue;
 }

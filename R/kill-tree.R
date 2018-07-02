@@ -109,5 +109,44 @@ ps_kill_tree_linux <- function(marker, exclude_me, sig) {
 }
 
 ps_kill_tree_windows <- function(marker, exclude_me) {
-  stop(ps__not_implememnted())
+
+  ## Get all process environments
+  pids <- .Call(ps__pids)
+  envs <- lapply(pids, function(p) {
+    tryCatch(
+      .Call(ps__proc_environ, p),
+      error = function(e) NULL
+    )
+  })
+
+  ## Find the ones that are marked
+  match <- which(map_int(envs, function(x) length(grep(marker, x))) > 0)
+  cand <- pids[match]
+
+  ## Exclude myself
+  cand <- setdiff(cand, Sys.getpid())
+
+  ## Try to clean them up, carefully, to minimize racing
+  ret <- lapply(cand, function(p) {
+    name <- tryCatch(
+      basename(convert_dos_path(.Call(ps__proc_exe, p))),
+      error = function(e) "???"
+    )
+    tryCatch({
+      rv <- .Call(ps__kill_tree_process, marker, p)
+      if (!is.null(rv)) structure(p, names = name) },
+      error = function(e) NULL
+    )
+  })
+
+  if (!exclude_me && Sys.getenv(marker) != "") {
+    mypid <- Sys.getpid()
+    .Call(ps__proc_kill, mypid)
+    me <- process(mypid)
+    ret <- c(ret, list(structure(p, names = me$name())))
+  }
+
+  ## This works for empty lists as well, and keeps names
+  ret <- unlist(not_null(ret))
+  if (length(ret)) ret else structure(integer(), names = character())
 }

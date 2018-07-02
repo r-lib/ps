@@ -894,7 +894,6 @@ SEXP ps__get_environ(long pid) {
   return ret;
 }
 
-
 /*
  * Given a process PID and a PSYSTEM_PROCESS_INFORMATION structure
  * fills the structure with various process information by using

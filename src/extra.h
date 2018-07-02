@@ -60,4 +60,8 @@ SEXP ps__kill_tree_process(SEXP r_procfs, SEXP r_marker, SEXP r_pid,
 			   SEXP sig);
 #endif
 
+#ifdef PS__WINDOWS
+SEXP ps__kill_tree_process(SEXP r_marker, SEXP r_pid);
+#endif
+
 #endif
