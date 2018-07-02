@@ -552,9 +552,13 @@ static const R_CallMethodDef callMethods[]  = {
 #endif
 
 #ifdef PS__LINUX
-  { "ps__readlink",       (DL_FUNC) ps__readlink,       1 },
-  { "ps__linux_clk_tck",  (DL_FUNC) ps__linux_clk_tck,  0 },
-  { "ps__linux_pagesize", (DL_FUNC) ps__linux_pagesize, 0 },
+  { "ps__readlink",            (DL_FUNC) ps__readlink,            1 },
+  { "ps__linux_clk_tck",       (DL_FUNC) ps__linux_clk_tck,       0 },
+  { "ps__linux_pagesize",      (DL_FUNC) ps__linux_pagesize,      0 },
+  { "ps__parse_stat_file",     (DL_FUNC) ps__parse_stat_file,     2 },
+  { "ps__linux_parse_environ", (DL_FUNC) ps__linux_parse_environ, 2 },
+  { "ps__linux_match_environ", (DL_FUNC) ps__linux_match_environ, 3 },
+  { "ps__kill_tree_process",   (DL_FUNC) ps__kill_tree_process,   4 },
 #endif
 
 #ifdef PS__WINDOWS

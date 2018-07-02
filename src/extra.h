@@ -53,6 +53,11 @@ SEXP ps__define_errno();
 SEXP ps__readlink(SEXP path);
 SEXP ps__linux_clk_tck();
 SEXP ps__linux_pagesize();
+SEXP ps__parse_stat_file(SEXP r_procfs, SEXP r_pid);
+SEXP ps__linux_parse_environ(SEXP r_procfs, SEXP r_pid);
+SEXP ps__linux_match_environ(SEXP r_procfs, SEXP r_marker, SEXP r_pid);
+SEXP ps__kill_tree_process(SEXP r_procfs, SEXP r_marker, SEXP r_pid,
+			   SEXP sig);
 #endif
 
 #endif

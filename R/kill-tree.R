@@ -44,7 +44,7 @@ ps_kill_tree_macos <- function(marker, exclude_me, sig) {
   ## Exclude myself
   cand <- setdiff(cand, Sys.getpid())
 
-  ## Otherwise try to clean them up, carefully, to minimize racing
+  ## Try to clean them up, carefully, to minimize racing
   ret <- lapply(cand, function(p) {
     tryCatch({
       info <- .Call(ps__proc_kinfo_oneshot, p)
@@ -71,9 +71,43 @@ ps_kill_tree_macos <- function(marker, exclude_me, sig) {
 }
 
 ps_kill_tree_linux <- function(marker, exclude_me, sig) {
-  stop(ps__not_implememnted())
+
+  ## Match process environments
+  pids <- ps_pids_linux()
+  proc <- get_procfs_path()
+  match <- map_lgl(pids, function(p) {
+    tryCatch(
+      data <- .Call(ps__linux_match_environ, proc, marker, p),
+      error = function(e) NULL
+    )
+  })
+  cand <- pids[match]
+
+  ## Exclude myself
+  cand <- setdiff(cand, Sys.getpid())
+
+  ## Try to clean them up, carefully, to minimize racing
+  ret <- lapply(cand, function(p) {
+    tryCatch({
+      nm <- process(p)$name()
+      ret <- .Call(ps__kill_tree_process, proc, marker, p, sig)
+      if (!is.null(ret)) structure(p, names = nm) },
+      error = function(e) NULL
+    )
+  })
+
+  if (!exclude_me && Sys.getenv(marker) != "") {
+    mypid <- Sys.getpid()
+    .Call(ps__kill, mypid, sig)
+    me <- process(mypid)
+    ret <- c(ret, list(structure(p, names = me$name())))
+  }
+
+  ## This works for empty lists as well, and keeps names
+  ret <- unlist(not_null(ret))
+  if (length(ret)) ret else structure(integer(), names = character())
 }
 
-ps_kill_tree_windows <- function(maker, exclude_me) {
+ps_kill_tree_windows <- function(marker, exclude_me) {
   stop(ps__not_implememnted())
 }
