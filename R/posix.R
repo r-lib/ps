@@ -82,7 +82,7 @@ process_posix <- function() {
                  "calling process (Sys.getpid()) instead of PID 0")
           }
           tryCatch(
-            .Call(ps__kill, self$.pid, sig),
+            .Call(psp__kill, self$.pid, sig),
             os_error = function(e) {
               if (e$errno == errno()$ESRCH) {
                 stop(ps__no_such_process(self$.pid, self$.name))
@@ -103,7 +103,7 @@ process_posix <- function() {
 }
 
 get_pw_uid <- function(uid) {
-  .Call(ps__get_pw_uid, as.integer(uid))
+  .Call(psp__get_pw_uid, as.integer(uid))
 }
 
 signals <- function() {
@@ -118,6 +118,6 @@ get_terminal_map <- function() {
   ls <- c(
     dir("/dev", pattern = "^tty.*", full.names = TRUE),
     dir("/dev/pts", full.names = TRUE))
-  ret <- structure(ls, names = as.character(.Call(ps__stat_st_rdev, ls)))
+  ret <- structure(ls, names = as.character(.Call(psp__stat_st_rdev, ls)))
   ret[names(ret) != "0"]
 }

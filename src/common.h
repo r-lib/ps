@@ -18,44 +18,41 @@
 /* API from R                                                           */
 /* ---------------------------------------------------------------------*/
 
-#ifdef PS__POSIX
-SEXP ps__pid_exists2(SEXP r_pid);
-SEXP ps__get_pw_uid(SEXP r_uid);
-SEXP ps__kill(SEXP r_pid, SEXP r_sig);
-SEXP ps__stat_st_rdev(SEXP files);
-#endif
+/* POSIX */
+SEXP psp__pid_exists2(SEXP r_pid);
+SEXP psp__get_pw_uid(SEXP r_uid);
+SEXP psp__kill(SEXP r_pid, SEXP r_sig);
+SEXP psp__stat_st_rdev(SEXP files);
 
-#ifdef PS__MACOS
-SEXP ps__pids();
-SEXP ps__proc_exe(SEXP r_pid);
-SEXP ps__proc_cmdline(SEXP r_pid);
-SEXP ps__proc_environ(SEXP r_pid);
-SEXP ps__proc_cwd(SEXP r_pid);
-SEXP ps__proc_kinfo_oneshot(SEXP r_pid);
-SEXP ps__proc_pidtaskinfo_oneshot(SEXP r_pid);
-#endif
+/* MACOS */
+SEXP psm__pids();
+SEXP psm__proc_exe(SEXP r_pid);
+SEXP psm__proc_cmdline(SEXP r_pid);
+SEXP psm__proc_environ(SEXP r_pid);
+SEXP psm__proc_cwd(SEXP r_pid);
+SEXP psm__proc_kinfo_oneshot(SEXP r_pid);
+SEXP psm__proc_pidtaskinfo_oneshot(SEXP r_pid);
 
-#ifdef PS__WINDOWS
-SEXP ps__pids();
-SEXP ps__ppid_map();
-SEXP ps__pid_exists(SEXP r_pid);
-SEXP ps__boot_time();
-SEXP ps__proc_name(SEXP r_pid);
-SEXP ps__proc_exe(SEXP r_pid);
-SEXP ps__proc_cmdline(SEXP r_pid);
-SEXP ps__proc_environ(SEXP r_pid);
-SEXP ps__proc_cwd(SEXP r_pid);
-SEXP ps__proc_username(SEXP r_pid);
-SEXP ps__proc_info(SEXP r_pid);
-SEXP ps__proc_memory_info(SEXP r_pid);
-SEXP ps__proc_cpu_times(SEXP r_pid);
-SEXP ps__proc_create_time(SEXP r_pid);
-SEXP ps__proc_is_suspended(SEXP r_pid);
-SEXP ps__proc_suspend(SEXP r_pid);
-SEXP ps__proc_resume(SEXP r_pid);
-SEXP ps__proc_kill(SEXP r_pid);
-SEXP ps__win32_QueryDosDevice(SEXP r_path);
-#endif
+/* WINDOWS */
+SEXP psw__pids();
+SEXP psw__ppid_map();
+SEXP psw__pid_exists(SEXP r_pid);
+SEXP psw__boot_time();
+SEXP psw__proc_name(SEXP r_pid);
+SEXP psw__proc_exe(SEXP r_pid);
+SEXP psw__proc_cmdline(SEXP r_pid);
+SEXP psw__proc_environ(SEXP r_pid);
+SEXP psw__proc_cwd(SEXP r_pid);
+SEXP psw__proc_username(SEXP r_pid);
+SEXP psw__proc_info(SEXP r_pid);
+SEXP psw__proc_memory_info(SEXP r_pid);
+SEXP psw__proc_cpu_times(SEXP r_pid);
+SEXP psw__proc_create_time(SEXP r_pid);
+SEXP psw__proc_is_suspended(SEXP r_pid);
+SEXP psw__proc_suspend(SEXP r_pid);
+SEXP psw__proc_resume(SEXP r_pid);
+SEXP psw__proc_kill(SEXP r_pid);
+SEXP psw__win32_QueryDosDevice(SEXP r_path);
 
 /* ---------------------------------------------------------------------*/
 /* Internals                                                            */

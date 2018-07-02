@@ -25,17 +25,17 @@ void *ps__zombie_process(const char *msg);
 void *ps__no_memory(const char *msg);
 
 #ifdef PS__WINDOWS
-void *ps__set_error_from_windows_error(long err);
+void *psw__set_error_from_windows_error(long err);
 #endif
 
 SEXP ps__str_to_utf8(const char *str);
 SEXP ps__str_to_utf8_size(const char *str, size_t size);
 
 #ifdef PS__WINDOWS
-SEXP ps__utf16_to_rawsxp(const WCHAR* ws, int size);
-SEXP ps__utf16_to_charsxp(const WCHAR* ws, int size);
-SEXP ps__utf16_to_strsxp(const WCHAR* ws, int size);
-int ps__utf8_to_utf16(const char* s, WCHAR** ws_ptr);
+SEXP psw__utf16_to_rawsxp(const WCHAR* ws, int size);
+SEXP psw__utf16_to_charsxp(const WCHAR* ws, int size);
+SEXP psw__utf16_to_strsxp(const WCHAR* ws, int size);
+int psw__utf8_to_utf16(const char* s, WCHAR** ws_ptr);
 #endif
 
 SEXP ps__build_string(const char *str, ...);
@@ -44,15 +44,21 @@ SEXP ps__build_named_list(const  char *template, ...);
 
 SEXP ps__os_type();
 
-#ifdef PS__POSIX
-SEXP ps__define_signals();
-SEXP ps__define_errno();
-#endif
+/* POSIX */
+SEXP psp__define_signals();
+SEXP psp__define_errno();
 
-#ifdef PS__LINUX
-SEXP ps__readlink(SEXP path);
-SEXP ps__linux_clk_tck();
-SEXP ps__linux_pagesize();
-#endif
+/* LINUX */
+SEXP psl__readlink(SEXP path);
+SEXP psl__linux_clk_tck();
+SEXP psl__linux_pagesize();
+SEXP psl__parse_stat_file(SEXP r_procfs, SEXP r_pid);
+SEXP psl__linux_parse_environ(SEXP r_procfs, SEXP r_pid);
+SEXP psl__linux_match_environ(SEXP r_procfs, SEXP r_marker, SEXP r_pid);
+SEXP psl__kill_tree_process(SEXP r_procfs, SEXP r_marker, SEXP r_pid,
+			    SEXP sig);
+
+/* WINDOWS */
+SEXP psw__kill_tree_process(SEXP r_marker, SEXP r_pid);
 
 #endif

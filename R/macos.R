@@ -1,6 +1,6 @@
 
 ps_pids_macos <- function() {
-  ls <- .Call(ps__pids)
+  ls <- .Call(psm__pids)
   ## 0 is missing from the list, usually, even though it is a process
   if (! 0L %in% ls && ps_pid_exists(0L)) {
     ls <- c(ls, 0L)
@@ -9,7 +9,7 @@ ps_pids_macos <- function() {
 }
 
 ps_pid_exists_macos <- function(pid) {
-  .Call(ps__pid_exists, as.integer(pid))
+  .Call(psp__pid_exists, as.integer(pid))
 }
 
 #' @importFrom R6 R6Class
@@ -23,15 +23,15 @@ process_macos <- function() {
       public = list(
 
         exe = function() {
-          .Call(ps__proc_exe, self$.pid)
+          .Call(psm__proc_exe, self$.pid)
         },
 
         cmdline = function() {
-          .Call(ps__proc_cmdline, self$.pid)
+          .Call(psm__proc_cmdline, self$.pid)
         },
 
         environ = function() {
-          parse_envs(.Call(ps__proc_environ, self$.pid))
+          parse_envs(.Call(psm__proc_environ, self$.pid))
         },
 
         ppid = function() {
@@ -39,7 +39,7 @@ process_macos <- function() {
         },
 
         cwd = function() {
-          .Call(ps__proc_cwd, self$.pid)
+          .Call(psm__proc_cwd, self$.pid)
         },
 
         uids = function() {
@@ -84,11 +84,11 @@ process_macos <- function() {
 
         ## Internal methods
         .get_kinfo_proc = decorator(memoize_when_activated, function() {
-          .Call(ps__proc_kinfo_oneshot, self$.pid)
+          .Call(psm__proc_kinfo_oneshot, self$.pid)
         }),
 
         .get_pidtaskinfo = decorator(memoize_when_activated, function() {
-          .Call(ps__proc_pidtaskinfo_oneshot, self$.pid)
+          .Call(psm__proc_pidtaskinfo_oneshot, self$.pid)
         }),
 
         .proc_name = function() {

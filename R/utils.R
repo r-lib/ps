@@ -47,7 +47,7 @@ str_strip <- function(x) {
 
 readlink <- function(path) {
   assert_that(is_string(path))
-  path <- .Call(ps__readlink, path)
+  path <- .Call(psl__readlink, path)
   ## Certain paths have ' (deleted)' appended. Usually this is
   ## bogus as the file actually exists. Even if it doesn't we
   ## don't care.
@@ -148,4 +148,14 @@ read_lines <- function(path) {
   suppressWarnings(con <- file(path, open = "r"))
   on.exit(close(con), add = TRUE)
   readLines(con)
+}
+
+get_id <- function() {
+  paste0(
+    "PS",
+    paste(
+      sample(c(LETTERS, 0:9), 10, replace = TRUE),
+      collapse = ""
+    )
+  )
 }

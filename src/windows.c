@@ -219,7 +219,7 @@ ps__get_num_cpus(int fail_on_err) {
   if (_GetActiveProcessorCount != NULL) {
     ncpus = _GetActiveProcessorCount(ALL_PROCESSOR_GROUPS);
     if ((ncpus == 0) && (fail_on_err == 1)) {
-      ps__set_error_from_windows_error(0);
+      psw__set_error_from_windows_error(0);
     }
   }
   else {
@@ -250,7 +250,7 @@ static ULONGLONG (*ps__GetTickCount64)(void) = NULL;
  * Return a Python float representing the system uptime expressed in seconds
  * since the epoch.
  */
-SEXP ps__boot_time() {
+SEXP psw__boot_time() {
 #if (_WIN32_WINNT >= 0x0600)  // Windows Vista
   ULONGLONG uptime;
 #else
@@ -311,7 +311,7 @@ SEXP ps__boot_time() {
 /*
  * Return 1 if PID exists in the current process list, else 0.
  */
-SEXP ps__pid_exists(SEXP r_pid) {
+SEXP psw__pid_exists(SEXP r_pid) {
   long pid = INTEGER(r_pid)[0];
   int status;
 
@@ -325,7 +325,7 @@ SEXP ps__pid_exists(SEXP r_pid) {
 /*
  * Return a Python list of all the PIDs running on the system.
  */
-SEXP ps__pids() {
+SEXP psw__pids() {
   DWORD *proclist = NULL;
   DWORD numberOfReturnedPIDs;
   DWORD i;
@@ -350,7 +350,7 @@ SEXP ps__pids() {
 /*
  * Kill a process given its PID.
  */
-SEXP ps__proc_kill(SEXP r_pid) {
+SEXP psw__proc_kill(SEXP r_pid) {
   HANDLE hProcess;
   DWORD err;
   long pid = INTEGER(r_pid)[0];
@@ -369,9 +369,9 @@ SEXP ps__proc_kill(SEXP r_pid) {
       ps__no_such_process("");
     }
     else {
-      ps__set_error_from_windows_error(0);
+      psw__set_error_from_windows_error(0);
     }
-    return NULL;
+    ps__throw_error();
   }
 
   // kill the process
@@ -380,8 +380,8 @@ SEXP ps__proc_kill(SEXP r_pid) {
     // See: https://github.com/giampaolo/psutil/issues/1099
     if (err != ERROR_ACCESS_DENIED) {
       CloseHandle(hProcess);
-      ps__set_error_from_windows_error(0);
-      return NULL;
+      psw__set_error_from_windows_error(0);
+      ps__throw_error();
     }
   }
 
@@ -465,7 +465,7 @@ ps__proc_wait(PyObject *self, PyObject *args) {
 /*
  * Return a Python tuple (user_time, kernel_time)
  */
-SEXP ps__proc_cpu_times(SEXP r_pid) {
+SEXP psw__proc_cpu_times(SEXP r_pid) {
   long        pid = INTEGER(r_pid)[0];
   HANDLE      hProcess;
   FILETIME    ftCreate, ftExit, ftKernel, ftUser;
@@ -482,7 +482,7 @@ SEXP ps__proc_cpu_times(SEXP r_pid) {
       ps__throw_error();
     }
     else {
-      ps__set_error_from_windows_error(0);
+      psw__set_error_from_windows_error(0);
       ps__throw_error();
     }
   }
@@ -509,7 +509,7 @@ SEXP ps__proc_cpu_times(SEXP r_pid) {
  * Return a Python float indicating the process create time expressed in
  * seconds since the epoch.
  */
-SEXP ps__proc_create_time(SEXP r_pid) {
+SEXP psw__proc_create_time(SEXP r_pid) {
   long        pid = INTEGER(r_pid)[0];
   long long   unix_time;
   HANDLE      hProcess;
@@ -517,7 +517,7 @@ SEXP ps__proc_create_time(SEXP r_pid) {
 
   // special case for PIDs 0 and 4, return system boot time
   if (0 == pid || 4 == pid)
-    return ps__boot_time();
+    return psw__boot_time();
 
   hProcess = ps__handle_from_pid(pid);
   if (hProcess == NULL)
@@ -531,7 +531,7 @@ SEXP ps__proc_create_time(SEXP r_pid) {
       ps__throw_error();
     }
     else {
-      ps__set_error_from_windows_error(0);
+      psw__set_error_from_windows_error(0);
       ps__throw_error();
     }
   }
@@ -680,7 +680,7 @@ ps__cpu_count_phys(PyObject *self, PyObject *args) {
 /*
  * Return process cmdline as a Python list of cmdline arguments.
  */
-SEXP ps__proc_cmdline(SEXP r_pid) {
+SEXP psw__proc_cmdline(SEXP r_pid) {
   long pid = INTEGER(r_pid)[0];
   int pid_return;
 
@@ -703,7 +703,7 @@ SEXP ps__proc_cmdline(SEXP r_pid) {
 /*
  * Return process cmdline as a Python list of cmdline arguments.
  */
-SEXP ps__proc_environ(SEXP r_pid) {
+SEXP psw__proc_environ(SEXP r_pid) {
   long pid = INTEGER(r_pid)[0];
   int pid_return;
 
@@ -725,7 +725,7 @@ SEXP ps__proc_environ(SEXP r_pid) {
 /*
  * Return process executable path.
  */
-SEXP ps__proc_exe(SEXP r_pid) {
+SEXP psw__proc_exe(SEXP r_pid) {
   long pid =  INTEGER(r_pid)[0];
   HANDLE hProcess;
   wchar_t exe[MAX_PATH];
@@ -736,11 +736,11 @@ SEXP ps__proc_exe(SEXP r_pid) {
 
   if (GetProcessImageFileNameW(hProcess, exe, MAX_PATH) == 0) {
     CloseHandle(hProcess);
-    ps__set_error_from_windows_error(0);
+    psw__set_error_from_windows_error(0);
     ps__throw_error();
   }
   CloseHandle(hProcess);
-  return ScalarString(ps__utf16_to_charsxp(exe, -1));
+  return ScalarString(psw__utf16_to_charsxp(exe, -1));
 }
 
 /*
@@ -749,7 +749,7 @@ SEXP ps__proc_exe(SEXP r_pid) {
  * but it raise AccessDenied for processes owned by other users
  * in which case we fall back on using this.
  */
-SEXP ps__proc_name(SEXP r_pid) {
+SEXP psw__proc_name(SEXP r_pid) {
   long pid = INTEGER(r_pid)[0];;
   int ok;
   PROCESSENTRY32W pentry;
@@ -757,20 +757,20 @@ SEXP ps__proc_name(SEXP r_pid) {
 
   hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, pid);
   if (hSnapShot == INVALID_HANDLE_VALUE) {
-    ps__set_error_from_windows_error(0);
+    psw__set_error_from_windows_error(0);
     ps__throw_error();
   }
   pentry.dwSize = sizeof(PROCESSENTRY32W);
   ok = Process32FirstW(hSnapShot, &pentry);
   if (! ok) {
     CloseHandle(hSnapShot);
-    ps__set_error_from_windows_error(0);
+    psw__set_error_from_windows_error(0);
     ps__throw_error();
   }
   while (ok) {
     if (pentry.th32ProcessID == pid) {
       CloseHandle(hSnapShot);
-      return ScalarString(ps__utf16_to_charsxp(pentry.szExeFile, -1));
+      return ScalarString(psw__utf16_to_charsxp(pentry.szExeFile, -1));
     }
     ok = Process32NextW(hSnapShot, &pentry);
   }
@@ -785,7 +785,7 @@ SEXP ps__proc_name(SEXP r_pid) {
 /*
  * Return process memory information as a Python tuple.
  */
-SEXP ps__proc_memory_info(SEXP r_pid) {
+SEXP psw__proc_memory_info(SEXP r_pid) {
   HANDLE hProcess;
   DWORD pid = INTEGER(r_pid)[0];
 #if (_WIN32_WINNT >= 0x0501)  // Windows XP with SP2
@@ -802,7 +802,7 @@ SEXP ps__proc_memory_info(SEXP r_pid) {
   if (! GetProcessMemoryInfo(hProcess, (PPROCESS_MEMORY_COUNTERS)&cnt,
 			     sizeof(cnt))) {
     CloseHandle(hProcess);
-    ps__set_error_from_windows_error(0);
+    psw__set_error_from_windows_error(0);
     ps__throw_error();
   }
 
@@ -1097,7 +1097,7 @@ ps__per_cpu_times(PyObject *self, PyObject *args) {
 /*
  * Return process current working directory as a Python string.
  */
-SEXP ps__proc_cwd(SEXP r_pid)  {
+SEXP psw__proc_cwd(SEXP r_pid)  {
   long pid = INTEGER(r_pid)[0];
   int pid_return;
 
@@ -1128,7 +1128,7 @@ int ps__proc_suspend_or_resume(DWORD pid, int suspend) {
 
   hThreadSnap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
   if (hThreadSnap == INVALID_HANDLE_VALUE) {
-    ps__set_error_from_windows_error(0);
+    psw__set_error_from_windows_error(0);
     return FALSE;
   }
 
@@ -1136,7 +1136,7 @@ int ps__proc_suspend_or_resume(DWORD pid, int suspend) {
   te32.dwSize = sizeof(THREADENTRY32);
 
   if (! Thread32First(hThreadSnap, &te32)) {
-    ps__set_error_from_windows_error(0);
+    psw__set_error_from_windows_error(0);
     CloseHandle(hThreadSnap);
     return FALSE;
   }
@@ -1149,14 +1149,14 @@ int ps__proc_suspend_or_resume(DWORD pid, int suspend) {
       hThread = OpenThread(THREAD_SUSPEND_RESUME, FALSE,
 			   te32.th32ThreadID);
       if (hThread == NULL) {
-	ps__set_error_from_windows_error(0);
+	psw__set_error_from_windows_error(0);
 	CloseHandle(hThread);
 	CloseHandle(hThreadSnap);
 	return FALSE;
       }
       if (suspend == 1) {
 	if (SuspendThread(hThread) == (DWORD) - 1) {
-	  ps__set_error_from_windows_error(0);
+	  psw__set_error_from_windows_error(0);
 	  CloseHandle(hThread);
 	  CloseHandle(hThreadSnap);
 	  return FALSE;
@@ -1164,7 +1164,7 @@ int ps__proc_suspend_or_resume(DWORD pid, int suspend) {
       }
       else {
 	if (ResumeThread(hThread) == (DWORD) - 1) {
-	  ps__set_error_from_windows_error(0);
+	  psw__set_error_from_windows_error(0);
 	  CloseHandle(hThread);
 	  CloseHandle(hThreadSnap);
 	  return FALSE;
@@ -1179,7 +1179,7 @@ int ps__proc_suspend_or_resume(DWORD pid, int suspend) {
 }
 
 
-SEXP ps__proc_suspend(SEXP r_pid) {
+SEXP psw__proc_suspend(SEXP r_pid) {
   long pid = INTEGER(r_pid)[0];
   int suspend = 1;
 
@@ -1190,7 +1190,7 @@ SEXP ps__proc_suspend(SEXP r_pid) {
 }
 
 
-SEXP ps__proc_resume(SEXP r_pid)  {
+SEXP psw__proc_resume(SEXP r_pid)  {
   long pid = INTEGER(r_pid)[0];
   int suspend = 0;
 
@@ -1334,18 +1334,18 @@ ps__proc_open_files(PyObject *self, PyObject *args) {
   and return the corresponding drive letter (e.g. "C:\\").
   If no match is found return an empty string.
 */
-SEXP ps__win32_QueryDosDevice(SEXP r_path) {
+SEXP psw__win32_QueryDosDevice(SEXP r_path) {
   WCHAR *lpDevicePath;
   WCHAR d = 'A';
 
-  ps__utf8_to_utf16(CHAR(STRING_ELT(r_path, 0)), &lpDevicePath);
+  psw__utf8_to_utf16(CHAR(STRING_ELT(r_path, 0)), &lpDevicePath);
 
   while (d <= 'Z') {
     WCHAR szDeviceName[3] = {d, ':', '\0' };
     WCHAR szTarget[512] = {0};
     if (QueryDosDeviceW(szDeviceName, szTarget, 511) != 0) {
       if (wcscmp(lpDevicePath, szTarget) == 0) {
-	return ScalarString(ps__utf16_to_charsxp(szDeviceName, -1));
+	return ScalarString(psw__utf16_to_charsxp(szDeviceName, -1));
       }
     }
     d++;
@@ -1357,7 +1357,7 @@ SEXP ps__win32_QueryDosDevice(SEXP r_path) {
 /*
  * Return process username as a "DOMAIN//USERNAME" string.
  */
-SEXP ps__proc_username(SEXP r_pid) {
+SEXP psw__proc_username(SEXP r_pid) {
   long pid = INTEGER(r_pid)[0];
   HANDLE processHandle = NULL;
   HANDLE tokenHandle = NULL;
@@ -1375,7 +1375,7 @@ SEXP ps__proc_username(SEXP r_pid) {
     ps__throw_error();
 
   if (!OpenProcessToken(processHandle, TOKEN_QUERY, &tokenHandle)) {
-    ps__set_error_from_windows_error(0);
+    psw__set_error_from_windows_error(0);
     ps__throw_error();
   }
 
@@ -1398,7 +1398,7 @@ SEXP ps__proc_username(SEXP r_pid) {
 	  continue;
 	}
 	else {
-	  ps__set_error_from_windows_error(0);
+	  psw__set_error_from_windows_error(0);
 	  goto error;
 	}
       }
@@ -1431,7 +1431,7 @@ SEXP ps__proc_username(SEXP r_pid) {
 	  continue;
 	}
 	else {
-	  ps__set_error_from_windows_error(0);
+	  psw__set_error_from_windows_error(0);
 	  goto error;
 	}
       }
@@ -1439,8 +1439,8 @@ SEXP ps__proc_username(SEXP r_pid) {
   }
 
   PROTECT(ret = allocVector(STRSXP, 2));
-  SET_STRING_ELT(ret, 0, ps__utf16_to_charsxp(domainName, -1));
-  SET_STRING_ELT(ret, 1, ps__utf16_to_charsxp(name, -1));
+  SET_STRING_ELT(ret, 0, psw__utf16_to_charsxp(domainName, -1));
+  SET_STRING_ELT(ret, 1, psw__utf16_to_charsxp(name, -1));
 
   UNPROTECT(1);
   return ret;
@@ -2201,7 +2201,7 @@ ps__proc_cpu_affinity_set(PyObject *self, PyObject *args) {
  * Return True if one of the process threads is in a waiting or
  * suspended status.
  */
-SEXP ps__proc_is_suspended(SEXP r_pid) {
+SEXP psw__proc_is_suspended(SEXP r_pid) {
   DWORD pid = INTEGER(r_pid)[0];
   ULONG i;
   PSYSTEM_PROCESS_INFORMATION process;
@@ -2846,7 +2846,7 @@ ps__proc_num_handles(PyObject *self, PyObject *args) {
  * - memory_info() (fallback)
  */
 
-SEXP ps__proc_info(SEXP r_pid) {
+SEXP psw__proc_info(SEXP r_pid) {
   DWORD pid = INTEGER(r_pid)[0];
   PSYSTEM_PROCESS_INFORMATION process;
   PVOID buffer;
@@ -3037,7 +3037,7 @@ ps__proc_memory_maps(PyObject *self, PyObject *args) {
 /*
  * Return a {pid:ppid, ...} dict for all running processes.
  */
-SEXP ps__ppid_map() {
+SEXP psw__ppid_map() {
   SEXP ret;
   HANDLE handle = NULL;
   PROCESSENTRY32 pe = {0};
@@ -3046,7 +3046,7 @@ SEXP ps__ppid_map() {
 
   handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
   if (handle == INVALID_HANDLE_VALUE) {
-    ps__set_error_from_windows_error(0);
+    psw__set_error_from_windows_error(0);
     ps__throw_error();
   }
 
@@ -3578,6 +3578,58 @@ ps__sensors_battery(PyObject *self, PyObject *args) {
 }
 
 #endif
+
+SEXP psw__kill_tree_process(SEXP r_marker, SEXP r_pid) {
+  const char *marker = CHAR(STRING_ELT(r_marker, 0));
+  long pid = INTEGER(r_pid)[0];
+  SEXP env;
+  HANDLE hProcess;
+  int i, n;
+  DWORD err;
+
+  if (pid == 0) {
+    ps__access_denied("");
+    ps__throw_error();
+  }
+
+  hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
+  if (hProcess == NULL) {
+    if (GetLastError() == ERROR_INVALID_PARAMETER) {
+      // see https://github.com/giampaolo/psutil/issues/24
+      ps__debug("OpenProcess -> ERROR_INVALID_PARAMETER turned "
+		   "into NoSuchProcess");
+      ps__no_such_process("");
+    }
+    else {
+      psw__set_error_from_windows_error(0);
+    }
+    ps__throw_error();
+  }
+
+  /* Check environment again, to avoid racing */
+  PROTECT(env = psw__proc_environ(r_pid));
+  n = LENGTH(env);
+  for (i = 0; i < n; i++) {
+    if (strstr(CHAR(STRING_ELT(env, i)), marker)) {
+      if (! TerminateProcess(hProcess, SIGTERM)) {
+	err = GetLastError();
+	// See: https://github.com/giampaolo/psutil/issues/1099
+	if (err != ERROR_ACCESS_DENIED) {
+	  CloseHandle(hProcess);
+	  psw__set_error_from_windows_error(0);
+	  ps__throw_error();
+	}
+      }
+      CloseHandle(hProcess);
+      UNPROTECT(1);
+      return ScalarLogical(1);
+    }
+  }
+
+  CloseHandle(hProcess);
+  UNPROTECT(1);
+  return ScalarLogical(0);
+}
 
 SEXP ps__init(SEXP psenv, SEXP constenv) {
   return R_NilValue;

@@ -3,7 +3,7 @@ ps_pids_linux <- function() {
 }
 
 ps_pid_exists_linux <- function(pid) {
-  if (! .Call(ps__pid_exists, as.integer(pid)))  {
+  if (! .Call(psp__pid_exists, as.integer(pid)))  {
     FALSE
   } else {
     ## Linux's apparently does not distinguish between PIDs and TIDs
@@ -46,7 +46,6 @@ linux_wrap_exceptions <- function(fun) {
     tryCatch(
       fun(...),
       error = function(e) {
-        print(e)
         path <- sprintf("%s/%i", get_procfs_path(), self$.pid)
         if (file.exists(path)) {
           stop(ps__access_denied(self$.pid, self$.name))
@@ -227,14 +226,14 @@ process_linux <- function() {
 
 linux_clock_ticks <- function() {
   if (is.null(ps_env$clock_ticks)) {
-    ps_env$clock_ticks <- .Call(ps__linux_clk_tck)
+    ps_env$clock_ticks <- .Call(psl__linux_clk_tck)
   }
   ps_env$clock_ticks
 }
 
 linux_pagesize <- function() {
   if (is.null(ps_env$pagesize)) {
-    ps_env$pagesie <- .Call(ps__linux_pagesize)
+    ps_env$pagesie <- .Call(psl__linux_pagesize)
   }
   ps_env$pagesize
 }
