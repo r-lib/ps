@@ -31,6 +31,8 @@ utils::globalVariables(unique(c(
   "ps__readlink",
   "ps__linux_clk_tck",
   "ps__linux_pagesize",
+  "ps__linux_match_environ",
+  "ps__kill_tree_process",
 
   ## WINDOWS
   "ps__pids",
@@ -51,5 +53,6 @@ utils::globalVariables(unique(c(
   "ps__proc_suspend",
   "ps__proc_resume",
   "ps__proc_kill",
-  "ps__win32_QueryDosDevice"
+  "ps__win32_QueryDosDevice",
+  "ps__kill_tree_process"
 )))
