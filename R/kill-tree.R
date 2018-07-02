@@ -90,8 +90,8 @@ ps_kill_tree_linux <- function(marker, exclude_me, sig) {
   ret <- lapply(cand, function(p) {
     tryCatch({
       nm <- process(p)$name()
-      ret <- .Call(ps__kill_tree_process, proc, marker, p, sig)
-      if (!is.null(ret)) structure(p, names = nm) },
+      rv <- .Call(ps__kill_tree_process, proc, marker, p, sig)
+      if (!is.null(rv)) structure(p, names = nm) },
       error = function(e) NULL
     )
   })
