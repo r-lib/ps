@@ -62,7 +62,7 @@ ps_kill_tree_macos <- function(marker, exclude_me, sig) {
     mypid <- Sys.getpid()
     .Call(ps__kill, mypid, sig)
     info <- .Call(ps__proc_kinfo_oneshot, mypid)
-    ret <- c(ret, list(structure(p, names = info$name)))
+    ret <- c(ret, list(structure(mypid, names = info$name)))
   }
 
   ## This works for empty lists as well, and keeps names
@@ -100,7 +100,7 @@ ps_kill_tree_linux <- function(marker, exclude_me, sig) {
     mypid <- Sys.getpid()
     .Call(ps__kill, mypid, sig)
     me <- process(mypid)
-    ret <- c(ret, list(structure(p, names = me$name())))
+    ret <- c(ret, list(structure(mypid, names = me$name())))
   }
 
   ## This works for empty lists as well, and keeps names
@@ -143,7 +143,7 @@ ps_kill_tree_windows <- function(marker, exclude_me) {
     mypid <- Sys.getpid()
     .Call(ps__proc_kill, mypid)
     me <- process(mypid)
-    ret <- c(ret, list(structure(p, names = me$name())))
+    ret <- c(ret, list(structure(mypid, names = me$name())))
   }
 
   ## This works for empty lists as well, and keeps names
