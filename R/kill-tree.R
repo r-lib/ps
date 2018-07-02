@@ -1,17 +1,63 @@
 
+#' Mark a process and its (future) child tree
+#'
+#' `ps_mark_tree()` generates a random environment variable name and sets
+#' it in the  current R process. This environment variable will be (by
+#' default) inherited by all child (and grandchild, etc.) processes, and
+#' will help finding these processes, even if and when they are (no longer)
+#' related to the current R process. (I.e. they are not connected in the
+#' process tree.)
+#'
+#' `ps_kill_tree()` finds the processes that set the supplied environment
+#' variable, and kills them (or sends them the specified signal on Unix).
+#'
+#' `with_process_cleanup()` evaluates an R expression, and cleans up all
+#' external processes that were started by the R process while evaluating
+#' the expression. This includes child processes of child processes, etc.,
+#' recursively.
+#'
+#' @return `ps_mark_tree()` returns the name of the environment variable,
+#' which can be used as the `marker` in `ps_kill_tree()`.
+#'
+#' `ps_kill_tree()` returns the pids of the killed processes, in a named
+#' integer vector. The names are the file names of the executables, when
+#' available.
+#'
+#' `with_process_cleanup()` returns the value of the evaluated expression.
+#'
+#' @rdname ps_kill_tree
 #' @export
 
 ps_mark_tree <- function() {
-  id <- ps_env$marker <- ps_env$marker %||% get_id()
+  id <- get_id()
   do.call(Sys.setenv, structure(list("YES"), names = id))
   id
 }
 
+#' @param expr R expression to evaluate in the new context.
+#'
+#' @rdname ps_kill_tree
 #' @export
 
-ps_kill_tree <- function(marker = NULL, exclude_me = TRUE,
+with_process_cleanup <- function(expr) {
+  id <- ps_mark_tree()
+  on.exit(ps_kill_tree(id), add = TRUE)
+  expr
+}
+
+#' @param marker String scalar, the name of the environment variable to
+#' use to find the marked processes.
+#' @param exclude_me If `TRUE`, then the calling process is not killed,
+#' even if it sets the `marked` environment variable.
+#' @param sig The signal to send to the marked processes on Unix. On
+#' Windows this argument is ignored currently.
+#'
+#' @rdname ps_kill_tree
+#' @export
+
+ps_kill_tree <- function(marker, exclude_me = TRUE,
                          sig = signals()$SIGKILL) {
-  marker <- marker %||% ps_env$marker
+
   assert_that(is_string(marker), is_flag(exclude_me))
 
   osname <- ps_os_name()
