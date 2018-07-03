@@ -29,7 +29,7 @@ ps__zombie_process <- function(pid = NULL, name = NULL, ppid = NULL) {
   name <- name %||% "???"
   ppid <- as.character(ppid %||% "???")
   structure(
-    list(message = sprintf("Zombie process: %s (pid %i, parent: %i)",
+    list(message = sprintf("Zombie process: %s (pid %s, parent: %s)",
                            name, pid, ppid), errno = 0),
     class = c("zombie_process", "ps_error", "error", "condition"))
 }
