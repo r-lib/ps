@@ -26,9 +26,15 @@ void *ps__set_error_impl(const char *class, int system_errno,
   va_end(args);
 
   SET_VECTOR_ELT(ps__last_error, 0, mkString(ps__last_error_string));
-  SET_VECTOR_ELT(
-    ps__last_error, 1,
-    ps__build_string(class, "ps_error", "error", "condition", 0));
+  if (class) {
+    SET_VECTOR_ELT(
+      ps__last_error, 1,
+      ps__build_string(class, "ps_error", "error", "condition", 0));
+  } else {
+    SET_VECTOR_ELT(
+      ps__last_error, 1,
+      ps__build_string("ps_error", "error", "condition", 0));
+  }
   SET_VECTOR_ELT(ps__last_error, 2, ScalarInteger(system_errno));
   return NULL;
 }
@@ -37,7 +43,7 @@ void *ps__set_error(const char *msg, ...) {
   va_list args;
 
   va_start(args, msg);
-  ps__set_error_impl("ps_error", 0, msg, args);
+  ps__set_error_impl(0, 0, msg, args);
   va_end(args);
 
   return NULL;
@@ -69,7 +75,11 @@ void *ps__no_memory(const char *msg) {
 }
 
 void *ps__set_error_from_errno() {
-  return ps__set_error_impl("os_error", errno, "%s", strerror(errno));
+  if (errno) {
+    return ps__set_error_impl("os_error", errno, "%s", strerror(errno));
+  } else {
+    return ps__set_error_impl(0, errno, "%s", strerror(errno));
+  }
 }
 
 #ifdef PS__WINDOWS
