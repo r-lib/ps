@@ -12,6 +12,25 @@ ps_pid_exists_macos <- function(pid) {
   .Call(psp__pid_exists, as.integer(pid))
 }
 
+catch_zombie <- function(fun) {
+  fun
+  function(...) {
+    tryCatch(
+      fun(...),
+      ps_error = function(err) {
+        tryCatch(
+          status <- self$status(),
+          no_such_process = function() stop(err))
+        if (status ==  "zombie") {
+          stop(ps__zombie_process(self$.pid, self$.name, self$.ppid))
+        } else {
+          stop(ps__access_denied(self$.pid, self$.name))
+        }
+      }
+    )
+  }
+}
+
 #' @importFrom R6 R6Class
 
 process_macos <- function() {
@@ -22,25 +41,25 @@ process_macos <- function() {
       inherit = process_posix(),
       public = list(
 
-        exe = function() {
+        exe = decorator(catch_zombie, function() {
           .Call(psm__proc_exe, self$.pid)
-        },
+        }),
 
-        cmdline = function() {
+        cmdline = decorator(catch_zombie, function() {
           .Call(psm__proc_cmdline, self$.pid)
-        },
+        }),
 
-        environ = function() {
+        environ = decorator(catch_zombie, function() {
           parse_envs(.Call(psm__proc_environ, self$.pid))
-        },
+        }),
 
         ppid = function() {
           as.integer(self$.get_kinfo_proc()$ppid)
         },
 
-        cwd = function() {
+        cwd = decorator(catch_zombie, function() {
           .Call(psm__proc_cwd, self$.pid)
-        },
+        }),
 
         uids = function() {
           kinfo <- self$.get_kinfo_proc()
@@ -87,7 +106,8 @@ process_macos <- function() {
           .Call(psm__proc_kinfo_oneshot, self$.pid)
         }),
 
-        .get_pidtaskinfo = decorator(memoize_when_activated, function() {
+        .get_pidtaskinfo = decorator(memoize_when_activated, catch_zombie,
+                                     function() {
           .Call(psm__proc_pidtaskinfo_oneshot, self$.pid)
         }),
 
