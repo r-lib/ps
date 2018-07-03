@@ -58,7 +58,7 @@ process_windows <- function() {
           .Call(psw__proc_cmdline, as.integer(self$.pid))
         },
 
-        environ = function(cached = TRUE) {
+        environ = function() {
           parse_envs(.Call(psw__proc_environ, self$.pid))
         },
 
@@ -96,7 +96,7 @@ process_windows <- function() {
           ct <- tryCatch(
             c(.Call(psw__proc_cpu_times, self$.pid), NA_real_, NA_real_),
             error = function(e) {
-              info <- self$.oneshot_info(cached = FALSE)
+              info <- self$.oneshot_info()
               c(info[["user_time"]], info[["kernel_time"]], NA_real_, NA_real_)
           })
           self$.common_pcputimes(ct)
