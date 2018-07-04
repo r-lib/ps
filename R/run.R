@@ -36,7 +36,7 @@ ps_start <- function(command, args = character(), ...) {
     stop(ps__package_not_available("processx", "ps::ps_start"))
   }
 
-  if (packageVersion("processx") < "3.1.0.9005") {
+  if (package_version(getNamespaceVersion("processx")) < "3.1.0.9005") {
     stop(ps__package_not_available("processx >= 3.1.0.9005", "ps::ps_start"))
   }
 
