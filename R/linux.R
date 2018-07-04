@@ -181,11 +181,7 @@ process_linux <- function() {
 
         ## Internal methods
         .parse_stat_file = decorator(memoize_when_activated, function() {
-          path <- sprintf("%s/%i/stat", get_procfs_path(), self$.pid)
-          stat <- paste(read_lines(path), collapse = "\n")
-          name <- sub("^.*[(](.*)[)].*$", "\\1", stat, perl = TRUE)
-          fields <- strsplit(sub("^.*[)]\\s+", "", stat), "\\s+")[[1]]
-          c(name, fields)
+          .Call(psl__parse_stat_file, get_procfs_path(), self$.pid)
         }),
 
         .read_status_file = decorator(memoize_when_activated, function()  {

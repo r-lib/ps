@@ -78,7 +78,7 @@ void *ps__set_error_from_errno() {
   if (errno) {
     return ps__set_error_impl("os_error", errno, "%s", strerror(errno));
   } else {
-    return ps__set_error_impl(0, errno, "%s", strerror(errno));
+    return ps__set_error_impl(0, errno, "run time error");
   }
 }
 

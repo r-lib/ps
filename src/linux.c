@@ -618,9 +618,15 @@ SEXP psl__parse_stat_file(SEXP r_procfs, SEXP r_pid) {
   pid_t pid = INTEGER(r_pid)[0];
   char path[512];
   int ret;
-  SEXP result = R_NilValue;
   char *buf;
   char *l, *r;
+
+  char state[2] = { 0, 0 };
+  int ppid, pgrp, session, tty_nr, tpgid;
+  unsigned int flags;
+  unsigned long minflt, cminflt, majflt, cmajflt, utime, stime;
+  long int cutime, cstime, priority, nice, num_threads, itrealvalue;
+  unsigned long long starttime;
 
   ret = snprintf(path, sizeof(path), "%s/%d/stat", procfs, (int) pid);
   if (ret >= sizeof(path)) {
@@ -636,6 +642,9 @@ SEXP psl__parse_stat_file(SEXP r_procfs, SEXP r_pid) {
     ps__set_error_from_errno();
     ps__throw_error();
   }
+  /* This removed the last character, but that's a \n anyway.
+     At least we have a zero terminated string... */
+  *(buf + ret) = '\0';
 
   /* Find the first '(' and last ')', that's the end of the command */
   l = strchr(buf, '(');
@@ -645,13 +654,27 @@ SEXP psl__parse_stat_file(SEXP r_procfs, SEXP r_pid) {
     ps__throw_error();
   }
 
-  PROTECT(result = allocVector(VECSXP, 2));
-  SET_VECTOR_ELT(result, 0, ScalarString(Rf_mkCharLen(l + 1, r - l - 1)));
-  SET_VECTOR_ELT(result, 1, allocVector(RAWSXP, ret - (r - buf + 3)));
-  memcpy(RAW(VECTOR_ELT(result, 1)), r + 2, ret - (r - buf + 3));
+  *r = '\0';
 
-  UNPROTECT(1);
-  return result;
+  ret = sscanf(r+2,
+    "%c %d %d %d %d %d %u %lu %lu %lu %lu %lu %lu %ld %ld %ld %ld %ld %ld %llu",
+    state, &ppid, &pgrp, &session, &tty_nr, &tpgid, &flags, &minflt,
+    &cminflt, &majflt, &cmajflt, &utime, &stime, &cutime, &cstime, &priority,
+    &nice, &num_threads, &itrealvalue, &starttime);
+
+  if (ret == -1) {
+    REprintf("%s", r+2);
+    ps__set_error_from_errno();
+    ps__throw_error();
+  } else if (ret != 20) {
+    error("Cannot parse stat file, parsed: %i/20 fields", ret);
+  }
+
+  return ps__build_list(
+    "ssiiiiiIkkkkkkllllllK",
+    /* comm */ l + 1, state, ppid, pgrp, session, tty_nr, tpgid, flags,
+    minflt, cminflt, majflt, cmajflt, utime, stime, cutime, cstime,
+    priority, nice, num_threads, itrealvalue, starttime);
 }
 
 SEXP psl__linux_parse_environ(SEXP r_procfs, SEXP r_pid) {
