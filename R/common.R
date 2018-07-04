@@ -57,7 +57,11 @@ process_common <- function() {
             ctime <- self$.create_time
             tryCatch({
               parent <- process(ppid)
-              if (parent$.create_time <= ctime) return(parent) },
+              if (parent$.create_time <= ctime) {
+                return(parent)
+              } else {
+                stop(ps__no_such_process(ppid))
+              } },
               no_such_process = function(e) e)
           }
         },
