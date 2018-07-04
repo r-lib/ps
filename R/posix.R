@@ -106,6 +106,13 @@ get_pw_uid <- function(uid) {
   .Call(psp__get_pw_uid, as.integer(uid))
 }
 
+#' List of all supported signals
+#'
+#' Only the signals supported by the current platform are included.
+#' @return List of integers, named by signal names.
+#' 
+#' @export
+
 signals <- function() {
   ps_env$constants$signals
 }
