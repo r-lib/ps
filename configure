@@ -101,7 +101,6 @@ elif [ -n "$MACOS" ]; then
     MACROS="${MACROS} PS__MACOS"
     PS__MACOS=1
     OBJECTS="${OBJECTS} macos.o arch/macos/process_info.o"
-    EXTRA_LINK_ARGS="-framework CoreFoundation -framework IOKit"
 
 elif [ -n "$FREEBSD" ]; then
     MACROS="${MACROS} PS__FREEBSD"
@@ -166,4 +165,3 @@ for m in $MACROS; do
     eval echo '\#'define $m $ind
 done >> src/config.h
 
-# TODO EXTRA_LINK_ARGS
