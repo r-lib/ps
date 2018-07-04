@@ -114,9 +114,7 @@ process_linux <- function() {
         }),
 
         environ = decorator(linux_wrap_exceptions, function() {
-          path <- sprintf("%s/%i/environ", get_procfs_path(), self$.pid)
-          data <- read_binary_file(path)
-          parse_envs(map_chr(raw_split(data[-length(data)], 0x00), rawToChar))
+          parse_envs(.Call(psl__linux_parse_environ, get_procfs_path(), self$.pid))
         }),
 
         ppid = decorator(linux_wrap_exceptions, function() {

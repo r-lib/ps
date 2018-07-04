@@ -684,7 +684,7 @@ SEXP psl__linux_parse_environ(SEXP r_procfs, SEXP r_pid) {
   int ret;
   char *buf, *ptr, *end, *prev;
   SEXP result = R_NilValue;
-  int nstr;
+  int nstr = 0;
 
   ret = snprintf(path, sizeof(path), "%s/%d/environ", procfs, (int) pid);
   if (ret >= sizeof(path)) {
