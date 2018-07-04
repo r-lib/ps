@@ -114,11 +114,11 @@ get_pw_uid <- function(uid) {
 #' @export
 
 signals <- function() {
-  ps_env$constants$signals
+  as.list(ps_env$constants$signals)
 }
 
 errno <- function() {
-  ps_env$constants$errno
+  as.list(ps_env$constants$errno)
 }
 
 get_terminal_map <- function() {
