@@ -663,7 +663,6 @@ SEXP psl__parse_stat_file(SEXP r_procfs, SEXP r_pid) {
     &nice, &num_threads, &itrealvalue, &starttime);
 
   if (ret == -1) {
-    REprintf("%s", r+2);
     ps__set_error_from_errno();
     ps__throw_error();
   } else if (ret != 20) {
