@@ -23,7 +23,9 @@ process_common <- function() {
       cloneable = FALSE,
       public = list(
 
-        initialize = function(pid = NULL) self$.init(pid),
+        initialize = function(pid = NULL, time = NULL, ...) {
+          self$.init(pid, time, ...)
+        },
 
         pid = function() self$.pid,
 
@@ -200,29 +202,33 @@ process_common <- function() {
 
         ## Internal methods
 
-        .init = function(pid, ignore_nsp = FALSE) {
+        .init = function(pid, time, ignore_nsp = FALSE) {
           decorate(self)
           pid <- pid %||% Sys.getpid()
           assert_that(is_pid(pid))
           self$.pid <- as.integer(pid)
-          tryCatch(
-            self$.create_time <- self$.create_time_raw(),
-            ## We should never get here as AFAIK we're able to get
-            ## process creation time on all platforms even as a
-            ## limited user.
-            access_denied = function(e) e,
-            ## Zombies can still be queried by this class (although
-            ## not always) and pids() return them so just go on.
-            zombie_process = function(e) e,
-            no_such_process = function(e) {
-              if (!ignore_nsp) {
-                e$message <- paste("no process found with pid", pid)
-                stop(e)
-              } else {
-                self$.gone <- TRUE
+          if (!is.null(time)) {
+            self$.create_time <- time
+          } else {
+            tryCatch(
+              self$.create_time <- self$.create_time_raw(),
+              ## We should never get here as AFAIK we're able to get
+              ## process creation time on all platforms even as a
+              ## limited user.
+              access_denied = function(e) e,
+              ## Zombies can still be queried by this class (although
+              ## not always) and pids() return them so just go on.
+              zombie_process = function(e) e,
+              no_such_process = function(e) {
+                if (!ignore_nsp) {
+                  e$message <- paste("no process found with pid", pid)
+                  stop(e)
+                } else {
+                  self$.gone <- TRUE
+                }
               }
-            }
-          )
+            )
+          }
         },
 
         ## Internal methods

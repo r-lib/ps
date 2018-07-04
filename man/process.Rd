@@ -4,10 +4,11 @@
 \alias{process}
 \title{Create a system process object}
 \usage{
-process(pid)
+process(pid = NULL)
 }
 \arguments{
-\item{pid}{Process id, integer scalar.}
+\item{pid}{Process id, integer scalar. If not specified or \code{NULL},
+the pid of the  calling process is used.}
 }
 \value{
 \code{process} object.
