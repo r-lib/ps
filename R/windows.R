@@ -62,6 +62,10 @@ process_windows <- function() {
           parse_envs(.Call(psw__proc_environ, self$.pid))
         },
 
+        terminal = function() {
+          NA_character_
+        },
+
         ppid = decorator(memoize_when_activated, function() {
           if (!is.null(self$.ppid)) return(self$.ppid)
           map <- ps_ppid_map_windows()

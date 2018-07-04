@@ -168,6 +168,7 @@ process_linux <- function() {
 
         terminal = decorator(linux_wrap_exceptions, function() {
           num <- self$.parse_stat_file()[[6]]
+          if (num == 0) return(NA_character_)
           tmap <- get_terminal_map()
           tmap[[as.character(num)]]
         }),

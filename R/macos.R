@@ -97,6 +97,7 @@ process_macos <- function() {
 
         terminal = function() {
           num <- self$.get_kinfo_proc()$ttynr
+          if (num == -1) return(NA_character_)
           tmap <- get_terminal_map()
           tmap[[as.character(num)]]
         },
