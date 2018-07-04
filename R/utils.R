@@ -85,7 +85,7 @@ read_binary_file <- function(x) {
 }
 
 path_is_absolute <- function(path) {
-  if (ps_os_is_windows()) {
+  if (ps_os_type()[["WINDOWS"]]) {
     path_is_absolute_win(path)
   } else {
     path_is_absolute_posix(path)

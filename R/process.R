@@ -1,11 +1,210 @@
 
 #' Create a system process object
 #'
-#' TODO
-#'
 #' @param pid  Process id, integer scalar. If not specified or `NULL`,
 #'   the pid of the  calling process is used.
 #' @return `process` object.
+#'
+#' @section Methods:
+#'
+#' ```
+#' p$pid()
+#' ```
+#' Returns the process id.
+#'
+#' ```
+#' p$create_time()
+#' ```
+#' Time stamp for the process creation, according to the OS. ps uses this
+#' as an id, together with the pid.
+#'
+#' ```
+#' p$is_running()
+#' ```
+#' Checks if the process is still running, returns `TRUE` or `FALSE`.
+#' It returns the correct answer, even if the process has finished and
+#' its pid was reused.
+#'
+#' ```
+#' p$status()
+#' ```
+#' One of the following:
+#' * `"idle"`: Process being created by fork, macOS only.
+#' * `"running"`: Currently runnable on macOS and Windows. Actually running
+#'    on Linux.
+#' * `"sleeping"` Sleeping on a wait or poll.
+#' * `"disk_sleep"` Uninterruptible sleep, waiting for an I/O operation
+#'    (Linux only).
+#' * `"stopped"` Stopped, either by a job control signal or because it is
+#'    being traced.
+#' * `"tracing_stop"` Stopped for tracing (Linux only).
+#' * `"zombie"` Zombie. Finished, but parent has not read out the exit
+#'    status yet.
+#' * `"dead"` Should never be seen (Linux).
+#' * `"wake_kill"` Received fatal signal (Linux only).
+#' * `"waking"` Paging (Linux only, not valid since the 2.6.xx kernel).
+#'
+#' ```
+#' p$name()
+#' ```
+#' Name of the process, typically the name of the executable. Note that on
+#' Unix, this can change, e.g. via an `exec*()` system call.
+#'
+#' ```
+#' p$exe()
+#' ```
+#' Path to the executable of the process. May also be an empty string or
+#' `NA` if it cannot be determined.
+#'
+#' ```
+#' p$cmdline()
+#' ```
+#' Command line of the process, i.e. the executable and the command line
+#' arguments, in a character vector. On Unix the program might change its
+#' command line, and some programs actually do it.
+#'
+#' ```
+#' p$cwd()
+#' ```
+#' Process current working directory as an absolute path.
+#'
+#' ```
+#' p$environ()
+#' ```
+#' The environment variables of the process, in a named vector, similarly
+#' to the return value of `Sys.getenv()` (without arguments). Note: this
+#' usually does not reflect changes made after the process started.
+#'
+#' ```
+#' p$username()
+#' ```
+#' The name of the user that owns the process. On Unix it is calculated
+#' from the real user id.
+#'
+#' ```
+#' p$uids()
+#' p$guids()
+#' ```
+#' User ids and group ids of the process. Not implemented on Windows,
+#' throws `not_implemented` error. Both return integer vectors with names:
+#' `real`, `effective` and `saved`.
+#'
+#' ```
+#' p$ppid()
+#' ```
+#' Returns the parent process's id. Note that the ppid of a process might
+#' change on Unix: typically when the parent process quits, it is set to 1,
+#' which is the init process. (But not always, Linux can be configured to
+#' use another pid, and pid 1 is usually not init in Docker.)
+#'
+#' On Windows the ppid is not updated when the parent process exits, so
+#' it might refer to a non-existant process, or even a different process
+#' if the parent pid was reused.
+#'
+#' The `parent()` method works around the Windows issue, by comparing
+#' process creation times.
+#'
+#' ```
+#' p$parent()
+#' ```
+#' Returns a process object for the parent process. On Unix, it will
+#' return the reassigned (typically pid 1) process, if the real parent
+#' process has quit aleady. On Windows it fails with `no_such_process`
+#' error in this case.
+#'
+#' ```
+#' p$children(recursive = FALSE)
+#' ```
+#'
+#' List of child processes (process objects) of the process. Note that this
+#' typically requires enumerating all processes on the system, so it is a
+#' costly operation.
+#'
+#' * `recursive`: whether to include the children of the children, etc.
+#'
+#' ```
+#' p$terminal()
+#' ```
+#' Returns the terminal of the process. Not implemented on Windows, always
+#' retuns `NA_character_`. On Unix it returns `NA_character_` if the
+#' process has no terminal.
+#'
+#' ```
+#' p$num_threads()
+#' ```
+#' The number threads.
+#'
+#' ```
+#' p$cpu_times()
+#' ```
+#' Retuns a named real vector: `user`, `system`, `children_user`,
+#' `children_system`, all in seconds. The children times are typically
+#' only available on Linux, and are `NA` on other platforms.
+#'
+#' ```
+#' p$memory_imfo()
+#' ```
+#' A list with information about memory usage. Portable fields:
+#' * `rss`: "Resident Set Size", this is the non-swapped physical memory a
+#'   process has used. On UNIX it matches "top"‘s RES column (see doc). On
+#'   Windows this is an alias for `wset` field and it matches "Memory"
+#'   column of `taskmgr.exe`.
+#' * `vmem`: "Virtual Memory Size", this is the total amount of virtual
+#'   memory used by the process. On UNIX it matches "top"‘s VIRT column
+#'   (see doc). On Windows this is an alias for the `pagefile` field and it
+#'   matches the "Working set (memory)" column of `taskmgr.exe`.
+#'
+#' Non-portable fields:
+#' * `shared`: (Linux) memory that could be potentially shared with other
+#'   processes. This matches "top"‘s SHR column (see doc).
+#' * `text`: (Linux): aka TRS (text resident set) the amount of memory
+#'   devoted to executable code. This matches "top"‘s CODE column (see
+#'   doc).
+#' * `data`: (Linux): aka DRS (data resident set) the amount of physical
+#'   memory devoted to other than executable code. It matches "top"‘s DATA
+#'   column (see doc).
+#' * `lib`: (Linux): the memory used by shared libraries.
+#' * `dirty`: (Linux): the number of dirty pages.
+#' * `pfaults`: (macOS): number of page faults.
+#' * `pageins`: (macOS): number of actual pageins.
+#'
+#' For on explanation of Windows fields rely on
+#' [PROCESS_MEMORY_COUNTERS_EX](http://msdn.microsoft.com/en-us/library/windows/desktop/ms684874(v=vs.85).aspx)
+#' structure doc.
+#'
+#' ```
+#' p$send_signal(sig)
+#' ```
+#' Send a signal to the process. Not implemented on Windows. See [signal()]
+#' for the list of signals on the current platform.
+#'
+#' ```
+#' p$suspend()
+#' ```
+#' Suspend process execution with `SIGSTOP` pre-emptively checking
+#' whether PID has been reused. On Windows this has the effect of
+#' suspending all process threads.
+#'
+#' ```
+#' p$resume()
+#' ```
+#' Resume process execution with SIGCONT pre-emptively checking
+#' whether PID has been reused. On Windows this has the effect of resuming
+#' all process threads.
+#'
+#' ```
+#' p$terminate()
+#' ```
+#' Send a `SIGTERM` signal to the process. Not implemented on Windows.
+#'
+#' ```
+#' p$kill()
+#' ```
+#' Kill the current process with SIGKILL pre-emptively checking
+#' whether PID has been reused.
+#'
+#' @seealso See [with_process()] to query multiple pieces of information
+#' about the process, potentially faster.
 #'
 #' @export
 
