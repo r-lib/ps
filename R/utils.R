@@ -159,3 +159,7 @@ get_id <- function() {
     )
   )
 }
+
+is_executable <- function(x) {
+  file.access(exe, 1) == 0
+}

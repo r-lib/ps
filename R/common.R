@@ -81,8 +81,8 @@ process_common <- function() {
         exe = function() {
           cmdline <- self$cmdline()
           exe <-  cmdline[[1]]
-          if (path_is_absolute(exe) && file.exists(exe)) {
-            ## TODO: check if executable
+          if (path_is_absolute(exe) && file.exists(exe) &&
+              is_executable(exe)) {
             return(exe)
           }
         },
