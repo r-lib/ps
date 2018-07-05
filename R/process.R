@@ -175,7 +175,7 @@
 #' ```
 #' p$send_signal(sig)
 #' ```
-#' Send a signal to the process. Not implemented on Windows. See [signal()]
+#' Send a signal to the process. Not implemented on Windows. See [signals()]
 #' for the list of signals on the current platform.
 #'
 #' ```

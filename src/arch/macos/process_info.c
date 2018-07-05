@@ -101,7 +101,7 @@ int ps__get_argmax() {
   return 0;
 }
 
-// return process args as a python list
+// return process args as a character vector
 SEXP ps__get_cmdline(long pid) {
   int mib[3];
   int nargs;
@@ -188,7 +188,7 @@ SEXP ps__get_cmdline(long pid) {
   return retlist;
 }
 
-// return process environment as a python string
+// return process environment as a character vector
 SEXP ps__get_environ(long pid) {
   int mib[3];
   int nargs, nenv;
@@ -324,7 +324,7 @@ int ps__get_kinfo_proc(long pid, struct kinfo_proc *kp) {
 
 /*
  * A wrapper around proc_pidinfo().
- * Returns 0 on failure (and Python exception gets already set).
+ * Returns 0 on failure (and error gets already set).
  */
 int ps__proc_pidinfo(long pid, int flavor, uint64_t arg, void *pti, int size) {
   errno = 0;

@@ -247,7 +247,7 @@ ps__is_phandle_running(HANDLE hProcess, DWORD pid) {
 
 /*
  * Given a process HANDLE checks whether it's actually running and if
- * it does return it, else return NULL with the proper Python exception
+ * it does return it, else return NULL with the proper exception
  * set.
  */
 HANDLE
@@ -509,7 +509,7 @@ enum ps__process_data_kind {
    success.
 
    On success 0 is returned.  On error the output parameter is not touched, -1
-   is returned, and an appropriate Python exception is set. */
+   is returned, and an appropriate exception is set. */
 static int ps__get_process_data(long pid,
 				enum ps__process_data_kind kind,
 				WCHAR **pdata,
@@ -517,7 +517,7 @@ static int ps__get_process_data(long pid,
   /* This function is quite complex because there are several cases to be
      considered:
 
-     Two cases are really simple:  we (i.e. the python interpreter) and the
+     Two cases are really simple:  we (i.e. the R interpreter) and the
      target process are both 32 bit or both 64 bit.  In that case the memory
      layout of the structures matches up and all is well.
 
@@ -801,7 +801,7 @@ static int ps__get_process_data(long pid,
 }
 
 /*
- * returns a Python list representing the arguments for the process
+ * returns a list representing the arguments for the process
  * with given pid or NULL on error.
  */
 SEXP ps__get_cmdline(long pid) {
@@ -828,7 +828,7 @@ SEXP ps__get_cmdline(long pid) {
      with LocalFree(). */
 
   // arglist parsed as array of UNICODE_STRING, so convert each to
-  // Python string object and add to arg list
+  // R string object and add to arg list
   PROTECT(retlist = allocVector(STRSXP, nArgs));
   for (i = 0; i < nArgs; i++) {
     SET_STRING_ELT(retlist, i, psw__utf16_to_charsxp(szArglist[i], -1));
@@ -850,7 +850,7 @@ SEXP ps__get_cwd(long pid) {
 
   PROTECT_PTR(data);
 
-  // convert wchar array to a Python unicode string
+  // convert wchar array to an R unicode string
   PROTECT(ret = ScalarString(psw__utf16_to_charsxp(data, -1)));
 
   UNPROTECT(2);
@@ -858,7 +858,7 @@ SEXP ps__get_cwd(long pid) {
 }
 
 /*
- * returns a Python string containing the environment variable data for the
+ * returns an R string containing the environment variable data for the
  * process with given pid or NULL on error.
  */
 SEXP ps__get_environ(long pid) {
@@ -887,7 +887,7 @@ SEXP ps__get_environ(long pid) {
     ptr++;
   }
 
-  // convert wchar array to a Python unicode string
+  // convert wchar array to an R unicode string
   PROTECT(ret = psw__utf16_to_strsxp(data, (ptr - data)));
 
   UNPROTECT(2);
@@ -900,7 +900,7 @@ SEXP ps__get_environ(long pid) {
  * NtQuerySystemInformation.
  * We use this as a fallback when faster functions fail with access
  * denied. This is slower because it iterates over all processes.
- * On success return 1, else 0 with Python exception already set.
+ * On success return 1, else 0 with exception already set.
  */
 int
 ps__get_proc_info(DWORD pid, PSYSTEM_PROCESS_INFORMATION *retProcess,

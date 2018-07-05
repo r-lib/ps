@@ -155,7 +155,7 @@ For on explanation of Windows fields rely on
 structure doc.\preformatted{p$send_signal(sig)
 }
 
-Send a signal to the process. Not implemented on Windows. See \code{\link[=signal]{signal()}}
+Send a signal to the process. Not implemented on Windows. See \code{\link[=signals]{signals()}}
 for the list of signals on the current platform.\preformatted{p$suspend()
 }
 

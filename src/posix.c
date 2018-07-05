@@ -51,7 +51,7 @@
  * Check if PID exists. Return values:
  * 1: exists
  * 0: does not exist
- * -1: error (Python exception is set)
+ * -1: error (exception is set)
  */
 int ps__pid_exists(long pid) {
   int ret;
@@ -114,7 +114,7 @@ SEXP psp__pid_exists2(SEXP r_pid) {
  * Else, if PID does not exist we assume the syscall failed because
  * of that so we raise NoSuchProcess.
  * If none of this is true we giveup and raise RuntimeError(msg).
- * This will always set a Python exception and return NULL.
+ * This will always set an exception and return NULL.
  */
 int ps__raise_for_pid(long pid, char *syscall_name) {
   // Set exception to AccessDenied if pid exists else NoSuchProcess.
@@ -136,7 +136,7 @@ int ps__raise_for_pid(long pid, char *syscall_name) {
 
 
 /*
- * Given a PID return process priority as a Python integer.
+ * Given a PID return process priority as an R integer.
  */
 SEXP ps__posix_getpriority(SEXP r_pid) {
   long pid = INTEGER(r_pid)[0];
@@ -175,7 +175,7 @@ SEXP ps__posix_setpriority(SEXP r_pid, SEXP r_priority) {
 }
 
 /*
- * Translate a sockaddr struct into a Python string.
+ * Translate a sockaddr struct into an R string.
  * Return None if address family is not AF_INET* or AF_PACKET.
  */
 SEXP ps__convert_ipaddr(struct sockaddr *addr, int family) {
@@ -217,8 +217,6 @@ SEXP ps__convert_ipaddr(struct sockaddr *addr, int family) {
   }
 #elif defined(PS__BSD) || defined(PS__MACOS)
   else if (addr->sa_family == AF_LINK) {
-    // Note: prior to Python 3.4 socket module does not expose
-    // AF_LINK so we'll do.
     struct sockaddr_dl *dladdr = (struct sockaddr_dl *)addr;
     len = dladdr->sdl_alen;
     data = LLADDR(dladdr);
