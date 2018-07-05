@@ -62,7 +62,7 @@ MACROS=""
 OBJECTS="common.o extra.o dummy.o"
 
 if [ -n "$POSIX" ]; then
-    OBJECTS="${OBJECTS} posix.o";
+    OBJECTS="${OBJECTS} posix.o api-posix.o";
     MACROS="${MACROS} PS__POSIX"
     PS__POSIX=1
 fi
@@ -89,7 +89,7 @@ if [ -n "$WINDOWS" ]; then
     _CT_SECURE_NO_WARNINGS=""
     PSAPI_VERSION=1
 
-    OBJECTS="${OBJECTS} windows.o arch/windows/process_info.o"
+    OBJECTS="${OBJECTS} windows.o api-windows.o arch/windows/process_info.o"
     OBJECTS="${OBJECTS} arch/windows/process_handles.o"
     OBJECTS="${OBJECTS} arch/windows/security.o"
 
@@ -99,7 +99,7 @@ if [ -n "$WINDOWS" ]; then
 elif [ -n "$MACOS" ]; then
     MACROS="${MACROS} PS__MACOS"
     PS__MACOS=1
-    OBJECTS="${OBJECTS} macos.o arch/macos/process_info.o"
+    OBJECTS="${OBJECTS} macos.o api-macos.o arch/macos/process_info.o"
 
 elif [ -n "$FREEBSD" ]; then
     MACROS="${MACROS} PS__FREEBSD"
@@ -126,7 +126,7 @@ elif [ -n "$NETBSD" ]; then
 elif [ -n "$LINUX" ]; then
     MACROS="${MACROS} PS__LINUX"
     PS__LINUX=1
-    OBJECTS="${OBJECTS} linux.o"
+    OBJECTS="${OBJECTS} linux.o  api-linux.o"
 
 elif [ -n "$SUNOS" ]; then
     MACROS="${MACROS} PS__SUNOS"
