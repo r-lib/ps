@@ -19,7 +19,7 @@ SEXP psll_send_signal(SEXP p, SEXP sig) {
 
   PROTECT(running = psll_is_running(p));
   if (!LOGICAL(running)[0]) {
-    ps__no_such_process("");
+    ps__no_such_process(handle->pid, 0);
     ps__throw_error();
   }
   UNPROTECT(1);
@@ -31,7 +31,7 @@ SEXP psll_send_signal(SEXP p, SEXP sig) {
   ret = kill(handle->pid, csig);
   if (ret == -1) {
     if (errno == ESRCH) {
-      ps__no_such_process("");
+      ps__no_such_process(handle->pid, 0);
     } else if (errno == EPERM || errno == EACCES) {
       ps__access_denied("");
     } else {

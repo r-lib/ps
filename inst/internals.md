@@ -4,37 +4,38 @@
 ```
 method           A  C  Z
 --------------   -  -  -
-ps_pid           A  .  O
-ps_create_time   A  .  O
-ps_is_running    A  .  O
+ps_pid           +  .  +
+ps_create_time   +  .  +
+ps_is_running    +  .  +
+ps_format        +  .  +
 -
-ps_ppid          .  A  O
-ps_parent        .  A  O
-ps_name          .  A  O
-ps_exe           .  A  E
-ps_cmdline       .  A  E
-ps_status        .  A  O
-ps_username      .  A  O
-ps_cwd           .  A  E
-ps_uids          .  A  O
-ps_gids          .  A  O
-ps_terminal      .  A  O
-ps_environ       .  A  E
-ps_environ_raw   .  A  E
-ps_num_threads   .  A  E
-ps_cpu_times     .  A  E
-ps_memory_info   .  A  E
-ps_send_signal   .  B  O
-ps_suspend       .  B  O
-ps_resume        .  B  O
-ps_terminate     .  B  O
-ps_kill          .  B  O
+ps_ppid          .  >  +
+ps_parent        .  >  +
+ps_name          .  >  +
+ps_exe           .  >  Z
+ps_cmdline       .  >  Z
+ps_status        .  >  +
+ps_username      .  >  +
+ps_cwd           .  >  Z
+ps_uids          .  >  +
+ps_gids          .  >  +
+ps_terminal      .  >  +
+ps_environ       .  >  Z
+ps_environ_raw   .  >  Z
+ps_num_threads   .  >  Z
+ps_cpu_times     .  >  Z
+ps_memory_info   .  >  Z
+ps_send_signal   .  <  +
+ps_suspend       .  <  +
+ps_resume        .  <  +
+ps_terminate     .  <  +
+ps_kill          .  <  +
 ```
 
 ```
 A: always works, even if the process has finished
-C: B: checks if process is running, before
-   A: checks if process is running, after
-Z: O: works find on a zombie
-   R: errors (zombie_process) on a zombie
+C: <: checks if process is running, before
+   >: checks if process is running, after
+Z: +: works fine on a zombie
+   Z: errors (zombie_process) on a zombie
 ```

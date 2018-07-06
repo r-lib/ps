@@ -17,7 +17,7 @@ SEXP ps__last_error;
 /* TODO: these should throw real error objects */
 
 void *ps__set_error_impl(const char *class, int system_errno,
-			 const char *msg, ...) {
+			 long pid, const char *msg, ...) {
   va_list args;
 
   va_start(args, msg);
@@ -36,6 +36,7 @@ void *ps__set_error_impl(const char *class, int system_errno,
       ps__build_string("ps_error", "error", "condition", 0));
   }
   SET_VECTOR_ELT(ps__last_error, 2, ScalarInteger(system_errno));
+  SET_VECTOR_ELT(ps__last_error, 3, ScalarInteger((int)  pid));
   return NULL;
 }
 
@@ -43,25 +44,26 @@ void *ps__set_error(const char *msg, ...) {
   va_list args;
 
   va_start(args, msg);
-  ps__set_error_impl(0, 0, msg, args);
+  ps__set_error_impl(0, 0, NA_INTEGER, msg, args);
   va_end(args);
 
   return NULL;
 }
 
-void *ps__no_such_process(const char *msg) {
-  return ps__set_error_impl("no_such_process", 0,
-			    msg && strlen(msg) ? msg : "No such process");
+void *ps__no_such_process(long pid, const char *name) {
+  return ps__set_error_impl(
+    "no_such_process", 0, pid, "No such process, pid %l, %s", pid,
+    name ? name : "???");
 }
 
 void *ps__access_denied(const char *msg) {
-  return ps__set_error_impl("access_denied", 0,
+  return ps__set_error_impl("access_denied", 0, NA_INTEGER,
 			    msg && strlen(msg) ? msg : "Permission denied");
 }
 
-void *ps__zombie_process(const char *msg) {
-  return ps__set_error_impl("zombie_process", 0,
-			    msg && strlen(msg) ? msg : "Process is a zombie");
+void *ps__zombie_process(long pid) {
+  return ps__set_error_impl("zombie_process", 0, pid,
+			    "Process is a zombie, pid %l", pid);
 }
 
 void *ps__no_memory(const char *msg) {
@@ -71,14 +73,16 @@ void *ps__no_memory(const char *msg) {
 #else
 			    ENOMEM,
 #endif
+			    NA_INTEGER,
 			    msg && strlen(msg) ? msg : "Out of memory");
 }
 
 void *ps__set_error_from_errno() {
   if (errno) {
-    return ps__set_error_impl("os_error", errno, "%s", strerror(errno));
+    return ps__set_error_impl("os_error", errno, NA_INTEGER, "%s",
+			      strerror(errno));
   } else {
-    return ps__set_error_impl(0, errno, "run time error");
+    return ps__set_error_impl(0, errno, NA_INTEGER, "run time error");
   }
 }
 
@@ -86,7 +90,8 @@ void *ps__set_error_from_errno() {
 void *psw__set_error_from_windows_error(long err) {
   /* TODO: get the actual message */
   if (!err) err = GetLastError();
-  return ps__set_error_impl("os_error", err, "System error: %i", err);
+  return ps__set_error_impl("os_error", err, NA_INTEGER,
+			    "System error: %i", err);
 }
 #endif
 
@@ -631,10 +636,11 @@ void R_init_ps(DllInfo *dll) {
   if (getenv("R_PS_TESTING") != NULL) PS__TESTING = 1;
 
   PROTECT(ps__last_error = ps__build_named_list(
-    "ssi",
+    "ssii",
     "message", "Unknown error",
     "class", "fs_error",
-    "errno", 0
+    "errno", 0,
+    "pid", NA_INTEGER
   ));
 
   R_PreserveObject(ps__last_error);

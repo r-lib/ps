@@ -293,7 +293,7 @@ int ps__get_kinfo_proc(long pid, struct kinfo_proc *kp) {
 
   // sysctl succeeds but len is zero, happens when process has gone away
   if (len == 0) {
-    ps__no_such_process("");
+    ps__no_such_process(pid, 0);
     return -1;
   }
   return 0;

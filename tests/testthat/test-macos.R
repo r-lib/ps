@@ -185,22 +185,28 @@ test_that("zombie api", {
   expect_silent(ps_kill(p))
   expect_equal(ps_status(p), "zombie")
 
-  ## These raise zombie_process errors
-  expect_error(ps_exe(p), class = "zombie_process")
-  expect_error(ps_cmdline(p), class = "zombie_process")
-  expect_error(ps_environ(p), class = "zombie_process")
-  expect_error(ps_cwd(p), class = "zombie_process")
-  expect_error(ps_memory_info(p), class = "zombie_process")
-  expect_error(ps_cpu_times(p), class = "zombie_process")
-  expect_error(ps_num_threads(p), class = "zombie_process")
-})
+  chk <- function(expr) {
+    err <- tryCatch(expr, error = function(e) e)
+    expect_s3_class(err, "zombie_process")
+    expect_s3_class(err, "ps_error")
+    expect_equal(err$pid, zpid)
+  }
 
-## TODO: test pid reuse
+  ## These raise zombie_process errors
+  chk(ps_exe(p))
+  chk(ps_cmdline(p))
+  chk(ps_environ(p))
+  chk(ps_cwd(p))
+  chk(ps_memory_info(p))
+  chk(ps_cpu_times(p))
+  chk(ps_num_threads(p))
+})
 
 test_that("process already finished", {
   px <- processx::process$new("sleep", "5")
   on.exit(px$kill(), add = TRUE)
-  p <- ps_handle(px$get_pid())
+  pid <- px$get_pid()
+  p <- ps_handle(pid)
   px$kill()
 
   expect_false(px$is_alive())
@@ -208,32 +214,88 @@ test_that("process already finished", {
   expect_match(format(p), format_regexp())
   expect_output(print(p), format_regexp())
 
-  expect_equal(ps_pid(p), px$get_pid())
+  expect_equal(ps_pid(p), pid)
   expect_equal(ps_create_time(p), px$get_start_time())
   expect_false(ps_is_running(p))
 
+  chk <- function(expr) {
+    err <- tryCatch(expr, error = function(e) e)
+    expect_s3_class(err, "no_such_process")
+    expect_s3_class(err, "ps_error")
+    expect_equal(err$pid, pid)
+  }
+
   ## All these error out with "no_such_process"
-  expect_error(ps_status(p), class = "no_such_process")
-  expect_error(ps_ppid(p), class = "no_such_process")
-  expect_error(ps_parent(p), class = "no_such_process")
-  expect_error(ps_name(p), class = "no_such_process")
-  expect_error(ps_uids(p), class = "no_such_process")
-  expect_error(ps_username(p), class = "no_such_process")
-  expect_error(ps_gids(p), class = "no_such_process")
-  expect_error(ps_terminal(p), class = "no_such_process")
+  chk(ps_status(p))
+  chk(ps_ppid(p))
+  chk(ps_parent(p))
+  chk(ps_name(p))
+  chk(ps_uids(p))
+  chk(ps_username(p))
+  chk(ps_gids(p))
+  chk(ps_terminal(p))
 
-  expect_error(ps_send_signal(p, signals()$SIGINT),
-               class = "no_such_process")
-  expect_error(ps_suspend(p), class = "no_such_process")
-  expect_error(ps_resume(p), class = "no_such_process")
-  expect_error(ps_terminate(p), class = "no_such_process")
-  expect_error(ps_kill(p), class = "no_such_process")
+  chk(ps_send_signal(p, signals()$SIGINT))
+  chk(ps_suspend(p))
+  chk(ps_resume(p))
+  chk(ps_terminate(p))
+  chk(ps_kill(p))
 
-  expect_error(ps_exe(p), class = "no_such_process")
-  expect_error(ps_cmdline(p), class = "no_such_process")
-  expect_error(ps_environ(p), class = "no_such_process")
-  expect_error(ps_cwd(p), class = "no_such_process")
-  expect_error(ps_memory_info(p), class = "no_such_process")
-  expect_error(ps_cpu_times(p), class = "no_such_process")
-  expect_error(ps_num_threads(p), class = "no_such_process")
+  chk(ps_exe(p))
+  chk(ps_cmdline(p))
+  chk(ps_environ(p))
+  chk(ps_cwd(p))
+  chk(ps_memory_info(p))
+  chk(ps_cpu_times(p))
+  chk(ps_num_threads(p))
+})
+
+test_that("pid reuse", {
+  ## This is simulated, because it is quite some work to force a pid
+  ## reuse on some systems. So we create a handle with the pid of a
+  ## running process, but wrong (earlier) create time stamp.
+
+  zpid <- zombie()
+  on.exit(waitpid(zpid))
+  ctime <- Sys.time() - 60
+  attr(ctime, "tzone") <- "GMT"
+  p <- ps_handle(zpid, ctime)
+
+  expect_match(format(p), format_regexp())
+  expect_output(print(p), format_regexp())
+
+  expect_equal(ps_pid(p), zpid)
+  expect_equal(ps_create_time(p), ctime)
+  expect_false(ps_is_running(p))
+
+  chk <- function(expr) {
+    err <- tryCatch(expr, error = function(e) e)
+    expect_s3_class(err, "no_such_process")
+    expect_s3_class(err, "ps_error")
+    expect_equal(err$pid, zpid)
+  }
+
+  ## All these error out with "no_such_process"
+  chk(ps_status(p))
+  chk(ps_ppid(p))
+  chk(ps_parent(p))
+  chk(ps_name(p))
+  chk(ps_uids(p))
+  chk(ps_username(p))
+  chk(ps_gids(p))
+  chk(ps_terminal(p))
+
+  chk(ps_send_signal(p, signals()$SIGINT))
+  chk(ps_suspend(p))
+  chk(ps_resume(p))
+  chk(ps_terminate(p))
+  chk(ps_kill(p))
+
+  chk(ps_exe(p))
+  chk(ps_cmdline(p))
+  chk(ps_environ(p))
+  chk(ps_cwd(p))
+  chk(ps_memory_info(p))
+  chk(ps_cpu_times(p))
+  chk(ps_num_threads(p))
 })

@@ -13,7 +13,7 @@
 
 #define PS__CHECK_KINFO(kp, handle)				      \
   if (PS__TV2DOUBLE(kp.kp_proc.p_starttime) != handle->create_time) { \
-    ps__no_such_process("");					      \
+    ps__no_such_process(handle->pid, 0);			      \
     ps__throw_error();						      \
   }
 
@@ -48,9 +48,9 @@ void ps__check_for_zombie(ps_handle_t *handle) {
 
     if ((ps__get_kinfo_proc(handle->pid, &kp) == -1) ||
 	(PS__TV2DOUBLE(kp.kp_proc.p_starttime) != handle->create_time)) {
-      ps__no_such_process("");
+      ps__no_such_process(handle->pid, 0);
     } else if (kp.kp_proc.p_stat == SZOMB) {
-	ps__zombie_process("");
+	ps__zombie_process(handle->pid);
     } else {
       ps__access_denied("");
     }
@@ -198,31 +198,12 @@ SEXP psll_exe(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   int ret;
   char buf[PROC_PIDPATHINFO_MAXSIZE];
-  struct kinfo_proc kp;
 
   if (!handle) error("Process pointer cleaned up already");
 
   ret = proc_pidpath(handle->pid, &buf, sizeof(buf));
 
-  if (ret == 0) {
-    if (handle->pid == 0) {
-      ps__access_denied("");
-
-    } else if (errno == 0 || errno == ESRCH) {
-      if ((ps__get_kinfo_proc(handle->pid, &kp) == -1) ||
-	  (PS__TV2DOUBLE(kp.kp_proc.p_starttime) != handle->create_time)) {
-	ps__no_such_process("");
-      } else if (kp.kp_proc.p_stat == SZOMB) {
-	ps__zombie_process("");
-      } else {
-	ps__access_denied("");
-      }
-
-    } else {
-      ps__set_error_from_errno();
-    }
-    ps__throw_error();
-  }
+  if (ret == 0) ps__check_for_zombie(handle);
 
   return ps__str_to_utf8(buf);
 }
@@ -253,7 +234,7 @@ SEXP psll_status(SEXP p) {
 
   if (ps__get_kinfo_proc(handle->pid, &kp) == -1) {
     handle->gone = 1;
-    ps__no_such_process("");
+    ps__no_such_process(handle->pid, 0);
     ps__throw_error();
   }
 

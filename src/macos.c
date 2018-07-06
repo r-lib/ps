@@ -101,9 +101,9 @@ int ps__task_for_pid(long pid, mach_port_t *task)
   err = task_for_pid(mach_task_self(), (pid_t)pid, task);
   if (err != KERN_SUCCESS) {
     if (ps__pid_exists(pid) == 0)
-      ps__no_such_process("task_for_pid() failed");
+      ps__no_such_process(pid, 0);
     else if (ps__is_zombie(pid) == 1)
-      ps__zombie_process("task_for_pid() failed");
+      ps__zombie_process(pid);
     else {
       ps__debug("task_for_pid() failed (pid=%ld, err=%i, errno=%i, msg='%s'); "
 		"setting AccessDenied()",

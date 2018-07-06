@@ -64,8 +64,8 @@ void *ps__set_error_from_errno();
 SEXP ps__throw_error();
 
 void *ps__access_denied(const char *msg);
-void *ps__no_such_process(const char *msg);
-void *ps__zombie_process(const char *msg);
+void *ps__no_such_process(long pid, const char *name);
+void *ps__zombie_process(long pid);
 void *ps__no_memory(const char *msg);
 
 #ifdef PS__WINDOWS
