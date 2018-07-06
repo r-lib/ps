@@ -117,21 +117,14 @@ SEXP ps__get_cmdline(long pid) {
   SEXP retlist = R_NilValue;
 
   // special case for PID 0 (kernel_task) where cmdline cannot be fetched
-  if (pid == 0)
-    return ps__build_list("");
+  if (pid == 0) return NULL;
 
   // read argmax and allocate memory for argument space.
   argmax = ps__get_argmax();
-  if (! argmax) {
-    ps__set_error_from_errno();
-    ps__throw_error();
-  }
+  if (! argmax) return NULL;
 
   procargs = (char *) malloc(argmax);
-  if (NULL == procargs) {
-    ps__set_error_from_errno();
-    ps__throw_error();
-  }
+  if (NULL == procargs) return NULL;
 
   PROTECT_PTR(procargs);
 
@@ -140,14 +133,10 @@ SEXP ps__get_cmdline(long pid) {
   mib[1] = KERN_PROCARGS2;
   mib[2] = (pid_t)pid;
   if (sysctl(mib, 3, procargs, &argmax, NULL, 0) < 0) {
-    // In case of zombie process we'll get EINVAL. We translate it
-    // to NSP and _psmacos.py will translate it to ZP.
-    if ((errno == EINVAL) && (ps__pid_exists(pid))) {
-      ps__no_such_process("");
-    } else {
-      ps__set_error_from_errno();
-    }
-    ps__throw_error();
+    // In case of zombie process we'll get EINVAL, we fix this.
+    if (errno == EINVAL) errno = ESRCH;
+    UNPROTECT(1);
+    return NULL;
   }
 
   arg_end = &procargs[argmax];
@@ -205,16 +194,10 @@ SEXP ps__get_environ(long pid) {
 
   // read argmax and allocate memory for argument space.
   argmax = ps__get_argmax();
-  if (! argmax) {
-    ps__set_error_from_errno();
-    ps__throw_error();
-  }
+  if (! argmax) return NULL;
 
   procargs = (char *) malloc(argmax);
-  if (NULL == procargs) {
-    ps__set_error_from_errno();
-    ps__throw_error();
-  }
+  if (NULL == procargs) return NULL;
 
   PROTECT_PTR(procargs);
 
@@ -223,13 +206,10 @@ SEXP ps__get_environ(long pid) {
   mib[1] = KERN_PROCARGS2;
   mib[2] = (pid_t)pid;
   if (sysctl(mib, 3, procargs, &argmax, NULL, 0) < 0) {
-    // In case of zombie process we'll get EINVAL. We translate it
-    // to NSP and _psmacos.py will translate it to ZP.
-    if ((errno == EINVAL) && (ps__pid_exists(pid)))
-      ps__no_such_process("");
-    else
-      ps__set_error_from_errno();
-    ps__throw_error();
+    // In case of zombie process we'll get EINVAL, fix this.
+    if (errno == EINVAL) errno = ESRCH;
+    UNPROTECT(1);
+    return NULL;
   }
 
   arg_end = &procargs[argmax];
@@ -270,8 +250,6 @@ SEXP ps__get_environ(long pid) {
     arg_ptr = s + 1;
   }
 
-
-  /*  */
   PROTECT(ret = allocVector(STRSXP, nenv));
   arg_ptr = env_start;
   nenv = 0;

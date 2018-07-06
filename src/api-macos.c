@@ -3,16 +3,20 @@
 #include <unistd.h>
 #include <sys/sysctl.h>
 #include <sys/proc_info.h>
+#include <libproc.h>
+#include <errno.h>
 
 #include "common.h"
 #include "arch/macos/process_info.h"
 
 #define PS__TV2DOUBLE(t) ((t).tv_sec + (t).tv_usec / 1000000.0)
+
 #define PS__CHECK_KINFO(kp, handle)				      \
   if (PS__TV2DOUBLE(kp.kp_proc.p_starttime) != handle->create_time) { \
     ps__no_such_process("");					      \
     ps__throw_error();						      \
   }
+
 #define PS__CHECK_HANDLE(handle)			\
   do {							\
     struct kinfo_proc kp;				\
@@ -23,6 +27,40 @@
     PS__CHECK_KINFO(kp, handle);			\
   } while (0)
 
+#define PS__GET_STATUS(stat, result, error)		\
+  switch(stat) {					\
+  case SIDL:   result = mkString("idle");     break;	\
+  case SRUN:   result = mkString("running");  break;	\
+  case SSLEEP: result = mkString("sleeping"); break;	\
+  case SSTOP:  result = mkString("stopped");  break;	\
+  case SZOMB:  result = mkString("zombie");   break;	\
+  default:     error;					\
+  }
+
+
+void ps__check_for_zombie(ps_handle_t *handle) {
+  struct kinfo_proc kp;
+
+  if (handle->pid == 0) {
+    ps__access_denied("");
+
+  } else if (errno == 0 || errno == ESRCH) {
+
+    if ((ps__get_kinfo_proc(handle->pid, &kp) == -1) ||
+	(PS__TV2DOUBLE(kp.kp_proc.p_starttime) != handle->create_time)) {
+      ps__no_such_process("");
+    } else if (kp.kp_proc.p_stat == SZOMB) {
+	ps__zombie_process("");
+    } else {
+      ps__access_denied("");
+    }
+
+  } else {
+    ps__set_error_from_errno();
+  }
+
+  ps__throw_error();
+}
 
 void psll_finalizer(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
@@ -71,19 +109,25 @@ SEXP psll_pid(SEXP p) {
 SEXP psll_format(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   struct kinfo_proc kp;
-  SEXP name, result;
+  SEXP name, status, result;
 
   if (!handle) error("Process pointer cleaned up already");
 
-  if (ps__get_kinfo_proc(handle->pid, &kp) == -1) ps__throw_error();
-  PROTECT(name = ps__str_to_utf8(kp.kp_proc.p_comm));
-  PROTECT(result = ps__build_list("Old", name, (long) handle->pid,
-				  handle->create_time));
+  if (ps__get_kinfo_proc(handle->pid, &kp) == -1) {
+    PROTECT(name = mkString("???"));
+    PROTECT(status = mkString("terminated"));
+  } else {
+    PROTECT(name = ps__str_to_utf8(kp.kp_proc.p_comm));
+    PS__GET_STATUS(kp.kp_proc.p_stat, status, status = mkString("unknown"));
+    PROTECT(status);
+  }
+  PROTECT(result = ps__build_list("OldO", name, (long) handle->pid,
+				  handle->create_time, status));
 
   /* We do not check that the pid is still valid here, because we want
      to be able to format & print processes that have finished already. */
 
-  UNPROTECT(2);
+  UNPROTECT(3);
   return result;
 }
 
@@ -152,19 +196,36 @@ SEXP psll_name(SEXP p) {
 
 SEXP psll_exe(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
-  SEXP pid, exe;
+  int ret;
+  char buf[PROC_PIDPATHINFO_MAXSIZE];
+  struct kinfo_proc kp;
 
   if (!handle) error("Process pointer cleaned up already");
 
-  PROTECT(pid = ScalarInteger(handle->pid));
-  PROTECT(exe = psm__proc_exe(pid));
+  ret = proc_pidpath(handle->pid, &buf, sizeof(buf));
 
-  PS__CHECK_HANDLE(handle);
+  if (ret == 0) {
+    if (handle->pid == 0) {
+      ps__access_denied("");
 
-  UNPROTECT(2);
-  return exe;
+    } else if (errno == 0 || errno == ESRCH) {
+      if ((ps__get_kinfo_proc(handle->pid, &kp) == -1) ||
+	  (PS__TV2DOUBLE(kp.kp_proc.p_starttime) != handle->create_time)) {
+	ps__no_such_process("");
+      } else if (kp.kp_proc.p_stat == SZOMB) {
+	ps__zombie_process("");
+      } else {
+	ps__access_denied("");
+      }
+
+    } else {
+      ps__set_error_from_errno();
+    }
+    ps__throw_error();
+  }
+
+  return ps__str_to_utf8(buf);
 }
-
 
 SEXP psll_cmdline(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
@@ -172,10 +233,12 @@ SEXP psll_cmdline(SEXP p) {
 
   if (!handle) error("Process pointer cleaned up already");
 
-  PROTECT(result = ps__get_cmdline(handle->pid));
+  result = ps__get_cmdline(handle->pid);
 
+  if (!result) ps__check_for_zombie(handle);
+
+  PROTECT(result);
   PS__CHECK_HANDLE(handle);
-
   UNPROTECT(1);
   return result;
 }
@@ -196,14 +259,7 @@ SEXP psll_status(SEXP p) {
 
   PS__CHECK_KINFO(kp, handle);
 
-  switch(kp.kp_proc.p_stat) {
-  case SIDL:   result = mkString("idle");     break;
-  case SRUN:   result = mkString("running");  break;
-  case SSLEEP: result = mkString("sleeping"); break;
-  case SSTOP:  result = mkString("stopped");  break;
-  case SZOMB:  result = mkString("zombie");   break;
-  default:     error("Unknown process status");
-  }
+  PS__GET_STATUS(kp.kp_proc.p_stat, result, error("Unknown process status"));
 
   return result;
 }
@@ -239,17 +295,18 @@ SEXP psll_create_time(SEXP p) {
 
 SEXP psll_cwd(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
-  SEXP pid, cwd;
 
   if (!handle) error("Process pointer cleaned up already");
 
-  PROTECT(pid = ScalarInteger(handle->pid));
-  PROTECT(cwd = psm__proc_cwd(pid));
+  struct proc_vnodepathinfo pathinfo;
+
+  if (ps__proc_pidinfo(handle->pid, PROC_PIDVNODEPATHINFO, 0, &pathinfo,
+		       sizeof(pathinfo)) <= 0) {
+    ps__check_for_zombie(handle);
+  }
 
   PS__CHECK_HANDLE(handle);
-
-  UNPROTECT(2);
-  return cwd;
+  return ps__str_to_utf8(pathinfo.pvi_cdir.vip_path);
 }
 
 
@@ -319,18 +376,20 @@ SEXP psll_terminal(SEXP p) {
 
 SEXP psll_environ(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
-  SEXP pid, env;
+  SEXP result;
 
   if (!handle) error("Process pointer cleaned up already");
 
-  PROTECT(pid = ScalarInteger(handle->pid));
-  PROTECT(env = psm__proc_environ(pid));
+  result = ps__get_environ(handle->pid);
 
+  if (!result) ps__check_for_zombie(handle);
+
+  PROTECT(result);
   PS__CHECK_HANDLE(handle);
-
-  UNPROTECT(2);
-  return env;
+  UNPROTECT(1);
+  return result;
 }
+
 
 
 SEXP psll_num_threads(SEXP p) {
@@ -341,7 +400,7 @@ SEXP psll_num_threads(SEXP p) {
 
   if (ps__proc_pidinfo(handle->pid, PROC_PIDTASKINFO, 0, &pti,
 		       sizeof(pti)) <= 0) {
-    ps__throw_error();
+    ps__check_for_zombie(handle);
   }
 
   PS__CHECK_HANDLE(handle);
@@ -359,7 +418,7 @@ SEXP psll_cpu_times(SEXP p) {
 
   if (ps__proc_pidinfo(handle->pid, PROC_PIDTASKINFO, 0, &pti,
 		       sizeof(pti)) <= 0) {
-    ps__throw_error();
+    ps__check_for_zombie(handle);
   }
 
   PS__CHECK_HANDLE(handle);
@@ -386,7 +445,8 @@ SEXP psll_memory_info(SEXP p) {
 
   if (ps__proc_pidinfo(handle->pid, PROC_PIDTASKINFO, 0, &pti,
 		       sizeof(pti)) <= 0) {
-    ps__throw_error();
+    ps__check_for_zombie(handle);
+
   }
 
   PS__CHECK_HANDLE(handle);

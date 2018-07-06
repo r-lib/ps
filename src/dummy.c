@@ -6,6 +6,7 @@ void psp__pid_exists2() { }
 void psp__get_pw_uid() { }
 void psp__kill() { }
 void psp__stat_st_rdev() { }
+void psp__zombie() { }
 #endif
 
 #ifndef PS__MACOS

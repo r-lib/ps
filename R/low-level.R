@@ -27,6 +27,18 @@ ps_pid <- function(p) {
 
 #' @export
 
+ps_create_time <- function(p) {
+  format_unix_time(.Call(psll_create_time, p))
+}
+
+#' @export
+
+ps_is_running <- function(p) {
+  .Call(psll_is_running, p)
+}
+
+#' @export
+
 ps_parent <- function(p) {
   .Call(psll_parent, p)
 }
@@ -35,12 +47,6 @@ ps_parent <- function(p) {
 
 ps_ppid <- function(p) {
   .Call(psll_ppid, p)
-}
-
-#' @export
-
-ps_is_running <- function(p) {
-  .Call(psll_is_running, p)
 }
 
 #' @export
@@ -86,12 +92,6 @@ ps_status <- function(p) {
 
 ps_username <- function(p) {
   .Call(psll_username, p)
-}
-
-#' @export
-
-ps_create_time <- function(p) {
-  .Call(psll_create_time, p)
 }
 
 #' @export

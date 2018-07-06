@@ -91,6 +91,8 @@ SEXP ps__os_type();
 /* POSIX */
 SEXP psp__define_signals();
 SEXP psp__define_errno();
+SEXP psp__zombie();
+SEXP psp__waitpid(SEXP pid);
 
 /* LINUX */
 SEXP psl__readlink(SEXP path);

@@ -636,6 +636,43 @@ SEXP psp__stat_st_rdev(SEXP files) {
   return result;
 }
 
+SEXP psp__zombie() {
+  pid_t child_pid;
+
+  child_pid = fork();
+
+  if (child_pid <= 0) raise(SIGKILL);
+
+  return ScalarInteger(child_pid);
+}
+
+SEXP psp__waitpid(SEXP r_pid) {
+  pid_t pid = INTEGER(r_pid)[0];
+  int wp, wstat;
+
+  do {
+    wp = waitpid(pid, &wstat, WNOHANG);
+  } while (wp == -1 && errno == EINTR);
+
+  if (wp == pid) {
+    /* Get exit status */
+    if (WIFEXITED(wstat)) {
+      return ScalarInteger(WEXITSTATUS(wstat));
+    } else {
+      return ScalarInteger(- WTERMSIG(wstat));
+    }
+
+  } else if (wp == -1 && errno == ECHILD) {
+    return ScalarInteger(NA_INTEGER);
+
+  } else {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  return R_NilValue;
+}
+
 SEXP psp__define_signals() {
 
   SEXP signalenv = PROTECT(Rf_allocSExp(ENVSXP));

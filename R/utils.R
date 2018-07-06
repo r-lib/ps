@@ -163,3 +163,22 @@ get_id <- function() {
 is_executable <- function(x) {
   file.access(exe, 1) == 0
 }
+
+## We need to wait until the child becomes a zombie, otherwise
+## it might still be in a running state
+
+zombie <- function() {
+  if (ps_os_type()[["POSIX"]]) {
+    pid <- .Call(psp__zombie)
+    ps <- ps_handle(pid)
+    timeout <- Sys.time() + 5
+    while (ps_status(ps) != "zombie" && Sys.time() < timeout)  {
+      Sys.sleep(0.05)
+    }
+    if (ps_status(ps) == "zombie")  pid else stop("Cannot create zombie")
+  }
+}
+
+waitpid <- function(pid) {
+  if (ps_os_type()[["POSIX"]]) .Call(psp__waitpid, as.integer(pid))
+}
