@@ -17,6 +17,7 @@ format.ps_handle <- function(x, ...) {
 
 print.ps_handle <- function(x, ...)  {
   cat(format(x, ...),  "\n", sep = "")
+  invisible(x)
 }
 
 #' @export
