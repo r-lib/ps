@@ -9,19 +9,19 @@ Create an R6 object that represents a system process.
 \section{Methods}{
 
 \itemize{
-\item \code{p$pid()}
+\item \code{p$pid()}  (1)
 
 Returns the process id.
-\item \code{p$create_time()}
+\item \code{p$create_time()} (1)
 
 Time stamp for the process creation, according to the OS. ps uses this
 as an id, together with the pid.
-\item \code{p$is_running()}
+\item \code{p$is_running()} (1)
 
 Checks if the process is still running, returns \code{TRUE} or \code{FALSE}.
 It returns the correct answer, even if the process has finished and
 its pid was reused.
-\item \code{p$status()}
+\item \code{p$status()} (2)
 
 One of the following:
 \itemize{
@@ -40,38 +40,45 @@ status yet.
 \item \code{"wake_kill"} Received fatal signal (Linux only).
 \item \code{"waking"} Paging (Linux only, not valid since the 2.6.xx kernel).
 }
-\item \code{p$name()}
+\item \code{p$name()} (2)
 
 Name of the process, typically the name of the executable. Note that
 on Unix, this can change, e.g. via an \code{exec*()} system call.
-\item \code{p$exe()}
+\item \code{p$exe()} (2)(4)
 
 Path to the executable of the process. May also be an empty string or
 \code{NA} if it cannot be determined.
-\item \code{p$cmdline()}
+\item \code{p$cmdline()} (2)(4)
 
 Command line of the process, i.e. the executable and the command line
 arguments, in a character vector. On Unix the program might change its
 command line, and some programs actually do it.
-\item \code{p$cwd()}
+\item \code{p$cwd()} (2)(4)
 
 Process current working directory as an absolute path.
-\item \code{p$environ()}
+\item \code{p$environ()} (2)(4)
 
 The environment variables of the process, in a named vector, similarly
 to the return value of \code{Sys.getenv()} (without arguments). Note: this
 usually does not reflect changes made after the process started.
-\item \code{p$username()}
+\item \code{p$environ_raw()} (2)(4)
+
+Similar to \code{p$environ()} but returns the unparsed \code{"var=value"}
+strings.
+\item \code{p$username()} (2)
 
 The name of the user that owns the process. On Unix it is calculated
 from the real user id.
-\item \code{p$uids()}
-\item \code{p$guids()}
+
+On Unix, a numeric uid id returned if the uid is not in the user
+database, thus a username cannot be determined.
+\item \code{p$uids()} (2)
+\item \code{p$guids()} (2)
 
 User ids and group ids of the process. Not implemented on Windows,
 throws \code{not_implemented} error. Both return integer vectors with names:
 \code{real}, \code{effective} and \code{saved}.
-\item \code{p$ppid()}
+\item \code{p$ppid()} (2)
 
 Returns the parent process's id. Note that the ppid of a process might
 change on Unix: typically when the parent process quits, it is set to 1,
@@ -84,13 +91,13 @@ if the parent pid was reused.
 
 The \code{parent()} method works around the Windows issue, by comparing
 process creation times.
-\item \code{p$parent()}
+\item \code{p$parent()} (2)
 
 Returns a process object for the parent process. On Unix, it will
 return the reassigned (typically pid 1) process, if the real parent
 process has quit aleady. On Windows it fails with \code{no_such_process}
 error in this case.
-\item \code{p$children(recursive = FALSE)}
+\item \code{p$children(recursive = FALSE)} (TODO)
 
 List of child processes (process objects) of the process. Note that
 this typically requires enumerating all processes on the system, so
@@ -100,20 +107,32 @@ Arguments:
 \itemize{
 \item \code{recursive}: whether to include the children of the children, etc.
 }
-\item \code{p$terminal()}
+\item \code{p$terminal()} (2)
 
 Returns the terminal of the process. Not implemented on Windows, always
 returns \code{NA_character_}. On Unix it returns \code{NA_character_} if the
 process has no terminal.
-\item \code{p$num_threads()}
+\item \code{p$num_threads()} (2)(4)
 
 The number threads.
-\item \code{p$cpu_times()}
+\item \code{p$cpu_times()} (2)(4)
 
 Retuns a named real vector: \code{user}, \code{system}, \code{children_user},
 \code{children_system}, all in seconds. The children times are typically
 only available on Linux, and are \code{NA} on other platforms.
-\item \code{p$memory_imfo()}
+
+Explanations for the numbers, from the Linux stat(5) manual page:
+\itemize{
+\item \code{user}: Amount of time that this process has been scheduled in user
+mode.
+\item \code{system}: Amount of time that this process has been scheduled in
+kernel mode
+\item \code{childen_user}: On Linux, amount of time that this process's
+waited-for children have been scheduled in user mode.
+\item \code{children_system}: On Linux, Amount of time that this process's
+waited-for children have been scheduled in kernel mode.
+}
+\item \code{p$memory_imfo()} (2)(4)
 
 A list with information about memory usage. Portable fields:
 \itemize{
@@ -146,7 +165,7 @@ DATA column (see doc).
 For on explanation of Windows fields see the
 \href{http://msdn.microsoft.com/en-us/library/windows/desktop/ms684874(v=vs.85).aspx}{PROCESS_MEMORY_COUNTERS_EX}
 structure.
-\item \code{p$send_signal(sig)}
+\item \code{p$send_signal(sig)} (3)
 
 Send a signal to the process. Not implemented on Windows. See
 \code{\link[=signals]{signals()}} for the list of signals on the current platform.
@@ -155,23 +174,39 @@ Arguments:
 \itemize{
 \item \code{sig}: The signal number, see \code{\link[=signals]{signals()}}.
 }
-\item \code{p$suspend()}
+\item \code{p$suspend()} (3)
 
 Suspend process execution with \code{SIGSTOP} pre-emptively checking
 whether PID has been reused. On Windows this has the effect of
 suspending all process threads.
-\item \code{p$resume()}
+\item \code{p$resume()} (3)
 
 Resume process execution with SIGCONT pre-emptively checking
 whether PID has been reused. On Windows this has the effect of resuming
 all process threads.
-\item \code{p$terminate()}
+\item \code{p$terminate()} (3)
 
 Send a \code{SIGTERM} signal to the process. Not implemented on Windows.
-\item \code{p$kill()}
+\item \code{p$kill()} (3)
 
 Kill the current process with SIGKILL pre-emptively checking
 whether PID has been reused.
 }
+}
+
+\section{Notes}{
+
+
+(1) This method works, even if the process has already terminated.
+Other methods throw a \code{"no_such_process"} error.
+
+(2) This method fails if the process has already terminated, with
+a \code{"no_such_process"} error.
+
+(3) This method checks if the process is still running, before
+performing its action, and throws a \code{"no_such_process"} error if
+the process is not available any more.
+
+(4) Throws a \code{"zombie_process"} error for zombie processes.
 }
 

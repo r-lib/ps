@@ -1,8 +1,9 @@
 Package: ps
 Version: 0.0.0.9000
 Title: List System Processes
-Description: List all system processes, on Windows, Linux, macOS,
-    Solaris and BSD systems.
+Description: List, query and manipulate all system processes, on Windows,
+    Linux and macOS. Clean up a process tree, even if some processes of it
+    have finished already.
 Authors@R: c(
     person("Jay", "Loden", role = "aut"),
     person("Dave", "Daeschler", role = "aut"),
@@ -18,8 +19,7 @@ Depends:
 Imports:
     assertthat,
     prettyunits,
-    R6,
-    utils
+    R6
 Suggests:
     covr,
     processx (>= 3.1.0.9005),

@@ -161,7 +161,7 @@ get_id <- function() {
 }
 
 is_executable <- function(x) {
-  file.access(exe, 1) == 0
+  file.access(x, 1) == 0
 }
 
 ## We need to wait until the child becomes a zombie, otherwise

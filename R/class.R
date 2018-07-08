@@ -1,3 +1,4 @@
+
 #' Create a system process object
 #'
 #' Create an R6 object that represents a system process.
@@ -17,7 +18,7 @@
 #'
 #'   Checks if the process is still running, returns `TRUE` or `FALSE`.
 #'   It returns the correct answer, even if the process has finished and
-#'    its pid was reused.
+#'   its pid was reused.
 #'
 #' * `p$status()` (2)
 #'
@@ -45,7 +46,7 @@
 #' * `p$exe()` (2)(4)
 #'
 #'   Path to the executable of the process. May also be an empty string or
-#'    `NA` if it cannot be determined.
+#'   `NA` if it cannot be determined.
 #'
 #' * `p$cmdline()` (2)(4)
 #'
@@ -72,6 +73,9 @@
 #'
 #'   The name of the user that owns the process. On Unix it is calculated
 #'   from the real user id.
+#'
+#'   On Unix, a numeric uid id returned if the uid is not in the user
+#'   database, thus a username cannot be determined.
 #'
 #' * `p$uids()` (2)
 #' * `p$guids()` (2)
@@ -126,6 +130,16 @@
 #'   Retuns a named real vector: `user`, `system`, `children_user`,
 #'   `children_system`, all in seconds. The children times are typically
 #'   only available on Linux, and are `NA` on other platforms.
+#'
+#'   Explanations for the numbers, from the Linux stat(5) manual page:
+#'   * `user`: Amount of time that this process has been scheduled in user
+#'     mode.
+#'   * `system`: Amount of time that this process has been scheduled in
+#'     kernel mode
+#'   * `childen_user`: On Linux, amount of time that this process's
+#'     waited-for children have been scheduled in user mode.
+#'   * `children_system`: On Linux, Amount of time that this process's
+#'     waited-for children have been scheduled in kernel mode.
 #'
 #' * `p$memory_imfo()` (2)(4)
 #'
