@@ -1,4 +1,4 @@
 library(testthat)
 library(ps)
 
-test_check("ps")
+test_check("ps", reporter = "summary")
