@@ -17,12 +17,11 @@ SEXP psll_send_signal(SEXP p, SEXP sig) {
 	  "calling process (Sys.getpid()) instead of PID 0");
   }
 
-  PROTECT(running = psll_is_running(p));
+  running = psll_is_running(p);
   if (!LOGICAL(running)[0]) {
     ps__no_such_process(handle->pid, 0);
     ps__throw_error();
   }
-  UNPROTECT(1);
 
   /* TODO: this is still a race here. We would need to SIGSTOP the
      process first, then check the timestamp, and then send the signal

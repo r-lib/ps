@@ -52,7 +52,7 @@ void *ps__set_error(const char *msg, ...) {
 
 void *ps__no_such_process(long pid, const char *name) {
   return ps__set_error_impl(
-    "no_such_process", 0, pid, "No such process, pid %l, %s", pid,
+    "no_such_process", 0, pid, "No such process, pid %ld, %s", pid,
     name ? name : "???");
 }
 
@@ -63,7 +63,7 @@ void *ps__access_denied(const char *msg) {
 
 void *ps__zombie_process(long pid) {
   return ps__set_error_impl("zombie_process", 0, pid,
-			    "Process is a zombie, pid %l", pid);
+			    "Process is a zombie, pid %ld", pid);
 }
 
 void *ps__no_memory(const char *msg) {

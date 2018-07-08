@@ -25,6 +25,18 @@ typedef struct {
 
 #endif
 
+#ifdef PS__LINUX
+
+#include <signal.h>
+
+typedef struct {
+  pid_t pid;
+  double create_time;
+  int gone;
+} ps_handle_t;
+
+#endif
+
 SEXP psll_handle(SEXP pid, SEXP time);
 
 SEXP psll_pid(SEXP p);

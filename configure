@@ -59,7 +59,7 @@ if [ "UNAME" = "AIX" ]; then AIX=true; fi
 # ------------------------------------------------------------------------
 
 MACROS=""
-OBJECTS="common.o extra.o dummy.o"
+OBJECTS="api-common.o common.o extra.o dummy.o"
 
 if [ -n "$POSIX" ]; then
     OBJECTS="${OBJECTS} posix.o api-posix.o";

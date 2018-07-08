@@ -100,12 +100,6 @@ SEXP psll_handle(SEXP pid, SEXP time) {
   return res;
 }
 
-SEXP psll_pid(SEXP p) {
-  ps_handle_t *handle = R_ExternalPtrAddr(p);
-  if (!handle) error("Process pointer cleaned up already");
-  return ScalarInteger(handle->pid);
-}
-
 SEXP psll_format(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   struct kinfo_proc kp;
@@ -266,14 +260,6 @@ SEXP psll_username(SEXP p) {
 }
 
 
-SEXP psll_create_time(SEXP p) {
-  ps_handle_t *handle = R_ExternalPtrAddr(p);
-
-  if (!handle) error("Process pointer cleaned up already");
-  return ScalarReal(handle->create_time);
-}
-
-
 SEXP psll_cwd(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
 
@@ -427,7 +413,6 @@ SEXP psll_memory_info(SEXP p) {
   if (ps__proc_pidinfo(handle->pid, PROC_PIDTASKINFO, 0, &pti,
 		       sizeof(pti)) <= 0) {
     ps__check_for_zombie(handle);
-
   }
 
   PS__CHECK_HANDLE(handle);

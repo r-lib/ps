@@ -4,21 +4,22 @@
 #'
 #' @section Methods:
 #'
-#' * `p$pid()`
+#' * `p$pid()`  (1)
 #'
 #'   Returns the process id.
-#' * `p$create_time()`
+#'
+#' * `p$create_time()` (1)
 #'
 #'   Time stamp for the process creation, according to the OS. ps uses this
 #'   as an id, together with the pid.
 #'
-#' * `p$is_running()`
+#' * `p$is_running()` (1)
 #'
 #'   Checks if the process is still running, returns `TRUE` or `FALSE`.
 #'   It returns the correct answer, even if the process has finished and
 #'    its pid was reused.
 #'
-#' * `p$status()`
+#' * `p$status()` (2)
 #'
 #'   One of the following:
 #'   * `"idle"`: Process being created by fork, macOS only.
@@ -36,45 +37,50 @@
 #'   * `"wake_kill"` Received fatal signal (Linux only).
 #'   * `"waking"` Paging (Linux only, not valid since the 2.6.xx kernel).
 #'
-#' * `p$name()`
+#' * `p$name()` (2)
 #'
 #'   Name of the process, typically the name of the executable. Note that
 #'   on Unix, this can change, e.g. via an `exec*()` system call.
 #'
-#' * `p$exe()`
+#' * `p$exe()` (2)(4)
 #'
 #'   Path to the executable of the process. May also be an empty string or
 #'    `NA` if it cannot be determined.
 #'
-#' * `p$cmdline()`
+#' * `p$cmdline()` (2)(4)
 #'
 #'   Command line of the process, i.e. the executable and the command line
 #'   arguments, in a character vector. On Unix the program might change its
 #'   command line, and some programs actually do it.
 #'
-#' * `p$cwd()`
+#' * `p$cwd()` (2)(4)
 #'
 #'   Process current working directory as an absolute path.
 #'
-#' * `p$environ()`
+#' * `p$environ()` (2)(4)
 #'
 #'   The environment variables of the process, in a named vector, similarly
 #'   to the return value of `Sys.getenv()` (without arguments). Note: this
 #'   usually does not reflect changes made after the process started.
 #'
-#' * `p$username()`
+#' * `p$environ_raw()` (2)(4)
+#'
+#'   Similar to `p$environ()` but returns the unparsed `"var=value"`
+#'   strings.
+#'
+#' * `p$username()` (2)
 #'
 #'   The name of the user that owns the process. On Unix it is calculated
 #'   from the real user id.
 #'
-#' * `p$uids()`
-#' * `p$guids()`
+#' * `p$uids()` (2)
+#' * `p$guids()` (2)
 #'
 #'   User ids and group ids of the process. Not implemented on Windows,
 #'   throws `not_implemented` error. Both return integer vectors with names:
 #'   `real`, `effective` and `saved`.
 #'
-#' * `p$ppid()`
+#' * `p$ppid()` (2)
 #'
 #'   Returns the parent process's id. Note that the ppid of a process might
 #'   change on Unix: typically when the parent process quits, it is set to 1,
@@ -88,14 +94,14 @@
 #'   The `parent()` method works around the Windows issue, by comparing
 #'   process creation times.
 #'
-#' * `p$parent()`
+#' * `p$parent()` (2)
 #'
 #'   Returns a process object for the parent process. On Unix, it will
 #'   return the reassigned (typically pid 1) process, if the real parent
 #'   process has quit aleady. On Windows it fails with `no_such_process`
 #'    error in this case.
 #'
-#' * `p$children(recursive = FALSE)`
+#' * `p$children(recursive = FALSE)` (TODO)
 #'
 #'   List of child processes (process objects) of the process. Note that
 #'   this typically requires enumerating all processes on the system, so
@@ -105,23 +111,23 @@
 #'
 #'   * `recursive`: whether to include the children of the children, etc.
 #'
-#' * `p$terminal()`
+#' * `p$terminal()` (2)
 #'
 #'   Returns the terminal of the process. Not implemented on Windows, always
 #'   returns `NA_character_`. On Unix it returns `NA_character_` if the
 #'   process has no terminal.
 #'
-#' * `p$num_threads()`
+#' * `p$num_threads()` (2)(4)
 #'
 #'   The number threads.
 #'
-#' * `p$cpu_times()`
+#' * `p$cpu_times()` (2)(4)
 #'
 #'   Retuns a named real vector: `user`, `system`, `children_user`,
 #'   `children_system`, all in seconds. The children times are typically
 #'   only available on Linux, and are `NA` on other platforms.
 #'
-#' * `p$memory_imfo()`
+#' * `p$memory_imfo()` (2)(4)
 #'
 #'   A list with information about memory usage. Portable fields:
 #'   * `rss`: "Resident Set Size", this is the non-swapped physical memory a
@@ -151,7 +157,7 @@
 #'   [PROCESS_MEMORY_COUNTERS_EX](http://msdn.microsoft.com/en-us/library/windows/desktop/ms684874(v=vs.85).aspx)
 #'   structure.
 #'
-#' * `p$send_signal(sig)`
+#' * `p$send_signal(sig)` (3)
 #'
 #'   Send a signal to the process. Not implemented on Windows. See
 #'   [signals()] for the list of signals on the current platform.
@@ -160,26 +166,40 @@
 #'
 #'   * `sig`: The signal number, see [signals()].
 #'
-#' * `p$suspend()`
+#' * `p$suspend()` (3)
 #'
 #'   Suspend process execution with `SIGSTOP` pre-emptively checking
 #'   whether PID has been reused. On Windows this has the effect of
 #'   suspending all process threads.
 #'
-#' * `p$resume()`
+#' * `p$resume()` (3)
 #'
 #'   Resume process execution with SIGCONT pre-emptively checking
 #'   whether PID has been reused. On Windows this has the effect of resuming
 #'   all process threads.
 #'
-#' * `p$terminate()`
+#' * `p$terminate()` (3)
 #'
 #'   Send a `SIGTERM` signal to the process. Not implemented on Windows.
 #'
-#' * `p$kill()`
+#' * `p$kill()` (3)
 #'
 #'   Kill the current process with SIGKILL pre-emptively checking
 #'   whether PID has been reused.
+#'
+#' @section Notes:
+#'
+#' (1) This method works, even if the process has already terminated.
+#'     Other methods throw a `"no_such_process"` error.
+#'
+#' (2) This method fails if the process has already terminated, with
+#'     a `"no_such_process"` error.
+#'
+#' (3) This method checks if the process is still running, before
+#'     performing its action, and throws a `"no_such_process"` error if
+#'     the process is not available any more.
+#'
+#' (4) Throws a `"zombie_process"` error for zombie processes.
 #'
 #' @name process
 #' @importFrom R6 R6Class

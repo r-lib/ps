@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include <pwd.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 
 #include "common.h"
 
