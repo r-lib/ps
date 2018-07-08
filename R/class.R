@@ -225,8 +225,8 @@ process <- R6Class(
 
   public = list(
 
-    initialize = function(pid = NULL) {
-      private$handle <- ps_handle(pid)
+    initialize = function(pid = NULL, time = NULL) {
+      private$handle <- ps_handle(pid, time)
       invisible(self)
     },
 

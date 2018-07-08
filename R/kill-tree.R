@@ -120,10 +120,9 @@ ps_kill_tree_linux <- function(marker, exclude_me, sig) {
 
   ## Match process environments
   pids <- ps_pids_linux()
-  proc <- get_procfs_path()
   match <- map_lgl(pids, function(p) {
     tryCatch(
-      data <- .Call(psl__linux_match_environ, proc, marker, p),
+      data <- .Call(psl__linux_match_environ, "/proc", marker, p),
       error = function(e) NULL
     )
   })
@@ -135,8 +134,8 @@ ps_kill_tree_linux <- function(marker, exclude_me, sig) {
   ## Try to clean them up, carefully, to minimize racing
   ret <- lapply(cand, function(p) {
     tryCatch({
-      nm <- process(p)$name()
-      rv <- .Call(psl__kill_tree_process, proc, marker, p, sig)
+      nm <- ps_name(ps_handle(p))
+      rv <- .Call(psl__kill_tree_process, "/proc", marker, p, sig)
       if (!is.null(rv)) structure(p, names = nm) },
       error = function(e) NULL
     )
@@ -145,8 +144,8 @@ ps_kill_tree_linux <- function(marker, exclude_me, sig) {
   if (!exclude_me && Sys.getenv(marker) != "") {
     mypid <- Sys.getpid()
     .Call(psp__kill, mypid, sig)
-    me <- process(mypid)
-    ret <- c(ret, list(structure(mypid, names = me$name())))
+    me <- ps_handle(mypid)
+    ret <- c(ret, list(structure(mypid, names = ps_name(me))))
   }
 
   ## This works for empty lists as well, and keeps names
@@ -188,8 +187,8 @@ ps_kill_tree_windows <- function(marker, exclude_me) {
   if (!exclude_me && Sys.getenv(marker) != "") {
     mypid <- Sys.getpid()
     .Call(psw__proc_kill, mypid)
-    me <- process(mypid)
-    ret <- c(ret, list(structure(mypid, names = me$name())))
+    me <- ps_handle(mypid)
+    ret <- c(ret, list(structure(mypid, names = ps_name(me))))
   }
 
   ## This works for empty lists as well, and keeps names

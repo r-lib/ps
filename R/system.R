@@ -77,9 +77,9 @@ ps_ppid_map <- function() {
   } else {
     pids <- ps_pids()
     processes <- not_null(lapply(pids, function(p) {
-      tryCatch(process(p), no_such_process = function(e) NULL) }))
-    pd <- map_int(processes, function(p) fallback(p$pid(), NA_integer_))
-    pp <- map_int(processes, function(p) fallback(p$ppid(), NA_integer_))
+      tryCatch(ps_handle(p), no_such_process = function(e) NULL) }))
+    pd <- map_int(processes, function(p) fallback(ps_pid(p), NA_integer_))
+    pp <- map_int(processes, function(p) fallback(ps_ppid(p), NA_integer_))
     data.frame(
       pid = pd,
       ppid = pp

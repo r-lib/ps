@@ -32,11 +32,11 @@ ps <- function(user = NULL, after = NULL) {
 
   pids <- ps_pids()
   processes <- not_null(lapply(pids, function(p) {
-    tryCatch(process(p), no_such_process = function(e) NULL) }))
+    tryCatch(ps_handle(p), no_such_process = function(e) NULL) }))
 
   ct <- NULL
   if (!is.null(after)) {
-    ct <- lapply(processes, function(p) p$create_time())
+    ct <- lapply(processes, ps_create_time)
     selected <- ct >= after
     processes <- processes[selected]
     ct <- ct[selected]
@@ -44,24 +44,24 @@ ps <- function(user = NULL, after = NULL) {
 
   us <- NULL
   if (!is.null(user)) {
-    us <- map_chr(processes, function(p) p$username())
+    us <- map_chr(processes, function(p) ps_username(p))
     selected <- us == user
     processes <- processes[selected]
     us <- us[selected]
   }
 
   us <- us %||% map_chr(processes, function(p)
-    fallback(p$username(), NA_character_))
+    fallback(ps_username(p), NA_character_))
   ct <- ct %||% lapply(processes, function(p)
-    fallback(p$create_time(), NA_time()))
-  pd <- map_int(processes, function(p) fallback(p$pid(), NA_integer_))
-  pp <- map_int(processes, function(p) fallback(p$ppid(), NA_integer_))
-  nm <- map_chr(processes, function(p) fallback(p$name(), NA_character_))
-  st <- map_chr(processes, function(p) fallback(p$status(), NA_character_))
-  time <- lapply(processes, function(p) fallback(p$cpu_times(), NULL))
+    fallback(ps_create_time(p), NA_time()))
+  pd <- map_int(processes, function(p) fallback(ps_pid(p), NA_integer_))
+  pp <- map_int(processes, function(p) fallback(ps_ppid(p), NA_integer_))
+  nm <- map_chr(processes, function(p) fallback(ps_name(p), NA_character_))
+  st <- map_chr(processes, function(p) fallback(ps_status(p), NA_character_))
+  time <- lapply(processes, function(p) fallback(ps_cpu_times(p), NULL))
   cpt <- map_dbl(time, function(x) x[["user"]] %||% NA_real_)
   cps <- map_dbl(time, function(x) x[["system"]] %||% NA_real_)
-  mem <- lapply(processes, function(p) fallback(p$memory_info(), NULL))
+  mem <- lapply(processes, function(p) fallback(ps_memory_info(p), NULL))
   rss <- map_chr(mem, function(x) pretty_bytes_na(x[["rss"]] %||% NA_real_))
   vms <- map_chr(mem, function(x) pretty_bytes_na(x[["vms"]] %||% NA_real_))
 

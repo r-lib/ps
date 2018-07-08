@@ -41,7 +41,7 @@ ps_start <- function(command, args = character(), ...) {
   }
 
   prp <- processx::process$new(command, args, ...)
-  psp <- process_time(prp$get_pid(), as.numeric(prp$get_start_time()))
+  psp <- process$new(prp$get_pid(), prp$get_start_time())
 
   env <- new.env(parent = emptyenv())
 

@@ -1,5 +1,5 @@
 ps_pids_linux <- function() {
-  sort(as.integer(dir(get_procfs_path(), pattern =  "^[0-9]+$")))
+  sort(as.integer(dir("/proc", pattern = "^[0-9]+$")))
 }
 
 ps_pid_exists_linux <- function(pid) {
@@ -18,7 +18,7 @@ ps_pid_exists_linux <- function(pid) {
       ## Note: already checked that this is faster than using a
       ## regular expr. Also (a lot) faster than doing
       ## 'return pid in pids()'
-      path <- sprintf("%s/%i/status", get_procfs_path(), pid)
+      path <- sprintf("/proc/%i/status", pid)
       lines <- read_lines(path)
       tgidline <- grep("^Tgid:", lines, value = TRUE)[1]
       tgid <- strsplit(tgidline, "\\s+")[[1]][2]
@@ -32,7 +32,7 @@ ps_pid_exists_linux <- function(pid) {
 
 ps_boot_time_raw_linux <- function() {
   if (is.null(ps_env$boot_time)) {
-    path <- sprintf("%s/stat", get_procfs_path())
+    path <- sprintf("/proc/stat")
     btime <- grep("btime", read_lines(path), value = TRUE)
     ps_env$boot_time <-
       as.numeric(strsplit(str_strip(btime), "\\s+")[[1]][[2]])
