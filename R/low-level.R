@@ -137,7 +137,7 @@ ps_name <- function(p) {
     ## Examples are "gnome-keyring-d" vs. "gnome-keyring-daemon".
     cmdline <- tryCatch(
       ps_cmdline(p),
-      access_denied = function(e) NULL
+      error = function(e) NULL
     )
     if (!is.null(cmdline)) {
       exname <- basename(cmdline[1])
