@@ -18,12 +18,19 @@ cache:
 build_script:
   - travis-tool.sh install_deps
 
+environment:
+  NOT_CRAN: true
+  PATH: "%PATH%;C:\\MinGW\\bin;C:\\MinGW\\msys\\1.0;C:\\MinGW\\msys\\1.0\\bin"
+
 test_script:
   - travis-tool.sh run_tests
 
 on_failure:
   - 7z a failure.zip *.Rcheck\*
   - appveyor PushArtifact failure.zip
+
+on_success:
+  - Rscript -e "options(covr.gcov = 'C:/Rtools/mingw_64/bin/gcov.exe');covr::codecov()"
 
 artifacts:
   - path: '*.Rcheck\**\*.log'
