@@ -6,7 +6,7 @@
 #include <libproc.h>
 #include <errno.h>
 
-#include "common.h"
+#include "ps-internal.h"
 #include "arch/macos/process_info.h"
 
 #define PS__TV2DOUBLE(t) ((t).tv_sec + (t).tv_usec / 1000000.0)

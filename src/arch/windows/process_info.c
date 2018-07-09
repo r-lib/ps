@@ -15,7 +15,7 @@
 #include "process_info.h"
 #include "ntextapi.h"
 #include "../../common.h"
-#include "../../extra.h"
+#include "../../ps-internal.h"
 
 
 // ====================================================================

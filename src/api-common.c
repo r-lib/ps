@@ -1,7 +1,8 @@
 
+#define R_USE_C99_IN_CXX 1
 #include <Rinternals.h>
 
-#include "common.h"
+#include "ps-internal.h"
 
 SEXP psll_pid(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);

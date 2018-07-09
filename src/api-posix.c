@@ -1,7 +1,7 @@
 
 #include <errno.h>
 
-#include "common.h"
+#include "ps-internal.h"
 
 SEXP psll_send_signal(SEXP p, SEXP sig) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
