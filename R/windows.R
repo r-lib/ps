@@ -3,10 +3,6 @@ ps_pids_windows <- function() {
   sort(.Call(psw__pids))
 }
 
-ps_pid_exists_windows <- function(pid) {
-  .Call(psw__pid_exists, as.integer(pid))
-}
-
 ps_boot_time_raw_windows <- function() {
   if (is.null(ps_env$boot_time)) {
     ps_env$boot_time <- .Call(psw__boot_time)

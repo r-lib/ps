@@ -2,7 +2,7 @@
 ps_pids_macos <- function() {
   ls <- .Call(psm__pids)
   ## 0 is missing from the list, usually, even though it is a process
-  if (! 0L %in% ls && ps_pid_exists(0L)) {
+  if (! 0L %in% ls && ps_pid_exists_macos(0L)) {
     ls <- c(ls, 0L)
   }
   ls
