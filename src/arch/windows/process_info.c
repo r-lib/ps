@@ -256,7 +256,7 @@ ps__check_phandle(HANDLE hProcess, DWORD pid) {
   if (ret == 1){
     return hProcess;
   } else if (ret == 0){
-    ps__no_such_process("");
+    ps__no_such_process(0, "");
     return NULL;
   } else if (ret == -1) {
     psw__set_error_from_windows_error(0);
@@ -544,13 +544,13 @@ static int ps__get_process_data(long pid,
   static _NtWow64ReadVirtualMemory64 NtWow64ReadVirtualMemory64 = NULL;
 #endif
   HANDLE hProcess = NULL;
-  LPCVOID src;
-  SIZE_T size;
+  LPCVOID src = NULL;
+  SIZE_T size = 0;
   WCHAR *buffer = NULL;
 #ifdef _WIN64
   LPVOID ppeb32 = NULL;
 #else
-  PVOID64 src64;
+  PVOID64 src64 = NULL;
   BOOL weAreWow64;
   BOOL theyAreWow64;
 #endif
@@ -962,7 +962,7 @@ ps__get_proc_info(DWORD pid, PSYSTEM_PROCESS_INFORMATION *retProcess,
     }
   } while ( (process = PS__NEXT_PROCESS(process)) );
 
-  ps__no_such_process("");
+  ps__no_such_process(0, "");
   goto error;
 
  error:

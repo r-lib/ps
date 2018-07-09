@@ -57,14 +57,6 @@
 #define AF_INET6 23
 #endif
 
-#if (_WIN32_WINNT >= 0x0601)  // Windows  7
-typedef BOOL (WINAPI *PFN_GETLOGICALPROCESSORINFORMATIONEX)(
-LOGICAL_PROCESSOR_RELATIONSHIP relationship,
-  PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX Buffer,
-  PDWORD ReturnLength);
-static PFN_GETLOGICALPROCESSORINFORMATIONEX _GetLogicalProcessorInformationEx;
-#endif
-
 // Fix for mingw32, see:
 // https://github.com/giampaolo/psutil/issues/351#c2
 // This is actually a DISK_PERFORMANCE struct:
@@ -280,7 +272,7 @@ SEXP psw__proc_kill(SEXP r_pid) {
       // see https://github.com/giampaolo/psutil/issues/24
       ps__debug("OpenProcess -> ERROR_INVALID_PARAMETER turned "
 		   "into NoSuchProcess");
-      ps__no_such_process("");
+      ps__no_such_process(0, "");
     }
     else {
       psw__set_error_from_windows_error(0);
@@ -320,7 +312,7 @@ SEXP psw__proc_cpu_times(SEXP r_pid) {
     if (GetLastError() == ERROR_ACCESS_DENIED) {
       // usually means the process has died so we throw a NoSuchProcess
       // here
-      ps__no_such_process("");
+      ps__no_such_process(0, "");
       ps__throw_error();
     }
     else {
@@ -369,7 +361,7 @@ SEXP psw__proc_create_time(SEXP r_pid) {
     if (GetLastError() == ERROR_ACCESS_DENIED) {
       // usually means the process has died so we throw a
       // NoSuchProcess here
-      ps__no_such_process("");
+      ps__no_such_process(0, "");
       ps__throw_error();
     }
     else {
@@ -402,7 +394,7 @@ SEXP psw__proc_cmdline(SEXP r_pid) {
 
   pid_return = ps__pid_is_running(pid);
   if (pid_return == 0) {
-    ps__no_such_process("");
+    ps__no_such_process(0, "");
     ps__throw_error();
   }
 
@@ -425,7 +417,7 @@ SEXP psw__proc_environ(SEXP r_pid) {
 
   pid_return = ps__pid_is_running(pid);
   if (pid_return == 0) {
-    ps__no_such_process("");
+    ps__no_such_process(0, "");
     ps__throw_error();
   }
   if (pid_return == -1)
@@ -489,7 +481,7 @@ SEXP psw__proc_name(SEXP r_pid) {
   }
 
   CloseHandle(hSnapShot);
-  ps__no_such_process("");
+  ps__no_such_process(0, "");
   ps__throw_error();
   return R_NilValue;
 }
@@ -568,7 +560,7 @@ SEXP psw__proc_cwd(SEXP r_pid)  {
 
   pid_return = ps__pid_is_running(pid);
   if (pid_return == 0) {
-    ps__no_such_process("");
+    ps__no_such_process(0, "");
     ps__throw_error();
   }
   if (pid_return == -1)
@@ -975,7 +967,7 @@ SEXP psw__kill_tree_process(SEXP r_marker, SEXP r_pid) {
       // see https://github.com/giampaolo/psutil/issues/24
       ps__debug("OpenProcess -> ERROR_INVALID_PARAMETER turned "
 		   "into NoSuchProcess");
-      ps__no_such_process("");
+      ps__no_such_process(0, "");
     }
     else {
       psw__set_error_from_windows_error(0);

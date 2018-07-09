@@ -605,7 +605,6 @@ static const R_CallMethodDef callMethods[]  = {
   /* WINDOWS */
   { "psw__pids",             (DL_FUNC) psw__pids,             0 },
   { "psw__ppid_map",         (DL_FUNC) psw__ppid_map,         0 },
-  { "psw__pid_exists",       (DL_FUNC) psw__pid_exists,       1 },
   { "psw__boot_time",        (DL_FUNC) psw__boot_time,        0 },
   { "psw__proc_name",        (DL_FUNC) psw__proc_name,        1 },
   { "psw__proc_exe",         (DL_FUNC) psw__proc_exe,         1 },

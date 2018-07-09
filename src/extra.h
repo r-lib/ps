@@ -37,6 +37,19 @@ typedef struct {
 
 #endif
 
+#ifdef PS__WINDOWS
+
+#include <windows.h>
+
+typedef struct {
+  DWORD  pid;
+  double create_time;
+  int gone;
+  FILETIME wtime;
+} ps_handle_t;
+
+#endif
+
 SEXP psll_handle(SEXP pid, SEXP time);
 
 SEXP psll_pid(SEXP p);
