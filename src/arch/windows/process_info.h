@@ -23,8 +23,8 @@ int ps__get_proc_info(DWORD pid, PSYSTEM_PROCESS_INFORMATION *retProcess,
 int ps__assert_pid_exists(DWORD pid, char *err);
 int ps__assert_pid_not_exists(DWORD pid, char *err);
 
-SEXP ps__get_cmdline(long pid);
-SEXP ps__get_cwd(long pid);
-SEXP ps__get_environ(long pid);
+SEXP ps__get_cmdline(DWORD pid);
+SEXP ps__get_cwd(DWORD pid);
+SEXP ps__get_environ(DWORD pid);
 
 #endif

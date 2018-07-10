@@ -256,7 +256,7 @@ ps__check_phandle(HANDLE hProcess, DWORD pid) {
   if (ret == 1){
     return hProcess;
   } else if (ret == 0){
-    ps__no_such_process(0, "");
+    ps__no_such_process(pid, 0);
     return NULL;
   } else if (ret == -1) {
     psw__set_error_from_windows_error(0);
@@ -804,15 +804,17 @@ static int ps__get_process_data(long pid,
  * returns a list representing the arguments for the process
  * with given pid or NULL on error.
  */
-SEXP ps__get_cmdline(long pid) {
+SEXP ps__get_cmdline(DWORD pid) {
   WCHAR *data = NULL;
   SIZE_T size;
   SEXP retlist = R_NilValue;
   LPWSTR *szArglist = NULL;
   int nArgs, i;
 
-  if (ps__get_process_data(pid, KIND_CMDLINE, &data, &size) != 0)
-    error("Cannot get command line");
+  if (ps__get_process_data(pid, KIND_CMDLINE, &data, &size) != 0) {
+    ps__set_error("Cannot get command line");
+    return R_NilValue;
+  }
 
   PROTECT_PTR(data);
 
@@ -821,7 +823,7 @@ SEXP ps__get_cmdline(long pid) {
   if (szArglist == NULL) {
     psw__set_error_from_windows_error(0);
     free(data);
-    error("Cannot get command line");
+    return R_NilValue;
   }
 
   /* TODO: We cannot PROTECT_PTR szArglist, because it has to be freed
@@ -840,15 +842,20 @@ SEXP ps__get_cmdline(long pid) {
   return retlist;
 }
 
-SEXP ps__get_cwd(long pid) {
+SEXP ps__get_cwd(DWORD pid) {
   SEXP ret;
   WCHAR *data = NULL;
   SIZE_T size;
 
-  if (ps__get_process_data(pid, KIND_CWD, &data, &size) != 0)
-    error("Cannot get process data");
+  if (ps__get_process_data(pid, KIND_CWD, &data, &size) != 0) {
+    return R_NilValue;
+  }
 
   PROTECT_PTR(data);
+
+  /* Usually has a trailing \ */
+  size = wcslen(data);
+  if (data[size - 1] == L'\\') data[size - 1] = L'\0';
 
   // convert wchar array to an R unicode string
   PROTECT(ret = ScalarString(psw__utf16_to_charsxp(data, -1)));
@@ -861,15 +868,17 @@ SEXP ps__get_cwd(long pid) {
  * returns an R string containing the environment variable data for the
  * process with given pid or NULL on error.
  */
-SEXP ps__get_environ(long pid) {
+SEXP ps__get_environ(DWORD pid) {
   SEXP ret = NULL;
   WCHAR *data = NULL;
   SIZE_T size;
   int numzero = 0;
   WCHAR *ptr, *end;
 
-  if (ps__get_process_data(pid, KIND_ENVIRON, &data, &size) != 0)
-    error("Cannot get process data");
+  if (ps__get_process_data(pid, KIND_ENVIRON, &data, &size) != 0) {
+    ps__no_such_process(pid, 0);
+    return R_NilValue;
+  }
 
   PROTECT_PTR(data);
 
@@ -962,7 +971,7 @@ ps__get_proc_info(DWORD pid, PSYSTEM_PROCESS_INFORMATION *retProcess,
     }
   } while ( (process = PS__NEXT_PROCESS(process)) );
 
-  ps__no_such_process(0, "");
+  ps__no_such_process(pid, 0);
   goto error;
 
  error:

@@ -66,6 +66,11 @@ void *ps__zombie_process(long pid) {
 			    "Process is a zombie, pid %ld", pid);
 }
 
+void *ps__not_implemented(const char *what) {
+  return ps__set_error_impl("not_implemented", 0, NA_INTEGER,
+			    "Not implemented on this platform: `%s`", what);
+}
+
 void *ps__no_memory(const char *msg) {
   return ps__set_error_impl("no_memory",
 #ifdef PS__WINDOWS

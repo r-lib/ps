@@ -17,3 +17,8 @@ wait_for_status <- function(ps, status, timeout = 5) {
   limit <- Sys.time() + timeout
   while (ps_status(ps) != status && Sys.time() < limit) Sys.sleep(0.05)
 }
+
+px <- function() {
+  get_tool <- getFromNamespace("get_tool", asNamespace("processx"))
+  get_tool("px")
+}
