@@ -175,7 +175,7 @@ test_that("kill", {
   ps <- ps_handle(p1$get_pid())
 
   ps_kill(ps)
-  timeout <- Sys.time() + 60
+  timeout <- Sys.time() + 5
   while (Sys.time() < timeout && ps_is_running(ps)) Sys.sleep(0.05)
   expect_false(p1$is_alive())
   expect_false(ps_is_running(ps))

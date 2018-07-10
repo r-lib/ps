@@ -19,21 +19,21 @@ void ps__wrap_windows_error(ps_handle_t *handle) {
 int ps__create_time_raw(DWORD pid, FILETIME *ftCreate) {
   HANDLE hProcess = ps__handle_from_pid(pid);
   FILETIME ftExit, ftKernel, ftUser;
-  if (! hProcess ||
-      ! GetProcessTimes(hProcess, ftCreate, &ftExit, &ftKernel, &ftUser)) {
-    if (hProcess) CloseHandle(hProcess);
-    if (GetLastError() == ERROR_ACCESS_DENIED) {
-      // usually means the process has died so we throw a
-      // NoSuchProcess here
-      ps__no_such_process(pid, 0);
-    } else {
-      psw__set_error_from_windows_error(0);
-    }
-    return -1;
-  }
-
+  if (! hProcess) goto error;
+  if (! GetProcessTimes(hProcess, ftCreate, &ftExit, &ftKernel, &ftUser)) goto error;
   CloseHandle(hProcess);
   return 0;
+
+ error:
+  if (hProcess) CloseHandle(hProcess);
+  if (GetLastError() == ERROR_ACCESS_DENIED) {
+    // usually means the process has died so we throw a
+    // NoSuchProcess here
+    ps__no_such_process(pid, 0);
+  } else {
+    psw__set_error_from_windows_error(0);
+  }
+  return -1;
 }
 
 double ps__filetime_to_unix(FILETIME ft) {
@@ -222,11 +222,12 @@ SEXP psll_name(SEXP p) {
 
   if (!handle) error("Process pointer cleaned up already");
 
-  ret = psll__name(handle->pid);
+  PROTECT(ret = psll__name(handle->pid));
   if (isNull(ret)) ps__throw_error();
 
   PS__CHECK_HANDLE(handle);
 
+  UNPROTECT(1);
   return ret;
 }
 

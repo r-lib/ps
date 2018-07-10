@@ -221,6 +221,7 @@ ps__is_phandle_running(HANDLE hProcess, DWORD pid) {
     if (processExitCode == STILL_ACTIVE) {
       if (! ps__assert_pid_exists(
 				  pid, "iphr: GetExitCodeProcess() -> STILL_ACTIVE")) {
+	CloseHandle(hProcess);
 	return -2;
       }
       return 1;
@@ -280,11 +281,13 @@ ps__handle_from_pid_waccess(DWORD pid, DWORD dwDesiredAccess) {
 
   if (pid == 0) {
     // otherwise we'd get NoSuchProcess
-    return ps__access_denied("");
+    ps__access_denied("");
+    return NULL;
   }
 
   hProcess = OpenProcess(dwDesiredAccess, FALSE, pid);
   return ps__check_phandle(hProcess, pid);
+;
 }
 
 

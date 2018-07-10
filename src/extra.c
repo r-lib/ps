@@ -19,6 +19,8 @@ SEXP ps__last_error;
 void *ps__set_error_impl(const char *class, int system_errno,
 			 long pid, const char *msg, ...) {
   va_list args;
+  const char *ps_error = "ps_error", *error = "error", *condition = "condition";
+  SEXP rclass;
 
   va_start(args, msg);
   vsnprintf(ps__last_error_string,
@@ -49,8 +51,9 @@ void *ps__set_error(const char *msg, ...) {
 }
 
 void *ps__no_such_process(long pid, const char *name) {
+  const char *class = "no_such_process";
   return ps__set_error_impl(
-    "no_such_process", 0, pid, "No such process, pid %ld, %s", pid,
+    class, 0, pid, "No such process, pid %ld, %s", pid,
     name ? name : "???");
 }
 
@@ -275,14 +278,16 @@ SEXP ps__build_string(const char *str, ...) {
 
   /* Count the length first */
   va_start(args, str);
-  while (va_arg(args, char*)) len++;
+  while (va_arg(args, const char*)) len++;
   va_end(args);
 
   PROTECT(res = allocVector(STRSXP, len));
   SET_STRING_ELT(res, 0, mkChar(str));
   len = 1;
   va_start(args, str);
-  while ((s = va_arg(args, char*))) SET_STRING_ELT(res, len++, mkChar(s));
+  while ((s = va_arg(args, const char*))) {
+    SET_STRING_ELT(res, len++, mkChar(s));
+  }
   va_end(args);
 
   UNPROTECT(1);

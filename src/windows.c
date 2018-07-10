@@ -215,20 +215,6 @@ SEXP psw__boot_time() {
 
 
 /*
- * Return 1 if PID exists in the current process list, else 0.
- */
-SEXP psw__pid_exists(SEXP r_pid) {
-  long pid = INTEGER(r_pid)[0];
-  int status;
-
-  status = ps__pid_is_running(pid);
-  if (-1 == status)
-    ps__throw_error(); // exception raised in ps__pid_is_running()
-  return ScalarLogical(status);
-}
-
-
-/*
  * Return an integer vector of all the PIDs running on the system.
  */
 SEXP psw__pids() {
@@ -304,7 +290,7 @@ SEXP psw__proc_cpu_times(DWORD pid) {
 
   hProcess = ps__handle_from_pid(pid);
   if (hProcess == NULL)
-    ps__throw_error();
+    return R_NilValue;
   if (! GetProcessTimes(hProcess, &ftCreate, &ftExit, &ftKernel, &ftUser)) {
     CloseHandle(hProcess);
     if (GetLastError() == ERROR_ACCESS_DENIED) {
@@ -343,70 +329,6 @@ SEXP psw__proc_cpu_times(DWORD pid) {
   return result;
 }
 
-
-/*
- * Return a double indicating the process create time expressed in
- * seconds since the epoch.
- */
-SEXP psw__proc_create_time(SEXP r_pid) {
-  long        pid = INTEGER(r_pid)[0];
-  long long   unix_time;
-  HANDLE      hProcess;
-  FILETIME    ftCreate, ftExit, ftKernel, ftUser;
-
-  // special case for PIDs 0 and 4, return system boot time
-  if (0 == pid || 4 == pid)
-    return psw__boot_time();
-
-  hProcess = ps__handle_from_pid(pid);
-  if (hProcess == NULL)
-    ps__throw_error();
-  if (! GetProcessTimes(hProcess, &ftCreate, &ftExit, &ftKernel, &ftUser)) {
-    CloseHandle(hProcess);
-    if (GetLastError() == ERROR_ACCESS_DENIED) {
-      // usually means the process has died so we throw a
-      // NoSuchProcess here
-      ps__no_such_process(pid, 0);
-      ps__throw_error();
-    }
-    else {
-      psw__set_error_from_windows_error(0);
-      ps__throw_error();
-    }
-  }
-
-  CloseHandle(hProcess);
-
-  // Convert the FILETIME structure to a Unix time.
-  // It's the best I could find by googling and borrowing code here
-  // and there. The time returned has a precision of 1 second.
-  unix_time = ((LONGLONG)ftCreate.dwHighDateTime) << 32;
-  unix_time += ftCreate.dwLowDateTime - 116444736000000000LL;
-  unix_time /= 10000000;
-  return ScalarReal((double)unix_time);
-}
-
-
-/*
- * Return process environment variables as a character vector
- */
-SEXP psw__proc_environ(SEXP r_pid) {
-  long pid = INTEGER(r_pid)[0];
-  int pid_return;
-
-  if ((pid == 0) || (pid == 4))
-    return allocVector(STRSXP, 0);
-
-  pid_return = ps__pid_is_running(pid);
-  if (pid_return == 0) {
-    ps__no_such_process(pid, 0);
-    ps__throw_error();
-  }
-  if (pid_return == -1)
-    ps__throw_error();
-
-  return ps__get_environ(pid);
-}
 
 SEXP psll__exe(DWORD pid) {
   HANDLE hProcess;
@@ -463,27 +385,6 @@ SEXP psll__exe(DWORD pid) {
   return ScalarString(psw__utf16_to_charsxp(bs - 2, -1));
 }
 
-
-/*
- * Return process executable path.
- */
-SEXP psw__proc_exe(SEXP r_pid) {
-  long pid =  INTEGER(r_pid)[0];
-  HANDLE hProcess;
-  wchar_t exe[MAX_PATH];
-
-  hProcess = ps__handle_from_pid_waccess(pid, PROCESS_QUERY_INFORMATION);
-  if (NULL == hProcess)
-    error("No  such process");
-
-  if (GetProcessImageFileNameW(hProcess, exe, MAX_PATH) == 0) {
-    CloseHandle(hProcess);
-    psw__set_error_from_windows_error(0);
-    ps__throw_error();
-  }
-  CloseHandle(hProcess);
-  return ScalarString(psw__utf16_to_charsxp(exe, -1));
-}
 
 SEXP psll__name(DWORD pid) {
   SEXP exe, name;
@@ -549,88 +450,6 @@ SEXP psw__proc_name(DWORD pid) {
   return R_NilValue;
 }
 
-
-/*
- * Return process memory information as a list.
- */
-SEXP psw__proc_memory_info(SEXP r_pid) {
-  HANDLE hProcess;
-  DWORD pid = INTEGER(r_pid)[0];
-#if (_WIN32_WINNT >= 0x0501)  // Windows XP with SP2
-  PROCESS_MEMORY_COUNTERS_EX cnt;
-#else
-  PROCESS_MEMORY_COUNTERS cnt;
-#endif
-  SIZE_T private = 0;
-
-  hProcess = ps__handle_from_pid(pid);
-  if (NULL == hProcess)
-    ps__throw_error();
-
-  if (! GetProcessMemoryInfo(hProcess, (PPROCESS_MEMORY_COUNTERS)&cnt,
-			     sizeof(cnt))) {
-    CloseHandle(hProcess);
-    psw__set_error_from_windows_error(0);
-    ps__throw_error();
-  }
-
-#if (_WIN32_WINNT >= 0x0501)  // Windows XP with SP2
-  private = cnt.PrivateUsage;
-#endif
-
-  CloseHandle(hProcess);
-
-  // PROCESS_MEMORY_COUNTERS values are defined as SIZE_T which on 64bits
-  // is an (unsigned long long) and on 32bits is an (unsigned int).
-  // "_WIN64" is defined if we're running a 64bit interpreter not
-  // exclusively if the *system* is 64bit.
-#if defined(_WIN64)
-  return ps__build_named_list(
-    "kKKKKKKKKK",
-    "num_page_faults",     cnt.PageFaultCount,  // unsigned long
-    "peak_wset",           (unsigned long long) cnt.PeakWorkingSetSize,
-    "wset",                (unsigned long long) cnt.WorkingSetSize,
-    "peak_paged_pool",     (unsigned long long) cnt.QuotaPeakPagedPoolUsage,
-    "paged_pool",          (unsigned long long) cnt.QuotaPagedPoolUsage,
-    "peak_non_paged_pool", (unsigned long long) cnt.QuotaPeakNonPagedPoolUsage,
-    "non_paged_pool",      (unsigned long long) cnt.QuotaNonPagedPoolUsage,
-    "pagefile",            (unsigned long long) cnt.PagefileUsage,
-    "peak_pagefile",       (unsigned long long) cnt.PeakPagefileUsage,
-    "mem_private",         (unsigned long long) private);
-#else
-  return ps__build_named_list(
-    "kIIIIIIIII",
-    "num_page_faults",     cnt.PageFaultCount,    // unsigned long
-    "peak_wget",           (unsigned int) cnt.PeakWorkingSetSize,
-    "wset",                (unsigned int) cnt.WorkingSetSize,
-    "peak_paged_pool",     (unsigned int) cnt.QuotaPeakPagedPoolUsage,
-    "paged_pool",          (unsigned int) cnt.QuotaPagedPoolUsage,
-    "peak_non_paged_pool", (unsigned int) cnt.QuotaPeakNonPagedPoolUsage,
-    "non_paged_pool",      (unsigned int) cnt.QuotaNonPagedPoolUsage,
-    "pagefile",            (unsigned int) cnt.PagefileUsage,
-    "peak_pagefile",       (unsigned int) cnt.PeakPagefileUsage,
-    "mem_private",         (unsigned int) private);
-#endif
-}
-
-
-/*
- * Return process current working directory as a string.
- */
-SEXP psw__proc_cwd(SEXP r_pid)  {
-  long pid = INTEGER(r_pid)[0];
-  int pid_return;
-
-  pid_return = ps__pid_is_running(pid);
-  if (pid_return == 0) {
-    ps__no_such_process(pid, 0);
-    ps__throw_error();
-  }
-  if (pid_return == -1)
-    ps__throw_error();
-
-  return ps__get_cwd(pid);
-}
 
 /*
  * Resume or suspends a process
@@ -853,31 +672,6 @@ SEXP psw__proc_username(DWORD pid) {
 }
 
 
-/*
- * Return True if one of the process threads is in a waiting or
- * suspended status.
- */
-SEXP psw__proc_is_suspended(SEXP r_pid) {
-  DWORD pid = INTEGER(r_pid)[0];
-  ULONG i;
-  PSYSTEM_PROCESS_INFORMATION process;
-  PVOID buffer;
-
-  if (! ps__get_proc_info(pid, &process, &buffer)) {
-    ps__throw_error();
-  }
-  for (i = 0; i < process->NumberOfThreads; i++) {
-    if (process->Threads[i].ThreadState != Waiting ||
-	process->Threads[i].WaitReason != Suspended)
-      {
-	free(buffer);
-	return ScalarLogical(FALSE);
-      }
-  }
-  free(buffer);
-  return ScalarLogical(TRUE);
-}
-
 SEXP psw__proc_num_threads(DWORD pid) {
   PSYSTEM_PROCESS_INFORMATION process;
   PVOID buffer;
@@ -994,7 +788,7 @@ SEXP psll__ppid(DWORD pid) {
   handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
   if (handle == INVALID_HANDLE_VALUE) {
     psw__set_error_from_windows_error(0);
-    ps__throw_error();
+    return R_NilValue;
   }
 
   if (Process32First(handle, &pe)) {
@@ -1012,7 +806,7 @@ SEXP psll__ppid(DWORD pid) {
     return ScalarInteger(ppid);
   } else {
     ps__no_such_process(pid, 0);
-    ps__throw_error();
+    return R_NilValue;
   }
 
   return R_NilValue;
@@ -1083,7 +877,8 @@ SEXP psw__kill_tree_process(SEXP r_marker, SEXP r_pid) {
   }
 
   /* Check environment again, to avoid racing */
-  PROTECT(env = psw__proc_environ(r_pid));
+  PROTECT(env = ps__get_environ(pid));
+  if (isNull(env)) ps__throw_error();
   n = LENGTH(env);
   for (i = 0; i < n; i++) {
     if (strstr(CHAR(STRING_ELT(env, i)), marker)) {
