@@ -586,7 +586,7 @@ SEXP psll__ids(SEXP p, const char *needle) {
   INTEGER(result)[0] = real;
   INTEGER(result)[1] = eff;
   INTEGER(result)[2] = saved;
-  PROTECT(names = ps__build_string("real", "effective", "saved", 0));
+  PROTECT(names = ps__build_string("real", "effective", "saved", NULL));
   setAttrib(result, R_NamesSymbol, names);
 
   UNPROTECT(2);
@@ -695,7 +695,7 @@ SEXP psll_cpu_times(SEXP p) {
   REAL(result)[2] = stat.cutime / psll_linux_clock_ticks;
   REAL(result)[3] = stat.cstime / psll_linux_clock_ticks;
   PROTECT(names = ps__build_string("user", "system", "childen_user",
-				   "children_system", 0));
+				   "children_system", NULL));
   setAttrib(result, R_NamesSymbol, names);
 
   UNPROTECT(2);
@@ -744,7 +744,7 @@ SEXP psll_memory_info(SEXP p) {
   INTEGER(result)[5] = data;
   INTEGER(result)[6] = dirty;
   PROTECT(names = ps__build_string("rss", "vms", "shared", "text", "lib",
-				   "data", "dirty", 0));
+				   "data", "dirty", NULL));
   setAttrib(result, R_NamesSymbol, names);
 
   UNPROTECT(2);

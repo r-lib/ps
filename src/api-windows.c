@@ -425,7 +425,7 @@ SEXP psll_cpu_times(SEXP p) {
   REAL(result)[1] = REAL(VECTOR_ELT(result2, 3))[0];
   REAL(result)[2] = REAL(result)[3] = NA_REAL;
   PROTECT(names = ps__build_string("user", "system", "childen_user",
-				   "children_system", 0));
+				   "children_system", NULL));
   setAttrib(result, R_NamesSymbol, names);
 
   UNPROTECT(3);
@@ -463,7 +463,7 @@ SEXP psll_memory_info(SEXP p) {
   PROTECT(names = ps__build_string(
     "num_page_faults", "peak_wset", "wset", "peak_paged_pool",
     "paged_pool", "peak_non_paged_pool", "non_paged_pool",
-    "pagefile", "peak_pagefile", "mem_private", "rss", "vms", 0));
+    "pagefile", "peak_pagefile", "mem_private", "rss", "vms", NULL));
   setAttrib(result, R_NamesSymbol, names);
 
   UNPROTECT(3);

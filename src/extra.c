@@ -27,14 +27,12 @@ void *ps__set_error_impl(const char *class, int system_errno,
 
   SET_VECTOR_ELT(ps__last_error, 0, mkString(ps__last_error_string));
   if (class) {
-    SET_VECTOR_ELT(
-      ps__last_error, 1,
-      ps__build_string(class, "ps_error", "error", "condition", 0));
+    PROTECT(rclass = ps__build_string(class, ps_error, error, condition, NULL));
   } else {
-    SET_VECTOR_ELT(
-      ps__last_error, 1,
-      ps__build_string("ps_error", "error", "condition", 0));
+    PROTECT(rclass = ps__build_string(ps_error, error, condition, NULL));
   }
+  SET_VECTOR_ELT(ps__last_error, 1, rclass);
+  UNPROTECT(1);
   SET_VECTOR_ELT(ps__last_error, 2, ScalarInteger(system_errno));
   SET_VECTOR_ELT(ps__last_error, 3, ScalarInteger((int)  pid));
   return NULL;

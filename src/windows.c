@@ -336,7 +336,7 @@ SEXP psw__proc_cpu_times(DWORD pid) {
     (double)(ftKernel.dwHighDateTime * 429.4967296 + ftKernel.dwLowDateTime * 1e-7),
   REAL(result)[2] = REAL(result)[3] = NA_REAL;
   PROTECT(names = ps__build_string("user", "system", "childen_user",
-				   "children_system", 0));
+				   "children_system", NULL));
   setAttrib(result, R_NamesSymbol, names);
 
   UNPROTECT(2);

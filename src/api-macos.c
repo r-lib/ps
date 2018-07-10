@@ -292,7 +292,7 @@ SEXP psll_uids(SEXP p) {
   INTEGER(result)[0] = kp.kp_eproc.e_pcred.p_ruid;
   INTEGER(result)[1] = kp.kp_eproc.e_ucred.cr_uid;
   INTEGER(result)[2] = kp.kp_eproc.e_pcred.p_svuid;
-  PROTECT(names = ps__build_string("real", "effective", "saved", 0));
+  PROTECT(names = ps__build_string("real", "effective", "saved", NULL));
   setAttrib(result, R_NamesSymbol, names);
 
   UNPROTECT(2);
@@ -315,7 +315,7 @@ SEXP psll_gids(SEXP p) {
   INTEGER(result)[0] = kp.kp_eproc.e_pcred.p_rgid;
   INTEGER(result)[1] = kp.kp_eproc.e_ucred.cr_groups[0];
   INTEGER(result)[2] = kp.kp_eproc.e_pcred.p_svgid;
-  PROTECT(names = ps__build_string("real", "effective", "saved", 0));
+  PROTECT(names = ps__build_string("real", "effective", "saved", NULL));
   setAttrib(result, R_NamesSymbol, names);
 
   UNPROTECT(2);
@@ -395,7 +395,7 @@ SEXP psll_cpu_times(SEXP p) {
   REAL(result)[1] = (double) pti.pti_total_system / 1000000000.0;
   REAL(result)[2] = REAL(result)[3] = NA_REAL;
   PROTECT(names = ps__build_string("user", "system", "childen_user",
-				   "children_system", 0));
+				   "children_system", NULL));
   setAttrib(result, R_NamesSymbol, names);
 
   UNPROTECT(2);
@@ -422,7 +422,7 @@ SEXP psll_memory_info(SEXP p) {
   REAL(result)[1] = (double) pti.pti_virtual_size;
   REAL(result)[2] = (double) pti.pti_faults;
   REAL(result)[3] = (double) pti.pti_pageins;
-  PROTECT(names = ps__build_string("rss", "vms", "pfaults", "pageins",  0));
+  PROTECT(names = ps__build_string("rss", "vms", "pfaults", "pageins", NULL));
   setAttrib(result, R_NamesSymbol, names);
 
   UNPROTECT(2);
