@@ -177,13 +177,6 @@ waitpid <- function(pid) {
   if (ps_os_type()[["POSIX"]]) .Call(psp__waitpid, as.integer(pid))
 }
 
-convert_dos_path <- function(path) {
-  pcs <- strsplit(path, "\\", fixed =  TRUE)[[1]]
-  rawdrive <- paste(head(pcs, 3), collapse = "\\")
-  driveletter <- .Call(psw__win32_QueryDosDevice, rawdrive)
-  paste0(driveletter, substr(path, nchar(rawdrive) + 1, nchar(path)))
-}
-
 head <- function(x, n) {
   if (length(x) <= n) return(x)
   x[seq_len(n)]

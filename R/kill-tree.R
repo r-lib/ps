@@ -174,7 +174,7 @@ ps_kill_tree_windows <- function(marker, exclude_me) {
   ## Try to clean them up, carefully, to minimize racing
   ret <- lapply(cand, function(p) {
     name <- tryCatch(
-      basename(convert_dos_path(.Call(ps__proc_exe, p))),
+      basename(.Call(ps__proc_exe, p)),
       error = function(e) "???"
     )
     tryCatch({
