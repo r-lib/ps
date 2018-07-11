@@ -79,11 +79,13 @@ test_that("kill_tree, orphaned grandchild", {
 
   N <- 3
   lapply(1:N, function(x) {
-    system2(px(), c("sleep", "5"), stdout = file.path(tmp, x), wait = FALSE)
+    system2(px(), c("outln", "ok","sleep", "5"),
+            stdout = file.path(tmp, x), wait = FALSE)
   })
 
   timeout <- Sys.time() + 10
-  while  (length(dir(tmp)) < N && Sys.time() < timeout) Sys.sleep(0.1)
+  while (sum(file_size(dir(tmp, full.names = TRUE)) > 0) < N &&
+         Sys.time() < timeout) Sys.sleep(0.1)
 
   res <- ps_kill_tree(id)
   expect_equal(length(res), N)
