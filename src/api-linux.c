@@ -425,6 +425,7 @@ SEXP psll_exe(SEXP p) {
     ps__check_for_zombie(handle, 1);
 
   } else {
+    PS__CHECK_HANDLE(handle);
     result = ps__str_to_utf8(linkname);
   }
 
@@ -642,6 +643,8 @@ SEXP psll_environ(SEXP p) {
   ret = ps__read_file(path, &buf, /* buffer= */ 1024 * 32);
   if (ret <= 0) {
     ps__check_for_zombie(handle, 1);
+  } else {
+    PS__CHECK_HANDLE(handle);
   }
 
   *(buf + ret - 1) = '\0';
