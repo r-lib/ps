@@ -81,6 +81,7 @@ ps <- function(user = NULL, after = NULL) {
 
   pss <- pss[order(-as.numeric(pss$created)), ]
 
+  requireNamespace("tibble", quietly = TRUE)
   class(pss) <- unique(c("tbl_df", "tbl", class(pss)))
   pss
 }

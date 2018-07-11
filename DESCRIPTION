@@ -23,7 +23,8 @@ Imports:
 Suggests:
     covr,
     processx (>= 3.1.0.9005),
-    testthat
+    testthat,
+    tibble
 Remotes:
     r-lib/processx@featue/kill-tree
 RoxygenNote: 6.0.1
