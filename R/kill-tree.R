@@ -74,10 +74,10 @@ ps_kill_tree <- function(marker, exclude_me = TRUE,
 ps_kill_tree_macos <- function(marker, exclude_me, sig) {
 
   ## Get all process environments
-  pids <- .Call(psm__pids)
+  pids <- .Call(ps__pids)
   envs <- lapply(pids, function(p) {
     tryCatch(
-      .Call(psm__proc_environ, p),
+      .Call(ps__proc_environ, p),
       no_such_process = function(e) NULL,
       access_denied = function(e) NULL
     )
@@ -93,10 +93,10 @@ ps_kill_tree_macos <- function(marker, exclude_me, sig) {
   ## Try to clean them up, carefully, to minimize racing
   ret <- lapply(cand, function(p) {
     tryCatch({
-      info <- .Call(psm__proc_kinfo_oneshot, p)
-      env <- .Call(psm__proc_environ, p)
+      info <- .Call(ps__proc_kinfo_oneshot, p)
+      env <- .Call(ps__proc_environ, p)
       if (length(grep(marker, env))) {
-        .Call(psp__kill, p, sig)
+        .Call(ps__kill, p, sig)
         structure(p, names = info$name)
       } },
       no_such_process = function(e) NULL,
@@ -106,8 +106,8 @@ ps_kill_tree_macos <- function(marker, exclude_me, sig) {
 
   if (!exclude_me && Sys.getenv(marker) != "") {
     mypid <- Sys.getpid()
-    .Call(psp__kill, mypid, sig)
-    info <- .Call(psm__proc_kinfo_oneshot, mypid)
+    .Call(ps__kill, mypid, sig)
+    info <- .Call(ps__proc_kinfo_oneshot, mypid)
     ret <- c(ret, list(structure(mypid, names = info$name)))
   }
 
@@ -143,7 +143,7 @@ ps_kill_tree_linux <- function(marker, exclude_me, sig) {
 
   if (!exclude_me && Sys.getenv(marker) != "") {
     mypid <- Sys.getpid()
-    .Call(psp__kill, mypid, sig)
+    .Call(ps__kill, mypid, sig)
     me <- ps_handle(mypid)
     ret <- c(ret, list(structure(mypid, names = ps_name(me))))
   }
@@ -156,10 +156,10 @@ ps_kill_tree_linux <- function(marker, exclude_me, sig) {
 ps_kill_tree_windows <- function(marker, exclude_me) {
 
   ## Get all process environments
-  pids <- .Call(psw__pids)
+  pids <- .Call(ps__pids)
   envs <- lapply(pids, function(p) {
     tryCatch(
-      .Call(psw__proc_environ, p),
+      .Call(ps__proc_environ, p),
       error = function(e) NULL
     )
   })
@@ -174,11 +174,11 @@ ps_kill_tree_windows <- function(marker, exclude_me) {
   ## Try to clean them up, carefully, to minimize racing
   ret <- lapply(cand, function(p) {
     name <- tryCatch(
-      basename(convert_dos_path(.Call(psw__proc_exe, p))),
+      basename(convert_dos_path(.Call(ps__proc_exe, p))),
       error = function(e) "???"
     )
     tryCatch({
-      rv <- .Call(psw__kill_tree_process, marker, p)
+      rv <- .Call(ps__kill_tree_process, marker, p)
       if (!is.null(rv)) structure(p, names = name) },
       error = function(e) NULL
     )
@@ -186,7 +186,7 @@ ps_kill_tree_windows <- function(marker, exclude_me) {
 
   if (!exclude_me && Sys.getenv(marker) != "") {
     mypid <- Sys.getpid()
-    .Call(psw__proc_kill, mypid)
+    .Call(ps__proc_kill, mypid)
     me <- ps_handle(mypid)
     ret <- c(ret, list(structure(mypid, names = ps_name(me))))
   }

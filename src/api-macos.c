@@ -252,7 +252,7 @@ SEXP psll_username(SEXP p) {
   PS__CHECK_KINFO(kp, handle);
 
   PROTECT(ruid = ScalarInteger(kp.kp_eproc.e_pcred.p_ruid));
-  PROTECT(pw = psp__get_pw_uid(ruid));
+  PROTECT(pw = ps__get_pw_uid(ruid));
   PROTECT(result = VECTOR_ELT(pw, 0));
 
   UNPROTECT(3);

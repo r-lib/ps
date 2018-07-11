@@ -46,9 +46,9 @@ typedef struct {
 
 SEXP psll__is_running(ps_handle_t *handle);
 
-SEXP psp__get_pw_uid(SEXP r_uid);
-SEXP psp__define_signals();
-SEXP psp__define_errno();
+SEXP ps__get_pw_uid(SEXP r_uid);
+SEXP ps__define_signals();
+SEXP ps__define_errno();
 
 /* Errors */
 

@@ -509,7 +509,7 @@ SEXP psll_username(SEXP p) {
 
   PROTECT(ids = psll_uids(p));
   PROTECT(ruid = ScalarInteger(INTEGER(ids)[0]));
-  PROTECT(pw = psp__get_pw_uid(ruid));
+  PROTECT(pw = ps__get_pw_uid(ruid));
   PROTECT(result = VECTOR_ELT(pw, 0));
 
   UNPROTECT(4);

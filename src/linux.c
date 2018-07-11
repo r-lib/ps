@@ -414,10 +414,10 @@ SEXP psl__kill_tree_process(SEXP r_procfs, SEXP r_marker, SEXP r_pid,
 SEXP ps__init(SEXP psenv, SEXP constenv) {
 
   /* Signals */
-  defineVar(install("signals"), psp__define_signals(), constenv);
+  defineVar(install("signals"), ps__define_signals(), constenv);
 
   /* errno values */
-  defineVar(install("errno"), psp__define_errno(), constenv);
+  defineVar(install("errno"), ps__define_errno(), constenv);
 
   return R_NilValue;
 }

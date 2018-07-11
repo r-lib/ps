@@ -8,7 +8,6 @@ static const R_CallMethodDef callMethods[]  = {
   /* System api */
   { "ps__init",          (DL_FUNC) ps__init,          2 },
   { "ps__os_type",       (DL_FUNC) ps__os_type,       0 },
-  { "psm__pids",         (DL_FUNC) psm__pids,         0 },
   { "ps__pids",          (DL_FUNC) ps__pids,          0 },
   { "ps__ppid_map",      (DL_FUNC) ps__ppid_map,      0 },
 
@@ -40,10 +39,10 @@ static const R_CallMethodDef callMethods[]  = {
   { "psll_kill",         (DL_FUNC) psll_kill,         1 },
 
   /* Utils */
-  { "psp__pid_exists",   (DL_FUNC) psp__pid_exists2,  1 },
-  { "psp__stat_st_rdev", (DL_FUNC) psp__stat_st_rdev, 1 },
-  { "psp__zombie",       (DL_FUNC) psp__zombie,       0 },
-  { "psp__waitpid",      (DL_FUNC) psp__waitpid,      1 },
+  { "ps__pid_exists",    (DL_FUNC) ps__pid_exists2,   1 },
+  { "ps__stat_st_rdev",  (DL_FUNC) ps__stat_st_rdev,  1 },
+  { "ps__zombie",        (DL_FUNC) ps__zombie,        0 },
+  { "ps__waitpid",       (DL_FUNC) ps__waitpid,       1 },
 
   { NULL, NULL, 0 }
 };

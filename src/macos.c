@@ -119,7 +119,7 @@ int ps__task_for_pid(long pid, mach_port_t *task)
 /*
  * Return an integer vector of all the PIDs running on the system.
  */
-SEXP psm__pids() {
+SEXP ps__pids() {
   kinfo_proc *proclist = NULL;
   kinfo_proc *orig_address = NULL;
   size_t num_processes;
@@ -165,7 +165,7 @@ SEXP psm__pids() {
  * This will also succeed for zombie processes returning correct
  * information.
  */
-SEXP psm__proc_kinfo_oneshot(SEXP r_pid) {
+SEXP ps__proc_kinfo_oneshot(SEXP r_pid) {
   long pid = INTEGER(r_pid)[0];;
   struct kinfo_proc kp;
   SEXP name = R_NilValue;
@@ -203,7 +203,7 @@ SEXP psm__proc_kinfo_oneshot(SEXP r_pid) {
  * EACCES for PIDs owned by another user and with ESRCH for zombie
  * processes.
  */
-SEXP psm__proc_pidtaskinfo_oneshot(SEXP r_pid) {
+SEXP ps__proc_pidtaskinfo_oneshot(SEXP r_pid) {
   long pid = INTEGER(r_pid)[0];
   struct proc_taskinfo pti;
 
@@ -234,7 +234,7 @@ SEXP psm__proc_pidtaskinfo_oneshot(SEXP r_pid) {
 /*
  * Return process name from kinfo_proc as a string.
  */
-SEXP psm__proc_name(SEXP r_pid) {
+SEXP ps__proc_name(SEXP r_pid) {
   long pid = INTEGER(r_pid)[0];
   struct kinfo_proc kp;
 
@@ -247,7 +247,7 @@ SEXP psm__proc_name(SEXP r_pid) {
  * Return process current working directory.
  * Raises NSP in case of zombie process.
  */
-SEXP psm__proc_cwd(SEXP r_pid) {
+SEXP ps__proc_cwd(SEXP r_pid) {
   long pid = INTEGER(r_pid)[0];
   struct proc_vnodepathinfo pathinfo;
 
@@ -263,7 +263,7 @@ SEXP psm__proc_cwd(SEXP r_pid) {
 /*
  * Return path of the process executable.
  */
-SEXP psm__proc_exe(SEXP r_pid) {
+SEXP ps__proc_exe(SEXP r_pid) {
   long pid = INTEGER(r_pid)[0];
   char buf[PATH_MAX];
   int ret;
@@ -284,7 +284,7 @@ SEXP psm__proc_exe(SEXP r_pid) {
 /*
  * Return process cmdline as a character vector of cmdline arguments.
  */
-SEXP psm__proc_cmdline(SEXP r_pid) {
+SEXP ps__proc_cmdline(SEXP r_pid) {
   long pid = INTEGER(r_pid)[0];
 
   // get the commandline, defined in arch/macos/process_info.c
@@ -295,7 +295,7 @@ SEXP psm__proc_cmdline(SEXP r_pid) {
 /*
  * Return process environment as a character vector.
  */
-SEXP psm__proc_environ(SEXP r_pid) {
+SEXP ps__proc_environ(SEXP r_pid) {
   long pid = INTEGER(r_pid)[0];
 
   // get the environment block, defined in arch/macos/process_info.c
@@ -718,10 +718,10 @@ SEXP ps__init(SEXP psenv, SEXP constenv) {
   defineVar(install("SZOMB"),  ScalarInteger(SZOMB),  constenv);
 
   /* Signals */
-  defineVar(install("signals"), psp__define_signals(), constenv);
+  defineVar(install("signals"), ps__define_signals(), constenv);
 
   /* errno values */
-  defineVar(install("errno"), psp__define_errno(), constenv);
+  defineVar(install("errno"), ps__define_errno(), constenv);
 
   return R_NilValue;
 }

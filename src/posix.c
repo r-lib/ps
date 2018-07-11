@@ -103,7 +103,7 @@ int ps__pid_exists(long pid) {
   }
 }
 
-SEXP psp__pid_exists2(SEXP r_pid) {
+SEXP ps__pid_exists2(SEXP r_pid) {
   return ScalarLogical(ps__pid_exists(INTEGER(r_pid)[0]));
 }
 
@@ -581,7 +581,7 @@ SEXP ps__net_if_duplex_speed(SEXP r_nic_name) {
 }
 #endif  // net_if_stats() MACOS/BSD implementation
 
-SEXP psp__get_pw_uid(SEXP r_uid) {
+SEXP ps__get_pw_uid(SEXP r_uid) {
   struct passwd *pwd;
   errno = 0;
   pwd = getpwuid(INTEGER(r_uid)[0]);
@@ -600,7 +600,7 @@ SEXP psp__get_pw_uid(SEXP r_uid) {
     "pw_shell",  pwd->pw_shell);
 }
 
-SEXP psp__kill(SEXP r_pid, SEXP r_sig) {
+SEXP ps__kill(SEXP r_pid, SEXP r_sig) {
   pid_t pid = INTEGER(r_pid)[0];
   int sig = INTEGER(r_sig)[0];
   int ret = kill(pid, sig);
@@ -611,7 +611,7 @@ SEXP psp__kill(SEXP r_pid, SEXP r_sig) {
   return R_NilValue;
 }
 
-SEXP psp__stat_st_rdev(SEXP files) {
+SEXP ps__stat_st_rdev(SEXP files) {
   size_t i, len = LENGTH(files);
   struct stat buf;
   SEXP result;
@@ -637,7 +637,7 @@ SEXP psp__stat_st_rdev(SEXP files) {
   return result;
 }
 
-pid_t psp___zombie() {
+pid_t ps___zombie() {
   pid_t child_pid;
 
   child_pid = fork();
@@ -647,11 +647,11 @@ pid_t psp___zombie() {
   return child_pid;
 }
 
-SEXP psp__zombie() {
-  return ScalarInteger((int) psp___zombie());
+SEXP ps__zombie() {
+  return ScalarInteger((int) ps___zombie());
 }
 
-int psp___waitpid(pid_t pid) {
+int ps___waitpid(pid_t pid) {
   int wp, wstat;
 
   do {
@@ -677,11 +677,11 @@ int psp___waitpid(pid_t pid) {
   return 0;
 }
 
-SEXP psp__waitpid(SEXP r_pid) {
+SEXP ps__waitpid(SEXP r_pid) {
   pid_t pid = INTEGER(r_pid)[0];
-  return ScalarInteger(psp___waitpid(pid));
+  return ScalarInteger(ps___waitpid(pid));
 }
-SEXP psp__define_signals() {
+SEXP ps__define_signals() {
 
   SEXP signalenv = PROTECT(Rf_allocSExp(ENVSXP));
 
@@ -814,7 +814,7 @@ SEXP psp__define_signals() {
   return signalenv;
 }
 
-SEXP psp__define_errno() {
+SEXP ps__define_errno() {
 
   SEXP env = PROTECT(Rf_allocSExp(ENVSXP));
 
