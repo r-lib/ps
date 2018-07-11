@@ -199,6 +199,8 @@ SEXP psll_exe(SEXP p) {
 
   if (ret == 0) ps__check_for_zombie(handle);
 
+  PS__CHECK_HANDLE(handle);
+
   return ps__str_to_utf8(buf);
 }
 
