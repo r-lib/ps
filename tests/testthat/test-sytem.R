@@ -18,3 +18,13 @@ test_that("ps_boot_time", {
   expect_s3_class(bt, "POSIXct")
   expect_true(bt < Sys.time())
 })
+
+test_that("ps_os_type", {
+  os <- ps_os_type()
+  expect_true(is.logical(os))
+  expect_true(any(os))
+  expect_equal(
+    names(os),
+    c("POSIX", "WINDOWS", "LINUX", "MACOS", "FREEBSD", "OPENBSD",
+      "NETBSD", "BSD", "SUNOS", "AIX"))
+})
