@@ -343,7 +343,6 @@ SEXP psll__exe(DWORD pid) {
 
   hProcess = ps__handle_from_pid_waccess(pid, PROCESS_QUERY_INFORMATION);
   if (NULL == hProcess) {
-    psw__set_error_from_windows_error(0);
     return R_NilValue;
   }
 
@@ -582,7 +581,6 @@ SEXP psw__proc_username(DWORD pid) {
 
   processHandle = ps__handle_from_pid_waccess(pid, PROCESS_QUERY_INFORMATION);
   if (processHandle == NULL) {
-    psw__set_error_from_windows_error(0);
     return R_NilValue;
   }
 
@@ -677,7 +675,6 @@ SEXP psw__proc_num_threads(DWORD pid) {
   PVOID buffer;
 
   if (! ps__get_proc_info(pid, &process, &buffer))  {
-    psw__set_error_from_windows_error(0);
     return R_NilValue;
   }
 
@@ -711,7 +708,6 @@ SEXP psw__proc_info(DWORD pid) {
   SEXP retlist;
 
   if (! ps__get_proc_info(pid, &process, &buffer))  {
-    psw__set_error_from_windows_error(0);
     return R_NilValue;
   }
 

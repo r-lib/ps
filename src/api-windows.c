@@ -12,27 +12,28 @@ void psll_finalizer(SEXP p) {
   if (handle) free(handle);
 }
 
-void ps__wrap_windows_error(ps_handle_t *handle) {
-  /* TODO */
-}
-
 int ps__create_time_raw(DWORD pid, FILETIME *ftCreate) {
   HANDLE hProcess = ps__handle_from_pid(pid);
   FILETIME ftExit, ftKernel, ftUser;
-  if (! hProcess) goto error;
-  if (! GetProcessTimes(hProcess, ftCreate, &ftExit, &ftKernel, &ftUser)) goto error;
+
+  if (! hProcess) goto error;	/* error set already */
+
+  if (! GetProcessTimes(hProcess, ftCreate, &ftExit, &ftKernel, &ftUser)) {
+    if (GetLastError() == ERROR_ACCESS_DENIED) {
+      // usually means the process has died so we throw a
+      // NoSuchProcess here
+      ps__no_such_process(pid, 0);
+    } else {
+      psw__set_error_from_windows_error(0);
+    }
+    goto error;
+  }
+
   CloseHandle(hProcess);
   return 0;
 
  error:
   if (hProcess) CloseHandle(hProcess);
-  if (GetLastError() == ERROR_ACCESS_DENIED) {
-    // usually means the process has died so we throw a
-    // NoSuchProcess here
-    ps__no_such_process(pid, 0);
-  } else {
-    psw__set_error_from_windows_error(0);
-  }
   return -1;
 }
 
@@ -150,12 +151,9 @@ SEXP psll_parent(SEXP p) {
   ppid = INTEGER(pid)[0];
 
   ret = ps__create_time_raw(ppid, &pft);
-  if (ret) {
-    ps__no_such_process(ppid, 0);
-    ps__throw_error();
-  }
-  pctime = ps__filetime_to_unix(pft);
+  if (ret) ps__throw_error();
 
+  pctime = ps__filetime_to_unix(pft);
   if (pctime > handle->create_time) {
     ps__no_such_process(ppid, 0);
     ps__throw_error();
@@ -237,10 +235,7 @@ SEXP psll_exe(SEXP p) {
 
   if (!handle) error("Process pointer cleaned up already");
   result = psll__exe(handle->pid);
-  if (isNull(result)) {
-    ps__no_such_process(handle->pid, 0);
-    ps__throw_error();
-  }
+  if (isNull(result)) ps__throw_error();
 
   PS__CHECK_HANDLE(handle);
 
@@ -254,10 +249,7 @@ SEXP psll_cmdline(SEXP p) {
   if (!handle) error("Process pointer cleaned up already");
 
   result = ps__get_cmdline(handle->pid);
-  if (isNull(result)) {
-    ps__no_such_process(handle->pid, 0);
-    ps__throw_error();
-  }
+  if (isNull(result)) ps__throw_error();
 
   PS__CHECK_HANDLE(handle);
 
@@ -297,10 +289,7 @@ SEXP psll_username(SEXP p) {
   }
 
   PROTECT(ret = psw__proc_username(handle->pid));
-  if (isNull(ret)) {
-    ps__no_such_process(handle->pid, 0);
-    ps__throw_error();
-  }
+  if (isNull(ret)) ps__throw_error();
 
   PS__CHECK_HANDLE(handle);
 
@@ -368,10 +357,7 @@ SEXP psll_environ(SEXP p) {
   }
 
   PROTECT(result = ps__get_environ(handle->pid));
-  if (isNull(result)) {
-    ps__no_such_process(handle->pid,  0);
-    ps__throw_error();
-  }
+  if (isNull(result)) ps__throw_error();
 
   PS__CHECK_HANDLE(handle);
 
@@ -386,10 +372,7 @@ SEXP psll_num_threads(SEXP p) {
   if (!handle) error("Process pointer cleaned up already");
 
   PROTECT(result = psw__proc_num_threads(handle->pid));
-  if (isNull(result)) {
-    ps__no_such_process(handle->pid, 0);
-    ps__throw_error();
-  }
+  if (isNull(result)) ps__throw_error();
 
   PS__CHECK_HANDLE(handle);
 
@@ -415,7 +398,6 @@ SEXP psll_cpu_times(SEXP p) {
   PROTECT(result2 = psw__proc_info(handle->pid));
   if (isNull(result2)) {
     UNPROTECT(1);
-    ps__no_such_process(handle->pid, 0);
     ps__throw_error();
   }
 
@@ -442,7 +424,6 @@ SEXP psll_memory_info(SEXP p) {
   PROTECT(result2 = psw__proc_info(handle->pid));
   if (isNull(result2)) {
     UNPROTECT(1);
-    ps__no_such_process(handle->pid, 0);
     ps__throw_error();
   }
 
@@ -487,7 +468,10 @@ SEXP psll_suspend(SEXP p) {
   if (!hProcess) goto error;
 
   running = psll__is_running(handle);
-  if (!LOGICAL(running)[0]) goto error;
+  if (!LOGICAL(running)[0]) {
+    ps__no_such_process(handle->pid, 0);
+    goto error;
+  }
 
   PROTECT(ret = psw__proc_suspend(handle->pid));
   if (isNull(ret)) ps__throw_error();
@@ -497,7 +481,6 @@ SEXP psll_suspend(SEXP p) {
 
  error:
   if (hProcess) CloseHandle(hProcess);
-  ps__no_such_process(handle->pid, 0);
   ps__throw_error();
   return  R_NilValue;
 }
@@ -512,7 +495,10 @@ SEXP psll_resume(SEXP p) {
   if (!hProcess) goto error;
 
   running = psll__is_running(handle);
-  if (!LOGICAL(running)[0]) goto error;
+  if (!LOGICAL(running)[0]) {
+    ps__no_such_process(handle->pid, 0);
+    goto error;
+  }
 
   PROTECT(ret = psw__proc_resume(handle->pid));
   if (isNull(ret)) ps__throw_error();
@@ -522,7 +508,6 @@ SEXP psll_resume(SEXP p) {
 
  error:
   if (hProcess) CloseHandle(hProcess);
-  ps__no_such_process(handle->pid, 0);
   ps__throw_error();
   return  R_NilValue;
 }
@@ -543,7 +528,10 @@ SEXP psll_kill(SEXP p) {
   if (!hProcess) goto error;
 
   running = psll__is_running(handle);
-  if (!LOGICAL(running)[0]) goto error;
+  if (!LOGICAL(running)[0]) {
+    ps__no_such_process(handle->pid, 0);
+    goto error;
+  }
 
   PROTECT(ret = psw__proc_kill(handle->pid));
   if (isNull(ret)) ps__throw_error();
@@ -553,7 +541,6 @@ SEXP psll_kill(SEXP p) {
 
  error:
   if (hProcess) CloseHandle(hProcess);
-  ps__no_such_process(handle->pid, 0);
   ps__throw_error();
   return  R_NilValue;
 }

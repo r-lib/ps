@@ -815,7 +815,6 @@ SEXP ps__get_cmdline(DWORD pid) {
   int nArgs, i;
 
   if (ps__get_process_data(pid, KIND_CMDLINE, &data, &size) != 0) {
-    ps__set_error("Cannot get command line");
     return R_NilValue;
   }
 
@@ -879,7 +878,6 @@ SEXP ps__get_environ(DWORD pid) {
   WCHAR *ptr, *end;
 
   if (ps__get_process_data(pid, KIND_ENVIRON, &data, &size) != 0) {
-    ps__no_such_process(pid, 0);
     return R_NilValue;
   }
 
