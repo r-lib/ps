@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <sys/sysctl.h>
 #include <sys/proc_info.h>
+#include <sys/types.h>
 #include <libproc.h>
 #include <errno.h>
 
@@ -429,4 +430,24 @@ SEXP psll_memory_info(SEXP p) {
 
   UNPROTECT(2);
   return result;
+}
+
+SEXP ps__boot_time() {
+#define MIB_SIZE 2
+  int mib[MIB_SIZE];
+  size_t size;
+  struct timeval boottime;
+  double unixtime = 0.0;
+
+  mib[0] = CTL_KERN;
+  mib[1] = KERN_BOOTTIME;
+  size = sizeof(boottime);
+  if (sysctl(mib, MIB_SIZE, &boottime, &size, NULL, 0) != -1)  {
+    unixtime = boottime.tv_sec + boottime.tv_usec / 1.e6;
+  } else {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  return ScalarReal(unixtime);
 }

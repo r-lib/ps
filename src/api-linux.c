@@ -750,3 +750,13 @@ SEXP psll_memory_info(SEXP p) {
   UNPROTECT(2);
   return result;
 }
+
+SEXP ps__boot_time() {
+  if (psll_linux_boot_time == 0) {
+    if (psll_linux_get_boot_time()) {
+      ps__set_error_from_errno();
+      ps__throw_error();
+    }
+  }
+  return ScalarReal(psll_linux_boot_time);
+}

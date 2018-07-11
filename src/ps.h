@@ -41,6 +41,7 @@ SEXP psll_kill(SEXP p);
 
 SEXP ps__os_type();
 SEXP ps__pids();
+SEXP ps__boot_time();
 
 /* Generic utils used from R */
 

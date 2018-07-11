@@ -25,16 +25,5 @@ ps_pids <- function() {
 #' @export
 
 ps_boot_time <- function() {
-  format_unix_time(ps_boot_time_raw())
+  format_unix_time(.Call(ps__boot_time))
 }
-
-ps_boot_time_raw <- function() {
-  os <- ps_os_type()
-  if (os[["LINUX"]])
-    ps_boot_time_raw_linux()
-  else if (os[["WINDOWS"]])
-    ps_boot_time_raw_windows()
-  else
-    stop("Not implemented for this platform")
-}
- 
