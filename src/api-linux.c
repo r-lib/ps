@@ -56,8 +56,24 @@ typedef struct {
   }
 
 int ps__read_file(const char *path, char **buffer, size_t buffer_size);
-void *ps__memmem(const void *haystack, size_t n1,
-		 const void *needle, size_t n2);
+
+static void *ps__memmem(const void *haystack, size_t n1,
+			const void *needle, size_t n2) {
+
+  const unsigned char *p1 = haystack;
+  const unsigned char *p2 = needle;
+  const unsigned char *p3 = p1 + n1 - n2 + 1;
+  const unsigned char *p;
+
+  if (n2 == 0) return (void*)p1;
+  if (n2 > n1) return NULL;
+
+  for (p = p1; (p = memchr(p, *p2, p3 - p)) != NULL; p++) {
+    if (!memcmp(p, p2, n2)) return (void*)p;
+  }
+
+  return NULL;
+}
 
 void psll_finalizer(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
@@ -764,7 +780,67 @@ SEXP ps__boot_time() {
   return ScalarReal(psll_linux_boot_time);
 }
 
-SEXP ps__kill_if_env(SEXP marker, SEXP pid, SEXP sig) {
-  /* TODO */
+static int psl__linux_match_environ(SEXP r_marker, SEXP r_pid) {
+  const char *marker = CHAR(STRING_ELT(r_marker, 0));
+  pid_t pid = INTEGER(r_pid)[0];
+  char path[512];
+  int ret;
+  char *buf;
+
+  ret = snprintf(path, sizeof(path), "/proc/%d/environ", (int) pid);
+  if (ret >= sizeof(path)) {
+    ps__set_error("Cannot read proc, path buffer too small");
+    return -1;
+  } else if (ret < 0) {
+    ps__set_error_from_errno();
+    return -1;
+  }
+
+  ret = ps__read_file(path, &buf, /* buffer= */ 1024 * 32);
+  if (ret == -1) {
+    ps__set_error_from_errno();
+    return -1;
+  }
+
+  return ps__memmem(buf, ret, marker, strlen(marker)) != NULL;
+}
+
+SEXP ps__kill_if_env(SEXP r_marker, SEXP r_pid, SEXP r_sig) {
+
+  const char *marker = CHAR(STRING_ELT(r_marker, 0));
+  pid_t pid = INTEGER(r_pid)[0];
+  int sig = INTEGER(r_sig)[0];
+  char path[512];
+  int ret;
+  char *buf;
+  int match;
+
+  match = psl__linux_match_environ(r_marker, r_pid);
+
+  if (match == -1) ps__throw_error();
+
+  if (match) {
+    psl_stat_t stat;
+    char *name;
+    int stret = psll__parse_stat_file(pid, &stat, &name);
+    ret = kill(pid, sig);
+    if (ret == -1) {
+      if (errno == ESRCH) {
+	ps__no_such_process(pid, 0);
+      } else if (errno == EPERM  || errno == EACCES) {
+	ps__access_denied("");
+      } else {
+	ps__set_error_from_errno();
+      }
+      ps__throw_error();
+    }
+
+    if (stret != -1) {
+      return ps__str_to_utf8(name);
+    } else {
+      return mkString("???");
+    }
+  }
+
   return R_NilValue;
 }
