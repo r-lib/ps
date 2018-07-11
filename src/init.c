@@ -9,7 +9,6 @@ static const R_CallMethodDef callMethods[]  = {
   { "ps__init",          (DL_FUNC) ps__init,          2 },
   { "ps__os_type",       (DL_FUNC) ps__os_type,       0 },
   { "ps__pids",          (DL_FUNC) ps__pids,          0 },
-  { "ps__ppid_map",      (DL_FUNC) ps__ppid_map,      0 },
 
   /* ps_handle API */
   { "psll_pid",          (DL_FUNC) psll_pid,          1 },

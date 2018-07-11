@@ -809,42 +809,6 @@ SEXP ps__ppid(DWORD pid) {
   return R_NilValue;
 }
 
-/*
- * Return a {pid:ppid, ...} dict for all running processes.
- */
-SEXP ps__ppid_map() {
-  SEXP ret;
-  HANDLE handle = NULL;
-  PROCESSENTRY32 pe = {0};
-  size_t num_proc = 0, idx = 0;
-  pe.dwSize = sizeof(PROCESSENTRY32);
-
-  handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-  if (handle == INVALID_HANDLE_VALUE) {
-    ps__set_error_from_windows_error(0);
-    ps__throw_error();
-  }
-
-  if (Process32First(handle, &pe)) {
-    do {
-      num_proc++;
-    } while (Process32Next(handle, &pe));
-  }
-
-  PROTECT(ret = allocVector(INTSXP, 2 * num_proc));
-
-  if (Process32First(handle, &pe)) {
-    do {
-      INTEGER(ret)[idx++] = pe.th32ParentProcessID;
-      INTEGER(ret)[idx++] = pe.th32ProcessID;
-    } while (Process32Next(handle, &pe));
-  }
-
-  CloseHandle(handle);
-  UNPROTECT(1);
-  return ret;
-}
-
 
 SEXP ps__kill_tree_process(SEXP r_marker, SEXP r_pid) {
   const char *marker = CHAR(STRING_ELT(r_marker, 0));

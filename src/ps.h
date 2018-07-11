@@ -48,6 +48,5 @@ SEXP ps__pid_exists2(SEXP r_pid);
 SEXP ps__stat_st_rdev(SEXP files);
 
 SEXP ps__pids();
-SEXP ps__ppid_map();
 
 #endif
