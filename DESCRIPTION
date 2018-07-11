@@ -20,6 +20,7 @@ Imports:
     assertthat,
     R6
 Suggests:
+    callr,
     covr,
     processx (>= 3.1.0.9005),
     testthat,

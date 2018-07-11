@@ -760,3 +760,8 @@ SEXP ps__boot_time() {
   }
   return ScalarReal(psll_linux_boot_time);
 }
+
+SEXP ps__kill_if_env(SEXP marker, SEXP pid, SEXP sig) {
+  /* TODO */
+  return R_NilValue;
+}

@@ -19,6 +19,41 @@ Once released, you can install the released version of ps from
 install.packages("ps")
 ```
 
+## Listing all processes
+
+`ps_pids()` returns all process ids on the system. This can be useful to
+iterate over all processes.
+
+```{r}
+library(ps)
+ps_pids()[1:20]
+```
+
+`ps()` is similar, but it returns a data frame (tibble if you have the
+tibble package available), with data about each process:
+
+```{r}
+ps()
+```
+
+## Process API
+
+TODO
+
+## Low level process API
+
+TODO
+
+## Process cleanup
+
+TODO
+
+## processx and ps
+
+TODO
+
+## Contributions
+
 Please note that this project is released with a
 [Contributor Code of Conduct](.github/CODE_OF_CONDUCT.md).
 By participating in this project you agree to abide by its terms.

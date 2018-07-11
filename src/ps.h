@@ -46,6 +46,7 @@ SEXP ps__boot_time();
 /* Generic utils used from R */
 
 SEXP ps__init(SEXP psenv, SEXP constenv);
+SEXP ps__kill_if_env(SEXP marker, SEXP pid, SEXP sig);
 
 SEXP psp__zombie();
 SEXP psp__waitpid(SEXP pid);

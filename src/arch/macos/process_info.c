@@ -117,14 +117,23 @@ SEXP ps__get_cmdline(long pid) {
   SEXP retlist = R_NilValue;
 
   // special case for PID 0 (kernel_task) where cmdline cannot be fetched
-  if (pid == 0) return NULL;
+  if (pid == 0) {
+    ps__access_denied("");
+    return R_NilValue;
+  }
 
   // read argmax and allocate memory for argument space.
   argmax = ps__get_argmax();
-  if (! argmax) return NULL;
+  if (! argmax) {
+    ps__set_error_from_errno();
+    return R_NilValue;
+  }
 
   procargs = (char *) malloc(argmax);
-  if (NULL == procargs) return NULL;
+  if (NULL == procargs) {
+    ps__no_memory("");
+    return R_NilValue;
+  }
 
   PROTECT_PTR(procargs);
 
@@ -136,7 +145,8 @@ SEXP ps__get_cmdline(long pid) {
     // In case of zombie process we'll get EINVAL, we fix this.
     if (errno == EINVAL) errno = ESRCH;
     UNPROTECT(1);
-    return NULL;
+    ps__set_error_from_errno();
+    return R_NilValue;
   }
 
   arg_end = &procargs[argmax];
@@ -189,15 +199,23 @@ SEXP ps__get_environ(long pid) {
   SEXP ret = NULL;
 
   // special case for PID 0 (kernel_task) where cmdline cannot be fetched
-  if (pid == 0)
-    goto empty;
+  if (pid == 0) {
+    ps__access_denied("");
+    goto ret;
+  }
 
   // read argmax and allocate memory for argument space.
   argmax = ps__get_argmax();
-  if (! argmax) return NULL;
+  if (! argmax) {
+    ps__set_error_from_errno();
+    return R_NilValue;
+  }
 
   procargs = (char *) malloc(argmax);
-  if (NULL == procargs) return NULL;
+  if (NULL == procargs) {
+    ps__no_memory("");
+    return R_NilValue;
+  }
 
   PROTECT_PTR(procargs);
 
@@ -209,7 +227,8 @@ SEXP ps__get_environ(long pid) {
     // In case of zombie process we'll get EINVAL, fix this.
     if (errno == EINVAL) errno = ESRCH;
     UNPROTECT(1);
-    return NULL;
+    ps__set_error_from_errno();
+    return R_NilValue;
   }
 
   arg_end = &procargs[argmax];
@@ -269,6 +288,8 @@ SEXP ps__get_environ(long pid) {
 
  empty:
   UNPROTECT(1);
+
+ ret:
   return allocVector(STRSXP, 0);
 }
 

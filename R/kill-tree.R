@@ -47,151 +47,25 @@ with_process_cleanup <- function(expr) {
 
 #' @param marker String scalar, the name of the environment variable to
 #' use to find the marked processes.
-#' @param exclude_me If `TRUE`, then the calling process is not killed,
-#' even if it sets the `marked` environment variable.
 #' @param sig The signal to send to the marked processes on Unix. On
 #' Windows this argument is ignored currently.
 #'
 #' @rdname ps_kill_tree
 #' @export
 
-ps_kill_tree <- function(marker, exclude_me = TRUE,
-                         sig = signals()$SIGKILL) {
+ps_kill_tree <- function(marker, sig = signals()$SIGKILL) {
 
-  assert_that(is_string(marker), is_flag(exclude_me))
+  assert_that(is_string(marker))
 
-  osname <- ps_os_name()
-  if (is.na(osname)) stop("Unsupported platform")
+  pids <- setdiff(ps_pids(), Sys.getpid())
 
-  switch(
-    osname,
-    MACOS = ps_kill_tree_macos(marker, exclude_me, sig),
-    LINUX = ps_kill_tree_linux(marker, exclude_me, sig),
-    WINDOWS = ps_kill_tree_windows(marker, exclude_me)
-  )
-}
-
-ps_kill_tree_macos <- function(marker, exclude_me, sig) {
-
-  ## Get all process environments
-  pids <- .Call(ps__pids)
-  envs <- lapply(pids, function(p) {
+  ret <- lapply(pids, function(p) {
     tryCatch(
-      .Call(ps__proc_environ, p),
-      no_such_process = function(e) NULL,
-      access_denied = function(e) NULL
+      .Call(ps__kill_if_env, marker, p, sig),
+      error = function(e) e
     )
   })
 
-  ## Find the ones that are marked
-  match <- which(map_int(envs, function(x) length(grep(marker, x))) > 0)
-  cand <- pids[match]
-
-  ## Exclude myself
-  cand <- setdiff(cand, Sys.getpid())
-
-  ## Try to clean them up, carefully, to minimize racing
-  ret <- lapply(cand, function(p) {
-    tryCatch({
-      info <- .Call(ps__proc_kinfo_oneshot, p)
-      env <- .Call(ps__proc_environ, p)
-      if (length(grep(marker, env))) {
-        .Call(ps__kill, p, sig)
-        structure(p, names = info$name)
-      } },
-      no_such_process = function(e) NULL,
-      access_denied = function(e) NULL
-    )
-  })
-
-  if (!exclude_me && Sys.getenv(marker) != "") {
-    mypid <- Sys.getpid()
-    .Call(ps__kill, mypid, sig)
-    info <- .Call(ps__proc_kinfo_oneshot, mypid)
-    ret <- c(ret, list(structure(mypid, names = info$name)))
-  }
-
-  ## This works for empty lists as well, and keeps names
-  ret <- unlist(not_null(ret))
-  if (length(ret)) ret else structure(integer(), names = character())
-}
-
-ps_kill_tree_linux <- function(marker, exclude_me, sig) {
-
-  ## Match process environments
-  pids <- ps_pids_linux()
-  match <- map_lgl(pids, function(p) {
-    tryCatch(
-      data <- .Call(psl__linux_match_environ, "/proc", marker, p),
-      error = function(e) NULL
-    )
-  })
-  cand <- pids[match]
-
-  ## Exclude myself
-  cand <- setdiff(cand, Sys.getpid())
-
-  ## Try to clean them up, carefully, to minimize racing
-  ret <- lapply(cand, function(p) {
-    tryCatch({
-      nm <- ps_name(ps_handle(p))
-      rv <- .Call(psl__kill_tree_process, "/proc", marker, p, sig)
-      if (!is.null(rv)) structure(p, names = nm) },
-      error = function(e) NULL
-    )
-  })
-
-  if (!exclude_me && Sys.getenv(marker) != "") {
-    mypid <- Sys.getpid()
-    .Call(ps__kill, mypid, sig)
-    me <- ps_handle(mypid)
-    ret <- c(ret, list(structure(mypid, names = ps_name(me))))
-  }
-
-  ## This works for empty lists as well, and keeps names
-  ret <- unlist(not_null(ret))
-  if (length(ret)) ret else structure(integer(), names = character())
-}
-
-ps_kill_tree_windows <- function(marker, exclude_me) {
-
-  ## Get all process environments
-  pids <- .Call(ps__pids)
-  envs <- lapply(pids, function(p) {
-    tryCatch(
-      .Call(ps__proc_environ, p),
-      error = function(e) NULL
-    )
-  })
-
-  ## Find the ones that are marked
-  match <- which(map_int(envs, function(x) length(grep(marker, x))) > 0)
-  cand <- pids[match]
-
-  ## Exclude myself
-  cand <- setdiff(cand, Sys.getpid())
-
-  ## Try to clean them up, carefully, to minimize racing
-  ret <- lapply(cand, function(p) {
-    name <- tryCatch(
-      basename(.Call(ps__proc_exe, p)),
-      error = function(e) "???"
-    )
-    tryCatch({
-      rv <- .Call(ps__kill_tree_process, marker, p)
-      if (!is.null(rv)) structure(p, names = name) },
-      error = function(e) NULL
-    )
-  })
-
-  if (!exclude_me && Sys.getenv(marker) != "") {
-    mypid <- Sys.getpid()
-    .Call(ps__proc_kill, mypid)
-    me <- ps_handle(mypid)
-    ret <- c(ret, list(structure(mypid, names = ps_name(me))))
-  }
-
-  ## This works for empty lists as well, and keeps names
-  ret <- unlist(not_null(ret))
-  if (length(ret)) ret else structure(integer(), names = character())
+  gone <- map_lgl(ret, function(x) is.character(x))
+  structure(pids[gone], names = unlist(ret[gone]))
 }

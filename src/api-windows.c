@@ -608,3 +608,8 @@ SEXP ps__boot_time() {
     return ScalarReal(pt - uptime);
   }
 }
+
+SEXP ps__kill_if_env(SEXP marker, SEXP pid, SEXP sig) {
+  /* TODO */
+  return R_NilValue;
+}
