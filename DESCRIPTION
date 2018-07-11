@@ -18,7 +18,6 @@ Depends:
     R (>= 3.1)
 Imports:
     assertthat,
-    prettyunits,
     R6
 Suggests:
     covr,

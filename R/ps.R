@@ -23,7 +23,6 @@ NULL
 #' * `vms`: Virtual memory size. All memory the process has access to.
 #' * `created`: Time stamp when the process was created.
 #'
-#' @importFrom prettyunits pretty_bytes
 #' @export
 
 ps <- function(user = NULL, after = NULL) {
@@ -62,8 +61,8 @@ ps <- function(user = NULL, after = NULL) {
   cpt <- map_dbl(time, function(x) x[["user"]] %||% NA_real_)
   cps <- map_dbl(time, function(x) x[["system"]] %||% NA_real_)
   mem <- lapply(processes, function(p) fallback(ps_memory_info(p), NULL))
-  rss <- map_chr(mem, function(x) pretty_bytes_na(x[["rss"]] %||% NA_real_))
-  vms <- map_chr(mem, function(x) pretty_bytes_na(x[["vms"]] %||% NA_real_))
+  rss <- map_dbl(mem, function(x) x[["rss"]] %||% NA_real_)
+  vms <- map_dbl(mem, function(x) x[["vms"]] %||% NA_real_)
 
   pss <- data.frame(
     stringsAsFactors = FALSE,

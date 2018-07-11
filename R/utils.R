@@ -131,12 +131,6 @@ NA_time <- function() {
   x
 }
 
-#' @importFrom prettyunits pretty_bytes
-
-pretty_bytes_na <- function(x) {
-  ifelse(is.na(x), NA_character_,  pretty_bytes(x))
-}
-
 fallback <- function(expr, alternative) {
   tryCatch(
     expr,
