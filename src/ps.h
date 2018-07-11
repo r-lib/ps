@@ -49,7 +49,7 @@ SEXP psp__stat_st_rdev(SEXP files);
 
 SEXP psm__pids();
 
-SEXP psw__pids();
-SEXP psw__ppid_map();
+SEXP ps__pids();
+SEXP ps__ppid_map();
 
 #endif

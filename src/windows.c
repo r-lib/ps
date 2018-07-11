@@ -42,6 +42,7 @@
 
 #include <stdlib.h>
 
+#include "windows.h"
 /*
  * ============================================================================
  * Utilities
@@ -156,7 +157,7 @@ static ULONGLONG (*ps__GetTickCount64)(void) = NULL;
  * Return a double representing the system uptime expressed in seconds
  * since the epoch.
  */
-SEXP psw__boot_time() {
+SEXP ps__boot_time() {
 #if (_WIN32_WINNT >= 0x0600)  // Windows Vista
   ULONGLONG uptime;
 #else
@@ -217,7 +218,7 @@ SEXP psw__boot_time() {
 /*
  * Return an integer vector of all the PIDs running on the system.
  */
-SEXP psw__pids() {
+SEXP ps__pids() {
   DWORD *proclist = NULL;
   DWORD numberOfReturnedPIDs;
   DWORD i;
@@ -242,7 +243,7 @@ SEXP psw__pids() {
 /*
  * Kill a process given its PID.
  */
-SEXP psw__proc_kill(DWORD pid) {
+SEXP ps__proc_kill(DWORD pid) {
   HANDLE hProcess;
   DWORD err;
 
@@ -259,7 +260,7 @@ SEXP psw__proc_kill(DWORD pid) {
 		   "into NoSuchProcess");
       ps__no_such_process(pid, 0);
     } else {
-      psw__set_error_from_windows_error(0);
+      ps__set_error_from_windows_error(0);
     }
     return R_NilValue;
   }
@@ -270,7 +271,7 @@ SEXP psw__proc_kill(DWORD pid) {
     // See: https://github.com/giampaolo/psutil/issues/1099
     if (err != ERROR_ACCESS_DENIED) {
       CloseHandle(hProcess);
-      psw__set_error_from_windows_error(0);
+      ps__set_error_from_windows_error(0);
       return R_NilValue;
     }
   }
@@ -283,7 +284,7 @@ SEXP psw__proc_kill(DWORD pid) {
 /*
  * Return a list (user_time, kernel_time)
  */
-SEXP psw__proc_cpu_times(DWORD pid) {
+SEXP ps__proc_cpu_times(DWORD pid) {
   HANDLE      hProcess;
   FILETIME    ftCreate, ftExit, ftKernel, ftUser;
   SEXP result, names;
@@ -298,7 +299,7 @@ SEXP psw__proc_cpu_times(DWORD pid) {
       // here
       ps__no_such_process(pid, 0);
     } else {
-      psw__set_error_from_windows_error(0);
+      ps__set_error_from_windows_error(0);
     }
     return R_NilValue;
   }
@@ -330,7 +331,7 @@ SEXP psw__proc_cpu_times(DWORD pid) {
 }
 
 
-SEXP psll__exe(DWORD pid) {
+SEXP ps__exe(DWORD pid) {
   HANDLE hProcess;
   wchar_t exe[MAX_PATH];
   wchar_t *bs = exe;
@@ -348,7 +349,7 @@ SEXP psll__exe(DWORD pid) {
 
   if (GetProcessImageFileNameW(hProcess, exe, MAX_PATH) == 0) {
     CloseHandle(hProcess);
-    psw__set_error_from_windows_error(0);
+    ps__set_error_from_windows_error(0);
     return R_NilValue;
   }
   CloseHandle(hProcess);
@@ -381,11 +382,11 @@ SEXP psll__exe(DWORD pid) {
   *(bs - 1) = ':';
   *bs = '\\';
 
-  return ScalarString(psw__utf16_to_charsxp(bs - 2, -1));
+  return ScalarString(ps__utf16_to_charsxp(bs - 2, -1));
 }
 
 
-SEXP psll__name(DWORD pid) {
+SEXP ps__name(DWORD pid) {
   SEXP exe, name;
 
   /* This is how PIDs 0 and 4 are always represented in taskmgr */
@@ -393,7 +394,7 @@ SEXP psll__name(DWORD pid) {
   if (pid == 0) return mkString("System Idle Process");
   if (pid == 4) return mkString("System");
 
-  exe = psll__exe(pid);
+  exe = ps__exe(pid);
   if (!isNull(exe)) {
     const char *cexe;
     char *last;
@@ -410,7 +411,7 @@ SEXP psll__name(DWORD pid) {
     }
   }
 
-  return psw__proc_name(pid);
+  return ps__proc_name(pid);
 }
 
 /*
@@ -419,27 +420,27 @@ SEXP psll__name(DWORD pid) {
  * but it raise AccessDenied for processes owned by other users
  * in which case we fall back on using this.
  */
-SEXP psw__proc_name(DWORD pid) {
+SEXP ps__proc_name(DWORD pid) {
   int ok;
   PROCESSENTRY32W pentry;
   HANDLE hSnapShot;
 
   hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
   if (hSnapShot == INVALID_HANDLE_VALUE) {
-    psw__set_error_from_windows_error(0);
+    ps__set_error_from_windows_error(0);
     return R_NilValue;
   }
   pentry.dwSize = sizeof(PROCESSENTRY32W);
   ok = Process32FirstW(hSnapShot, &pentry);
   if (! ok) {
     CloseHandle(hSnapShot);
-    psw__set_error_from_windows_error(0);
+    ps__set_error_from_windows_error(0);
     return R_NilValue;
   }
   while (ok) {
     if (pentry.th32ProcessID == pid) {
       CloseHandle(hSnapShot);
-      return ScalarString(psw__utf16_to_charsxp(pentry.szExeFile, -1));
+      return ScalarString(ps__utf16_to_charsxp(pentry.szExeFile, -1));
     }
     ok = Process32NextW(hSnapShot, &pentry);
   }
@@ -466,7 +467,7 @@ int ps__proc_suspend_or_resume(DWORD pid, int suspend) {
 
   hThreadSnap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
   if (hThreadSnap == INVALID_HANDLE_VALUE) {
-    psw__set_error_from_windows_error(0);
+    ps__set_error_from_windows_error(0);
     return FALSE;
   }
 
@@ -474,7 +475,7 @@ int ps__proc_suspend_or_resume(DWORD pid, int suspend) {
   te32.dwSize = sizeof(THREADENTRY32);
 
   if (! Thread32First(hThreadSnap, &te32)) {
-    psw__set_error_from_windows_error(0);
+    ps__set_error_from_windows_error(0);
     CloseHandle(hThreadSnap);
     return FALSE;
   }
@@ -487,14 +488,14 @@ int ps__proc_suspend_or_resume(DWORD pid, int suspend) {
       hThread = OpenThread(THREAD_SUSPEND_RESUME, FALSE,
 			   te32.th32ThreadID);
       if (hThread == NULL) {
-	psw__set_error_from_windows_error(0);
+	ps__set_error_from_windows_error(0);
 	CloseHandle(hThread);
 	CloseHandle(hThreadSnap);
 	return FALSE;
       }
       if (suspend == 1) {
 	if (SuspendThread(hThread) == (DWORD) - 1) {
-	  psw__set_error_from_windows_error(0);
+	  ps__set_error_from_windows_error(0);
 	  CloseHandle(hThread);
 	  CloseHandle(hThreadSnap);
 	  return FALSE;
@@ -502,7 +503,7 @@ int ps__proc_suspend_or_resume(DWORD pid, int suspend) {
       }
       else {
 	if (ResumeThread(hThread) == (DWORD) - 1) {
-	  psw__set_error_from_windows_error(0);
+	  ps__set_error_from_windows_error(0);
 	  CloseHandle(hThread);
 	  CloseHandle(hThreadSnap);
 	  return FALSE;
@@ -517,7 +518,7 @@ int ps__proc_suspend_or_resume(DWORD pid, int suspend) {
 }
 
 
-SEXP psw__proc_suspend(DWORD pid) {
+SEXP ps__proc_suspend(DWORD pid) {
   int suspend = 1;
 
   if (! ps__proc_suspend_or_resume(pid, suspend)) {
@@ -528,7 +529,7 @@ SEXP psw__proc_suspend(DWORD pid) {
 }
 
 
-SEXP psw__proc_resume(DWORD pid)  {
+SEXP ps__proc_resume(DWORD pid)  {
   int suspend = 0;
 
   if (! ps__proc_suspend_or_resume(pid, suspend)) {
@@ -544,18 +545,18 @@ SEXP psw__proc_resume(DWORD pid)  {
   and return the corresponding drive letter (e.g. "C:\\").
   If no match is found return an empty string.
 */
-SEXP psw__win32_QueryDosDevice(SEXP r_path) {
+SEXP ps__win32_QueryDosDevice(SEXP r_path) {
   WCHAR *lpDevicePath;
   WCHAR d = 'A';
 
-  psw__utf8_to_utf16(CHAR(STRING_ELT(r_path, 0)), &lpDevicePath);
+  ps__utf8_to_utf16(CHAR(STRING_ELT(r_path, 0)), &lpDevicePath);
 
   while (d <= 'Z') {
     WCHAR szDeviceName[3] = {d, ':', '\0' };
     WCHAR szTarget[512] = {0};
     if (QueryDosDeviceW(szDeviceName, szTarget, 511) != 0) {
       if (wcscmp(lpDevicePath, szTarget) == 0) {
-	return ScalarString(psw__utf16_to_charsxp(szDeviceName, -1));
+	return ScalarString(ps__utf16_to_charsxp(szDeviceName, -1));
       }
     }
     d++;
@@ -567,7 +568,7 @@ SEXP psw__win32_QueryDosDevice(SEXP r_path) {
 /*
  * Return process username as a "DOMAIN//USERNAME" string.
  */
-SEXP psw__proc_username(DWORD pid) {
+SEXP ps__proc_username(DWORD pid) {
   HANDLE processHandle = NULL;
   HANDLE tokenHandle = NULL;
   PTOKEN_USER user = NULL;
@@ -585,7 +586,7 @@ SEXP psw__proc_username(DWORD pid) {
   }
 
   if (!OpenProcessToken(processHandle, TOKEN_QUERY, &tokenHandle)) {
-    psw__set_error_from_windows_error(0);
+    ps__set_error_from_windows_error(0);
     return R_NilValue;
   }
 
@@ -608,7 +609,7 @@ SEXP psw__proc_username(DWORD pid) {
 	  continue;
 	}
 	else {
-	  psw__set_error_from_windows_error(0);
+	  ps__set_error_from_windows_error(0);
 	  goto error;
 	}
       }
@@ -641,7 +642,7 @@ SEXP psw__proc_username(DWORD pid) {
 	  continue;
 	}
 	else {
-	  psw__set_error_from_windows_error(0);
+	  ps__set_error_from_windows_error(0);
 	  goto error;
 	}
       }
@@ -649,8 +650,8 @@ SEXP psw__proc_username(DWORD pid) {
   }
 
   PROTECT(ret = allocVector(STRSXP, 2));
-  SET_STRING_ELT(ret, 0, psw__utf16_to_charsxp(domainName, -1));
-  SET_STRING_ELT(ret, 1, psw__utf16_to_charsxp(name, -1));
+  SET_STRING_ELT(ret, 0, ps__utf16_to_charsxp(domainName, -1));
+  SET_STRING_ELT(ret, 1, ps__utf16_to_charsxp(name, -1));
 
   UNPROTECT(1);
   return ret;
@@ -670,7 +671,7 @@ SEXP psw__proc_username(DWORD pid) {
 }
 
 
-SEXP psw__proc_num_threads(DWORD pid) {
+SEXP ps__proc_num_threads(DWORD pid) {
   PSYSTEM_PROCESS_INFORMATION process;
   PVOID buffer;
 
@@ -696,7 +697,7 @@ SEXP psw__proc_num_threads(DWORD pid) {
  * - memory_info() (fallback)
  */
 
-SEXP psw__proc_info(DWORD pid) {
+SEXP ps__proc_info(DWORD pid) {
   PSYSTEM_PROCESS_INFORMATION process;
   PVOID buffer;
   ULONG i;
@@ -722,7 +723,7 @@ SEXP psw__proc_info(DWORD pid) {
   // It's the best I could find by googling and borrowing code here
   // and there. The time returned has a precision of 1 second.
   if (0 == pid || 4 == pid) {
-    SEXP bt = PROTECT(psw__boot_time());
+    SEXP bt = PROTECT(ps__boot_time());
     create_time = REAL(bt)[0];
     UNPROTECT(1);
   } else {
@@ -775,7 +776,7 @@ SEXP psw__proc_info(DWORD pid) {
 }
 
 
-SEXP psll__ppid(DWORD pid) {
+SEXP ps__ppid(DWORD pid) {
   HANDLE handle = NULL;
   PROCESSENTRY32 pe = {0};
   DWORD ppid = -1;
@@ -783,7 +784,7 @@ SEXP psll__ppid(DWORD pid) {
   pe.dwSize = sizeof(PROCESSENTRY32);
   handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
   if (handle == INVALID_HANDLE_VALUE) {
-    psw__set_error_from_windows_error(0);
+    ps__set_error_from_windows_error(0);
     return R_NilValue;
   }
 
@@ -811,7 +812,7 @@ SEXP psll__ppid(DWORD pid) {
 /*
  * Return a {pid:ppid, ...} dict for all running processes.
  */
-SEXP psw__ppid_map() {
+SEXP ps__ppid_map() {
   SEXP ret;
   HANDLE handle = NULL;
   PROCESSENTRY32 pe = {0};
@@ -820,7 +821,7 @@ SEXP psw__ppid_map() {
 
   handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
   if (handle == INVALID_HANDLE_VALUE) {
-    psw__set_error_from_windows_error(0);
+    ps__set_error_from_windows_error(0);
     ps__throw_error();
   }
 
@@ -845,7 +846,7 @@ SEXP psw__ppid_map() {
 }
 
 
-SEXP psw__kill_tree_process(SEXP r_marker, SEXP r_pid) {
+SEXP ps__kill_tree_process(SEXP r_marker, SEXP r_pid) {
   const char *marker = CHAR(STRING_ELT(r_marker, 0));
   long pid = INTEGER(r_pid)[0];
   SEXP env;
@@ -867,7 +868,7 @@ SEXP psw__kill_tree_process(SEXP r_marker, SEXP r_pid) {
       ps__no_such_process(pid, 0);
     }
     else {
-      psw__set_error_from_windows_error(0);
+      ps__set_error_from_windows_error(0);
     }
     ps__throw_error();
   }
@@ -883,7 +884,7 @@ SEXP psw__kill_tree_process(SEXP r_marker, SEXP r_pid) {
 	// See: https://github.com/giampaolo/psutil/issues/1099
 	if (err != ERROR_ACCESS_DENIED) {
 	  CloseHandle(hProcess);
-	  psw__set_error_from_windows_error(0);
+	  ps__set_error_from_windows_error(0);
 	  ps__throw_error();
 	}
       }

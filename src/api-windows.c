@@ -1,5 +1,6 @@
 
 #include "common.h"
+#include "windows.h"
 #include "arch/windows/security.h"
 #include "arch/windows/process_info.h"
 #include "arch/windows/process_handles.h"
@@ -7,12 +8,12 @@
 #include <tlhelp32.h>
 #include <string.h>
 
-void psll_finalizer(SEXP p) {
+static void psll_finalizer(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   if (handle) free(handle);
 }
 
-int ps__create_time_raw(DWORD pid, FILETIME *ftCreate) {
+static int ps__create_time_raw(DWORD pid, FILETIME *ftCreate) {
   HANDLE hProcess = ps__handle_from_pid(pid);
   FILETIME ftExit, ftKernel, ftUser;
 
@@ -24,7 +25,7 @@ int ps__create_time_raw(DWORD pid, FILETIME *ftCreate) {
       // NoSuchProcess here
       ps__no_such_process(pid, 0);
     } else {
-      psw__set_error_from_windows_error(0);
+      ps__set_error_from_windows_error(0);
     }
     goto error;
   }
@@ -37,7 +38,7 @@ int ps__create_time_raw(DWORD pid, FILETIME *ftCreate) {
   return -1;
 }
 
-double ps__filetime_to_unix(FILETIME ft) {
+static double ps__filetime_to_unix(FILETIME ft) {
   long  long unix_time;
   // Convert the FILETIME structure to a Unix time.
   // It's the best I could find by googling and borrowing code here
@@ -48,15 +49,41 @@ double ps__filetime_to_unix(FILETIME ft) {
   return (double) unix_time;
 }
 
-void PS__CHECK_HANDLE(ps_handle_t *handle) {
-  SEXP ret = psll__is_running(handle);
+static SEXP ps__is_running(ps_handle_t *handle) {
+  FILETIME ftCreate;
+  int ret = ps__create_time_raw(handle->pid, &ftCreate);
+
+  if (ret) return ScalarLogical(0);
+
+  if (handle->wtime.dwHighDateTime) {
+    if (handle->wtime.dwHighDateTime != ftCreate.dwHighDateTime ||
+	handle->wtime.dwLowDateTime != ftCreate.dwLowDateTime)  {
+      return ScalarLogical(0);
+    } else {
+      return ScalarLogical(1);
+    }
+  } else {
+    double unix_time = ps__filetime_to_unix(ftCreate);
+    if (unix_time != handle->create_time) {
+      return ScalarLogical(0);
+    } else  {
+      return ScalarLogical(1);
+    }
+  }
+
+  /* Never reached */
+  return R_NilValue;
+}
+
+static void PS__CHECK_HANDLE(ps_handle_t *handle) {
+  SEXP ret = ps__is_running(handle);
   if (!LOGICAL(ret)[0]) {
     ps__no_such_process(handle->pid, 0);
     ps__throw_error();
   }
 }
 
-int psll__proc_is_suspended(DWORD pid) {
+static int ps__proc_is_suspended(DWORD pid) {
   ULONG i;
   PSYSTEM_PROCESS_INFORMATION process;
   PVOID buffer;
@@ -72,6 +99,13 @@ int psll__proc_is_suspended(DWORD pid) {
   }
   free(buffer);
   return 1;
+}
+
+static SEXP ps__status(DWORD pid) {
+  int ret = ps__proc_is_suspended(pid);
+  if (ret < 0) return R_NilValue;
+
+  return ret ? mkString("stopped") : mkString("running");
 }
 
 SEXP psll_handle(SEXP pid, SEXP time) {
@@ -116,11 +150,11 @@ SEXP psll_format(SEXP p) {
 
   if (!handle) error("Process pointer cleaned up already");
 
-  name = psll__name(handle->pid);
+  name = ps__name(handle->pid);
   if (isNull(name)) name = mkString("???");
   PROTECT(name);
 
-  status = psll__status(handle->pid);
+  status = ps__status(handle->pid);
   if (isNull(status)) status = mkString("terminated");
   PROTECT(status);
 
@@ -144,7 +178,7 @@ SEXP psll_parent(SEXP p) {
 
   if (!handle) error("Process pointer cleaned up already");
 
-  PROTECT(pid = psll__ppid(handle->pid));
+  PROTECT(pid = ps__ppid(handle->pid));
   if (isNull(pid)) ps__throw_error();
   PS__CHECK_HANDLE(handle);
 
@@ -172,7 +206,7 @@ SEXP psll_ppid(SEXP p) {
 
   if (!handle) error("Process pointer cleaned up already");
 
-  PROTECT(ret = psll__ppid(handle->pid));
+  PROTECT(ret = ps__ppid(handle->pid));
   if (isNull(ret)) ps__throw_error();
 
   PS__CHECK_HANDLE(handle);
@@ -181,36 +215,11 @@ SEXP psll_ppid(SEXP p) {
   return ret;
 }
 
-SEXP psll__is_running(ps_handle_t *handle) {
-  FILETIME ftCreate;
-  int ret = ps__create_time_raw(handle->pid, &ftCreate);
-
-  if (ret) return ScalarLogical(0);
-
-  if (handle->wtime.dwHighDateTime) {
-    if (handle->wtime.dwHighDateTime != ftCreate.dwHighDateTime ||
-	handle->wtime.dwLowDateTime != ftCreate.dwLowDateTime)  {
-      return ScalarLogical(0);
-    } else {
-      return ScalarLogical(1);
-    }
-  } else {
-    double unix_time = ps__filetime_to_unix(ftCreate);
-    if (unix_time != handle->create_time) {
-      return ScalarLogical(0);
-    } else  {
-      return ScalarLogical(1);
-    }
-  }
-
-  /* Never reached */
-  return R_NilValue;
-}
 
 SEXP psll_is_running(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   if (!handle) error("Process pointer cleaned up already");
-  return psll__is_running(handle);
+  return ps__is_running(handle);
 }
 
 
@@ -220,7 +229,7 @@ SEXP psll_name(SEXP p) {
 
   if (!handle) error("Process pointer cleaned up already");
 
-  PROTECT(ret = psll__name(handle->pid));
+  PROTECT(ret = ps__name(handle->pid));
   if (isNull(ret)) ps__throw_error();
 
   PS__CHECK_HANDLE(handle);
@@ -234,7 +243,7 @@ SEXP psll_exe(SEXP p) {
   SEXP result;
 
   if (!handle) error("Process pointer cleaned up already");
-  result = psll__exe(handle->pid);
+  result = ps__exe(handle->pid);
   if (isNull(result)) ps__throw_error();
 
   PS__CHECK_HANDLE(handle);
@@ -256,19 +265,12 @@ SEXP psll_cmdline(SEXP p) {
   return result;
 }
 
-SEXP psll__status(DWORD pid) {
-  int ret = psll__proc_is_suspended(pid);
-  if (ret < 0) return R_NilValue;
-
-  return ret ? mkString("stopped") : mkString("running");
-}
-
 SEXP psll_status(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   SEXP ret;
 
   if (!handle) error("Process pointer cleaned up already");
-  ret = psll__status(handle->pid);
+  ret = ps__status(handle->pid);
   if (isNull(ret)) ps__throw_error();
 
   PS__CHECK_HANDLE(handle);
@@ -288,7 +290,7 @@ SEXP psll_username(SEXP p) {
     return mkString("NT AUTHORITY\\SYSTEM");
   }
 
-  PROTECT(ret = psw__proc_username(handle->pid));
+  PROTECT(ret = ps__proc_username(handle->pid));
   if (isNull(ret)) ps__throw_error();
 
   PS__CHECK_HANDLE(handle);
@@ -371,7 +373,7 @@ SEXP psll_num_threads(SEXP p) {
 
   if (!handle) error("Process pointer cleaned up already");
 
-  PROTECT(result = psw__proc_num_threads(handle->pid));
+  PROTECT(result = ps__proc_num_threads(handle->pid));
   if (isNull(result)) ps__throw_error();
 
   PS__CHECK_HANDLE(handle);
@@ -386,7 +388,7 @@ SEXP psll_cpu_times(SEXP p) {
 
   if (!handle) error("Process pointer cleaned up already");
 
-  PROTECT(result = psw__proc_cpu_times(handle->pid));
+  PROTECT(result = ps__proc_cpu_times(handle->pid));
   if (!isNull(result)) {
     PS__CHECK_HANDLE(handle);
     UNPROTECT(1);
@@ -395,7 +397,7 @@ SEXP psll_cpu_times(SEXP p) {
 
   UNPROTECT(1);
 
-  PROTECT(result2 = psw__proc_info(handle->pid));
+  PROTECT(result2 = ps__proc_info(handle->pid));
   if (isNull(result2)) {
     UNPROTECT(1);
     ps__throw_error();
@@ -421,7 +423,7 @@ SEXP psll_memory_info(SEXP p) {
 
   if (!handle) error("Process pointer cleaned up already");
 
-  PROTECT(result2 = psw__proc_info(handle->pid));
+  PROTECT(result2 = ps__proc_info(handle->pid));
   if (isNull(result2)) {
     UNPROTECT(1);
     ps__throw_error();
@@ -467,13 +469,13 @@ SEXP psll_suspend(SEXP p) {
   HANDLE hProcess = ps__handle_from_pid(handle->pid);
   if (!hProcess) goto error;
 
-  running = psll__is_running(handle);
+  running = ps__is_running(handle);
   if (!LOGICAL(running)[0]) {
     ps__no_such_process(handle->pid, 0);
     goto error;
   }
 
-  PROTECT(ret = psw__proc_suspend(handle->pid));
+  PROTECT(ret = ps__proc_suspend(handle->pid));
   if (isNull(ret)) ps__throw_error();
 
   UNPROTECT(1);
@@ -494,13 +496,13 @@ SEXP psll_resume(SEXP p) {
   HANDLE hProcess = ps__handle_from_pid(handle->pid);
   if (!hProcess) goto error;
 
-  running = psll__is_running(handle);
+  running = ps__is_running(handle);
   if (!LOGICAL(running)[0]) {
     ps__no_such_process(handle->pid, 0);
     goto error;
   }
 
-  PROTECT(ret = psw__proc_resume(handle->pid));
+  PROTECT(ret = ps__proc_resume(handle->pid));
   if (isNull(ret)) ps__throw_error();
 
   UNPROTECT(1);
@@ -527,13 +529,13 @@ SEXP psll_kill(SEXP p) {
   HANDLE hProcess = ps__handle_from_pid(handle->pid);
   if (!hProcess) goto error;
 
-  running = psll__is_running(handle);
+  running = ps__is_running(handle);
   if (!LOGICAL(running)[0]) {
     ps__no_such_process(handle->pid, 0);
     goto error;
   }
 
-  PROTECT(ret = psw__proc_kill(handle->pid));
+  PROTECT(ret = ps__proc_kill(handle->pid));
   if (isNull(ret)) ps__throw_error();
 
   UNPROTECT(1);

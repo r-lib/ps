@@ -66,7 +66,7 @@ void *ps__zombie_process(long pid);
 void *ps__no_memory(const char *msg);
 void *ps__not_implemented(const char *what);
 
-void *psw__set_error_from_windows_error(long err);
+void *ps__set_error_from_windows_error(long err);
 
 /* Build SEXP values */
 
@@ -80,28 +80,10 @@ SEXP ps__str_to_utf8(const char *str);
 SEXP ps__str_to_utf8_size(const char *str, size_t size);
 
 #ifdef PS__WINDOWS
-SEXP psw__utf16_to_rawsxp(const WCHAR* ws, int size);
-SEXP psw__utf16_to_charsxp(const WCHAR* ws, int size);
-SEXP psw__utf16_to_strsxp(const WCHAR* ws, int size);
-int psw__utf8_to_utf16(const char* s, WCHAR** ws_ptr);
+SEXP ps__utf16_to_rawsxp(const WCHAR* ws, int size);
+SEXP ps__utf16_to_charsxp(const WCHAR* ws, int size);
+SEXP ps__utf16_to_strsxp(const WCHAR* ws, int size);
+int ps__utf8_to_utf16(const char* s, WCHAR** ws_ptr);
 #endif
-
-/* Non-throwing internal API */
-
-SEXP psll__exe(DWORD pid);
-SEXP psll__name(DWORD pid);
-SEXP psll__ppid(DWORD pid);
-SEXP psll__status(DWORD pid);
-SEXP psw__proc_name(DWORD pid);
-SEXP ps__get_cmdline(DWORD pid);
-SEXP ps__get_cwd(DWORD pid);
-SEXP ps__get_environ(DWORD pid);
-SEXP psw__proc_num_threads(DWORD pid);
-SEXP psw__proc_cpu_times(DWORD pid);
-SEXP psw__proc_info(DWORD pid);
-SEXP psw__proc_username(DWORD pid);
-SEXP psw__proc_suspend(DWORD pid);
-SEXP psw__proc_resume(DWORD pid);
-SEXP psw__proc_kill(DWORD pid);
 
 #endif
