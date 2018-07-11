@@ -37,16 +37,18 @@ SEXP psll_resume(SEXP p);
 SEXP psll_terminate(SEXP p);
 SEXP psll_kill(SEXP p);
 
+/* System API */
+
+SEXP ps__os_type();
+SEXP ps__pids();
+
 /* Generic utils used from R */
 
 SEXP ps__init(SEXP psenv, SEXP constenv);
-SEXP ps__os_type();
 
-SEXP ps__zombie();
-SEXP ps__waitpid(SEXP pid);
-SEXP ps__pid_exists2(SEXP r_pid);
-SEXP ps__stat_st_rdev(SEXP files);
-
-SEXP ps__pids();
+SEXP psp__zombie();
+SEXP psp__waitpid(SEXP pid);
+SEXP psp__pid_exists(SEXP r_pid);
+SEXP psp__stat_st_rdev(SEXP files);
 
 #endif

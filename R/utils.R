@@ -169,7 +169,7 @@ is_executable <- function(x) {
 
 zombie <- function() {
   if (ps_os_type()[["POSIX"]]) {
-    pid <- .Call(ps__zombie)
+    pid <- .Call(psp__zombie)
     ps <- ps_handle(pid)
     timeout <- Sys.time() + 5
     while (ps_status(ps) != "zombie" && Sys.time() < timeout)  {
@@ -180,7 +180,7 @@ zombie <- function() {
 }
 
 waitpid <- function(pid) {
-  if (ps_os_type()[["POSIX"]]) .Call(ps__waitpid, as.integer(pid))
+  if (ps_os_type()[["POSIX"]]) .Call(psp__waitpid, as.integer(pid))
 }
 
 convert_dos_path <- function(path) {

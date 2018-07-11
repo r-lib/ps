@@ -103,7 +103,7 @@ int ps__pid_exists(long pid) {
   }
 }
 
-SEXP ps__pid_exists2(SEXP r_pid) {
+SEXP psp__pid_exists(SEXP r_pid) {
   return ScalarLogical(ps__pid_exists(INTEGER(r_pid)[0]));
 }
 
@@ -611,7 +611,7 @@ SEXP ps__kill(SEXP r_pid, SEXP r_sig) {
   return R_NilValue;
 }
 
-SEXP ps__stat_st_rdev(SEXP files) {
+SEXP psp__stat_st_rdev(SEXP files) {
   size_t i, len = LENGTH(files);
   struct stat buf;
   SEXP result;
@@ -637,7 +637,7 @@ SEXP ps__stat_st_rdev(SEXP files) {
   return result;
 }
 
-pid_t ps___zombie() {
+pid_t ps__zombie() {
   pid_t child_pid;
 
   child_pid = fork();
@@ -647,11 +647,11 @@ pid_t ps___zombie() {
   return child_pid;
 }
 
-SEXP ps__zombie() {
-  return ScalarInteger((int) ps___zombie());
+SEXP psp__zombie() {
+  return ScalarInteger((int) ps__zombie());
 }
 
-int ps___waitpid(pid_t pid) {
+int ps__waitpid(pid_t pid) {
   int wp, wstat;
 
   do {
@@ -677,9 +677,9 @@ int ps___waitpid(pid_t pid) {
   return 0;
 }
 
-SEXP ps__waitpid(SEXP r_pid) {
+SEXP psp__waitpid(SEXP r_pid) {
   pid_t pid = INTEGER(r_pid)[0];
-  return ScalarInteger(ps___waitpid(pid));
+  return ScalarInteger(ps__waitpid(pid));
 }
 SEXP ps__define_signals() {
 

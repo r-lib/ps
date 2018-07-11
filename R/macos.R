@@ -9,5 +9,5 @@ ps_pids_macos <- function() {
 }
 
 ps_pid_exists_macos <- function(pid) {
-  .Call(ps__pid_exists, as.integer(pid))
+  .Call(psp__pid_exists, as.integer(pid))
 }

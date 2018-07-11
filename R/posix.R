@@ -18,6 +18,6 @@ get_terminal_map <- function() {
   ls <- c(
     dir("/dev", pattern = "^tty.*", full.names = TRUE),
     dir("/dev/pts", full.names = TRUE))
-  ret <- structure(ls, names = as.character(.Call(ps__stat_st_rdev, ls)))
+  ret <- structure(ls, names = as.character(.Call(psp__stat_st_rdev, ls)))
   ret[names(ret) != "0"]
 }
