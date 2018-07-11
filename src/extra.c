@@ -278,14 +278,14 @@ SEXP ps__build_string(const char *str, ...) {
 
   /* Count the length first */
   va_start(args, str);
-  while (va_arg(args, const char*)) len++;
+  while (va_arg(args, char*)) len++;
   va_end(args);
 
   PROTECT(res = allocVector(STRSXP, len));
   SET_STRING_ELT(res, 0, mkChar(str));
   len = 1;
   va_start(args, str);
-  while ((s = va_arg(args, const char*))) {
+  while ((s = va_arg(args, char*))) {
     SET_STRING_ELT(res, len++, mkChar(s));
   }
   va_end(args);
