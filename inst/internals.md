@@ -39,3 +39,21 @@ C: <: checks if process is running, before
 Z: +: works fine on a zombie
    Z: errors (zombie_process) on a zombie
 ```
+
+# System API
+
+## `ps()`
+
+## `ps_pids()`
+
+## `ps_boot_time()`
+
+## Process cleanup
+
+`ps_kill_tree()`, `ps_mark_tree()`,  `with_process_cleanup()`.
+
+## `ps_os_type()`
+
+## `ps_start()`
+
+## `signals()`
