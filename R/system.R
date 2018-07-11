@@ -6,7 +6,7 @@
 
 ps_pids <- function() {
   os <- ps_os_type()
-  if (os[["MACOS"]])
+  pp <- if (os[["MACOS"]])
     ps_pids_macos()
   else if (os[["LINUX"]])
     ps_pids_linux()
@@ -14,6 +14,8 @@ ps_pids <- function() {
     ps_pids_windows()
   else
     stop("Not implemented for this platform")
+
+  sort(pp)
 }
 
 #' Boot time of the system
