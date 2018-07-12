@@ -10,16 +10,13 @@ ps_mark_tree()
 
 with_process_cleanup(expr)
 
-ps_kill_tree(marker, exclude_me = TRUE, sig = signals()$SIGKILL)
+ps_kill_tree(marker, sig = signals()$SIGKILL)
 }
 \arguments{
 \item{expr}{R expression to evaluate in the new context.}
 
 \item{marker}{String scalar, the name of the environment variable to
 use to find the marked processes.}
-
-\item{exclude_me}{If \code{TRUE}, then the calling process is not killed,
-even if it sets the \code{marked} environment variable.}
 
 \item{sig}{The signal to send to the marked processes on Unix. On
 Windows this argument is ignored currently.}

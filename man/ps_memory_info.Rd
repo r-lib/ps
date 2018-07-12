@@ -2,7 +2,7 @@
 % Please edit documentation in R/low-level.R
 \name{ps_memory_info}
 \alias{ps_memory_info}
-\title{Throws a \code{zombie_process()} error for zombie processes.}
+\title{Memory usage information}
 \usage{
 ps_memory_info(p)
 }
@@ -45,6 +45,8 @@ DATA column (see doc).
 For on explanation of Windows fields see the
 \href{http://msdn.microsoft.com/en-us/library/windows/desktop/ms684874(v=vs.85).aspx}{PROCESS_MEMORY_COUNTERS_EX}
 structure.
+
+Throws a \code{zombie_process()} error for zombie processes.
 }
 \seealso{
 Other process handle functions: \code{\link{ps_cmdline}},
@@ -59,3 +61,8 @@ Other process handle functions: \code{\link{ps_cmdline}},
   \code{\link{ps_terminal}}, \code{\link{ps_terminate}},
   \code{\link{ps_uids}}, \code{\link{ps_username}}
 }
+\Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+p <- ps_handle()
+p
+ps_memory_info(p)
+')}

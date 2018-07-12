@@ -181,3 +181,29 @@ head <- function(x, n) {
   if (length(x) <= n) return(x)
   x[seq_len(n)]
 }
+
+caps <- function(x) {
+  paste0(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(x))))
+}
+
+decorate_examples <- function(text, os = NULL) {
+  text <- gsub("\n\n", "\n", text)
+
+  if (!ps_is_supported()) {
+    text <- paste0(
+      "## ps does not support this platform, and cannot run the examples\n",
+      "## Currently supported platforms are ", supported_str(), ".\n",
+      "\\dontrun{",
+      text,
+      "}")
+
+  } else if (!is.null(os) && !ps_os_type()[[os]]) {
+    text <- paste0(
+      "## these examples only work on ", caps(os), "\n",
+      "\\dontrun{",
+      text,
+      "}")
+  }
+
+  paste0("\\examples{\n", text, "}")
+}

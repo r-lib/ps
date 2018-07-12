@@ -28,3 +28,8 @@ Other process handle functions: \code{\link{ps_cmdline}},
   \code{\link{ps_terminal}}, \code{\link{ps_terminate}},
   \code{\link{ps_uids}}, \code{\link{ps_username}}
 }
+\Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+p <- ps_handle()
+p
+ps_num_threads(p)
+')}

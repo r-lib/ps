@@ -16,3 +16,12 @@ ps_os_name <- function() {
   os <- os[setdiff(names(os), c("BSD", "POSIX"))]
   names(os)[which(os)]
 }
+
+ps_is_supported <- function() {
+  os <- ps_os_type()
+  any(os[c("WINDOWS", "LINUX", "MACOS")])
+}
+
+supported_str <- function() {
+  "Windows, macOS, Linux"
+}

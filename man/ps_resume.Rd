@@ -27,3 +27,14 @@ Other process handle functions: \code{\link{ps_cmdline}},
   \code{\link{ps_terminal}}, \code{\link{ps_terminate}},
   \code{\link{ps_uids}}, \code{\link{ps_username}}
 }
+\Sexpr[stage=install,strip.white=FALSE,results=rd]{
+ps:::decorate_examples(os = "POSIX",  '
+px <- processx::process$new("sleep", "10")
+p <- ps_handle(px$get_pid())
+p
+ps_suspend(p)
+ps_status(p)
+ps_resume(p)
+ps_status(p)
+ps_kill(p)
+')}
