@@ -11,6 +11,7 @@ ps_env <- new.env(parent = emptyenv())
     ps_env$constants$errno <- as.list(ps_env$constants$errno)
   }
   get_terminal_map <<- memoize(get_terminal_map)
+  NA_time <<- memoize(NA_time)
 }
 
 utils::globalVariables(c("self", "super"))

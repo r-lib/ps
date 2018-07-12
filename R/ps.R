@@ -26,8 +26,8 @@ NULL
 #' @export
 
 ps <- function(user = NULL, after = NULL) {
-  assert_that(is.null(user) || is_string(user))
-  assert_that(is.null(after) || inherits(after, "POSIXt"))
+  stopifnot(is.null(user) || is_string(user))
+  stopifnot(is.null(after) || inherits(after, "POSIXt"))
 
   pids <- ps_pids()
   processes <- not_null(lapply(pids, function(p) {

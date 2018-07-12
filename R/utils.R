@@ -63,7 +63,7 @@ fallback <- function(expr, alternative) {
 read_lines <- function(path) {
   suppressWarnings(con <- file(path, open = "r"))
   on.exit(close(con), add = TRUE)
-  readLines(con)
+  suppressWarnings(readLines(con))
 }
 
 get_id <- function() {
@@ -74,10 +74,6 @@ get_id <- function() {
       collapse = ""
     )
   )
-}
-
-is_executable <- function(x) {
-  file.access(x, 1) == 0
 }
 
 ## We need to wait until the child becomes a zombie, otherwise
@@ -99,11 +95,7 @@ waitpid <- function(pid) {
   if (ps_os_type()[["POSIX"]]) .Call(psp__waitpid, as.integer(pid))
 }
 
-head <- function(x, n) {
-  if (length(x) <= n) return(x)
-  x[seq_len(n)]
-}
-
+## nocov start
 caps <- function(x) {
   paste0(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(x))))
 }
@@ -128,4 +120,9 @@ decorate_examples <- function(text, os = NULL) {
   }
 
   paste0("\\examples{\n", text, "}")
+}
+## nocov end
+
+is_string <- function(x) {
+  is.character(x) && length(x) == 1 && !is.na(x)
 }

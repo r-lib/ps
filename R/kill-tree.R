@@ -55,7 +55,7 @@ with_process_cleanup <- function(expr) {
 
 ps_kill_tree <- function(marker, sig = signals()$SIGKILL) {
 
-  assert_that(is_string(marker))
+  stopifnot(is_string(marker))
 
   pids <- setdiff(ps_pids(), Sys.getpid())
 
