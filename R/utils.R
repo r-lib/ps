@@ -35,78 +35,12 @@ str_starts_with <- function(x, p) {
   substr(x, 1, nchar(p)) == p
 }
 
-str_ends_with <- function(x, p) {
-  ncx <- nchar(x)
-  ncp <- nchar(p)
-  substr(x, nchar(x) - ncp + 1L, ncx) == p
-}
-
 str_strip <- function(x) {
   sub("\\s+$", "", sub("^\\s+", "", x))
 }
 
-raw_split <- function(x, byte) {
-  if (!length(x)) return(list())
-  sep <- which(x == byte)
-  start <- c(1L, sep + 1L)
-  end <- c(sep - 1L, length(x))
-  lapply(seq_along(start), function(i) {
-    if (start[i] > end[i]) raw(0) else x[start[i]:end[i]]
-  })
-}
-
 file_size <- function(x) {
   file.info(x, extra_cols = FALSE)$size
-}
-
-## We cannot use file_size() here, because in /proc files have
-## zero sizes
-
-read_binary_file <- function(x) {
-  ret <- raw()
-  suppressWarnings(con <- file(x, open = "rb"))
-  on.exit(close(con), add = TRUE)
-  while (length(new <- readBin(con, raw(), n = 1024))) {
-    ret <- c(ret, new)
-  }
-  ret
-}
-
-path_is_absolute <- function(path) {
-  if (ps_os_type()[["WINDOWS"]]) {
-    path_is_absolute_win(path)
-  } else {
-    path_is_absolute_posix(path)
-  }
-}
-
-path_is_absolute_win <- function(path) {
-  p <- windows_path_split_drive(path)
-  p$drive != "" | substr(p$path, 1L, 1L) %in% c("/", "\\")
-}
-
-windows_path_split_drive <- function(path) {
-  npath <- gsub("/", "\\", path, fixed = TRUE)
-  drive <- subpath <- character(length(path))
-  na <- is.na(path)
-  drive[na] <- subpath[na] <- NA_character_
-  i <- !na & str_starts_with(npath, "\\\\") & substr(npath, 3, 3) != "\\"
-  nunc <- ifelse(
-    grepl("^\\\\\\\\[^\\\\]+\\\\[^\\\\]+.*$", npath[i]),
-    nchar(sub("^(\\\\\\\\[^\\\\]+\\\\[^\\\\]+).*$", "\\1", npath[i])),
-    0L)
-  drive[i] <- substr(path[i], 1L, nunc)
-  subpath[i] <- substr(path[i], nunc + 1L, nchar(path[i]))
-  j <- !na & !i & substr(npath, 2L, 2L) == ":"
-  drive[j] <- substr(path[j], 1L, 2L)
-  subpath[j] <- substr(path[j], 3, nchar(path[j]))
-  k <- !na & !i & !j
-  subpath[k] <- path[k]
-  list(drive = drive, path = subpath)
-}
-
-path_is_absolute_posix <- function(path) {
-  str_starts_with(path, "/")
 }
 
 format_unix_time <- function(z) {
