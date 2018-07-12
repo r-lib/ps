@@ -7,8 +7,10 @@
 ps_os_type()
 }
 \value{
-\code{ps_os_type} return a named logical vector. The rest of the
+\code{ps_os_type} returns a named logical vector. The rest of the
 functions return a logical scalar.
+
+\code{ps_is_supported()} returns \code{TRUE} if ps supports the current platform.
 }
 \description{
 Query the type of the OS

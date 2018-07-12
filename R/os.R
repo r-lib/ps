@@ -1,8 +1,10 @@
 
 #' Query the type of the OS
 #'
-#' @return `ps_os_type` return a named logical vector. The rest of the
+#' @return `ps_os_type` returns a named logical vector. The rest of the
 #' functions return a logical scalar.
+#'
+#' `ps_is_supported()` returns `TRUE` if ps supports the current platform.
 #'
 #' @export
 
@@ -17,11 +19,16 @@ ps_os_name <- function() {
   names(os)[which(os)]
 }
 
+#' @export
+
 ps_is_supported <- function() {
   os <- ps_os_type()
-  any(os[c("WINDOWS", "LINUX", "MACOS")])
+  os <- os[setdiff(names(os), c("BSD", "POSIX"))]
+  any(os)
 }
 
 supported_str <- function() {
-  "Windows, macOS, Linux"
+  os <- ps_os_type()
+  os <- os[setdiff(names(os), c("BSD", "POSIX"))]
+  paste(caps(names(os)), collapse = ", ")
 }
