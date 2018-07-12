@@ -45,18 +45,6 @@ str_strip <- function(x) {
   sub("\\s+$", "", sub("^\\s+", "", x))
 }
 
-readlink <- function(path) {
-  assert_that(is_string(path))
-  path <- .Call(psl__readlink, path)
-  ## Certain paths have ' (deleted)' appended. Usually this is
-  ## bogus as the file actually exists. Even if it doesn't we
-  ## don't care.
-  if (str_ends_with(path,  " (deleted)") && ! file.exists(path)) {
-    path <- substr(path, 1, nchar(path) - 10)
-  }
-  path
-}
-
 raw_split <- function(x, byte) {
   if (!length(x)) return(list())
   sep <- which(x == byte)

@@ -112,6 +112,7 @@ int psll__readlink(const char *path, char **linkname) {
   size_t size = 1024;
   ssize_t r;
   SEXP result;
+  char *dpos;
 
   *linkname = R_alloc(size, 1);
 
@@ -147,8 +148,16 @@ int psll__readlink(const char *path, char **linkname) {
      For us this is not a problem, because mkString uses the string
      up to the first zero byte, anyway.
 
-     The path might still have a ' (deleted)' suffix, we handle
-     this in R. */
+     Certain paths have ' (deleted)' appended. Usually this is
+     bogus as the file actually exists. Even if it doesn't we
+     don't care. */
+
+  if (dpos = strstr(*linkname,  " (deleted)") &&
+      !strcmp(dpos, " (deleted)")) {
+    struct stat st;
+    int ret = stat(*linkname, &st);
+    if (!ret) *dpos = '\0';
+  }
 
   return 0;
 }
