@@ -226,67 +226,65 @@ process <- R6Class(
   public = list(
 
     initialize = function(pid = NULL, time = NULL) {
-      private$handle <- ps_handle(pid, time)
+      self$.handle <- ps_handle(pid, time)
       invisible(self)
     },
 
-    format = function(...) format(private$handle),
+    format = function(...) format(self$.handle),
 
     print = function(...) {
-      print(private$handle)
+      print(self$.handle)
       invisible(self)
     },
 
-    pid = function() ps_pid(private$handle),
+    pid = function() ps_pid(self$.handle),
 
-    create_time = function() ps_create_time(private$handle),
+    create_time = function() ps_create_time(self$.handle),
 
-    is_running = function() ps_is_running(private$handle),
+    is_running = function() ps_is_running(self$.handle),
 
-    parent = function() ps_parent(private$handle),
+    parent = function() ps_parent(self$.handle),
 
-    ppid = function() ps_ppid(private$handle),
+    ppid = function() ps_ppid(self$.handle),
 
-    name = function() ps_name(private$handle),
+    name = function() ps_name(self$.handle),
 
-    exe = function() ps_exe(private$handle),
+    exe = function() ps_exe(self$.handle),
 
-    cmdline = function() ps_cmdline(private$handle),
+    cmdline = function() ps_cmdline(self$.handle),
 
-    status = function() ps_status(private$handle),
+    status = function() ps_status(self$.handle),
 
-    username = function() ps_username(private$handle),
+    username = function() ps_username(self$.handle),
 
-    cwd = function() ps_cwd(private$handle),
+    cwd = function() ps_cwd(self$.handle),
 
-    uids = function() ps_uids(private$handle),
+    uids = function() ps_uids(self$.handle),
 
-    gids = function() ps_gids(private$handle),
+    gids = function() ps_gids(self$.handle),
 
-    terminal = function() ps_terminal(private$handle),
+    terminal = function() ps_terminal(self$.handle),
 
-    environ = function() ps_environ(private$handle),
+    environ = function() ps_environ(self$.handle),
 
-    environ_raw = function() ps_environ_raw(private$handle),
+    environ_raw = function() ps_environ_raw(self$.handle),
 
-    num_threads = function() ps_num_threads(private$handle),
+    num_threads = function() ps_num_threads(self$.handle),
 
-    cpu_times = function() ps_cpu_times(private$handle),
+    cpu_times = function() ps_cpu_times(self$.handle),
 
-    memory_info = function() ps_memory_info(private_handle),
+    memory_info = function() ps_memory_info(self$.handle),
 
-    send_signal = function(sig) ps_send_signal(private_handle, sig),
+    send_signal = function(sig) ps_send_signal(self$.handle, sig),
 
-    suspend = function() ps_suspend(private$handle),
+    suspend = function() ps_suspend(self$.handle),
 
-    resume = function() ps_resume(private$handle),
+    resume = function() ps_resume(self$.handle),
 
-    terminate = function() ps_terminate(private$handle),
+    terminate = function() ps_terminate(self$.handle),
 
-    kill = function() ps_kill(private$handle)
-  ),
+    kill = function() ps_kill(self$.handle),
 
-  private = list(
-    handle = NULL
+    .handle = NULL
   )
 )
