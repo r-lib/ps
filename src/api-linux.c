@@ -152,7 +152,7 @@ int psll__readlink(const char *path, char **linkname) {
      bogus as the file actually exists. Even if it doesn't we
      don't care. */
 
-  if (dpos = strstr(*linkname,  " (deleted)") &&
+  if ((dpos = strstr(*linkname,  " (deleted)")) != NULL &&
       !strcmp(dpos, " (deleted)")) {
     struct stat st;
     int ret = stat(*linkname, &st);
