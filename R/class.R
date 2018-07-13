@@ -243,7 +243,10 @@ process <- R6Class(
 
     is_running = function() ps_is_running(self$.handle),
 
-    parent = function() ps_parent(self$.handle),
+    parent = function() {
+      par <- ps_parent(self$.handle)
+      process$new(ps_pid(par), ps_create_time(par))
+    },
 
     ppid = function() ps_ppid(self$.handle),
 
