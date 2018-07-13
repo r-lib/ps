@@ -2,9 +2,12 @@
 % Please edit documentation in R/os.R
 \name{ps_os_type}
 \alias{ps_os_type}
+\alias{ps_is_supported}
 \title{Query the type of the OS}
 \usage{
 ps_os_type()
+
+ps_is_supported()
 }
 \value{
 \code{ps_os_type} returns a named logical vector. The rest of the

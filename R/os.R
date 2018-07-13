@@ -19,6 +19,7 @@ ps_os_name <- function() {
   names(os)[which(os)]
 }
 
+#' @rdname ps_os_type
 #' @export
 
 ps_is_supported <- function() {
