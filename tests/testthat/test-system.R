@@ -12,6 +12,8 @@ test_that("ps", {
   expect_true(tibble::is_tibble(pp))
   expect_true(Sys.getpid() %in% pp$pid)
 
+  x <- ps_start(px(), c("sleep", "5"))
+  on.exit(x$kill(), add = TRUE)
   pp <- ps(after = Sys.time() - 60 * 60)
   ct <- lapply(pp$pid, function(p) {
     tryCatch(ps_create_time(ps_handle(p)), error = function(e) NULL)
