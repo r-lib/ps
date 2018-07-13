@@ -66,16 +66,6 @@ read_lines <- function(path) {
   suppressWarnings(readLines(con))
 }
 
-get_id <- function() {
-  paste0(
-    "PS",
-    paste(
-      sample(c(LETTERS, 0:9), 10, replace = TRUE),
-      collapse = ""
-    )
-  )
-}
-
 ## We need to wait until the child becomes a zombie, otherwise
 ## it might still be in a running state
 

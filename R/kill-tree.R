@@ -34,6 +34,18 @@ ps_mark_tree <- function() {
   id
 }
 
+get_id <- function() {
+  paste0(
+    "PS_",
+    paste(
+      sample(c(LETTERS, 0:9), 10, replace = TRUE),
+      collapse = ""
+    ),
+    "_",
+    Internal(Sys.time())
+  )
+}
+
 #' @param expr R expression to evaluate in the new context.
 #'
 #' @rdname ps_kill_tree

@@ -1,6 +1,8 @@
 
 ps_env <- new.env(parent = emptyenv())
 
+Internal <- NULL
+
 .onLoad <- function(libname, pkgname) {
   ps_env$constants <- new.env(parent  = emptyenv())
   .Call(ps__init, asNamespace("ps"), ps_env$constants)
@@ -10,6 +12,9 @@ ps_env <- new.env(parent = emptyenv())
   if (!is.null(ps_env$constants$errno))  {
     ps_env$constants$errno <- as.list(ps_env$constants$errno)
   }
+
+  Internal <<- getFromNamespace(".Internal", asNamespace("base"))
+
   get_terminal_map <<- memoize(get_terminal_map)
   NA_time <<- memoize(NA_time)
 }
