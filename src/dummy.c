@@ -13,6 +13,5 @@ void ps__pids() { }
 void psp__pid_exists() { }
 void psp__zombie() { }
 void psp__waitpid() { }
-void psp__pid_exists() { }
 void psp__stat_st_rdev() { }
 #endif
