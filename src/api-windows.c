@@ -7,6 +7,7 @@
 
 #include <tlhelp32.h>
 #include <string.h>
+#include <math.h>
 
 static void psll_finalizer(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
@@ -62,7 +63,7 @@ static SEXP ps__is_running(ps_handle_t *handle) {
     }
   } else {
     double unix_time = ps__filetime_to_unix(ftCreate);
-    if (unix_time != handle->create_time) {
+    if (fabs(unix_time - handle->create_time) > 0.01) {
       return ScalarLogical(0);
     } else  {
       return ScalarLogical(1);
@@ -609,7 +610,7 @@ SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
       int ret = ps__create_time_raw(cpid, &ftCreate);
       if (ret) ps__throw_error();
       ctime2 = ps__filetime_to_unix(ftCreate);
-      if (ctime == ctime2)  {
+      if (fabs(ctime - ctime2) < 0.01)  {
 	PROTECT(name = ps__name(cpid));
 	ret = ps__proc_kill(cpid);
 	if (isNull(ret)) ps__throw_error();
