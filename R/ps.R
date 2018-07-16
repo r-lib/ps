@@ -31,7 +31,7 @@ ps <- function(user = NULL, after = NULL) {
 
   pids <- ps_pids()
   processes <- not_null(lapply(pids, function(p) {
-    tryCatch(ps_handle(p), no_such_process = function(e) NULL) }))
+    tryCatch(ps_handle(p), error = function(e) NULL) }))
 
   ct <- NULL
   if (!is.null(after)) {

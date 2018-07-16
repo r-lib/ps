@@ -814,7 +814,7 @@ static int psl__linux_match_environ(SEXP r_marker, SEXP r_pid) {
   return ps__memmem(buf, ret, marker, strlen(marker)) != NULL;
 }
 
-SEXP ps__kill_if_env(SEXP r_marker, SEXP r_pid, SEXP r_sig) {
+SEXP ps__kill_if_env(SEXP r_marker, SEXP r_after, SEXP r_pid, SEXP r_sig) {
 
   const char *marker = CHAR(STRING_ELT(r_marker, 0));
   pid_t pid = INTEGER(r_pid)[0];

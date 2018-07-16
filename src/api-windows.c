@@ -571,17 +571,62 @@ SEXP ps__boot_time() {
   if (ps__GetTickCount64 != NULL) {
     // Windows >= Vista
     uptime = ps__GetTickCount64() / (ULONGLONG)1000.00f;
-    return ScalarReal(pt - uptime);
+    return ScalarReal(now - uptime);
   } else {
     // Windows XP.
     // GetTickCount() time will wrap around to zero if the
     // system is run continuously for 49.7 days.
     uptime = GetTickCount() / (LONGLONG)1000.00f;
-    return ScalarReal(pt - uptime);
+    return ScalarReal(now - uptime);
   }
 }
 
-SEXP ps__kill_if_env(SEXP marker, SEXP pid, SEXP sig) {
-  /* TODO */
+SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
+  const char *cmarker = CHAR(STRING_ELT(marker, 0));
+  double cafter = REAL(after)[0];
+  DWORD cpid = INTEGER(pid)[0];
+  SEXP env;
+  size_t i, len;
+  double ctime = 0, ctime2 = 0;
+
+  /* Filter on start time */
+  FILETIME ftCreate;
+  int ret = ps__create_time_raw(cpid, &ftCreate);
+  if (ret) ps__throw_error();
+  ctime = ps__filetime_to_unix(ftCreate);
+  if (ctime < cafter - 1) return R_NilValue;
+
+  PROTECT(env = ps__get_environ(cpid));
+  if (isNull(env)) ps__throw_error();
+
+  len = LENGTH(env);
+
+  for (i = 0; i < len; i++) {
+    if (strstr(CHAR(STRING_ELT(env, i)), cmarker)) {
+      HANDLE hProcess = ps__handle_from_pid(cpid);
+      FILETIME ftCreate;
+      SEXP name;
+      int ret = ps__create_time_raw(cpid, &ftCreate);
+      if (ret) ps__throw_error();
+      ctime2 = ps__filetime_to_unix(ftCreate);
+      if (ctime == ctime2)  {
+	PROTECT(name = ps__name(cpid));
+	ret = ps__proc_kill(cpid);
+	if (isNull(ret)) ps__throw_error();
+	if (isNull(name)) {
+	  UNPROTECT(2);
+	  return mkString("???");
+	} else {
+	  UNPROTECT(2);
+	  return name;
+	}
+      } else  {
+	UNPROTECT(1);
+	return R_NilValue;
+      }
+    }
+  }
+
+  UNPROTECT(1);
   return R_NilValue;
 }

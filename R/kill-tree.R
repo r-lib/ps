@@ -36,7 +36,7 @@ ps_mark_tree <- function() {
 
 get_id <- function() {
   paste0(
-    "PS_",
+    "PS",
     paste(
       sample(c(LETTERS, 0:9), 10, replace = TRUE),
       collapse = ""
@@ -69,11 +69,13 @@ ps_kill_tree <- function(marker, sig = signals()$SIGKILL) {
 
   stopifnot(is_string(marker))
 
+  after <- as.numeric(strsplit(marker, "_", fixed = TRUE)[[1]][2])
+
   pids <- setdiff(ps_pids(), Sys.getpid())
 
   ret <- lapply(pids, function(p) {
     tryCatch(
-      .Call(ps__kill_if_env, marker, p, sig),
+      .Call(ps__kill_if_env, marker, after, p, sig),
       error = function(e) e
     )
   })

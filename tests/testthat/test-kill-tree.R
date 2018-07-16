@@ -3,6 +3,7 @@ context("kill-tree")
 
 test_that("ps_mark_tree", {
   id <- ps_mark_tree()
+  on.exit(Sys.unsetenv(id), add = TRUE)
   expect_true(is.character(id))
   expect_true(length(id) == 1)
   expect_false(is.na(id))
@@ -22,6 +23,7 @@ test_that("kill_tree",  {
   p <- lapply(1:5, function(x) processx::process$new(px(), c("sleep", "10")))
   on.exit(lapply(p, function(x) x$kill()), add = TRUE)
   res <- ps_kill_tree(id)
+  res <- res[names(res) != "conhost.exe"]
   expect_equal(length(res), 5)
   expect_true(all(names(res) %in% c("px", "px.exe")))
   expect_equal(
@@ -58,8 +60,9 @@ test_that("kill_tree, grandchild", {
   while (length(dir(tmp)) < N && Sys.time() < timeout) Sys.sleep(0.1)
 
   res <- ps_kill_tree(id)
+  res <- res[names(res) != "conhost.exe"]
   expect_equal(length(res), N * 2)
-  expect_true(all(names(res) %in% c("R", "RTerm.exe")))
+  expect_true(all(names(res) %in% c("R", "Rterm.exe")))
   cpids <- map_int(p, function(x) x$get_pid())
   expect_true(all(cpids %in% res))
   ccpids <- as.integer(dir(tmp))
@@ -88,6 +91,7 @@ test_that("kill_tree, orphaned grandchild", {
          Sys.time() < timeout) Sys.sleep(0.1)
 
   res <- ps_kill_tree(id)
+  res <- res[names(res) != "conhost.exe"]
   expect_equal(length(res), N)
   expect_true(all(names(res) %in% c("px", "px.exe")))
 })

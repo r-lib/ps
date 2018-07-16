@@ -455,7 +455,7 @@ SEXP ps__boot_time() {
   return ScalarReal(unixtime);
 }
 
-SEXP ps__kill_if_env(SEXP marker, SEXP pid, SEXP sig) {
+SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
   const char *cmarker = CHAR(STRING_ELT(marker, 0));
   pid_t cpid = INTEGER(pid)[0];
   int csig = INTEGER(sig)[0];
