@@ -54,7 +54,6 @@ test_that("ps_start", {
   x$wait(1000)
 
   expect_false(x$is_alive())
-  if (ps_os_type()[["POSIX"]]) expect_equal(x$get_exit_status(), -2)
 
   expect_equal(x$read_all_output_lines(), "foo")
   expect_equal(x$read_all_error_lines(), "bar")
