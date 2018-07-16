@@ -15,3 +15,5 @@ SEXP ps__proc_username(DWORD pid);
 SEXP ps__proc_suspend(DWORD pid);
 SEXP ps__proc_resume(DWORD pid);
 SEXP ps__proc_kill(DWORD pid);
+
+double ps__filetime_to_unix(FILETIME ft);

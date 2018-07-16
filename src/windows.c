@@ -660,7 +660,10 @@ SEXP ps__proc_info(DWORD pid) {
     create_time = REAL(bt)[0];
     UNPROTECT(1);
   } else {
-    create_time = ps__filetime_to_unix(& process->CreateTime);
+    FILETIME ft;
+    ft.dwHighDateTime = process->CreateTime.HighPart;
+    ft.dwLowDateTime = process->CreateTime.LowPart;
+    create_time = ps__filetime_to_unix(ft);
   }
 
 #if (_WIN32_WINNT >= 0x0501)  // Windows XP with SP2
