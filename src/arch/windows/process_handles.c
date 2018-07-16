@@ -7,9 +7,6 @@
 #include "process_handles.h"
 #include "../../common.h"
 
-static _NtQuerySystemInformation __NtQuerySystemInformation = NULL;
-static _NtQueryObject __NtQueryObject = NULL;
-
 CRITICAL_SECTION g_cs;
 BOOL g_initialized = FALSE;
 NTSTATUS g_status;
@@ -20,4 +17,3 @@ HANDLE g_hThread = NULL;
 PUNICODE_STRING g_pNameBuffer = NULL;
 ULONG g_dwSize = 0;
 ULONG g_dwLength = 0;
-

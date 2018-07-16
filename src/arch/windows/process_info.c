@@ -495,7 +495,11 @@ static int ps__get_process_region_size64(HANDLE hProcess,
     return -1;
   }
 
+#ifdef _WIN64
   *psize = info64.RegionSize - ((char*)src64 - (char*)info64.BaseAddress);
+#else
+  *psize = info64.RegionSize - ((DWORD32)src64 - (DWORD32)info64.BaseAddress);
+#endif
   return 0;
 }
 #endif
@@ -965,7 +969,11 @@ ps__get_proc_info(DWORD pid, PSYSTEM_PROCESS_INFORMATION *retProcess,
 
   process = PS__FIRST_PROCESS(buffer);
   do {
-    if (process->UniqueProcessId == (HANDLE)pid) {
+#ifdef _WIN64
+    if ((DWORD64)(process->UniqueProcessId) == (DWORD64) pid) {
+#else
+      if (process->UniqueProcessId == (HANDLE) pid) {
+#endif
       *retProcess = process;
       *retBuffer = buffer;
       return 1;
