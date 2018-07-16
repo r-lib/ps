@@ -9,7 +9,7 @@ test_that("ps_start", {
   ## ps methods
   expect_equal(x$cmdline(), c(px(), args))
   expect_silent(x$cpu_times())
-  expect_equal(x$cwd(), getwd())
+  expect_equal(normalizePath(x$cwd()), normalizePath(getwd()))
   expect_equal(x$environ()[["R_HOME"]], Sys.getenv("R_HOME"))
   expect_equal(x$exe(), normalizePath(px()))
   if (ps_os_type()[["POSIX"]]) expect_silent(x$uids())
