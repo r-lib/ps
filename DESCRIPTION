@@ -28,3 +28,4 @@ Remotes:
     r-lib/processx@featue/kill-tree
 RoxygenNote: 6.0.1
 Roxygen: list(markdown = TRUE)
+Biarch: true
