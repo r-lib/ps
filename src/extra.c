@@ -343,7 +343,7 @@ static SEXP ps__build_list_impl(const char *template, int named,
       break;
 
     case 'I':
-      SET_VECTOR_ELT(res, lptr, ScalarInteger(va_arg(args, unsigned int)));
+      SET_VECTOR_ELT(res, lptr, ScalarReal(va_arg(args, unsigned int)));
       break;
 
     case 'k':
