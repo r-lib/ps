@@ -38,15 +38,13 @@ static int ps__create_time_raw(DWORD pid, FILETIME *ftCreate) {
   return -1;
 }
 
-static double ps__filetime_to_unix(FILETIME ft) {
-  long  long unix_time;
-  // Convert the FILETIME structure to a Unix time.
-  // It's the best I could find by googling and borrowing code here
-  // and there. The time returned has a precision of 1 second.
-  unix_time = ((LONGLONG)ft.dwHighDateTime) << 32;
-  unix_time += ft.dwLowDateTime - 116444736000000000LL;
-  unix_time /= 10000000;
-  return (double) unix_time;
+double ps__filetime_to_unix(FILETIME ft) {
+  long long ll, secs, nsecs;
+  ll = ((LONGLONG) ft.dwHighDateTime) << 32;
+  ll += ft.dwLowDateTime - 116444736000000000LL;
+  secs = ll / 10000000;
+  nsecs = ll % 10000000;
+  return (double) secs + ((double) nsecs) / 10000000;
 }
 
 static SEXP ps__is_running(ps_handle_t *handle) {
@@ -554,40 +552,14 @@ static ULONGLONG (*ps__GetTickCount64)(void) = NULL;
  * since the epoch.
  */
 SEXP ps__boot_time() {
-#if (_WIN32_WINNT >= 0x0600)  // Windows Vista
-  ULONGLONG uptime;
-#else
-  double uptime;
-#endif
-  time_t pt;
+  double now, uptime;
   FILETIME fileTime;
-  long long ll;
   HINSTANCE hKernel32;
   ps__GetTickCount64 = NULL;
 
   GetSystemTimeAsFileTime(&fileTime);
 
-  /*
-    HUGE thanks to:
-    http://johnstewien.spaces.live.com/blog/cns!E6885DB5CEBABBC8!831.entry
-
-    This function converts the FILETIME structure to the 32 bit
-    Unix time structure.
-    The time_t is a 32-bit value for the number of seconds since
-    January 1, 1970. A FILETIME is a 64-bit for the number of
-    100-nanosecond periods since January 1, 1601. Convert by
-    subtracting the number of 100-nanosecond period betwee 01-01-1970
-    and 01-01-1601, from time_t the divide by 1e+7 to get to the same
-    base granularity.
-  */
-  ll = ((
-#if (_WIN32_WINNT >= 0x0600)  // Windows Vista
-	 (ULONGLONG)
-#else
-	 (LONGLONG)
-#endif
-	 (fileTime.dwHighDateTime)) << 32) + fileTime.dwLowDateTime;
-  pt = (time_t)((ll - 116444736000000000ull) / 10000000ull);
+  now =  ps__filetime_to_unix(fileTime);
 
   // GetTickCount64() is Windows Vista+ only. Dinamically load
   // GetTickCount64() at runtime. We may have used

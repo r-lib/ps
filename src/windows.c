@@ -640,7 +640,7 @@ SEXP ps__proc_info(DWORD pid) {
   ULONG ctx_switches = 0;
   double user_time;
   double kernel_time;
-  long long create_time;
+  double create_time;
   SIZE_T mem_private;
   SEXP retlist;
 
@@ -655,17 +655,12 @@ SEXP ps__proc_info(DWORD pid) {
   kernel_time = (double)process->KernelTime.HighPart * HI_T + \
     (double)process->KernelTime.LowPart * LO_T;
 
-  // Convert the LARGE_INTEGER union to a Unix time.
-  // It's the best I could find by googling and borrowing code here
-  // and there. The time returned has a precision of 1 second.
   if (0 == pid || 4 == pid) {
     SEXP bt = PROTECT(ps__boot_time());
     create_time = REAL(bt)[0];
     UNPROTECT(1);
   } else {
-    create_time = ((LONGLONG)process->CreateTime.HighPart) << 32;
-    create_time += process->CreateTime.LowPart - 116444736000000000LL;
-    create_time /= 10000000;
+    create_time = ps__filetime_to_unix(& process->CreateTime);
   }
 
 #if (_WIN32_WINNT >= 0x0501)  // Windows XP with SP2
@@ -684,7 +679,7 @@ SEXP ps__proc_info(DWORD pid) {
     "ctx_switches",        ctx_switches,	                  /* 1 */
     "user_time",           user_time,		                  /* 2 */
     "kernel_time",         kernel_time,		                  /* 3 */
-    "create_time",         (double)create_time,	                  /* 4 */
+    "create_time",         create_time,	                          /* 4 */
     "num_threads",         (int)process->NumberOfThreads,         /* 5 */
     // IO counters
     "io_rcount",           process->ReadOperationCount.QuadPart,  /* 6 */

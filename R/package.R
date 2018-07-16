@@ -15,6 +15,7 @@ Internal <- NULL
 
   Internal <<- getFromNamespace(".Internal", asNamespace("base"))
 
+  ps_boot_time <<- memoize(ps_boot_time)
   get_terminal_map <<- memoize(get_terminal_map)
   NA_time <<- memoize(NA_time)
 }
