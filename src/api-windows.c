@@ -606,14 +606,19 @@ SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
     if (strstr(CHAR(STRING_ELT(env, i)), cmarker)) {
       HANDLE hProcess = ps__handle_from_pid(cpid);
       FILETIME ftCreate;
-      SEXP name;
+      SEXP name, ret2;
       int ret = ps__create_time_raw(cpid, &ftCreate);
-      if (ret) ps__throw_error();
+      if (ret) {
+	CloseHandle(hProcess);
+	ps__throw_error();
+      }
+
       ctime2 = ps__filetime_to_unix(ftCreate);
       if (fabs(ctime - ctime2) < 0.01)  {
 	PROTECT(name = ps__name(cpid));
-	ret = ps__proc_kill(cpid);
-	if (isNull(ret)) ps__throw_error();
+	ret2 = ps__proc_kill(cpid);
+	CloseHandle(hProcess);
+	if (isNull(ret2)) ps__throw_error();
 	if (isNull(name)) {
 	  UNPROTECT(2);
 	  return mkString("???");
@@ -622,6 +627,7 @@ SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
 	  return name;
 	}
       } else  {
+	CloseHandle(hProcess);
 	UNPROTECT(1);
 	return R_NilValue;
       }
