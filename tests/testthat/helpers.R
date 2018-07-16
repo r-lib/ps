@@ -19,6 +19,6 @@ wait_for_status <- function(ps, status, timeout = 5) {
 }
 
 px <- function() {
-  get_tool <- getFromNamespace("get_tool", asNamespace("processx"))
+  get_tool <- get("get_tool", asNamespace("processx"))
   get_tool("px")
 }

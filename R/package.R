@@ -13,7 +13,7 @@ Internal <- NULL
     ps_env$constants$errno <- as.list(ps_env$constants$errno)
   }
 
-  Internal <<- getFromNamespace(".Internal", asNamespace("base"))
+  Internal <<- get(".Internal", asNamespace("base"))
 
   ps_boot_time <<- memoize(ps_boot_time)
   get_terminal_map <<- memoize(get_terminal_map)
