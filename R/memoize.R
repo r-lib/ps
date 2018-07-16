@@ -2,9 +2,11 @@
 memoize <- function(fun) {
   fun
   cache <- NULL
-  dec <- function(...) {
-    if (length(list(...))) return(fun(...))
-    if (is.null(cache)) cache <<- fun(...)
+  if (length(formals(fun)) > 0) {
+    stop("Only memoizing functions without arguments")
+  }
+  dec <- function() {
+    if (is.null(cache)) cache <<- fun()
     cache
   }
   attr(dec, "clear") <- function() cache <<- TRUE
