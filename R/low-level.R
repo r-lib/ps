@@ -803,6 +803,7 @@ ps_ppid_map <- function() {
   processes <- not_null(lapply(pids, function(p) {
     tryCatch(ps_handle(p), error = function(e) NULL) }))
 
+  pids <- map_int(processes, ps_pid)
   ppids <- map_int(processes, function(p) fallback(ps_ppid(p), NA_integer_))
 
   ok <- !is.na(ppids)
