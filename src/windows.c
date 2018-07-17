@@ -719,34 +719,27 @@ SEXP ps__proc_info(DWORD pid) {
 
 SEXP ps__ppid(DWORD pid) {
   HANDLE handle = NULL;
-  PROCESSENTRY32 pe = {0};
-  DWORD ppid = -1;
+  PROCESSENTRY32W pe = { 0 };
 
-  pe.dwSize = sizeof(PROCESSENTRY32);
+  pe.dwSize = sizeof(PROCESSENTRY32W);
   handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
   if (handle == INVALID_HANDLE_VALUE) {
     ps__set_error_from_windows_error(0);
     return R_NilValue;
   }
 
-  if (Process32First(handle, &pe)) {
+  if (Process32FirstW(handle, &pe)) {
     do {
       if (pe.th32ProcessID == pid) {
-	ppid = pe.th32ParentProcessID;
-	break;
+	DWORD ppid = pe.th32ParentProcessID;
+	CloseHandle(handle);
+	return ScalarInteger(ppid);
       }
-    } while (Process32Next(handle, &pe));
+    } while (Process32NextW(handle, &pe));
   }
 
   CloseHandle(handle);
-
-  if (ppid >= 0) {
-    return ScalarInteger(ppid);
-  } else {
-    ps__no_such_process(pid, 0);
-    return R_NilValue;
-  }
-
+  ps__no_such_process(pid, 0);
   return R_NilValue;
 }
 
