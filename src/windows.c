@@ -589,6 +589,10 @@ SEXP ps__proc_username(DWORD pid) {
   SET_STRING_ELT(ret, 0, ps__utf16_to_charsxp(domainName, -1));
   SET_STRING_ELT(ret, 1, ps__utf16_to_charsxp(name, -1));
 
+  free(name);
+  free(domainName);
+  free(user);
+
   UNPROTECT(1);
   return ret;
 
@@ -610,12 +614,15 @@ SEXP ps__proc_username(DWORD pid) {
 SEXP ps__proc_num_threads(DWORD pid) {
   PSYSTEM_PROCESS_INFORMATION process;
   PVOID buffer;
+  int nt;
 
   if (! ps__get_proc_info(pid, &process, &buffer))  {
     return R_NilValue;
   }
 
-  return ScalarInteger(process->NumberOfThreads);
+  nt = process->NumberOfThreads;
+  free(buffer);
+  return ScalarInteger(nt);
 }
 
 /*
