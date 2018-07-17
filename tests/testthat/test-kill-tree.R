@@ -29,6 +29,14 @@ test_that("kill_tree",  {
   expect_equal(
     sort(as.integer(res)),
     sort(map_int(p, function(x) x$get_pid())))
+
+  ## We need to wait a bit here, potentially, because the process
+  ## might be a zombie, which is technically alive.
+  now <- Sys.time()
+  timeout <- now + 5
+  while (any(map_lgl(p, function(pp) pp$is_alive())) &&
+         Sys.time() < timeout) Sys.sleep(0.05)
+
   lapply(p, function(pp) expect_false(pp$is_alive()))
 })
 
@@ -101,13 +109,21 @@ test_that("with_process_cleanup", {
 
   p <- NULL
   with_process_cleanup({
-    p <- lapply(1:5, function(x) {
+    p <- lapply(1:20, function(x) {
       processx::process$new(px(), c("sleep", "10"))
     })
-    expect_equal(length(p), 5)
+    expect_equal(length(p), 20)
     lapply(p, function(pp) expect_true(pp$is_alive()))
   })
 
-  expect_equal(length(p), 5)
+  expect_equal(length(p), 20)
+
+  ## We need to wait a bit here, potentially, because the process
+  ## might be a zombie, which is technically alive.
+  now <- Sys.time()
+  timeout <- now + 5
+  while (any(map_lgl(p, function(pp) pp$is_alive())) &&
+         Sys.time() < timeout) Sys.sleep(0.05)
+
   lapply(p, function(pp) expect_false(pp$is_alive()))
 })
