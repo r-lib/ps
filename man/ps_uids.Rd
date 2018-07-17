@@ -56,6 +56,7 @@ Other process handle functions: \code{\link{ps_children}},
   \code{\link{ps_terminal}}, \code{\link{ps_terminate}},
   \code{\link{ps_username}}
 }
+\section{Examples}{
 \Sexpr[stage=install,strip.white=FALSE,results=rd]{
 ps:::decorate_examples(os = "POSIX",  '
 p <- ps_handle()
@@ -63,3 +64,4 @@ p
 ps_uids(p)
 ps_gids(p)
 ')}
+}

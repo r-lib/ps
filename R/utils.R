@@ -97,19 +97,22 @@ decorate_examples <- function(text, os = NULL) {
     text <- paste0(
       "## ps does not support this platform, and cannot run the examples\n",
       "## Currently supported platforms are ", supported_str(), ".\n",
-      "\\dontrun{",
-      text,
-      "}")
+      ## "\\dontrun{",
+      text
+      ## "}"
+    )
 
   } else if (!is.null(os) && !ps_os_type()[[os]]) {
     text <- paste0(
       "## these examples only work on ", caps(os), "\n",
-      "\\dontrun{",
-      text,
-      "}")
+      ## "\\dontrun{",
+      text
+      ##"}"
+    )
   }
 
-  paste0("\\examples{\n", text, "}")
+  ## paste0("\\examples{\n", text, "}")
+  paste0("\\preformatted{", text, "}")
 }
 ## nocov end
 

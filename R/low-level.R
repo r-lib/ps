@@ -11,10 +11,12 @@
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 #' p <- ps_handle()
 #' p
 #' ')}
+#' }
 
 ps_handle <- function(pid = NULL, time = NULL) {
   .Call(psll_handle, pid, time)
@@ -51,12 +53,14 @@ print.ps_handle <- function(x, ...)  {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 #' p <- ps_handle()
 #' p
 #' ps_pid(p)
 #' ps_pid(p) == Sys.getpid()
 #' ')}
+#' }
 
 ps_pid <- function(p) {
   .Call(psll_pid, p)
@@ -77,11 +81,13 @@ ps_pid <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 #' p <- ps_handle()
 #' p
 #' ps_create_time(p)
 #' ')}
+#' }
 
 ps_create_time <- function(p) {
   format_unix_time(.Call(psll_create_time, p))
@@ -102,11 +108,13 @@ ps_create_time <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 #' p <- ps_handle()
 #' p
 #' ps_is_running(p)
 #' ')}
+#' }
 
 ps_is_running <- function(p) {
   .Call(psll_is_running, p)
@@ -131,12 +139,14 @@ ps_is_running <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 #' p <- ps_handle()
 #' p
 #' ps_ppid(p)
 #' ps_parent(p)
 #' ')}
+#' }
 
 ps_ppid <- function(p) {
   .Call(psll_ppid, p)
@@ -165,6 +175,7 @@ ps_parent <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 #' p <- ps_handle()
 #' p
@@ -172,6 +183,7 @@ ps_parent <- function(p) {
 #' ps_exe(p)
 #' ps_cmdline(p)
 #' ')}
+#' }
 
 ps_name <- function(p) {
   n <- .Call(psll_name, p)
@@ -206,6 +218,7 @@ ps_name <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 #' p <- ps_handle()
 #' p
@@ -213,6 +226,7 @@ ps_name <- function(p) {
 #' ps_exe(p)
 #' ps_cmdline(p)
 #' ')}
+#' }
 
 ps_exe <- function(p) {
   .Call(psll_exe, p)
@@ -233,6 +247,7 @@ ps_exe <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 #' p <- ps_handle()
 #' p
@@ -240,6 +255,7 @@ ps_exe <- function(p) {
 #' ps_exe(p)
 #' ps_cmdline(p)
 #' ')}
+#' }
 
 ps_cmdline <- function(p) {
   .Call(psll_cmdline, p)
@@ -272,11 +288,13 @@ ps_cmdline <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 #' p <- ps_handle()
 #' p
 #' ps_status(p)
 #' ')}
+#' }
 
 ps_status <- function(p) {
   .Call(psll_status, p)
@@ -300,11 +318,13 @@ ps_status <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 #' p <- ps_handle()
 #' p
 #' ps_username(p)
 #' ')}
+#' }
 
 ps_username <- function(p) {
   .Call(psll_username, p)
@@ -321,11 +341,13 @@ ps_username <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 #' p <- ps_handle()
 #' p
 #' ps_cwd(p)
 #' ')}
+#' }
 
 ps_cwd <- function(p) {
   .Call(psll_cwd, p)
@@ -351,6 +373,7 @@ ps_cwd <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{
 #' ps:::decorate_examples(os = "POSIX",  '
 #' p <- ps_handle()
@@ -358,6 +381,7 @@ ps_cwd <- function(p) {
 #' ps_uids(p)
 #' ps_gids(p)
 #' ')}
+#' }
 
 ps_uids <- function(p) {
   .Call(psll_uids, p)
@@ -386,11 +410,13 @@ ps_gids <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 #' p <- ps_handle()
 #' p
 #' ps_terminal(p)
 #' ')}
+#' }
 
 ps_terminal <- function(p) {
   ttynr <- .Call(psll_terminal, p)
@@ -426,12 +452,14 @@ ps_terminal <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 #' p <- ps_handle()
 #' p
 #' env <- ps_environ(p)
 #' env[["R_HOME"]]
 #' ')}
+#' }
 
 ps_environ <- function(p) {
   parse_envs(.Call(psll_environ, p))
@@ -456,11 +484,13 @@ ps_environ_raw <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 #' p <- ps_handle()
 #' p
 #' ps_num_threads(p)
 #' ')}
+#' }
 
 ps_num_threads <- function(p) {
   .Call(psll_num_threads, p)
@@ -489,12 +519,14 @@ ps_num_threads <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 #' p <- ps_handle()
 #' p
 #' ps_cpu_times(p)
 #' proc.time()
 #' ')}
+#' }
 
 ps_cpu_times <- function(p) {
   .Call(psll_cpu_times, p)
@@ -539,11 +571,13 @@ ps_cpu_times <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 #' p <- ps_handle()
 #' p
 #' ps_memory_info(p)
 #' ')}
+#' }
 
 ps_memory_info <- function(p) {
   .Call(psll_memory_info, p)
@@ -564,6 +598,7 @@ ps_memory_info <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{
 #' ps:::decorate_examples(os = "POSIX",  '
 #' px <- processx::process$new("sleep", "10")
@@ -574,6 +609,7 @@ ps_memory_info <- function(p) {
 #' ps_is_running(p)
 #' px$get_exit_status()
 #' ')}
+#' }
 
 ps_send_signal <- function(p, sig) {
   .Call(psll_send_signal, p, sig)
@@ -591,6 +627,7 @@ ps_send_signal <- function(p, sig) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{
 #' ps:::decorate_examples(os = "POSIX",  '
 #' px <- processx::process$new("sleep", "10")
@@ -602,6 +639,7 @@ ps_send_signal <- function(p, sig) {
 #' ps_status(p)
 #' ps_kill(p)
 #' ')}
+#' }
 
 ps_suspend <- function(p) {
   .Call(psll_suspend, p)
@@ -619,6 +657,7 @@ ps_suspend <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{
 #' ps:::decorate_examples(os = "POSIX",  '
 #' px <- processx::process$new("sleep", "10")
@@ -630,6 +669,7 @@ ps_suspend <- function(p) {
 #' ps_status(p)
 #' ps_kill(p)
 #' ')}
+#' }
 
 ps_resume <- function(p) {
   .Call(psll_resume, p)
@@ -647,6 +687,7 @@ ps_resume <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{
 #' ps:::decorate_examples(os = "POSIX",  '
 #' px <- processx::process$new("sleep", "10")
@@ -657,6 +698,7 @@ ps_resume <- function(p) {
 #' ps_is_running(p)
 #' px$get_exit_status()
 #' ')}
+#' }
 
 ps_terminate <- function(p) {
   .Call(psll_terminate, p)
@@ -673,6 +715,7 @@ ps_terminate <- function(p) {
 #' @export
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{
 #' ps:::decorate_examples(os = "POSIX",  '
 #' px <- processx::process$new("sleep", "10")
@@ -683,6 +726,7 @@ ps_terminate <- function(p) {
 #' ps_is_running(p)
 #' px$get_exit_status()
 #' ')}
+#' }
 
 ps_kill <- function(p) {
   .Call(psll_kill, p)
@@ -701,11 +745,13 @@ ps_kill <- function(p) {
 #' @importFrom utils head tail
 #'
 #' @rawRd
+#' \section{Examples}{
 #' \Sexpr[stage=install,strip.white=FALSE,results=rd]{
 #' ps:::decorate_examples('
 #' p <- ps_parent(ps_handle())
 #' ps_children(p)
 #' ')}
+#' }
 
 ps_children <- function(p, recursive = FALSE) {
   mypid <- ps_pid(p)
