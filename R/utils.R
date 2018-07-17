@@ -39,8 +39,17 @@ str_strip <- function(x) {
   sub("\\s+$", "", sub("^\\s+", "", x))
 }
 
+r_version <- function(x) {
+  v <- paste0(version[["major"]], ".", version[["minor"]])
+  package_version(v)
+}
+
 file_size <- function(x) {
-  file.info(x, extra_cols = FALSE)$size
+  if (r_version() >= "3.2.0") {
+    file.info(x, extra_cols = FALSE)$size
+  } else {
+    file.info(x)$size
+  }
 }
 
 format_unix_time <- function(z) {
