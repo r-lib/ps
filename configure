@@ -19,7 +19,6 @@ RBIN="${R_HOME}/bin${R_ARCH_BIN}/R"
 
 unset POSIX
 if [ "$R_OSTYPE" = "unix" ]; then
-    POSIX=true;
     UNAME=$(uname)
 else
     UNAME=Windows
@@ -29,19 +28,19 @@ unset WINDOWS
 if [ "$R_OSTYPE" = "windows" ]; then WINDOWS=true; fi
 
 unset LINUX
-if [ "$UNAME" = "Linux" ]; then LINUX=true; fi
+if [ "$UNAME" = "Linux" ]; then LINUX=true; POSIX=true; fi
 
 unset MACOS
-if [ "$UNAME" = "Darwin" ]; then MACOS=true; fi
+if [ "$UNAME" = "Darwin" ]; then MACOS=true; POSIX=true; fi
 
 unset FREEBSD
-if [ "UNAME" = "FreeBSD" ]; then FREEBSD=true; fi
+## if [ "UNAME" = "FreeBSD" ]; then FREEBSD=true; POSIX=true; fi
 
 unset OPENBSD
-if [ "UNAME" = "OpenBSD" ]; then OPENBSD=true; fi
+## if [ "UNAME" = "OpenBSD" ]; then OPENBSD=true; POSIX=true; fi
 
 unset NETBSD
-if [ "UNAME" = "NetBSD" ]; then NETBSD=true; fi
+## if [ "UNAME" = "NetBSD" ]; then NETBSD=true; POSIX=true; fi
 
 unset BSD
 if [ -n "$FREEBSD" -o -n "$OPENBSD" -o -n "$NETBSD" ]; then
@@ -49,10 +48,10 @@ if [ -n "$FREEBSD" -o -n "$OPENBSD" -o -n "$NETBSD" ]; then
 fi
 
 unset SUNOS
-if [ "UNAME" = "SunOS" ]; then SUNOS=true; fi
+## if [ "UNAME" = "SunOS" ]; then SUNOS=true; POSIX=true; fi
 
 unset AIX
-if [ "UNAME" = "AIX" ]; then AIX=true; fi
+##  if [ "UNAME" = "AIX" ]; then AIX=true; POSIX=true; fi
 
 # ------------------------------------------------------------------------
 # Set source files, macros, libs, compile flags

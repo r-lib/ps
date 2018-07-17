@@ -42,6 +42,19 @@ typedef struct {
 
 #endif
 
+#ifndef PS__MACOS
+#ifndef PS__LINUX
+#ifndef PS__WINDOWS
+
+typedef struct {
+  int pid;
+  double create_time;
+} ps_handle_t;
+
+#endif
+#endif
+#endif
+
 /* Internal utilities */
 
 SEXP psll__is_running(ps_handle_t *handle);
