@@ -109,14 +109,14 @@ test_that("with_process_cleanup", {
 
   p <- NULL
   with_process_cleanup({
-    p <- lapply(1:20, function(x) {
+    p <- lapply(1:3, function(x) {
       processx::process$new(px(), c("sleep", "10"))
     })
-    expect_equal(length(p), 20)
+    expect_equal(length(p), 3)
     lapply(p, function(pp) expect_true(pp$is_alive()))
   })
 
-  expect_equal(length(p), 20)
+  expect_equal(length(p), 3)
 
   ## We need to wait a bit here, potentially, because the process
   ## might be a zombie, which is technically alive.
