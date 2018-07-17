@@ -197,9 +197,6 @@ test_that("children", {
   expect_true(p1$get_pid() %in% pids)
   expect_true(p2$get_pid() %in% pids)
 
-  ch2 <- ps_children(ps_handle(p1$get_pid()))
-  expect_equal(ch2, list())
-
   ch3 <- ps_children(ps_parent(ps_handle()), recursive = TRUE)
   pids3 <- map_int(ch3, ps_pid)
   expect_true(Sys.getpid() %in% pids3)
