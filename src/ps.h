@@ -53,4 +53,5 @@ SEXP psp__waitpid(SEXP pid);
 SEXP psp__pid_exists(SEXP r_pid);
 SEXP psp__stat_st_rdev(SEXP files);
 
+SEXP psw__realpath(SEXP path);
 #endif

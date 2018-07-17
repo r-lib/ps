@@ -46,6 +46,8 @@ static const R_CallMethodDef callMethods[]  = {
   { "psp__zombie",       (DL_FUNC) psp__zombie,       0 },
   { "psp__waitpid",      (DL_FUNC) psp__waitpid,      1 },
 
+  { "psw__realpath",     (DL_FUNC) psw__realpath,     1 },
+
   { NULL, NULL, 0 }
 };
 

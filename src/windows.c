@@ -797,6 +797,106 @@ SEXP ps__kill_tree_process(SEXP r_marker, SEXP r_pid) {
   return ScalarLogical(0);
 }
 
+const WCHAR LONG_PATH_PREFIX[] = L"\\\\?\\";
+const WCHAR LONG_PATH_PREFIX_LEN = 4;
+
+const WCHAR UNC_PATH_PREFIX[] = L"\\\\?\\UNC\\";
+const WCHAR UNC_PATH_PREFIX_LEN = 8;
+
+typedef DWORD(WINAPI *PFGetFinalPathNameByHandleW)(HANDLE, LPWSTR, DWORD, DWORD);
+
+static PFGetFinalPathNameByHandleW ps__get_fpnbyhandle(void) {
+  static PFGetFinalPathNameByHandleW pFunc = NULL;
+  PFGetFinalPathNameByHandleW toReturn = pFunc;
+
+  if (!toReturn) {
+    HMODULE hModule = GetModuleHandleW(L"kernel32");
+    if (hModule)
+      toReturn = (PFGetFinalPathNameByHandleW)
+	GetProcAddress(hModule, "GetFinalPathNameByHandleW");
+
+    pFunc = toReturn;
+  }
+
+  return toReturn;
+}
+
+static SEXP psw__realpath_handle(HANDLE handle) {
+  DWORD w_realpath_len;
+  WCHAR* w_realpath_ptr = NULL;
+  WCHAR* w_realpath_buf;
+
+  PFGetFinalPathNameByHandleW GetFinalPathNameByHandleW = ps__get_fpnbyhandle();
+
+  w_realpath_len = GetFinalPathNameByHandleW(handle, NULL, 0,
+					     VOLUME_NAME_DOS);
+  if (w_realpath_len == 0) {
+    return R_NilValue;
+  }
+
+  w_realpath_buf = (WCHAR *) R_alloc(w_realpath_len + 1, sizeof(WCHAR));
+  if (w_realpath_buf == NULL) {
+    SetLastError(ERROR_OUTOFMEMORY);
+    return R_NilValue;
+  }
+  w_realpath_ptr = w_realpath_buf;
+
+  if (GetFinalPathNameByHandleW(
+    handle, w_realpath_ptr, w_realpath_len, VOLUME_NAME_DOS) == 0) {
+    SetLastError(ERROR_INVALID_HANDLE);
+    return R_NilValue;
+  }
+
+  /* convert UNC path to long path */
+  if (wcsncmp(w_realpath_ptr,
+              UNC_PATH_PREFIX,
+              UNC_PATH_PREFIX_LEN) == 0) {
+    w_realpath_ptr += 6;
+    *w_realpath_ptr = L'\\';
+    w_realpath_len -= 6;
+  } else if (wcsncmp(w_realpath_ptr,
+		     LONG_PATH_PREFIX,
+		     LONG_PATH_PREFIX_LEN) == 0) {
+    w_realpath_ptr += 4;
+    w_realpath_len -= 4;
+  } else {
+    SetLastError(ERROR_INVALID_HANDLE);
+    return R_NilValue;
+  }
+
+  return ps__utf16_to_strsxp(w_realpath_ptr, w_realpath_len);
+}
+
+SEXP psw__realpath(SEXP path) {
+  WCHAR *wpath;
+  HANDLE handle;
+  SEXP res;
+
+  ps__utf8_to_utf16(CHAR(STRING_ELT(path, 0)), &wpath);
+
+  handle = CreateFileW(wpath,
+                       0,
+                       0,
+                       NULL,
+                       OPEN_EXISTING,
+                       FILE_ATTRIBUTE_NORMAL | FILE_FLAG_BACKUP_SEMANTICS,
+                       NULL);
+  if (handle == INVALID_HANDLE_VALUE) {
+    ps__set_error_from_windows_error(0);
+    ps__throw_error();
+  }
+
+  PROTECT(res = psw__realpath_handle(handle));
+  CloseHandle(handle);
+  if (isNull(res)) {
+    ps__set_error_from_windows_error(0);
+    ps__throw_error();
+  }
+
+  UNPROTECT(1);
+  return res;
+}
+
 SEXP ps__init(SEXP psenv, SEXP constenv) {
   return R_NilValue;
 }

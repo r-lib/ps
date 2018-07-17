@@ -5,13 +5,12 @@ test_that("ps_start", {
   args <- c("outln", "foo", "errln", "bar", "sleep", "10")
   x <- ps_start(px(), args, stdout = "|", stderr = "|")
 
-
   ## ps methods
   expect_equal(x$cmdline(), c(px(), args))
   expect_silent(x$cpu_times())
   expect_equal(normalizePath(x$cwd()), normalizePath(getwd()))
   expect_equal(x$environ()[["R_HOME"]], Sys.getenv("R_HOME"))
-  expect_equal(x$exe(), normalizePath(px()))
+  expect_equal(x$exe(), realpath(px()))
   if (ps_os_type()[["POSIX"]]) expect_silent(x$uids())
   if (ps_os_type()[["POSIX"]]) expect_silent(x$gids())
   expect_true(x$is_running())
@@ -49,7 +48,7 @@ test_that("ps_start", {
 
   pr <- x$poll_io(-1)
   expect_true("ready" %in% pr)
-  
+
   x$interrupt()
   x$wait(1000)
 

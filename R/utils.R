@@ -128,3 +128,7 @@ decorate_examples <- function(text, os = NULL) {
 is_string <- function(x) {
   is.character(x) && length(x) == 1 && !is.na(x)
 }
+
+realpath <- function(x) {
+  .Call(psw__realpath, x)
+}

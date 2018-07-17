@@ -107,7 +107,7 @@ test_that("exe", {
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
   expect_true(ps_is_running(ps))
-  expect_equal(ps_exe(ps), normalizePath(px()))
+  expect_equal(ps_exe(ps), realpath(px()))
 })
 
 test_that("cmdline", {

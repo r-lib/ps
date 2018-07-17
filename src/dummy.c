@@ -27,6 +27,12 @@ void psp__stat_st_rdev() { ps__dummy("psp__stat_st_rdev"); }
 #endif
 #endif
 
+#ifdef PS__POSIX
+#ifndef PS__WINDOWS
+void psw__realpath()     { ps__dummy("psw__realpath"); }
+#endif
+#endif
+
 #ifndef PS__MACOS
 #ifndef PS__LINUX
 #ifndef PS__WINDOWS
