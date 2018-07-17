@@ -21,12 +21,12 @@ On on Unix this can change, e.g. via an exec*() system call.
 \code{ps_name()} works on zombie processes.
 }
 \seealso{
-Other process handle functions: \code{\link{ps_cmdline}},
-  \code{\link{ps_cpu_times}}, \code{\link{ps_create_time}},
-  \code{\link{ps_cwd}}, \code{\link{ps_environ}},
-  \code{\link{ps_exe}}, \code{\link{ps_handle}},
-  \code{\link{ps_is_running}}, \code{\link{ps_kill}},
-  \code{\link{ps_memory_info}},
+Other process handle functions: \code{\link{ps_children}},
+  \code{\link{ps_cmdline}}, \code{\link{ps_cpu_times}},
+  \code{\link{ps_create_time}}, \code{\link{ps_cwd}},
+  \code{\link{ps_environ}}, \code{\link{ps_exe}},
+  \code{\link{ps_handle}}, \code{\link{ps_is_running}},
+  \code{\link{ps_kill}}, \code{\link{ps_memory_info}},
   \code{\link{ps_num_threads}}, \code{\link{ps_pid}},
   \code{\link{ps_ppid}}, \code{\link{ps_resume}},
   \code{\link{ps_send_signal}}, \code{\link{ps_status}},

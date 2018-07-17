@@ -687,3 +687,82 @@ ps_terminate <- function(p) {
 ps_kill <- function(p) {
   .Call(psll_kill, p)
 }
+
+#' List of child processes (process objects) of the process. Note that
+#' this typically requires enumerating all processes on the system, so
+#' it is a costly operation.
+#'
+#' @param p Process handle.
+#' @param recursive Whether to include the children of the children, etc.
+#' @return List of `ps_handle` objects.
+#'
+#' @family process handle functions
+#' @export
+#' @importFrom utils head tail
+#'
+#' @rawRd
+#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{
+#' ps:::decorate_examples('
+#' p <- ps_parent(ps_handle())
+#' ps_children(p)
+#' ')}
+
+ps_children <- function(p, recursive = FALSE) {
+  mypid <- ps_pid(p)
+  mytime <- ps_create_time(p)
+  map <- ps_ppid_map()
+  ret <- list()
+
+  if (!recursive) {
+    for (i in seq_len(nrow(map))) {
+      if (map$ppid[i] == mypid) {
+        tryCatch({
+          child  <- ps_handle(map$pid[i])
+          if (mytime <= ps_create_time(child)) {
+            ret <- c(ret, child)
+          } },
+          no_such_process = function(e) NULL,
+          zombie_process = function(e) NULL)
+      }
+    }
+
+  } else {
+    seen <- integer()
+    stack <- mypid
+    while (length(stack)) {
+      pid <- tail(stack, 1)
+      stack <- head(stack, -1)
+      if (pid %in% seen) next
+      seen <- c(seen, pid)
+      child_pids <- map[ map[,2] ==  pid, 1]
+      for (child_pid in child_pids) {
+        tryCatch({
+          child = ps_handle(child_pid)
+          if (mytime <= ps_create_time(child)) {
+            ret <- c(ret, child)
+            stack <- c(stack, child_pid)
+          } },
+          no_such_process = function(e) NULL,
+          zombie_process = function(e) NULL)
+      }
+    }
+  }
+
+  ret
+}
+
+ps_ppid_map <- function() {
+  pids <- ps_pids()
+
+  processes <- not_null(lapply(pids, function(p) {
+    tryCatch(ps_handle(p), error = function(e) NULL) }))
+
+  ppids <- map_int(processes, function(p) fallback(ps_ppid(p), NA_integer_))
+
+  ok <- !is.na(ppids)
+
+  data.frame(
+    pid = pids[ok],
+    ppid = ppids[ok]
+  )
+}

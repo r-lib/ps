@@ -97,7 +97,7 @@ Returns a process object for the parent process. On Unix, it will
 return the reassigned (typically pid 1) process, if the real parent
 process has quit aleady. On Windows it fails with \code{no_such_process}
 error in this case.
-\item \code{p$children(recursive = FALSE)} (TODO)
+\item \code{p$children(recursive = FALSE)}
 
 List of child processes (process objects) of the process. Note that
 this typically requires enumerating all processes on the system, so

@@ -17,7 +17,8 @@ Encoding: UTF-8
 Depends:
     R (>= 3.1)
 Imports:
-    R6
+    R6,
+    utils
 Suggests:
     callr,
     covr,

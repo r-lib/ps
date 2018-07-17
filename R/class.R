@@ -105,7 +105,7 @@
 #'   process has quit aleady. On Windows it fails with `no_such_process`
 #'    error in this case.
 #'
-#' * `p$children(recursive = FALSE)` (TODO)
+#' * `p$children(recursive = FALSE)`
 #'
 #'   List of child processes (process objects) of the process. Note that
 #'   this typically requires enumerating all processes on the system, so
@@ -246,6 +246,10 @@ process <- R6Class(
     parent = function() {
       par <- ps_parent(self$.handle)
       process$new(ps_pid(par), ps_create_time(par))
+    },
+
+    children = function(recursive = FALSE) {
+      ps_children(self$.handle, recursive)
     },
 
     ppid = function() ps_ppid(self$.handle),

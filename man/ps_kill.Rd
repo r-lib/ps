@@ -14,11 +14,11 @@ Kill the current process with SIGKILL pre-emptively checking
 whether PID has been reused. On Windows it uses \code{TerminateProcess()}.
 }
 \seealso{
-Other process handle functions: \code{\link{ps_cmdline}},
-  \code{\link{ps_cpu_times}}, \code{\link{ps_create_time}},
-  \code{\link{ps_cwd}}, \code{\link{ps_environ}},
-  \code{\link{ps_exe}}, \code{\link{ps_handle}},
-  \code{\link{ps_is_running}},
+Other process handle functions: \code{\link{ps_children}},
+  \code{\link{ps_cmdline}}, \code{\link{ps_cpu_times}},
+  \code{\link{ps_create_time}}, \code{\link{ps_cwd}},
+  \code{\link{ps_environ}}, \code{\link{ps_exe}},
+  \code{\link{ps_handle}}, \code{\link{ps_is_running}},
   \code{\link{ps_memory_info}}, \code{\link{ps_name}},
   \code{\link{ps_num_threads}}, \code{\link{ps_pid}},
   \code{\link{ps_ppid}}, \code{\link{ps_resume}},
