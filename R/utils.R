@@ -130,5 +130,8 @@ is_string <- function(x) {
 }
 
 realpath <- function(x) {
-  .Call(psw__realpath, x)
+  if (ps_os_type()[["WINDOWS"]])
+    .Call(psw__realpath, x)
+  else
+    normalizePath(x)
 }
