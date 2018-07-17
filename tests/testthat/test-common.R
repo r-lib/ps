@@ -183,3 +183,26 @@ test_that("kill", {
     expect_equal(p1$get_exit_status(), - signals()$SIGKILL)
   }
 })
+
+test_that("children", {
+  p1 <- processx::process$new(px(), c("sleep", "10"))
+  on.exit(p1$kill(), add = TRUE)
+  p2 <- processx::process$new(px(), c("sleep", "10"))
+  on.exit(p2$kill(), add = TRUE)
+
+  ch <- ps_children(ps_handle())
+  expect_true(length(ch) >= 2)
+
+  pids <- map_int(ch, ps_pid)
+  expect_true(p1$get_pid() %in% pids)
+  expect_true(p2$get_pid() %in% pids)
+
+  ch2 <- ps_children(ps_handle(p1$get_pid()))
+  expect_equal(ch2, list())
+
+  ch3 <- ps_children(ps_parent(ps_handle()), recursive = TRUE)
+  pids3 <- map_int(ch3, ps_pid)
+  expect_true(Sys.getpid() %in% pids3)
+  expect_true(p1$get_pid() %in% pids3)
+  expect_true(p2$get_pid() %in% pids3)
+})
