@@ -42,7 +42,7 @@ get_id <- function() {
       collapse = ""
     ),
     "_",
-    Internal(Sys.time())
+    as.integer(Internal(Sys.time()))
   )
 }
 
