@@ -62,6 +62,18 @@ test_that("is_running", {
   expect_false(ps_is_running(ps))
 })
 
+test_that("is_running", {
+  p1 <- processx::process$new(px(), c("sleep", "10"))
+  on.exit(p1$kill(), add = TRUE)
+  ps <- ps_handle(p1$get_pid())
+  expect_true(ps_is_running(ps))
+
+  p1$kill()
+  timeout <- Sys.time() + 5
+  while (ps_is_running(ps) &&  Sys.time() < timeout) Sys.sleep(0.05)
+  expect_false(ps_is_running(ps))
+})
+
 test_that("parent", {
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)
