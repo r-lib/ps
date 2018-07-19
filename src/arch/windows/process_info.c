@@ -11,7 +11,6 @@
 #include <Psapi.h>
 #include <tlhelp32.h>
 
-#include "security.h"
 #include "process_info.h"
 #include "ntextapi.h"
 #include "../../common.h"
@@ -362,87 +361,6 @@ ps__assert_pid_not_exists(DWORD pid, char *err) {
     }
   }
   return 1;
-}
-
-
-/* Check for PID existance by using OpenProcess() + GetExitCodeProcess.
- * Returns:
- * 1: pid exists
- * 0: it doesn't
- * -1: error
- */
-int
-ps__pid_is_running(DWORD pid) {
-  HANDLE hProcess;
-  DWORD exitCode;
-  DWORD err;
-
-  // Special case for PID 0 System Idle Process
-  if (pid == 0)
-    return 1;
-  if (pid < 0)
-    return 0;
-  hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
-			 FALSE, pid);
-  if (NULL == hProcess) {
-    err = GetLastError();
-    // Yeah, this is the actual error code in case of "no such process".
-    if (err == ERROR_INVALID_PARAMETER) {
-      if (! ps__assert_pid_not_exists(
-				      pid, "pir: OpenProcess() -> INVALID_PARAMETER")) {
-	return -1;
-      }
-      return 0;
-    }
-    // Access denied obviously means there's a process to deny access to.
-    else if (err == ERROR_ACCESS_DENIED) {
-      if (! ps__assert_pid_exists(
-				  pid, "pir: OpenProcess() ACCESS_DENIED")) {
-	return -1;
-      }
-      return 1;
-    }
-    // Be strict and raise an exception; the caller is supposed
-    // to take -1 into account.
-    else {
-      ps__set_error_from_windows_error(err);
-      return -1;
-    }
-  }
-
-  if (GetExitCodeProcess(hProcess, &exitCode)) {
-    CloseHandle(hProcess);
-    // XXX - maybe STILL_ACTIVE is not fully reliable as per:
-    // http://stackoverflow.com/questions/1591342/#comment47830782_1591379
-    if (exitCode == STILL_ACTIVE) {
-      if (! ps__assert_pid_exists(
-				  pid, "pir: GetExitCodeProcess() -> STILL_ACTIVE")) {
-	return -1;
-      }
-      return 1;
-    }
-    // We can't be sure so we look into pids.
-    else {
-      return ps__pid_in_pids(pid);
-    }
-  }
-  else {
-    err = GetLastError();
-    CloseHandle(hProcess);
-    // Same as for OpenProcess, assume access denied means there's
-    // a process to deny access to.
-    if (err == ERROR_ACCESS_DENIED) {
-      if (! ps__assert_pid_exists(
-				  pid, "pir: GetExitCodeProcess() -> ERROR_ACCESS_DENIED")) {
-	return -1;
-      }
-      return 1;
-    }
-    else {
-      ps__set_error_from_windows_error(0);
-      return -1;
-    }
-  }
 }
 
 

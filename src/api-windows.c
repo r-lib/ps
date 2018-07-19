@@ -1,7 +1,6 @@
 
 #include "common.h"
 #include "windows.h"
-#include "arch/windows/security.h"
 #include "arch/windows/process_info.h"
 #include "arch/windows/process_handles.h"
 

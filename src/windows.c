@@ -30,7 +30,6 @@
 #include <signal.h>
 
 #include "common.h"
-#include "arch/windows/security.h"
 #include "arch/windows/process_info.h"
 #include "arch/windows/process_handles.h"
 #ifndef __MINGW32__
@@ -49,107 +48,8 @@
  * ============================================================================
  */
 
-#define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
-#define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
 #define LO_T 1e-7
 #define HI_T 429.4967296
-#define BYTESWAP_USHORT(x) ((((USHORT)(x) << 8) | ((USHORT)(x) >> 8)) & 0xffff)
-#ifndef AF_INET6
-#define AF_INET6 23
-#endif
-
-// Fix for mingw32, see:
-// https://github.com/giampaolo/psutil/issues/351#c2
-// This is actually a DISK_PERFORMANCE struct:
-// https://msdn.microsoft.com/en-us/library/windows/desktop/
-//     aa363991(v=vs.85).aspx
-typedef struct _DISK_PERFORMANCE_WIN_2008 {
-  LARGE_INTEGER BytesRead;
-  LARGE_INTEGER BytesWritten;
-  LARGE_INTEGER ReadTime;
-  LARGE_INTEGER WriteTime;
-  LARGE_INTEGER IdleTime;
-  DWORD         ReadCount;
-  DWORD         WriteCount;
-  DWORD         QueueDepth;
-  DWORD         SplitCount;
-  LARGE_INTEGER QueryTime;
-  DWORD         StorageDeviceNumber;
-  WCHAR         StorageManagerName[8];
-} DISK_PERFORMANCE_WIN_2008;
-
-// --- network connections mingw32 support
-#ifndef _IPRTRMIB_H
-#if (_WIN32_WINNT < 0x0600) // Windows XP
-typedef struct _MIB_TCP6ROW_OWNER_PID {
-UCHAR ucLocalAddr[16];
-DWORD dwLocalScopeId;
-DWORD dwLocalPort;
-UCHAR ucRemoteAddr[16];
-DWORD dwRemoteScopeId;
-DWORD dwRemotePort;
-DWORD dwState;
-DWORD dwOwningPid;
-} MIB_TCP6ROW_OWNER_PID, *PMIB_TCP6ROW_OWNER_PID;
-
-typedef struct _MIB_TCP6TABLE_OWNER_PID {
-  DWORD dwNumEntries;
-  MIB_TCP6ROW_OWNER_PID table[ANY_SIZE];
-} MIB_TCP6TABLE_OWNER_PID, *PMIB_TCP6TABLE_OWNER_PID;
-#endif
-#endif
-
-#ifndef __IPHLPAPI_H__
-typedef struct in6_addr {
-  union {
-    UCHAR Byte[16];
-    USHORT Word[8];
-  } u;
-} IN6_ADDR, *PIN6_ADDR, FAR *LPIN6_ADDR;
-
-typedef enum _UDP_TABLE_CLASS {
-  UDP_TABLE_BASIC,
-  UDP_TABLE_OWNER_PID,
-  UDP_TABLE_OWNER_MODULE
-} UDP_TABLE_CLASS, *PUDP_TABLE_CLASS;
-
-typedef struct _MIB_UDPROW_OWNER_PID {
-  DWORD dwLocalAddr;
-  DWORD dwLocalPort;
-  DWORD dwOwningPid;
-} MIB_UDPROW_OWNER_PID, *PMIB_UDPROW_OWNER_PID;
-
-typedef struct _MIB_UDPTABLE_OWNER_PID {
-  DWORD dwNumEntries;
-  MIB_UDPROW_OWNER_PID table[ANY_SIZE];
-} MIB_UDPTABLE_OWNER_PID, *PMIB_UDPTABLE_OWNER_PID;
-#endif
-
-#if (_WIN32_WINNT < 0x0600) // Windows XP
-#if (!defined(__MINGW32__))
-typedef struct _MIB_UDP6ROW_OWNER_PID {
-UCHAR ucLocalAddr[16];
-DWORD dwLocalScopeId;
-DWORD dwLocalPort;
-DWORD dwOwningPid;
-} MIB_UDP6ROW_OWNER_PID, *PMIB_UDP6ROW_OWNER_PID;
-
-typedef struct _MIB_UDP6TABLE_OWNER_PID {
-  DWORD dwNumEntries;
-  MIB_UDP6ROW_OWNER_PID table[ANY_SIZE];
-} MIB_UDP6TABLE_OWNER_PID, *PMIB_UDP6TABLE_OWNER_PID;
-#endif
-#endif
-
-typedef struct _PROCESSOR_POWER_INFORMATION {
-  ULONG Number;
-  ULONG MaxMhz;
-  ULONG CurrentMhz;
-  ULONG MhzLimit;
-  ULONG MaxIdleState;
-  ULONG CurrentIdleState;
-} PROCESSOR_POWER_INFORMATION, *PPROCESSOR_POWER_INFORMATION;
-
 
 /*
  * Return an integer vector of all the PIDs running on the system.

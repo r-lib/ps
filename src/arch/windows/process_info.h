@@ -8,7 +8,6 @@
 #define __PROCESS_INFO_H
 
 #include <windows.h>
-#include "security.h"
 #include "ntextapi.h"
 
 #include <Rinternals.h>
@@ -16,7 +15,6 @@
 DWORD* ps__get_pids(DWORD *numberOfReturnedPIDs);
 HANDLE ps__handle_from_pid(DWORD pid);
 HANDLE ps__handle_from_pid_waccess(DWORD pid, DWORD dwDesiredAccess);
-int ps__pid_is_running(DWORD pid);
 int ps__get_proc_info(DWORD pid, PSYSTEM_PROCESS_INFORMATION *retProcess,
 		      PVOID *retBuffer);
 

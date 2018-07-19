@@ -778,7 +778,7 @@ ps_children <- function(p, recursive = FALSE) {
     while (length(stack)) {
       pid <- tail(stack, 1)
       stack <- head(stack, -1)
-      if (pid %in% seen) next
+      if (pid %in% seen) next           # nocov (should never happen)
       seen <- c(seen, pid)
       child_pids <- map[ map[,2] ==  pid, 1]
       for (child_pid in child_pids) {
