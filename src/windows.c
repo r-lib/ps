@@ -377,31 +377,6 @@ SEXP ps__proc_resume(DWORD pid)  {
 
 
 /*
-  Accept a filename's drive in native  format like "\Device\HarddiskVolume1\"
-  and return the corresponding drive letter (e.g. "C:\\").
-  If no match is found return an empty string.
-*/
-SEXP ps__win32_QueryDosDevice(SEXP r_path) {
-  WCHAR *lpDevicePath;
-  WCHAR d = 'A';
-
-  ps__utf8_to_utf16(CHAR(STRING_ELT(r_path, 0)), &lpDevicePath);
-
-  while (d <= 'Z') {
-    WCHAR szDeviceName[3] = {d, ':', '\0' };
-    WCHAR szTarget[512] = {0};
-    if (QueryDosDeviceW(szDeviceName, szTarget, 511) != 0) {
-      if (wcscmp(lpDevicePath, szTarget) == 0) {
-	return ScalarString(ps__utf16_to_charsxp(szDeviceName, -1));
-      }
-    }
-    d++;
-  }
-  return mkString("");
-}
-
-
-/*
  * Return process username as a "DOMAIN//USERNAME" string.
  */
 SEXP ps__proc_username(DWORD pid) {
@@ -641,60 +616,6 @@ SEXP ps__ppid(DWORD pid) {
   CloseHandle(handle);
   ps__no_such_process(pid, 0);
   return R_NilValue;
-}
-
-
-SEXP ps__kill_tree_process(SEXP r_marker, SEXP r_pid) {
-  const char *marker = CHAR(STRING_ELT(r_marker, 0));
-  long pid = INTEGER(r_pid)[0];
-  SEXP env;
-  HANDLE hProcess;
-  int i, n;
-  DWORD err;
-
-  if (pid == 0) {
-    ps__access_denied("");
-    ps__throw_error();
-  }
-
-  hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
-  if (hProcess == NULL) {
-    if (GetLastError() == ERROR_INVALID_PARAMETER) {
-      // see https://github.com/giampaolo/psutil/issues/24
-      ps__debug("OpenProcess -> ERROR_INVALID_PARAMETER turned "
-		   "into NoSuchProcess");
-      ps__no_such_process(pid, 0);
-    }
-    else {
-      ps__set_error_from_windows_error(0);
-    }
-    ps__throw_error();
-  }
-
-  /* Check environment again, to avoid racing */
-  PROTECT(env = ps__get_environ(pid));
-  if (isNull(env)) ps__throw_error();
-  n = LENGTH(env);
-  for (i = 0; i < n; i++) {
-    if (strstr(CHAR(STRING_ELT(env, i)), marker)) {
-      if (! TerminateProcess(hProcess, SIGTERM)) {
-	err = GetLastError();
-	// See: https://github.com/giampaolo/psutil/issues/1099
-	if (err != ERROR_ACCESS_DENIED) {
-	  CloseHandle(hProcess);
-	  ps__set_error_from_windows_error(0);
-	  ps__throw_error();
-	}
-      }
-      CloseHandle(hProcess);
-      UNPROTECT(1);
-      return ScalarLogical(1);
-    }
-  }
-
-  CloseHandle(hProcess);
-  UNPROTECT(1);
-  return ScalarLogical(0);
 }
 
 const WCHAR LONG_PATH_PREFIX[] = L"\\\\?\\";
