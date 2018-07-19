@@ -440,12 +440,6 @@ SEXP psll_exe(SEXP p) {
 	/* some other error, anything is possible here... */
 	result = ScalarString(NA_STRING);
       }
-    } else if (errno == EPERM || errno == EACCES)  {
-      ps__access_denied("");
-      ps__throw_error();
-    } else {
-      ps__set_error_from_errno();
-      ps__throw_error();
     }
     ps__check_for_zombie(handle, 1);
 
