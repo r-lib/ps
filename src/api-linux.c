@@ -111,7 +111,6 @@ void ps__wrap_linux_error(ps_handle_t *handle) {
 int psll__readlink(const char *path, char **linkname) {
   size_t size = 1024;
   ssize_t r;
-  SEXP result;
   char *dpos;
 
   *linkname = R_alloc(size, 1);
@@ -412,7 +411,6 @@ SEXP psll_exe(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   char path[512];
   int ret;
-  char *buf;
   char *linkname;
   SEXP result;
 
@@ -810,12 +808,9 @@ static int psl__linux_match_environ(SEXP r_marker, SEXP r_pid) {
 
 SEXP ps__kill_if_env(SEXP r_marker, SEXP r_after, SEXP r_pid, SEXP r_sig) {
 
-  const char *marker = CHAR(STRING_ELT(r_marker, 0));
   pid_t pid = INTEGER(r_pid)[0];
   int sig = INTEGER(r_sig)[0];
-  char path[512];
   int ret;
-  char *buf;
   int match;
 
   match = psl__linux_match_environ(r_marker, r_pid);
