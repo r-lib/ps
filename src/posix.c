@@ -228,8 +228,9 @@ SEXP ps__define_signals() {
 
   SEXP signalenv = PROTECT(Rf_allocSExp(ENVSXP));
 
-#define PS_ADD_SIGNAL(sig) \
-  defineVar(install(#sig), ScalarInteger(sig), signalenv)
+#define PS_ADD_SIGNAL(sig)						\
+  defineVar(install(#sig), PROTECT(ScalarInteger(sig)), signalenv);	\
+  UNPROTECT(1)
 
   /* macOS */
 
@@ -361,8 +362,9 @@ SEXP ps__define_errno() {
 
   SEXP env = PROTECT(Rf_allocSExp(ENVSXP));
 
-#define PS_ADD_ERRNO(err,str) \
-  defineVar(install(#err), ScalarInteger(err), env)
+#define PS_ADD_ERRNO(err,str)		\
+  defineVar(install(#err), PROTECT(ScalarInteger(err)), env);	\
+  UNPROTECT(1)
 
   /* MACOS */
 
