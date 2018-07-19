@@ -8,7 +8,7 @@ processes
 [![Travis build
 status](https://travis-ci.org/r-lib/ps.svg?branch=master)](https://travis-ci.org/r-lib/ps)
 [![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/r-lib/ps?branch=master&svg=true)](https://ci.appveyor.com/project/r-lib/ps)
+status](https://ci.appveyor.com/api/projects/status/github/r-lib/ps?branch=master&svg=true)](https://ci.appveyor.com/project/gaborcsardi/ps)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/ps)](https://cran.r-project.org/package=ps)
 [![CRAN RStudio mirror
