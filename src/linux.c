@@ -117,7 +117,8 @@ SEXP ps__proc_ioprio_get(SEXP r_pid) {
  */
 SEXP ps__proc_ioprio_set(SEXP r_pid, SEXP r_ioclass, SEXP r_iodata) {
   long pid = INTEGER(r_pid)[0];
-  int ioprio = INTEGER(r_ioclass)[0], ioclass = INTEGER(r_iodata)[0], iodata;
+  int ioprio = INTEGER(r_ioclass)[0], ioclass = INTEGER(r_ioclass)[0],
+    iodata = INTEGER(r_iodata)[0];
   int retval;
 
   ioprio = IOPRIO_PRIO_VALUE(ioclass, iodata);
