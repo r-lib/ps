@@ -67,7 +67,12 @@ SEXP ps__define_errno();
 
 extern SEXP ps__last_error;
 
-void PROTECT_PTR(void *ptr);
+void ps__protect_free_finalizer(SEXP ptr);
+
+#define PROTECT_PTR(ptr) do {						\
+    SEXP x = PROTECT(R_MakeExternalPtr(ptr, R_NilValue, R_NilValue));	\
+    R_RegisterCFinalizerEx(x, ps__protect_free_finalizer, 1);		\
+  } while (0)
 
 void *ps__set_error(const char *msg, ...);
 void *ps__set_error_from_errno();

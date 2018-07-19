@@ -119,11 +119,6 @@ void ps__protect_free_finalizer(SEXP ptr) {
   free(vptr);
 }
 
-void PROTECT_PTR(void *ptr) {
-  SEXP x = PROTECT(R_MakeExternalPtr(ptr, R_NilValue, R_NilValue));
-  R_RegisterCFinalizerEx(x, ps__protect_free_finalizer, 1);
-}
-
 SEXP ps__str_to_utf8(const char *str) {
   /* TODO: really convert */
   return mkString(str);
