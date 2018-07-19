@@ -222,6 +222,8 @@ int ps__read_file(const char *path, char **buffer, size_t buffer_size) {
     rem_size -= ret;
   } while (ret > 0);
 
+  close(fd);
+
   return buffer_size - rem_size;
 
  error:
