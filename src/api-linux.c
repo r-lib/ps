@@ -412,7 +412,6 @@ SEXP psll_exe(SEXP p) {
   char path[512];
   int ret;
   char *linkname;
-  SEXP result;
 
   if (!handle) error("Process pointer cleaned up already");
 
@@ -430,23 +429,19 @@ SEXP psll_exe(SEXP p) {
       ret = lstat(path, &st);
       if (!ret) {
 	/* process exists, but can't get exe */
-	result = ScalarString(NA_STRING);
+	ps__check_for_zombie(handle, 0);
+	return ScalarString(NA_STRING);
+
       } else if (errno == ENOENT) {
 	ps__no_such_process(handle->pid, 0);
 	ps__throw_error();
-      } else {
-	/* some other error, anything is possible here... */
-	result = ScalarString(NA_STRING);
       }
     }
     ps__check_for_zombie(handle, 1);
-
-  } else {
-    PS__CHECK_HANDLE(handle);
-    result = ps__str_to_utf8(linkname);
   }
 
-  return result;
+  PS__CHECK_HANDLE(handle);
+  return ps__str_to_utf8(linkname);
 }
 
 SEXP psll_cmdline(SEXP p) {
