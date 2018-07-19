@@ -188,14 +188,6 @@ SEXP ps__cpu_times() {
 
 SEXP ps__init(SEXP psenv, SEXP constenv) {
 
-  // process status constants, defined in:
-  // http://fxr.watson.org/fxr/source/bsd/sys/proc.h?v=xnu-792.6.70#L149
-  defineVar(install("SIDL"),   ScalarInteger(SIDL),  constenv);
-  defineVar(install("SRUN"),   ScalarInteger(SRUN),   constenv);
-  defineVar(install("SSLEEP"), ScalarInteger(SSLEEP), constenv);
-  defineVar(install("SSTOP"),  ScalarInteger(SSTOP),  constenv);
-  defineVar(install("SZOMB"),  ScalarInteger(SZOMB),  constenv);
-
   /* Signals */
   defineVar(install("signals"), ps__define_signals(), constenv);
 
