@@ -22,3 +22,7 @@ px <- function() {
   get_tool <- get("get_tool", asNamespace("processx"))
   get_tool("px")
 }
+
+skip_in_rstudio <- function() {
+  if (Sys.getenv("RSTUDIO") != "") skip("would crash RStudio")
+}

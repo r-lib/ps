@@ -12,6 +12,7 @@ test_that("ps_mark_tree", {
 
 test_that("kill_tree",  {
   skip_on_cran()
+  skip_in_rstudio()
 
   res <- ps_kill_tree(get_id())
   expect_equal(length(res), 0)
@@ -42,6 +43,7 @@ test_that("kill_tree",  {
 
 test_that("kill_tree, grandchild", {
   skip_on_cran()
+  skip_in_rstudio()
 
   id <- ps_mark_tree()
   on.exit(Sys.unsetenv(id), add = TRUE)
@@ -79,6 +81,7 @@ test_that("kill_tree, grandchild", {
 
 test_that("kill_tree, orphaned grandchild", {
   skip_on_cran()
+  skip_in_rstudio()
 
   id <- ps_mark_tree()
   on.exit(Sys.unsetenv(id), add = TRUE)
@@ -106,6 +109,7 @@ test_that("kill_tree, orphaned grandchild", {
 
 test_that("with_process_cleanup", {
   skip_on_cran()
+  skip_in_rstudio()
 
   p <- NULL
   with_process_cleanup({
