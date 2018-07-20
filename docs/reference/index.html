@@ -111,7 +111,7 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <h2 id="section-list-processes" class="hasAnchor"><a href="#section-list-processes" class="anchor"></a>List processes</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -124,10 +124,18 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="ps_boot_time.html">ps_boot_time()</a></code> </p>
+          <p><code><a href="ps_pids.html">ps_pids()</a></code> </p>
         </td>
-        <td><p>Boot time of the system</p></td>
-      </tr><tr>
+        <td><p>Ids of all processes on the system</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-process-query-api" class="hasAnchor"><a href="#section-process-query-api" class="anchor"></a>Process query API</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
         
         <td>
           <p><code><a href="ps_children.html">ps_children()</a></code> </p>
@@ -135,12 +143,6 @@
         <td><p>List of child processes (process objects) of the process. Note that
 this typically requires enumerating all processes on the system, so
 it is a costly operation.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="ps_cmdline.html">ps_cmdline()</a></code> </p>
-        </td>
-        <td><p>Command line of the process</p></td>
       </tr><tr>
         
         <td>
@@ -186,12 +188,6 @@ it is a costly operation.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="ps_kill.html">ps_kill()</a></code> </p>
-        </td>
-        <td><p>Kill a process</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="ps_memory_info.html">ps_memory_info()</a></code> </p>
         </td>
         <td><p>Memory usage information</p></td>
@@ -210,27 +206,53 @@ it is a costly operation.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="ps_os_type.html">ps_os_type()</a></code> <code><a href="ps_os_type.html">ps_is_supported()</a></code> </p>
-        </td>
-        <td><p>Query the type of the OS</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="ps_pid.html">ps_pid()</a></code> </p>
         </td>
         <td><p>Pid of a process handle</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="ps_pids.html">ps_pids()</a></code> </p>
-        </td>
-        <td><p>Ids of all processes on the system</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="ps_ppid.html">ps_ppid()</a></code> <code><a href="ps_ppid.html">ps_parent()</a></code> </p>
         </td>
         <td><p>Parent pid or parent process of a process</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ps_status.html">ps_status()</a></code> </p>
+        </td>
+        <td><p>Current process status</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ps_terminal.html">ps_terminal()</a></code> </p>
+        </td>
+        <td><p>Terminal device of the process</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ps_uids.html">ps_uids()</a></code> <code><a href="ps_uids.html">ps_gids()</a></code> </p>
+        </td>
+        <td><p>User ids and group ids of the process</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ps_username.html">ps_username()</a></code> </p>
+        </td>
+        <td><p>Owner of the process</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-process-manipulation" class="hasAnchor"><a href="#section-process-manipulation" class="anchor"></a>Process manipulation</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="ps_kill.html">ps_kill()</a></code> </p>
+        </td>
+        <td><p>Kill a process</p></td>
       </tr><tr>
         
         <td>
@@ -246,39 +268,35 @@ it is a costly operation.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="ps_status.html">ps_status()</a></code> </p>
-        </td>
-        <td><p>Current process status</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="ps_suspend.html">ps_suspend()</a></code> </p>
         </td>
         <td><p>Suspend (stop) the process</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="ps_terminal.html">ps_terminal()</a></code> </p>
-        </td>
-        <td><p>Terminal device of the process</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="ps_terminate.html">ps_terminate()</a></code> </p>
         </td>
         <td><p>Terminate a Unix process</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-utility-functions" class="hasAnchor"><a href="#section-utility-functions" class="anchor"></a>Utility functions</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="ps_boot_time.html">ps_boot_time()</a></code> </p>
+        </td>
+        <td><p>Boot time of the system</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="ps_uids.html">ps_uids()</a></code> <code><a href="ps_uids.html">ps_gids()</a></code> </p>
+          <p><code><a href="ps_os_type.html">ps_os_type()</a></code> <code><a href="ps_os_type.html">ps_is_supported()</a></code> </p>
         </td>
-        <td><p>User ids and group ids of the process</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="ps_username.html">ps_username()</a></code> </p>
-        </td>
-        <td><p>Owner of the process</p></td>
+        <td><p>Query the type of the OS</p></td>
       </tr><tr>
         
         <td>
@@ -293,14 +311,17 @@ it is a costly operation.</p></td>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#section-list-processes">List processes</a></li>
+      <li><a href="#section-process-query-api">Process query API</a></li>
+      <li><a href="#section-process-manipulation">Process manipulation</a></li>
+      <li><a href="#section-utility-functions">Utility functions</a></li>
     </ul>
   </div>
 </div>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jay Loden, Dave Daeschler, Giampaolo Rodola', Gábor Csárdi.</p>
+  <p>Developed by Jay Loden, Dave Daeschler, Giampaolo Rodola', <a href='https://github.com/gaborcsardi'>Gábor Csárdi</a>.</p>
 </div>
 
 <div class="pkgdown">

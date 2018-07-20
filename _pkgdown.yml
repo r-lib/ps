@@ -1,1 +1,46 @@
 url: http://ps.r-lib.org
+
+authors:
+  "Gábor Csárdi":
+    href: https://github.com/gaborcsardi
+
+reference:
+- title: List processes
+  contents:
+  - ps
+  - ps_pids
+
+- title: Process query API
+  contents:
+  - ps_children
+  - ps_cpu_times
+  - ps_create_time
+  - ps_cwd
+  - ps_environ
+  - ps_exe
+  - ps_handle
+  - ps_is_running
+  - ps_memory_info
+  - ps_name
+  - ps_num_threads
+  - ps_pid
+  - ps_ppid
+  - ps_status
+  - ps_terminal
+  - ps_uids
+  - ps_username
+
+- title: Process manipulation
+  contents:
+  - ps_kill
+  - ps_resume
+  - ps_send_signal
+  - ps_suspend
+  - ps_terminate
+
+- title: Utility functions
+  contents:
+  - ps_boot_time
+  - ps_os_type
+  - ps_is_supported
+  - signals

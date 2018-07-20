@@ -103,20 +103,20 @@
 <pre><code>##  [1]  0  1 51 52 55 56 57 59 62 63 64 65 70 74 76 77 82 83 85 87</code></pre>
 <p><code><a href="reference/ps.html">ps()</a></code> is similar, but it returns a data frame (tibble if you have the tibble package available), with data about each process:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="reference/ps.html">ps</a></span>()</a></code></pre></div>
-<pre><code>## # A tibble: 408 x 10
-##      pid  ppid name                 username    status     user system       rss        vms created            
-##  * &lt;int&gt; &lt;int&gt; &lt;chr&gt;                &lt;chr&gt;       &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt; &lt;dttm&gt;             
-##  1 73001 72986 R                    gaborcsardi running  0.533  0.101  112168960 2720415744 2018-07-20 12:57:37
-##  2 72986 70580 R                    gaborcsardi running  1.68   0.174  121454592 2690121728 2018-07-20 12:57:33
-##  3 72930     1 quicklookd           gaborcsardi running  0.0958 0.0369  25034752 3088666624 2018-07-20 12:54:38
-##  4 72929  3718 Google Chrome Helper gaborcsardi running  0.153  0.0538  46440448 3363688448 2018-07-20 12:54:10
-##  5 72928  3718 Google Chrome Helper gaborcsardi running  0.886  0.176   94752768 3561607168 2018-07-20 12:54:09
-##  6 72927  3718 Google Chrome Helper gaborcsardi running  0.693  0.143   89169920 3421818880 2018-07-20 12:54:08
-##  7 72926  3718 Google Chrome Helper gaborcsardi running  3.72   0.444  141127680 3496144896 2018-07-20 12:54:07
-##  8 72902  3718 Google Chrome Helper gaborcsardi running 25.3    2.49   209833984 3648503808 2018-07-20 12:46:54
-##  9 72898  3718 Google Chrome Helper gaborcsardi running 13.1    1.36   294440960 4345126912 2018-07-20 12:46:25
-## 10 72889     1 helpd                gaborcsardi running  0.0283 0.0167  11964416 2554945536 2018-07-20 12:45:31
-## # ... with 398 more rows</code></pre>
+<pre><code>## # A tibble: 427 x 10
+##      pid  ppid name                   username    status     user  system       rss        vms created            
+##  * &lt;int&gt; &lt;int&gt; &lt;chr&gt;                  &lt;chr&gt;       &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt; &lt;dttm&gt;             
+##  1 78495 78478 R                      gaborcsardi running  0.531   0.0930 112533504 2723049472 2018-07-20 19:54:02
+##  2 78490  3718 Google Chrome Helper   gaborcsardi running  0.185   0.0449  75825152 3413581824 2018-07-20 19:54:00
+##  3 78487  3718 Google Chrome Helper   gaborcsardi running  0.111   0.0366  63008768 3389571072 2018-07-20 19:54:00
+##  4 78478 70580 R                      gaborcsardi running  1.58    0.137  121397248 2698510336 2018-07-20 19:53:58
+##  5 78471     1 quicklookd             gaborcsardi running  0.0772  0.0297  24973312 3088666624 2018-07-20 19:50:51
+##  6 78468     1 com.apple.iCloudHelper gaborcsardi running  0.0841  0.0306  21716992 2555674624 2018-07-20 19:49:51
+##  7 78449  3718 Google Chrome Helper   gaborcsardi running  0.0698  0.0302  43950080 3355127808 2018-07-20 19:43:13
+##  8 78448  3718 Google Chrome Helper   gaborcsardi running  2.60    0.379  166387712 3608576000 2018-07-20 19:43:12
+##  9 78307  3718 Google Chrome Helper   gaborcsardi running  2.16    0.365  109948928 3552989184 2018-07-20 19:39:49
+## 10 78293     1 mdworker               _spotlight  running NA      NA             NA         NA 2018-07-20 19:38:44
+## # ... with 417 more rows</code></pre>
 </div>
 <div id="process-api" class="section level2">
 <h2 class="hasAnchor">
@@ -125,26 +125,26 @@
 <p><code><a href="reference/ps_handle.html">ps_handle(pid)</a></code> creates a process handle for the supplied process id. If <code>pid</code> is omitted, a handle to the calling process is returned:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">p &lt;-<span class="st"> </span><span class="kw"><a href="reference/ps_handle.html">ps_handle</a></span>()</a>
 <a class="sourceLine" id="cb6-2" data-line-number="2">p</a></code></pre></div>
-<pre><code>## &lt;ps::ps_handle&gt; PID=73001, NAME=R, AT=2018-07-20 12:57:37</code></pre>
+<pre><code>## &lt;ps::ps_handle&gt; PID=78495, NAME=R, AT=2018-07-20 19:54:02</code></pre>
 <div id="query-functions" class="section level3">
 <h3 class="hasAnchor">
 <a href="#query-functions" class="anchor"></a>Query functions</h3>
 <p><code><a href="reference/ps_pid.html">ps_pid(p)</a></code> returns the pid of the process.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="reference/ps_pid.html">ps_pid</a></span>(p)</a></code></pre></div>
-<pre><code>## [1] 73001</code></pre>
+<pre><code>## [1] 78495</code></pre>
 <p><code><a href="reference/ps_create_time.html">ps_create_time()</a></code> returns the creation time of the process (according to the OS).</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="reference/ps_create_time.html">ps_create_time</a></span>(p)</a></code></pre></div>
-<pre><code>## [1] "2018-07-20 12:57:37 GMT"</code></pre>
+<pre><code>## [1] "2018-07-20 19:54:02 GMT"</code></pre>
 <p>The process id and the creation time uniquely identify a process in a system. ps uses them to make sure that it reports information about, and manipulates the correct process.</p>
 <p><code><a href="reference/ps_is_running.html">ps_is_running(p)</a></code> returns whether <code>p</code> is still running. It handles pid reuse safely.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="reference/ps_is_running.html">ps_is_running</a></span>(p)</a></code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 <p><code><a href="reference/ps_ppid.html">ps_ppid(p)</a></code> returns the pid of the parent of <code>p</code>.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw"><a href="reference/ps_ppid.html">ps_ppid</a></span>(p)</a></code></pre></div>
-<pre><code>## [1] 72986</code></pre>
+<pre><code>## [1] 78478</code></pre>
 <p><code><a href="reference/ps_ppid.html">ps_parent(p)</a></code> returns a process handle to the parent process of <code>p</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="reference/ps_ppid.html">ps_parent</a></span>(p)</a></code></pre></div>
-<pre><code>## &lt;ps::ps_handle&gt; PID=72986, NAME=R, AT=2018-07-20 12:57:33</code></pre>
+<pre><code>## &lt;ps::ps_handle&gt; PID=78478, NAME=R, AT=2018-07-20 19:53:58</code></pre>
 <p><code><a href="reference/ps_name.html">ps_name(p)</a></code> returns the name of the program <code>p</code> is running.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="reference/ps_name.html">ps_name</a></span>(p)</a></code></pre></div>
 <pre><code>## [1] "R"</code></pre>
@@ -153,13 +153,13 @@
 <pre><code>## [1] "/Library/Frameworks/R.framework/Versions/3.5/Resources/bin/exec/R"</code></pre>
 <p><code><a href="reference/ps_cmdline.html">ps_cmdline(p)</a></code> returns the command line (executable and arguments) of <code>p</code>.</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw"><a href="reference/ps_cmdline.html">ps_cmdline</a></span>(p)</a></code></pre></div>
-<pre><code>## [1] "/Library/Frameworks/R.framework/Resources/bin/exec/R"                         
-## [2] "--no-site-file"                                                               
-## [3] "--slave"                                                                      
-## [4] "--no-save"                                                                    
-## [5] "--no-restore"                                                                 
-## [6] "-f"                                                                           
-## [7] "/var/folders/59/0gkmw1yj2w7bf2dfc3jznv5w0000gn/T//RtmpwNxMJs/file11d1a4784e1c"</code></pre>
+<pre><code>## [1] "/Library/Frameworks/R.framework/Resources/bin/exec/R"                          
+## [2] "--no-site-file"                                                                
+## [3] "--slave"                                                                       
+## [4] "--no-save"                                                                     
+## [5] "--no-restore"                                                                  
+## [6] "-f"                                                                            
+## [7] "/var/folders/59/0gkmw1yj2w7bf2dfc3jznv5w0000gn/T//RtmpOpAfCD/file1328e3927f4f5"</code></pre>
 <p><code><a href="reference/ps_status.html">ps_status(p)</a></code> returns the status of the process. Possible values are OS dependent, but typically there is <code>"running"</code> and <code>"stopped"</code>.</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw"><a href="reference/ps_status.html">ps_status</a></span>(p)</a></code></pre></div>
 <pre><code>## [1] "running"</code></pre>
@@ -191,15 +191,15 @@
 <p><code><a href="reference/ps_cpu_times.html">ps_cpu_times(p)</a></code> returns the CPU times of the process, similarly to <code>proc.time()</code>.</p>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1"><span class="kw"><a href="reference/ps_cpu_times.html">ps_cpu_times</a></span>(p)</a></code></pre></div>
 <pre><code>##            user          system    childen_user children_system 
-##       0.7448878       0.1172348              NA              NA</code></pre>
+##       0.7436639       0.1085973              NA              NA</code></pre>
 <p><code><a href="reference/ps_memory_info.html">ps_memory_info(p)</a></code> returns memory usage information. See the manual for details.</p>
 <div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1"><span class="kw"><a href="reference/ps_memory_info.html">ps_memory_info</a></span>(p)</a></code></pre></div>
 <pre><code>##        rss        vms    pfaults    pageins 
-##  122007552 2699927552      31097         22</code></pre>
+##  122957824 2708328448      31354          0</code></pre>
 <p><code><a href="reference/ps_children.html">ps_children(p)</a></code> lists all child processes (potentially recuirsively) of the current process.</p>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1"><span class="kw"><a href="reference/ps_children.html">ps_children</a></span>(<span class="kw"><a href="reference/ps_ppid.html">ps_parent</a></span>(p))</a></code></pre></div>
 <pre><code>## [[1]]
-## &lt;ps::ps_handle&gt; PID=73001, NAME=R, AT=2018-07-20 12:57:37</code></pre>
+## &lt;ps::ps_handle&gt; PID=78495, NAME=R, AT=2018-07-20 19:54:02</code></pre>
 </div>
 <div id="process-manipulation" class="section level3">
 <h3 class="hasAnchor">
@@ -263,7 +263,8 @@
 <li>Jay Loden <br><small class="roles"> Author </small>  </li>
 <li>Dave Daeschler <br><small class="roles"> Author </small>  </li>
 <li>Giampaolo Rodola' <br><small class="roles"> Author </small>  </li>
-<li>Gábor Csárdi <br><small class="roles"> Author, maintainer </small>  </li>
+<li>
+<a href="https://github.com/gaborcsardi">Gábor Csárdi</a> <br><small class="roles"> Author, maintainer </small>  </li>
 <li><a href="authors.html">All authors...</a></li>
 </ul>
 </div>
@@ -274,7 +275,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Jay Loden, Dave Daeschler, Giampaolo Rodola', Gábor Csárdi.</p>
+  <p>Developed by Jay Loden, Dave Daeschler, Giampaolo Rodola', <a href="https://github.com/gaborcsardi">Gábor Csárdi</a>.</p>
 </div>
 
 <div class="pkgdown">
