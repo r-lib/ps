@@ -7,3 +7,6 @@
 .o$
 ^README\.Rmd$
 ^README\.html$
+^.*\.dSYM$
+^src/px$
+^src/px\.exe$

@@ -6,6 +6,8 @@ test_that("process already finished", {
   on.exit(px$kill(), add = TRUE)
   pid <- px$get_pid()
   p <- ps_handle(pid)
+  ct <- ps_create_time(p)
+
   px$kill()
 
   expect_false(px$is_alive())
@@ -17,7 +19,7 @@ test_that("process already finished", {
   expect_output(print(p), format_regexp())
 
   expect_equal(ps_pid(p), pid)
-  expect_equal(ps_create_time(p), px$get_start_time())
+  if (has_processx()) expect_equal(ps_create_time(p), ct)
   expect_false(ps_is_running(p))
 
   chk <- function(expr) {

@@ -4,3 +4,8 @@
 /src/Makevars
 /src/config.h
 /README.html
+/src/*.dSYM
+/src/px
+/src/px.exe
+/src-i386
+/src-x64

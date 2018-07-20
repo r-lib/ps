@@ -13,7 +13,7 @@ test_that("ps", {
   expect_true(Sys.getpid() %in% pp$pid)
 
   px <- processx::process$new(px(), c("sleep", "5"))
-  x <- ps_handle(px$get_pid(), px$get_start_time())
+  x <- ps_handle(px$get_pid())
   on.exit(px$kill(), add = TRUE)
   pp <- ps(after = Sys.time() - 60 * 60)
   ct <- lapply(pp$pid, function(p) {

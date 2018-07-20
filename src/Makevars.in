@@ -2,3 +2,13 @@
 OBJECTS = @OBJECTS@
 
 PKG_LIBS = @LIBS@
+
+.PHONY: all clean
+
+all: px $(SHLIB)
+
+px: px.c
+	$(CC) $(CFLAGS) -Wall px.c -o px
+
+clean:
+	rm -rf $(SHLIB) $(OBJECTS) px.exe px

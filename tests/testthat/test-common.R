@@ -48,14 +48,11 @@ test_that("create_time", {
   ## Argument check
   expect_error(ps_create_time(123), class = "invalid_argument")
 
+  skip_if_no_processx()
+
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
-  expect_identical(p1$get_start_time(), ps_create_time(ps))
-
-  ## Even if it has quit already
-  p1$kill()
-  expect_false(p1$is_alive())
   expect_identical(p1$get_start_time(), ps_create_time(ps))
 })
 
@@ -160,6 +157,8 @@ test_that("cwd", {
 test_that("environ, environ_raw", {
   ## Argument check
   expect_error(ps_environ(123), class = "invalid_argument")
+
+  skip_if_no_processx()
 
   rnd <- basename(tempfile())
   p1 <- processx::process$new(px(), c("sleep", "10"), env = c(FOO = rnd))

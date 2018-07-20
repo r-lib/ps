@@ -21,11 +21,9 @@ Imports:
 Suggests:
     callr,
     covr,
-    processx (>= 3.1.0.9005),
+    processx,
     testthat,
     tibble
-Remotes:
-    r-lib/processx@featue/kill-tree
 RoxygenNote: 6.0.1
 Roxygen: list(markdown = TRUE)
 Biarch: true
