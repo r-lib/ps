@@ -808,12 +808,12 @@ ps_children <- function(p, recursive = FALSE) {
     while (length(stack)) {
       pid <- tail(stack, 1)
       stack <- head(stack, -1)
-      if (pid %in% seen) next           # nocov (should never happen)
+      if (pid %in% seen) next           # nocov (happens _very_ rarely)
       seen <- c(seen, pid)
       child_pids <- map[ map[,2] ==  pid, 1]
       for (child_pid in child_pids) {
         tryCatch({
-          child = ps_handle(child_pid)
+          child <- ps_handle(child_pid)
           if (mytime <= ps_create_time(child)) {
             ret <- c(ret, child)
             stack <- c(stack, child_pid)

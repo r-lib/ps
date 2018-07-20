@@ -26,6 +26,7 @@
 #' `with_process_cleanup()` returns the value of the evaluated expression.
 #'
 #' @rdname ps_kill_tree
+#' @keywords internal
 
 ps_mark_tree <- function() {
   id <- get_id()

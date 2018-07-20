@@ -48,3 +48,4 @@ external processes that were started by the R process while evaluating
 the expression. This includes child processes of child processes, etc.,
 recursively.
 }
+\keyword{internal}
