@@ -71,6 +71,7 @@ test_that("kill_tree, grandchild", {
 
   res <- ps_kill_tree(id)
   res <- res[names(res) != "conhost.exe"]
+  print(res)
   expect_equal(length(res), N * 2)
   expect_true(all(names(res) %in% c("R", "Rterm.exe")))
   cpids <- map_int(p, function(x) x$get_pid())
