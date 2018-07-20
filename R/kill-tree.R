@@ -26,7 +26,6 @@
 #' `with_process_cleanup()` returns the value of the evaluated expression.
 #'
 #' @rdname ps_kill_tree
-#' @export
 
 ps_mark_tree <- function() {
   id <- get_id()
@@ -49,7 +48,6 @@ get_id <- function() {
 #' @param expr R expression to evaluate in the new context.
 #'
 #' @rdname ps_kill_tree
-#' @export
 
 with_process_cleanup <- function(expr) {
   id <- ps_mark_tree()
@@ -63,7 +61,6 @@ with_process_cleanup <- function(expr) {
 #' Windows this argument is ignored currently.
 #'
 #' @rdname ps_kill_tree
-#' @export
 
 ps_kill_tree <- function(marker, sig = signals()$SIGKILL) {
 
