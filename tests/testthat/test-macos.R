@@ -56,6 +56,6 @@ test_that("memory_info", {
   ps2_rss <- as.numeric(parse_ps(c("-o", "rss", "-p", ps_pid(ps))))
   ps2_vms <- as.numeric(parse_ps(c("-o", "vsize", "-p", ps_pid(ps))))
 
-  expect_equal(mem[["rss"]] / 1024, ps2_rss)
-  expect_equal(mem[["vms"]] / 1024, ps2_vms)
+  expect_equal(mem[["rss"]] / 1024, ps2_rss, tolerance = 10)
+  expect_equal(mem[["vms"]] / 1024, ps2_vms, tolerance = 10)
 })
