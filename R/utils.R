@@ -125,8 +125,41 @@ decorate_examples <- function(text, os = NULL) {
 }
 ## nocov end
 
-is_string <- function(x) {
-  is.character(x) && length(x) == 1 && !is.na(x)
+assert_string <- function(x) {
+  if (is.character(x) && length(x) == 1 && !is.na(x)) return()
+  stop(ps__invalid_argument(match.call()$x,
+                            " is not a string (character scalar)"))
+}
+
+assert_pid <- function(x) {
+  if (is.integer(x) && length(x) == 1 && !is.na(x)) return()
+  stop(ps__invalid_argument(match.call()$x,
+                            " is not a process id (integer scalar)"))
+}
+
+assert_time <- function(x) {
+  if (inherits(x, "POSIXct")) return()
+  stop(ps__invalid_argument(match.call()$x,
+                            " must be a time stamp (POSIXt)"))
+}
+
+assert_ps_handle <- function(x) {
+  if (inherits(x, "ps_handle")) return()
+  stop(ps__invalid_argument(match.call()$x,
+                            " must be a process handle (ps_handle)"))
+}
+
+assert_flag <- function(x) {
+  if (is.logical(x) && length(x) == 1 && !is.na(x)) return()
+  stop(ps__invalid_argument(match.call()$x,
+                            " is not a flag (logical scalar)"))
+}
+
+assert_signal <- function(x) {
+  if (is.integer(x) && length(x) == 1 && !is.na(x) &&
+      x %in% unlist(signals())) return()
+  stop(ps__invalid_argument(match.call()$x,
+                            " is not a signal number (see ?signals())"))
 }
 
 realpath <- function(x) {

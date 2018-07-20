@@ -2,6 +2,9 @@
 context("common")
 
 test_that("create self process", {
+  expect_error(ps_handle("foobar"), class = "invalid_argument")
+  expect_error(ps_handle(time = 123), class = "invalid_argument")
+
   ps <- ps_handle()
   expect_identical(ps_pid(ps), Sys.getpid())
 })
@@ -17,6 +20,9 @@ test_that("print", {
 })
 
 test_that("pid", {
+  ## Argument check
+  expect_error(ps_pid(123), class = "invalid_argument")
+
   ## Self
   ps <- ps_handle()
   expect_identical(ps_pid(ps), Sys.getpid())
@@ -39,6 +45,9 @@ test_that("pid", {
 })
 
 test_that("create_time", {
+  ## Argument check
+  expect_error(ps_create_time(123), class = "invalid_argument")
+
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
@@ -51,6 +60,9 @@ test_that("create_time", {
 })
 
 test_that("is_running", {
+  ## Argument check
+  expect_error(ps_is_running(123), class = "invalid_argument")
+
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
@@ -63,6 +75,9 @@ test_that("is_running", {
 })
 
 test_that("parent", {
+  ## Argument check
+  expect_error(ps_parent(123), class = "invalid_argument")
+
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
@@ -73,6 +88,9 @@ test_that("parent", {
 })
 
 test_that("ppid", {
+  ## Argument check
+  expect_error(ps_ppid(123), class = "invalid_argument")
+
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
@@ -82,6 +100,9 @@ test_that("ppid", {
 })
 
 test_that("name", {
+  ## Argument check
+  expect_error(ps_name(123), class = "invalid_argument")
+
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
@@ -103,6 +124,9 @@ test_that("name", {
 })
 
 test_that("exe", {
+  ## Argument check
+  expect_error(ps_exe(123), class = "invalid_argument")
+
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
@@ -111,6 +135,9 @@ test_that("exe", {
 })
 
 test_that("cmdline", {
+  ## Argument check
+  expect_error(ps_cmdline(123), class = "invalid_argument")
+
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
@@ -119,6 +146,9 @@ test_that("cmdline", {
 })
 
 test_that("cwd", {
+  ## Argument check
+  expect_error(ps_cwd(123), class = "invalid_argument")
+
   p1 <- processx::process$new(px(), c("sleep", "10"), wd = tempdir())
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
@@ -128,6 +158,9 @@ test_that("cwd", {
 })
 
 test_that("environ, environ_raw", {
+  ## Argument check
+  expect_error(ps_environ(123), class = "invalid_argument")
+
   rnd <- basename(tempfile())
   p1 <- processx::process$new(px(), c("sleep", "10"), env = c(FOO = rnd))
   on.exit(p1$kill(), add = TRUE)
@@ -139,6 +172,9 @@ test_that("environ, environ_raw", {
 })
 
 test_that("num_threads", {
+  ## Argument check
+  expect_error(ps_num_threads(123), class = "invalid_argument")
+
   ## sleep should be single-threaded
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)
@@ -149,6 +185,10 @@ test_that("num_threads", {
 })
 
 test_that("suspend, resume", {
+  ## Argument check
+  expect_error(ps_suspend(123), class = "invalid_argument")
+  expect_error(ps_resume(123), class = "invalid_argument")
+
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
@@ -170,6 +210,9 @@ test_that("suspend, resume", {
 })
 
 test_that("kill", {
+  ## Argument check
+  expect_error(ps_kill(123), class = "invalid_argument")
+
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
@@ -185,6 +228,9 @@ test_that("kill", {
 })
 
 test_that("children", {
+  ## Argument check
+  expect_error(ps_children(123), class = "invalid_argument")
+
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)
   p2 <- processx::process$new(px(), c("sleep", "10"))

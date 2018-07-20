@@ -4,6 +4,9 @@ if (!ps_os_type()[["MACOS"]]) return()
 context("macos")
 
 test_that("status", {
+  ## Argument check
+  expect_error(ps_status(123), class = "invalid_argument")
+
   p1 <- processx::process$new("sleep", "10")
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
@@ -19,6 +22,10 @@ test_that("status", {
 
 test_that("cpu_times", {
   skip_on_cran()
+
+  ## Argument check
+  expect_error(ps_cpu_times(123), class = "invalid_argument")
+
   p1 <- processx::process$new("ls", c("-lR", "/"))
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
@@ -35,6 +42,10 @@ test_that("cpu_times", {
 
 test_that("memory_info", {
   skip_on_cran()
+
+  ## Argument check
+  expect_error(ps_memory_info(123), class = "invalid_argument")
+
   p1 <- processx::process$new("ls", c("-lR", "/"))
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())

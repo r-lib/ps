@@ -19,6 +19,8 @@
 #' }
 
 ps_handle <- function(pid = NULL, time = NULL) {
+  if (!is.null(pid)) assert_pid(pid)
+  if (!is.null(time)) assert_time(time)
   .Call(psll_handle, pid, time)
 }
 
@@ -63,6 +65,7 @@ print.ps_handle <- function(x, ...)  {
 #' }
 
 ps_pid <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_pid, p)
 }
 
@@ -90,6 +93,7 @@ ps_pid <- function(p) {
 #' }
 
 ps_create_time <- function(p) {
+  assert_ps_handle(p)
   format_unix_time(.Call(psll_create_time, p))
 }
 
@@ -117,6 +121,7 @@ ps_create_time <- function(p) {
 #' }
 
 ps_is_running <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_is_running, p)
 }
 
@@ -149,6 +154,7 @@ ps_is_running <- function(p) {
 #' }
 
 ps_ppid <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_ppid, p)
 }
 
@@ -157,6 +163,7 @@ ps_ppid <- function(p) {
 #' @export
 
 ps_parent <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_parent, p)
 }
 
@@ -186,6 +193,7 @@ ps_parent <- function(p) {
 #' }
 
 ps_name <- function(p) {
+  assert_ps_handle(p)
   n <- .Call(psll_name, p)
   if (nchar(n) >= 15) {
     ## On UNIX the name gets truncated to the first 15 characters.
@@ -229,6 +237,7 @@ ps_name <- function(p) {
 #' }
 
 ps_exe <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_exe, p)
 }
 
@@ -258,6 +267,7 @@ ps_exe <- function(p) {
 #' }
 
 ps_cmdline <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_cmdline, p)
 }
 
@@ -297,6 +307,7 @@ ps_cmdline <- function(p) {
 #' }
 
 ps_status <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_status, p)
 }
 
@@ -327,6 +338,7 @@ ps_status <- function(p) {
 #' }
 
 ps_username <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_username, p)
 }
 
@@ -350,6 +362,7 @@ ps_username <- function(p) {
 #' }
 
 ps_cwd <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_cwd, p)
 }
 
@@ -384,6 +397,7 @@ ps_cwd <- function(p) {
 #' }
 
 ps_uids <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_uids, p)
 }
 
@@ -392,6 +406,7 @@ ps_uids <- function(p) {
 #' @export
 
 ps_gids <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_gids, p)
 }
 
@@ -419,6 +434,7 @@ ps_gids <- function(p) {
 #' }
 
 ps_terminal <- function(p) {
+  assert_ps_handle(p)
   ttynr <- .Call(psll_terminal, p)
   if (is.na(ttynr)) {
     NA_character_
@@ -462,6 +478,7 @@ ps_terminal <- function(p) {
 #' }
 
 ps_environ <- function(p) {
+  assert_ps_handle(p)
   parse_envs(.Call(psll_environ, p))
 }
 
@@ -470,6 +487,7 @@ ps_environ <- function(p) {
 #' @export
 
 ps_environ_raw <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_environ, p)
 }
 
@@ -493,6 +511,7 @@ ps_environ_raw <- function(p) {
 #' }
 
 ps_num_threads <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_num_threads, p)
 }
 
@@ -529,6 +548,7 @@ ps_num_threads <- function(p) {
 #' }
 
 ps_cpu_times <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_cpu_times, p)
 }
 
@@ -580,6 +600,7 @@ ps_cpu_times <- function(p) {
 #' }
 
 ps_memory_info <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_memory_info, p)
 }
 
@@ -612,6 +633,8 @@ ps_memory_info <- function(p) {
 #' }
 
 ps_send_signal <- function(p, sig) {
+  assert_ps_handle(p)
+  assert_signal(sig)
   .Call(psll_send_signal, p, sig)
 }
 
@@ -642,6 +665,7 @@ ps_send_signal <- function(p, sig) {
 #' }
 
 ps_suspend <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_suspend, p)
 }
 
@@ -672,6 +696,7 @@ ps_suspend <- function(p) {
 #' }
 
 ps_resume <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_resume, p)
 }
 
@@ -701,6 +726,7 @@ ps_resume <- function(p) {
 #' }
 
 ps_terminate <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_terminate, p)
 }
 
@@ -729,6 +755,7 @@ ps_terminate <- function(p) {
 #' }
 
 ps_kill <- function(p) {
+  assert_ps_handle(p)
   .Call(psll_kill, p)
 }
 
@@ -754,6 +781,9 @@ ps_kill <- function(p) {
 #' }
 
 ps_children <- function(p, recursive = FALSE) {
+  assert_ps_handle(p)
+  assert_flag(recursive)
+
   mypid <- ps_pid(p)
   mytime <- ps_create_time(p)
   map <- ps_ppid_map()

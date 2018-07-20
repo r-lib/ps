@@ -67,7 +67,7 @@ with_process_cleanup <- function(expr) {
 
 ps_kill_tree <- function(marker, sig = signals()$SIGKILL) {
 
-  stopifnot(is_string(marker))
+  assert_string(marker)
 
   after <- as.numeric(strsplit(marker, "_", fixed = TRUE)[[1]][2])
 
