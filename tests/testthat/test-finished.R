@@ -50,4 +50,5 @@ test_that("process already finished", {
   chk(ps_memory_info(p))
   chk(ps_cpu_times(p))
   chk(ps_num_threads(p))
+  chk(ps_children(p))
 })

@@ -23,6 +23,7 @@ test_that("zombie api", {
   expect_identical(ps_username(p), ps_username(me))
   expect_identical(ps_gids(p), ps_gids(me))
   expect_identical(ps_terminal(p), ps_terminal(me))
+  expect_silent(ps_children(p))
 
   ## You can still send signals if you like
   expect_silent(ps_send_signal(p, signals()$SIGINT))

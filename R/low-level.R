@@ -794,6 +794,9 @@ ps_children <- function(p, recursive = FALSE) {
     }
   }
 
+  ## This will throw if p has finished
+  ps_ppid(p)
+
   ret
 }
 
