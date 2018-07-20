@@ -1,2 +1,4 @@
-# ps 0.0.0.9000
 
+# ps 1.0.0
+
+First released version.

@@ -10,3 +10,5 @@
 ^.*\.dSYM$
 ^src/px$
 ^src/px\.exe$
+^docs$
+^_pkgdown\.yml$
