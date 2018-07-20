@@ -18,3 +18,7 @@ functions return a logical scalar.
 \description{
 Query the type of the OS
 }
+\examples{
+ps_os_type()
+ps_is_supported()
+}
