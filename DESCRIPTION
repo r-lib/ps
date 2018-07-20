@@ -1,9 +1,8 @@
 Package: ps
 Version: 1.0.0
-Title: List System Processes
+Title: List, Query, Manipulate System Processes
 Description: List, query and manipulate all system processes, on Windows,
-    Linux and macOS. Clean up a process tree, even if some processes of it
-    have finished already.
+    Linux and macOS.
 Authors@R: c(
     person("Jay", "Loden", role = "aut"),
     person("Dave", "Daeschler", role = "aut"),
