@@ -55,6 +55,4 @@ Z: +: works fine on a zombie
 
 ## `ps_os_type()`
 
-## `ps_start()`
-
 ## `signals()`
