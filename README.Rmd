@@ -243,6 +243,66 @@ the process would need to finish, _and_ the OS would need to reuse its pid
 within this time window to create problems. This is very unlikely to
 happen.
 
+## Recipes:
+
+In the spirit of [psutil recipes](http://psutil.readthedocs.io/en/latest/#recipes).
+
+### Find process by name
+
+Using `ps()` and dplyr:
+
+```{r}
+library(dplyr)
+find_procs_by_name <- function(name) {
+  ps() %>%
+    filter(name == !!name)  %>%
+    pull(ps_handle)
+}
+
+find_procs_by_name("R")
+```
+
+Without creating the full table of processes:
+
+```{r}
+find_procs_by_name <- function(name) {
+  procs <- lapply(ps_pids(), function(p) {
+    tryCatch({
+      h <- ps_handle(p)
+      if (ps_name(h) == name) h else NULL },
+      no_such_process = function(e) NULL,
+	  access_denied = function(e) NULL
+	)
+  })
+  procs[!vapply(procs, is.null, logical(1))]
+  }
+
+find_procs_by_name("R")
+```
+
+### Kill process tree
+
+This sends a signal, so it'll only work on Unix. Use `ps_kill()`
+instead of `ps_send_signal()` on Windows.
+
+```{r}
+kill_proc_tree <- function(pid, sig = signals()$SIGTERM,
+	                       include_parent = TRUE) {
+  if (pid == Sys.getpid() && include_parent) stop("I refuse to kill myself")
+  parent <- ps_handle(pid)
+  children <- ps_children(parent, recursive = TRUE)
+  if (include_parent) children <- c(children, parent)
+  for (p in children) ps_send_signal(p, sig)
+  running <- vapply(children, ps_is_running, logical(1))
+  list(gone = children[!running], alive = children[running])
+}
+
+p1 <- processx::process$new("sleep", "10")
+p2 <- processx::process$new("sleep", "10")
+p3 <- processx::process$new("sleep", "10")
+kill_proc_tree(Sys.getpid(), include_parent = FALSE)
+```
+
 ## Contributions
 
 Please note that this project is released with a

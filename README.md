@@ -1,7 +1,8 @@
 
 # ps
 
-> List, Query, Manipulate System Processes
+> List, Query, Manipulate System
+Processes
 
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![Travis build
@@ -55,20 +56,20 @@ tibble package available), with data about each process:
 ps()
 ```
 
-    ## # A tibble: 400 x 10
-    ##      pid  ppid name                 username    status     user  system       rss        vms created            
-    ##  * <int> <int> <chr>                <chr>       <chr>     <dbl>   <dbl>     <dbl>      <dbl> <dttm>             
-    ##  1 55610     1 quicklookd           gaborcsardi running  0.0894  0.0334  25034752 3088658432 2018-07-20 10:02:08
-    ##  2 55250  3718 Google Chrome Helper gaborcsardi running  0.0655  0.0254  43905024 3355127808 2018-07-20 10:00:41
-    ##  3 55249  3718 Google Chrome Helper gaborcsardi running  0.317   0.0708  80433152 3402051584 2018-07-20 10:00:34
-    ##  4 55247  3718 Google Chrome Helper gaborcsardi running  0.600   0.117  103858176 3449085952 2018-07-20 10:00:18
-    ##  5 55087 42530 R                    gaborcsardi running  2.26    0.564  144371712 2751770624 2018-07-20 09:59:30
-    ##  6 54757  3718 Google Chrome Helper gaborcsardi running  1.44    0.299   76734464 3519508480 2018-07-20 09:56:11
-    ##  7 54525     1 mdworker             _spotlight  running NA      NA             NA         NA 2018-07-20 08:46:20
-    ##  8 54358  3718 Google Chrome Helper gaborcsardi running  0.712   0.200   94986240 3426856960 2018-07-20 07:49:24
-    ##  9 54347     1 netbiosd             _netbios    running NA      NA             NA         NA 2018-07-20 07:48:26
-    ## 10 54288     1 ocspd                root        running NA      NA             NA         NA 2018-07-20 05:19:14
-    ## # ... with 390 more rows
+    ## # A tibble: 428 x 11
+    ##      pid  ppid name            username   status     user  system       rss        vms created             ps_handle   
+    ##  * <int> <int> <chr>           <chr>      <chr>     <dbl>   <dbl>     <dbl>      <dbl> <dttm>              <I(list)>   
+    ##  1 82532  3718 Google Chrome … gaborcsar… running  0.179   0.0403  71663616    3.40e 9 2018-07-21 08:01:02 <S3: ps_han…
+    ##  2 82505  3718 Google Chrome … gaborcsar… running  0.0691  0.0252  43872256    3.36e 9 2018-07-21 08:00:12 <S3: ps_han…
+    ##  3 82302  3718 Google Chrome … gaborcsar… running  4.80    0.904  113180672    3.55e 9 2018-07-21 07:59:25 <S3: ps_han…
+    ##  4 82301     1 quicklookd      gaborcsar… running  0.0822  0.0311  25055232    3.09e 9 2018-07-21 07:59:16 <S3: ps_han…
+    ##  5 82232 42530 R               gaborcsar… running  1.51    0.197  124272640    2.73e 9 2018-07-21 07:58:48 <S3: ps_han…
+    ##  6 81150     1 applessdstatis… root       running NA      NA             NA   NA       2018-07-21 07:36:08 <S3: ps_han…
+    ##  7 80990     1 ocspd           root       running NA      NA             NA   NA       2018-07-21 07:14:52 <S3: ps_han…
+    ##  8 80975     1 netbiosd        _netbios   running NA      NA             NA   NA       2018-07-21 03:03:28 <S3: ps_han…
+    ##  9 80936     1 aslmanager      root       running NA      NA             NA   NA       2018-07-21 03:03:22 <S3: ps_han…
+    ## 10 80886 37083 docker          gaborcsar… running  0.270   0.147    8130560    5.70e11 2018-07-20 22:14:34 <S3: ps_han…
+    ## # ... with 418 more rows
 
 ## Process API
 
@@ -85,7 +86,7 @@ p <- ps_handle()
 p
 ```
 
-    ## <ps::ps_handle> PID=55087, NAME=R, AT=2018-07-20 09:59:30
+    ## <ps::ps_handle> PID=82232, NAME=R, AT=2018-07-21 07:58:48
 
 ### Query functions
 
@@ -95,7 +96,7 @@ p
 ps_pid(p)
 ```
 
-    ## [1] 55087
+    ## [1] 82232
 
 `ps_create_time()` returns the creation time of the process (according
 to the OS).
@@ -104,7 +105,7 @@ to the OS).
 ps_create_time(p)
 ```
 
-    ## [1] "2018-07-20 09:59:30 GMT"
+    ## [1] "2018-07-21 07:58:48 GMT"
 
 The process id and the creation time uniquely identify a process in a
 system. ps uses them to make sure that it reports information about, and
@@ -243,7 +244,7 @@ ps_cpu_times(p)
 ```
 
     ##            user          system    childen_user children_system 
-    ##       2.4006976       0.5763375              NA              NA
+    ##       1.6817899       0.2100831              NA              NA
 
 `ps_memory_info(p)` returns memory usage information. See the manual for
 details.
@@ -253,7 +254,7 @@ ps_memory_info(p)
 ```
 
     ##        rss        vms    pfaults    pageins 
-    ##  146587648 2722009088     184244        241
+    ##  125579264 2696826880      62429          2
 
 `ps_children(p)` lists all child processes (potentially recuirsively) of
 the current process.
@@ -266,7 +267,7 @@ ps_children(ps_parent(p))
     ## <ps::ps_handle> PID=42536, NAME=zsh, AT=2018-07-19 16:34:33
     ## 
     ## [[2]]
-    ## <ps::ps_handle> PID=55087, NAME=R, AT=2018-07-20 09:59:30
+    ## <ps::ps_handle> PID=82232, NAME=R, AT=2018-07-21 07:58:48
 
 ### Process manipulation
 
@@ -316,6 +317,130 @@ time window of the race condition is very small, a few microseconds, and
 the process would need to finish, *and* the OS would need to reuse its
 pid within this time window to create problems. This is very unlikely to
 happen.
+
+## Recipes:
+
+In the spirit of [psutil
+recipes](http://psutil.readthedocs.io/en/latest/#recipes).
+
+### Find process by name
+
+Using `ps()` and dplyr:
+
+``` r
+library(dplyr)
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+find_procs_by_name <- function(name) {
+  ps() %>%
+    filter(name == !!name)  %>%
+    pull(ps_handle)
+}
+
+find_procs_by_name("R")
+```
+
+    ## [[1]]
+    ## <ps::ps_handle> PID=82232, NAME=R, AT=2018-07-21 07:58:48
+    ## 
+    ## [[2]]
+    ## <ps::ps_handle> PID=74578, NAME=R, AT=2018-07-20 13:36:22
+    ## 
+    ## [[3]]
+    ## <ps::ps_handle> PID=60390, NAME=R, AT=2018-07-20 11:03:10
+    ## 
+    ## [[4]]
+    ## <ps::ps_handle> PID=32703, NAME=R, AT=2018-07-18 16:51:35
+    ## 
+    ## [[5]]
+    ## <ps::ps_handle> PID=28777, NAME=R, AT=2018-07-18 08:30:28
+    ## 
+    ## [[6]]
+    ## <ps::ps_handle> PID=24580, NAME=R, AT=2018-07-18 08:28:05
+
+Without creating the full table of processes:
+
+``` r
+find_procs_by_name <- function(name) {
+  procs <- lapply(ps_pids(), function(p) {
+    tryCatch({
+      h <- ps_handle(p)
+      if (ps_name(h) == name) h else NULL },
+      no_such_process = function(e) NULL,
+      access_denied = function(e) NULL
+    )
+  })
+  procs[!vapply(procs, is.null, logical(1))]
+  }
+
+find_procs_by_name("R")
+```
+
+    ## [[1]]
+    ## <ps::ps_handle> PID=24580, NAME=R, AT=2018-07-18 08:28:05
+    ## 
+    ## [[2]]
+    ## <ps::ps_handle> PID=28777, NAME=R, AT=2018-07-18 08:30:28
+    ## 
+    ## [[3]]
+    ## <ps::ps_handle> PID=32703, NAME=R, AT=2018-07-18 16:51:35
+    ## 
+    ## [[4]]
+    ## <ps::ps_handle> PID=60390, NAME=R, AT=2018-07-20 11:03:10
+    ## 
+    ## [[5]]
+    ## <ps::ps_handle> PID=74578, NAME=R, AT=2018-07-20 13:36:22
+    ## 
+    ## [[6]]
+    ## <ps::ps_handle> PID=82232, NAME=R, AT=2018-07-21 07:58:48
+
+### Kill process tree
+
+This sends a signal, so it’ll only work on Unix. Use `ps_kill()` instead
+of `ps_send_signal()` on Windows.
+
+``` r
+kill_proc_tree <- function(pid, sig = signals()$SIGTERM,
+                           include_parent = TRUE) {
+  if (pid == Sys.getpid() && include_parent) stop("I refuse to kill myself")
+  parent <- ps_handle(pid)
+  children <- ps_children(parent, recursive = TRUE)
+  if (include_parent) children <- c(children, parent)
+  for (p in children) ps_send_signal(p, sig)
+  running <- vapply(children, ps_is_running, logical(1))
+  list(gone = children[!running], alive = children[running])
+}
+
+p1 <- processx::process$new("sleep", "10")
+p2 <- processx::process$new("sleep", "10")
+p3 <- processx::process$new("sleep", "10")
+kill_proc_tree(Sys.getpid(), include_parent = FALSE)
+```
+
+    ## $gone
+    ## list()
+    ## 
+    ## $alive
+    ## $alive[[1]]
+    ## <ps::ps_handle> PID=82535, NAME=???, AT=2018-07-21 08:01:13
+    ## 
+    ## $alive[[2]]
+    ## <ps::ps_handle> PID=82536, NAME=???, AT=2018-07-21 08:01:13
+    ## 
+    ## $alive[[3]]
+    ## <ps::ps_handle> PID=82537, NAME=???, AT=2018-07-21 08:01:13
 
 ## Contributions
 
