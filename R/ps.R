@@ -22,6 +22,7 @@ NULL
 #'    shared libraries.
 #' * `vms`: Virtual memory size. All memory the process has access to.
 #' * `created`: Time stamp when the process was created.
+#' * `ps_handle`: `ps_handle` objects, in a list column.
 #'
 #' @export
 
@@ -75,7 +76,8 @@ ps <- function(user = NULL, after = NULL) {
     system = cps,
     rss = rss,
     vms = vms,
-    created = format_unix_time(unlist(ct))
+    created = format_unix_time(unlist(ct)),
+    ps_handle = I(processes)
   )
 
   pss <- pss[order(-as.numeric(pss$created)), ]

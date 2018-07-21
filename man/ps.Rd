@@ -29,6 +29,7 @@ uses. Does not include memory that is swapped out. It does include
 shared libraries.
 \item \code{vms}: Virtual memory size. All memory the process has access to.
 \item \code{created}: Time stamp when the process was created.
+\item \code{ps_handle}: \code{ps_handle} objects, in a list column.
 }
 }
 \description{
