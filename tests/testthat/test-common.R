@@ -242,9 +242,13 @@ test_that("children", {
   expect_true(p1$get_pid() %in% pids)
   expect_true(p2$get_pid() %in% pids)
 
-  ch3 <- ps_children(ps_parent(ps_handle()), recursive = TRUE)
-  pids3 <- map_int(ch3, ps_pid)
-  expect_true(Sys.getpid() %in% pids3)
-  expect_true(p1$get_pid() %in% pids3)
-  expect_true(p2$get_pid() %in% pids3)
+  ## We don't do this on Windows, because the parent process might be
+  ## gone by now, and then it fails with no_such_process
+  if (ps_os_type()[["POSIX"]]) {
+    ch3 <- ps_children(ps_parent(ps_handle()), recursive = TRUE)
+    pids3 <- map_int(ch3, ps_pid)
+    expect_true(Sys.getpid() %in% pids3)
+    expect_true(p1$get_pid() %in% pids3)
+    expect_true(p2$get_pid() %in% pids3)
+  }
 })
