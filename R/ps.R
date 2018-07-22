@@ -44,8 +44,9 @@ ps <- function(user = NULL, after = NULL) {
 
   us <- NULL
   if (!is.null(user)) {
-    us <- map_chr(processes, function(p) ps_username(p))
-    selected <- us == user
+    us <- map_chr(processes, function(p)
+      fallback(ps_username(p), NA_character_))
+    selected <- !is.na(us) & us == user
     processes <- processes[selected]
     us <- us[selected]
   }
