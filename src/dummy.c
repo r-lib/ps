@@ -70,6 +70,8 @@ void psp__pid_exists()   { ps__dummy("psp__pid_exists"); }
 void psp__stat_st_rdev() { ps__dummy("psp__stat_st_rdev"); }
 void psp__zombie()       { ps__dummy("psp__zombie"); }
 void psp__waitpid()      { ps__dummy("psp__waitpid"); }
+
+void psw__realpath()     { ps__dummy("psw__realpath"); }
 #endif
 #endif
 #endif
