@@ -387,18 +387,18 @@ and other threads may start processes as well. `reap_children()` will clean
 up all these as well, potentially causing the IDE to misbehave or crash.
 
 ```{r}
-reap_children<-function(timeout = 3) {
-  procs<-ps_children(ps_handle())
+reap_children <- function(timeout = 3) {
+  procs <- ps_children(ps_handle())
 
   ## SIGTERM
   lapply(procs, ps_terminate)
 
-  ga<-wait_for_processes(procs, timeout = timeout)
+  ga <- wait_for_processes(procs, timeout = timeout)
 
   ## SIGKILL to the survivers
   if (length(ga$alive)) lapply(ga$alive, ps_kill)
 
-  ga2<-wait_for_processes(ga$alive, timeout = timeout)
+  ga2 <- wait_for_processes(ga$alive, timeout = timeout)
 
   ## Some might still survive
   list(gone = c(ga$gone, ga2$gone), alive = ga2$alive)
@@ -446,7 +446,8 @@ Top 3 processes which consumed the most CPU time:
 ps() %>%
   mutate(cpu_time = user + system) %>%
   top_n(3, cpu_time) %>%
-  arrange(desc(cpu_time))
+  arrange(desc(cpu_time)) %>%
+  select(pid, name, cpu_time)
 ```
 
 ## Contributions
