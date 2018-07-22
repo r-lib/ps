@@ -75,7 +75,8 @@ MACROS="$MACROS PS__VERSION"
 PS__VERSION=546
 
 if [ -n "$WINDOWS" ]; then
-    VER=`cmd /c ver | grep "\[Version.*\]" | sed "s/^.*\[Version\s*//" |
+    RAWVER=`$RBIN --slave -e "system('cmd /c ver')"`
+    VER=`echo $RAWVER | grep "\[Version.*\]" | sed "s/^.*\[Version\s*//" |
                       sed "s/\].*$//"`
     MAJOR=`echo $VER | cut -f1 -d.`
     MINOR=`echo $VER | cut -f2 -d.`
