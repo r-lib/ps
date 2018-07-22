@@ -1,8 +1,8 @@
 Package: ps
 Version: 1.0.0
 Title: List, Query, Manipulate System Processes
-Description: List, query and manipulate all system processes, on Windows,
-    Linux and macOS.
+Description: List, query and manipulate all system processes, on 'Windows',
+    'Linux' and 'macOS'.
 Authors@R: c(
     person("Jay", "Loden", role = "aut"),
     person("Dave", "Daeschler", role = "aut"),
@@ -11,7 +11,7 @@ Authors@R: c(
     person("RStudio", role = "cph"))
 License: BSD_3_clause + file LICENSE
 URL: https://github.com/r-lib/ps#readme
-BugReports: https://github.com/r-lib/issues
+BugReports: https://github.com/r-lib/ps/issues
 Encoding: UTF-8
 Depends:
     R (>= 3.1)
