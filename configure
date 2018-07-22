@@ -75,12 +75,12 @@ MACROS="$MACROS PS__VERSION"
 PS__VERSION=546
 
 if [ -n "$WINDOWS" ]; then
-    RAWVER=`$RBIN --slave -e "system('cmd /c ver')"`
+    RAWVER=`$RBIN --vanilla --slave -e "system('cmd /c ver')"`
     VER=`echo $RAWVER | grep "\[Version.*\]" | sed "s/^.*\[Version\s*//" |
                       sed "s/\].*$//"`
     MAJOR=`echo $VER | cut -f1 -d.`
     MINOR=`echo $VER | cut -f2 -d.`
-    WINVER=`$RBIN --slave -e "cat(sprintf('0x0%s', $MAJOR*100 + $MINOR))"`
+    WINVER=`$RBIN --vanilla --slave -e "cat(sprintf('0x0%s', $MAJOR*100 + $MINOR))"`
     MACROS="${MACROS} PS__WINDOWS _WIN32_WINNT _AVAIL_WINVER"
     MACROS="${MACROS} _CRT_SECURE_NO_WARNINGS PSAPI_VERSION"
     PS__WINDOWS=1
