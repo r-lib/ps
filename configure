@@ -75,8 +75,8 @@ MACROS="$MACROS PS__VERSION"
 PS__VERSION=546
 
 if [ -n "$WINDOWS" ]; then
-    VER=`systeminfo | grep "^OS Version" | \
-		      sed "s/^.*:\s\s*//" | sed "s/\s.*$//"`
+    VER=`cmd /c ver | grep "\[Version.*\]" | sed "s/^.*\[Version\s*//" |
+                      sed "s/\].*$//"`
     MAJOR=`echo $VER | cut -f1 -d.`
     MINOR=`echo $VER | cut -f2 -d.`
     WINVER=`$RBIN --slave -e "cat(sprintf('0x0%s', $MAJOR*100 + $MINOR))"`
