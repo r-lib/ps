@@ -846,3 +846,27 @@ ps_ppid_map <- function() {
     ppid = ppids[ok]
   )
 }
+
+#' @export
+
+ps_num_fds <- function(p) {
+  assert_ps_handle(p)
+  .Call(psll_num_fds, p)
+}
+
+#' @export
+
+ps_open_files <- function(p) {
+  assert_ps_handle(p)
+
+  l <- not_null(.Call(psll_open_files, p))
+
+  d <- data.frame(
+    stringsAsFactors = FALSE,
+    fd = vapply(l, "[[", integer(1), 2),
+    path = vapply(l, "[[", character(1), 1))
+
+  requireNamespace("tibble", quietly = TRUE)
+  class(d) <- unique(c("tbl_df", "tbl", class(d)))
+  d
+}
