@@ -24,7 +24,7 @@ Python package.
 
 ## Installation
 
-Once released, you can install the released version of ps from
+You can install the released version of ps from
 [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
