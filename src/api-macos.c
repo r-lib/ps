@@ -500,3 +500,119 @@ SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
   UNPROTECT(1);
   return R_NilValue;
 }
+
+SEXP psll_num_fds(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  struct proc_fdinfo *fds_pointer;
+  int pidinfo_result;
+  int num;
+  pid_t pid;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  pid = handle->pid;
+
+  pidinfo_result = proc_pidinfo(pid, PROC_PIDLISTFDS, 0, NULL, 0);
+  if (pidinfo_result <= 0) ps__check_for_zombie(handle);
+
+  fds_pointer = malloc(pidinfo_result);
+  if (fds_pointer == NULL) {
+    ps__no_memory("");
+    ps__throw_error();
+  }
+
+  pidinfo_result = proc_pidinfo(pid, PROC_PIDLISTFDS, 0, fds_pointer,
+				pidinfo_result);
+
+  if (pidinfo_result <= 0) {
+    free(fds_pointer);
+    ps__check_for_zombie(handle);
+  }
+
+  num = (pidinfo_result / PROC_PIDLISTFD_SIZE);
+  free(fds_pointer);
+
+  PS__CHECK_HANDLE(handle);
+
+  return ScalarInteger(num);
+}
+
+SEXP psll_open_files(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+
+  long pid;
+  int pidinfo_result;
+  int iterations;
+  int i;
+  unsigned long nb;
+
+  struct proc_fdinfo *fds_pointer = NULL;
+  struct proc_fdinfo *fdp_pointer;
+  struct vnode_fdinfowithpath vi;
+
+  SEXP result;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  pid = handle->pid;
+
+  pidinfo_result = ps__proc_pidinfo(pid, PROC_PIDLISTFDS, 0, NULL, 0);
+  if (pidinfo_result <= 0) goto error;
+
+  fds_pointer = malloc(pidinfo_result);
+  if (fds_pointer == NULL) {
+    ps__no_memory("");
+    goto error;
+  }
+  pidinfo_result = ps__proc_pidinfo(
+    pid, PROC_PIDLISTFDS, 0, fds_pointer, pidinfo_result);
+
+  if (pidinfo_result <= 0) goto error;
+
+  iterations = (pidinfo_result / PROC_PIDLISTFD_SIZE);
+
+  PROTECT(result = allocVector(VECSXP, iterations));
+
+  for (i = 0; i < iterations; i++) {
+    fdp_pointer = &fds_pointer[i];
+
+    if (fdp_pointer->proc_fdtype == PROX_FDTYPE_VNODE) {
+      errno = 0;
+      nb = proc_pidfdinfo((pid_t)pid,
+			  fdp_pointer->proc_fd,
+			  PROC_PIDFDVNODEPATHINFO,
+			  &vi,
+			  sizeof(vi));
+
+      // --- errors checking
+      if ((nb <= 0) || nb < sizeof(vi)) {
+	if ((errno == ENOENT) || (errno == EBADF)) {
+	  // no such file or directory or bad file descriptor;
+	  // let's assume the file has been closed or removed
+	  continue;
+	} else {
+	  ps__set_error(
+	    "proc_pidinfo(PROC_PIDFDVNODEPATHINFO) failed for %d", (int) pid);
+	  goto error;
+	}
+      }
+      // --- /errors checking
+
+      SET_VECTOR_ELT(
+	result, i,
+	ps__build_list("si", vi.pvip.vip_path, (int) fdp_pointer->proc_fd));
+    }
+  }
+
+  free(fds_pointer);
+
+  PS__CHECK_HANDLE(handle);
+
+  UNPROTECT(1);
+  return result;
+
+ error:
+  if (fds_pointer != NULL) free(fds_pointer);
+  ps__check_for_zombie(handle);
+  return R_NilValue;
+}

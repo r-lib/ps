@@ -201,6 +201,28 @@ the current process.
 ps_children(ps_parent(p))
 ```
 
+`ps_num_fds(p)` returns the number of open file descriptors (handles on
+Windows):
+
+```{r}
+ps_num_fds(p)
+f <- file(tmp <- tempfile(), "w")
+ps_num_fds(p)
+close(f)
+unlink(tmp)
+```
+
+`ps_open_files(p)` lists all open files:
+
+```{r}
+ps_open_files(p)
+f <- file(tmp <- tempfile(), "w")
+ps_open_files(p)
+close(f)
+unlink(tmp)
+ps_open_files(p)
+```
+
 ### Process manipulation
 
 `ps_suspend(p)` suspends (stops) the process. On POSIX it sends a SIGSTOP

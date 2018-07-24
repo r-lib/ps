@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 #include <Rinternals.h>
 
@@ -836,4 +838,106 @@ SEXP ps__kill_if_env(SEXP r_marker, SEXP r_after, SEXP r_pid, SEXP r_sig) {
   }
 
   return R_NilValue;
+}
+
+SEXP psll_num_fds(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  char path[512];
+  DIR *dirs;
+  int ret;
+  int num = 0;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  ret = snprintf(path, sizeof(path), "/proc/%i/fd", handle->pid);
+  if (ret < 0) ps__throw_error();
+
+  dirs = opendir(path);
+  if (!dirs) ps__check_for_zombie(handle, 1);
+
+  do {
+    errno = 0;
+    struct dirent *entry = readdir(dirs);
+    if (!entry) {
+      closedir(dirs);
+      if (!errno) break;
+      ps__check_for_zombie(handle, 1);
+    }
+    if (strncmp(".", entry->d_name, 2) &&
+	strncmp("..", entry->d_name, 3)) num++;
+  } while (1);
+
+  /* OSX throws on zombies, so for consistency we do the same here*/
+  ps__check_for_zombie(handle, 0);
+
+  PS__CHECK_HANDLE(handle);
+
+  return ScalarInteger(num);
+}
+
+SEXP psll_open_files(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  char path[512];
+  DIR *dirs;
+  int ret;
+  int len = 10, num = 0;
+  char *linkname;
+  int fd, dfd;
+
+  PROTECT_INDEX pidx;
+  SEXP result;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  ret = snprintf(path, sizeof(path), "/proc/%i/fd", handle->pid);
+  if (ret < 0) ps__throw_error();
+
+  dirs = opendir(path);
+  if (!dirs) ps__check_for_zombie(handle, 1);
+
+  dfd = dirfd(dirs);
+  PROTECT_WITH_INDEX(result = allocVector(VECSXP, len), &pidx);
+
+  do {
+    errno = 0;
+    struct dirent *entry = readdir(dirs);
+    if (entry == NULL) {
+      closedir(dirs);
+      if (errno == 0) break;
+      ps__check_for_zombie(handle, 1);
+    }
+
+    if (!strncmp(".", entry->d_name, 2) ||
+	!strncmp("..", entry->d_name, 3)) continue;
+
+    ret = snprintf(path, sizeof(path), "/proc/%i/fd/%s", handle->pid,
+		   entry->d_name);
+    if (ret < 0) {
+      closedir(dirs);
+      ps__throw_error();
+    }
+
+    ret = psll__readlink(path, &linkname);
+    if (ret) {
+      closedir(dirs);
+      if (errno == ENOENT || errno == ESRCH || errno == EINVAL) continue;
+      ps__check_for_zombie(handle, 1);
+    }
+
+    fd = strtol(entry->d_name, NULL, 10);
+    if (fd == dfd) continue;
+    if (++num == len) {
+      len *= 2;
+      REPROTECT(result = Rf_lengthgets(result, len), pidx);
+    }
+    SET_VECTOR_ELT(result, num, ps__build_list("si", linkname, fd));
+  } while (1);
+
+  /* OSX throws on zombies, so for consistency we do the same here*/
+  ps__check_for_zombie(handle, 0);
+
+  PS__CHECK_HANDLE(handle);
+
+  UNPROTECT(1);
+  return result;
 }

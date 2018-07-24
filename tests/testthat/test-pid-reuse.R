@@ -51,4 +51,6 @@ test_that("pid reuse", {
   chk(ps_memory_info(p))
   chk(ps_cpu_times(p))
   chk(ps_num_threads(p))
+  chk(ps_num_fds(p))
+  chk(ps_open_files(p))
 })

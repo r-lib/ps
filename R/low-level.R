@@ -846,3 +846,80 @@ ps_ppid_map <- function() {
     ppid = ppids[ok]
   )
 }
+
+#' Number of open file desciptors
+#'
+#' Note that in some IDEs, e.g. RStudio or R.app on macOS, the IDE itself
+#' opens files from other threads, in addition to the files opened from the
+#' main R thread.
+#'
+#' For a zombie process it throws a `zombie_process` error.
+#'
+#' @param p Process handle.
+#' @return Integer scalar.
+#'
+#' @family process handle functions
+#' @export
+#'
+#' @rawRd
+#' \section{Examples}{
+#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' p <- ps_handle()
+#' ps_num_fds(p)
+#' f <- file(tmp <- tempfile(), "w")
+#' ps_num_fds(p)
+#' close(f)
+#' unlink(tmp)
+#' ps_num_fds(p)
+#' ')}
+#' }
+
+ps_num_fds <- function(p) {
+  assert_ps_handle(p)
+  .Call(psll_num_fds, p)
+}
+
+#' Open files of a process
+#'
+#' Note that in some IDEs, e.g. RStudio or R.app on macOS, the IDE itself
+#' opens files from other threads, in addition to the files opened from the
+#' main R thread.
+#'
+#' For a zombie process it throws a `zombie_process` error.
+#'
+#' @param p Process handle.
+#' @return Data frame, or tibble if the _tibble_ package is available,
+#'    with columns: `fd` and `path`. `fd` is numeric file descriptor on
+#'    POSIX systems, `NA` on Windows. `path` is an absolute path to the
+#'    file.
+#'
+#' @family process handle functions
+#' @export
+#'
+#' @rawRd
+#' \section{Examples}{
+#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' p <- ps_handle()
+#' ps_open_files(p)
+#' f <- file(tmp <- tempfile(), "w")
+#' ps_open_files(p)
+#' close(f)
+#' unlink(tmp)
+#' ps_open_files(p)
+#' ')}
+#' }
+
+ps_open_files <- function(p) {
+  assert_ps_handle(p)
+
+  l <- not_null(.Call(psll_open_files, p))
+
+  d <- data.frame(
+    stringsAsFactors = FALSE,
+    fd = vapply(l, "[[", integer(1), 2),
+    path = vapply(l, "[[", character(1), 1))
+
+  requireNamespace("tibble", quietly = TRUE)
+  class(d) <- unique(c("tbl_df", "tbl", class(d)))
+  d
+}

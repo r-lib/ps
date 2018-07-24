@@ -103,11 +103,9 @@ typedef struct _OBJECT_TYPE_INFORMATION {
 #endif
 
 PVOID GetLibraryProcAddress(PSTR LibraryName, PSTR ProcName);
-VOID ps__get_open_files_init(BOOL threaded);
+VOID ps__get_open_files_init();
 SEXP ps__get_open_files(long pid, HANDLE processHandle);
-SEXP ps__get_open_files_ntqueryobject(long dwPid, HANDLE hProcess);
-SEXP ps__get_open_files_getmappedfilename(long dwPid, HANDLE hProcess);
-DWORD psutil_NtQueryObject(void);
-DWORD WINAPI psutil_NtQueryObjectThread(LPVOID lpvParam);
+DWORD ps__NtQueryObject(void);
+DWORD WINAPI ps__NtQueryObjectThread(LPVOID lpvParam);
 
 #endif // __PROCESS_HANDLES_H__
