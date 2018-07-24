@@ -14,7 +14,13 @@
 #' `with_process_cleanup()` evaluates an R expression, and cleans up all
 #' external processes that were started by the R process while evaluating
 #' the expression. This includes child processes of child processes, etc.,
-#' recursively.
+#' recursively. It returns a list with entries: `result` is the result of
+#' the expression, `visible` is TRUE if the expression should be printed
+#' to the screen, and `process_cleanup` is a named integer vector of the
+#' cleaned pids, names are the process names.
+#'
+#' If `expr` throws an error, then so does `with_process_cleanup()`, the
+#' same error. Nevertheless processes are still cleaned up.
 #'
 #' @return `ps_mark_tree()` returns the name of the environment variable,
 #' which can be used as the `marker` in `ps_kill_tree()`.
@@ -52,9 +58,35 @@ get_id <- function() {
 
 with_process_cleanup <- function(expr) {
   id <- ps_mark_tree()
-  on.exit(ps_kill_tree(id), add = TRUE)
-  expr
+  stat <- NULL
+  do <- function() {
+    on.exit(stat <<- ps_kill_tree(id), add = TRUE)
+    withVisible(expr)
+  }
+
+  res <- do()
+
+  ret <- list(
+    result = res$value,
+    visible = res$visible,
+    process_cleanup = stat)
+  class(ret) <- "with_process_cleanup"
+  ret
 }
+
+#' @export
+
+print.with_process_cleanup <- function(x, ...) {
+  if (x$visible) print(x$result)
+  if (length(x$process_cleanup)) {
+    cat("!! Cleaned up the following processes:\n")
+    print(x$process_cleanup)
+  } else {
+    cat("-- No leftover processes to clean up.\n")
+  }
+  invisible(x)
+}
+
 
 #' @param marker String scalar, the name of the environment variable to
 #' use to find the marked processes.

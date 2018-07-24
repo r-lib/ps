@@ -46,6 +46,12 @@ variable, and kills them (or sends them the specified signal on Unix).
 \code{with_process_cleanup()} evaluates an R expression, and cleans up all
 external processes that were started by the R process while evaluating
 the expression. This includes child processes of child processes, etc.,
-recursively.
+recursively. It returns a list with entries: \code{result} is the result of
+the expression, \code{visible} is TRUE if the expression should be printed
+to the screen, and \code{process_cleanup} is a named integer vector of the
+cleaned pids, names are the process names.
+
+If \code{expr} throws an error, then so does \code{with_process_cleanup()}, the
+same error. Nevertheless processes are still cleaned up.
 }
 \keyword{internal}
