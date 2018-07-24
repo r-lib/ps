@@ -529,10 +529,10 @@ SEXP psll_num_fds(SEXP p) {
     ps__check_for_zombie(handle);
   }
 
-  PS__CHECK_HANDLE(handle);
-
   num = (pidinfo_result / PROC_PIDLISTFD_SIZE);
   free(fds_pointer);
+
+  PS__CHECK_HANDLE(handle);
 
   return ScalarInteger(num);
 }
