@@ -867,6 +867,9 @@ SEXP psll_num_fds(SEXP p) {
 	strncmp("..", entry->d_name, 3)) num++;
   } while (1);
 
+  /* OSX throws on zombies, so for consistency we do the same here*/
+  ps__check_for_zombie(handle, 0);
+
   PS__CHECK_HANDLE(handle);
 
   return ScalarInteger(num);
@@ -929,6 +932,9 @@ SEXP psll_open_files(SEXP p) {
     }
     SET_VECTOR_ELT(result, num, ps__build_list("si", linkname, fd));
   } while (1);
+
+  /* OSX throws on zombies, so for consistency we do the same here*/
+  ps__check_for_zombie(handle, 0);
 
   PS__CHECK_HANDLE(handle);
 
