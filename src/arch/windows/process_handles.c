@@ -52,9 +52,11 @@ SEXP ps__get_open_files(long dwPid, HANDLE hProcess) {
   DWORD                               dwWait = 0;
   SEXP                                retlist = NULL;
   SEXP                                path = NULL;
+  DWORD                               len = 20;
   DWORD                               num = 0;
+  PROTECT_INDEX                       pidx;
 
-  PROTECT(retlist = allocVector(VECSXP, 100));
+  PROTECT_WITH_INDEX(retlist = allocVector(VECSXP, len), &pidx);
 
   if (g_initialized == FALSE) ps__get_open_files_init();
 
@@ -157,7 +159,11 @@ SEXP ps__get_open_files(long dwPid, HANDLE hProcess) {
     if (g_pNameBuffer->Length > 0) {
       PROTECT(path = ps__convert_dos_path(g_pNameBuffer->Buffer));
       if (!isNull(path)) {
-	SET_VECTOR_ELT(retlist, num++, ps__build_list("Oi", path, NA_INTEGER));
+	if (++num == len) {
+	  len *= 2;
+	  REPROTECT(retlist = Rf_lengthgets(retlist, len), pidx);
+	}
+	SET_VECTOR_ELT(retlist, num, ps__build_list("Oi", path, NA_INTEGER));
       }
       UNPROTECT(1);
     }
