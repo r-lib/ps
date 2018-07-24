@@ -639,33 +639,31 @@ SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
 
 SEXP psll_num_fds(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
-  HANDLE  hProcess;
+  HANDLE  hProcess = NULL;
   DWORD handleCount;
 
   if (!handle) error("Process pointer cleaned up already");
 
   hProcess = ps__handle_from_pid(handle->pid);
-  if (NULL == hProcess) {
-    ps__set_error_from_windows_error(0);
-    ps__throw_error();
+  if (hProcess != NULL) {
+    if (GetProcessHandleCount(hProcess, &handleCount)) {
+      CloseHandle(hProcess);
+      PS__CHECK_HANDLE(handle);
+      return ScalarInteger(handleCount);
+    }
   }
 
-  if (! GetProcessHandleCount(hProcess, &handleCount)) {
-    CloseHandle(hProcess);
-    ps__set_error_from_windows_error(0);
-    ps__throw_error();
-  }
-
-  CloseHandle(hProcess);
-
+  /* Cleanup on error */
+  if (hProcess != NULL) CloseHandle(hProcess);
   PS__CHECK_HANDLE(handle);
-
-  return ScalarInteger(handleCount);
+  ps__set_error_from_windows_error(0);
+  ps__throw_error();
+  return R_NilValue;
 }
 
 SEXP psll_open_files(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
-  HANDLE processHandle;
+  HANDLE processHandle = NULL;
   DWORD access = PROCESS_DUP_HANDLE | PROCESS_QUERY_INFORMATION;
   SEXP result;
 
@@ -673,6 +671,7 @@ SEXP psll_open_files(SEXP p) {
 
   processHandle = ps__handle_from_pid_waccess(handle->pid, access);
   if (processHandle == NULL) {
+    PS__CHECK_HANDLE(handle);
     ps__set_error_from_windows_error(0);
     ps__throw_error();
   }
@@ -681,12 +680,12 @@ SEXP psll_open_files(SEXP p) {
 
   CloseHandle(processHandle);
 
+  PS__CHECK_HANDLE(handle);
+
   if (isNull(result)) {
     ps__set_error_from_windows_error(0);
     ps__throw_error();
   }
-
-  PS__CHECK_HANDLE(handle);
 
   UNPROTECT(1);
   return result;

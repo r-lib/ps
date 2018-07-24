@@ -54,6 +54,8 @@ SEXP ps__get_open_files(long dwPid, HANDLE hProcess) {
   SEXP                                path = NULL;
   DWORD                               num = 0;
 
+  PROTECT(retlist = allocVector(VECSXP, 100));
+
   if (g_initialized == FALSE) ps__get_open_files_init();
 
   if (__NtQuerySystemInformation == NULL ||
@@ -64,8 +66,6 @@ SEXP ps__get_open_files(long dwPid, HANDLE hProcess) {
     error = TRUE;
     goto cleanup;
   }
-
-  PROTECT(retlist = allocVector(VECSXP, 100));
 
   do {
     if (pHandleInfo != NULL) {
@@ -109,7 +109,7 @@ SEXP ps__get_open_files(long dwPid, HANDLE hProcess) {
 #endif
       goto loop_cleanup;
     }
-    
+
     if (!DuplicateHandle(hProcess,
 			 hHandle->HandleValue,
 			 GetCurrentProcess(),
@@ -184,9 +184,8 @@ SEXP ps__get_open_files(long dwPid, HANDLE hProcess) {
   if (pHandleInfo != NULL) HeapFree(GetProcessHeap(), 0, pHandleInfo);
   pHandleInfo = NULL;
 
-  if (error) ps__throw_error();
-
   UNPROTECT(1);
+  if (error) return R_NilValue;
   return retlist;
 }
 
