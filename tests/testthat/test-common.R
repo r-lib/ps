@@ -252,3 +252,37 @@ test_that("children", {
     expect_true(p2$get_pid() %in% pids3)
   }
 })
+
+test_that("num_fds", {
+  skip_in_rstudio()
+  skip_on_cran()
+
+  tmp <- tempfile()
+  on.exit(unlink(tmp), add = TRUE)
+
+  me <- ps_handle()
+  orig <- ps_num_fds(me)
+
+  f <- file(tmp, open = "w")
+  on.exit(close(f), add = TRUE)
+
+  expect_equal(ps_num_fds(me), orig + 1)
+})
+
+test_that("open_files", {
+  skip_in_rstudio()
+  skip_on_cran()
+
+  tmp <- tempfile()
+  on.exit(unlink(tmp), add = TRUE)
+
+  f <- file(tmp, open = "w")
+  on.exit(try(close(f), silent = TRUE), add = TRUE)
+
+  files <- ps_open_files(ps_handle())
+  expect_true(basename(tmp) %in% basename(files$path))
+
+  close(f)
+  files <- ps_open_files(ps_handle())
+  expect_false(basename(tmp) %in% basename(files$path))
+})

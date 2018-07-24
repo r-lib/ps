@@ -171,10 +171,6 @@ SEXP ps__exe(DWORD pid) {
   HANDLE hProcess;
   wchar_t exe[MAX_PATH];
   wchar_t *bs = exe;
-  int nbs = 0;
-  wchar_t d = 'A';
-  wchar_t device[3] = { d, ':', '\0' };
-  wchar_t target[512];
 
   if (pid == 0 || pid == 4) return ScalarString(NA_STRING);
 
@@ -190,7 +186,19 @@ SEXP ps__exe(DWORD pid) {
   }
   CloseHandle(hProcess);
 
+
   /* Convert to DOS path */
+
+  return ps__convert_dos_path(bs);
+}
+
+SEXP ps__convert_dos_path(WCHAR *wstr) {
+
+  WCHAR *bs = wstr;
+  int nbs = 0;
+  wchar_t d = 'A';
+  wchar_t device[3] = { d, ':', '\0' };
+  wchar_t target[512];
 
   while (nbs < 3 && *bs) {
     if (*bs == L'\\') nbs++;
@@ -204,7 +212,7 @@ SEXP ps__exe(DWORD pid) {
     device[0] = d;
     memset(target, 0, sizeof(wchar_t) * 512);
     if (QueryDosDeviceW(device, target, 511) != 0) {
-      if (wcscmp(exe, target) == 0) break;
+      if (wcscmp(wstr, target) == 0) break;
     }
     d++;
   }
@@ -220,7 +228,6 @@ SEXP ps__exe(DWORD pid) {
 
   return ScalarString(ps__utf16_to_charsxp(bs - 2, -1));
 }
-
 
 SEXP ps__name(DWORD pid) {
   SEXP exe, name;

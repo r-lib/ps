@@ -33,7 +33,7 @@ get_tool <- function(prog) {
 px <- function() get_tool("px")
 
 skip_in_rstudio <- function() {
-  if (Sys.getenv("RSTUDIO") != "") skip("would crash RStudio")
+  if (Sys.getenv("RSTUDIO") != "") skip("Cannot test in RStudio")
 }
 
 has_processx <- function() {

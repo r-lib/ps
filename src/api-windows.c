@@ -636,3 +636,58 @@ SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
   UNPROTECT(1);
   return R_NilValue;
 }
+
+SEXP psll_num_fds(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  HANDLE  hProcess;
+  DWORD handleCount;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  hProcess = ps__handle_from_pid(handle->pid);
+  if (NULL == hProcess) {
+    ps__set_error_from_windows_error(0);
+    ps__throw_error();
+  }
+
+  if (! GetProcessHandleCount(hProcess, &handleCount)) {
+    CloseHandle(hProcess);
+    ps__set_error_from_windows_error(0);
+    ps__throw_error();
+  }
+
+  CloseHandle(hProcess);
+
+  PS__CHECK_HANDLE(handle);
+
+  return ScalarInteger(handleCount);
+}
+
+SEXP psll_open_files(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  HANDLE processHandle;
+  DWORD access = PROCESS_DUP_HANDLE | PROCESS_QUERY_INFORMATION;
+  SEXP result;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  processHandle = ps__handle_from_pid_waccess(handle->pid, access);
+  if (processHandle == NULL) {
+    ps__set_error_from_windows_error(0);
+    ps__throw_error();
+  }
+
+  PROTECT(result = ps__get_open_files(handle->pid, processHandle));
+
+  CloseHandle(processHandle);
+
+  if (isNull(result)) {
+    ps__set_error_from_windows_error(0);
+    ps__throw_error();
+  }
+
+  PS__CHECK_HANDLE(handle);
+
+  UNPROTECT(1);
+  return result;
+}
