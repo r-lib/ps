@@ -48,3 +48,22 @@ ps_pids_linux <- function() {
 ps_boot_time <- function() {
   format_unix_time(.Call(ps__boot_time))
 }
+
+#' @export
+
+ps_users <- function() {
+  l <- not_null(.Call(ps__users))
+
+  d <- data.frame(
+    stringsAsFactors = FALSE,
+    username = vapply(l, "[[", character(1), 1),
+    tty = vapply(l, "[[", character(1), 2),
+    hostname = vapply(l, "[[", character(1), 3),
+    start_time = format_unix_time(vapply(l, "[[", double(1), 4)),
+    pid = vapply(l, "[[", integer(1),  5)
+  )
+
+  requireNamespace("tibble", quietly = TRUE)
+  class(d) <- unique(c("tbl_df", "tbl", class(d)))
+  d
+}
