@@ -691,9 +691,10 @@ SEXP psll_open_files(SEXP p) {
   return result;
 }
 
-SEXP psll_interrupt(SEXP p, SEXP interrupt_path) {
+SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   const char *cinterrupt_path = CHAR(STRING_ELT(interrupt_path, 0));
+  int cctrlc = LOGICAL(ctrlc)[0];
   WCHAR *wpath;
   SEXP running;
   int iret;
@@ -718,7 +719,8 @@ SEXP psll_interrupt(SEXP p, SEXP interrupt_path) {
   iret = ps__utf8_to_utf16(cinterrupt_path, &wpath);
   if (iret) goto error;
 
-  iret = snprintf(arguments, sizeof(arguments) - 1, "interrupt.exe %d c", handle->pid);
+  iret = snprintf(arguments, sizeof(arguments) - 1, "interrupt.exe %d %s", handle->pid,
+		  cctrlc ? "c" : "break");
   if  (iret < 0) goto error;
 
   iret = ps__utf8_to_utf16(arguments, &warguments);

@@ -62,6 +62,6 @@ SEXP psll_kill(SEXP p) {
   return psll_send_signal(p, ScalarInteger(SIGKILL));
 }
 
-SEXP psll_interrupt(SEXP p, SEXP interrupt_path) {
+SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path) {
   return psll_send_signal(p, ScalarInteger(SIGINT));
 }
