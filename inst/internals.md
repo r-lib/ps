@@ -33,6 +33,7 @@ ps_suspend       .  <  +
 ps_resume        .  <  +
 ps_terminate     .  <  +
 ps_kill          .  <  +
+ps_interrupt     .  <  +
 ```
 
 ```

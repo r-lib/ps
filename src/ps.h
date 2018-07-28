@@ -38,6 +38,7 @@ SEXP psll_terminate(SEXP p);
 SEXP psll_kill(SEXP p);
 SEXP psll_num_fds(SEXP p);
 SEXP psll_open_files(SEXP p);
+SEXP psll_interrupt(SEXP p, SEXP interrupt_path);
 
 /* System API */
 

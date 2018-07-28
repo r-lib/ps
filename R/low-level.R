@@ -923,3 +923,19 @@ ps_open_files <- function(p) {
   class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
 }
+
+#' Interrupt a process
+#'
+#' Sends `SIGINT` on POSIX, and CTRL+C or CTRL+BREAK on Windows.
+#'
+#' @export
+
+ps_interrupt  <- function(p) {
+  assert_ps_handle(p)
+  if (ps_os_type()[["WINDOWS"]]) {
+    interrupt <- get_tool("interrupt")
+    .Call(psll_interrupt, p, interrupt)
+  } else {
+    .Call(psll_interrupt, p, NULL)
+  }
+}

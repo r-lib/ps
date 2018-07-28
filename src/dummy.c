@@ -64,6 +64,7 @@ void psll_terminate()    { ps__dummy("ps_terminate"); }
 void psll_kill()         { ps__dummy("ps_kill"); }
 void psll_num_fds()      { ps__dummy("ps_num_fds"); }
 void psll_open_files()   { ps__dummy("ps_open_files"); }
+void psll_interrupt()    { ps__dummt("ps_interrupt"); }
 
 void ps__init()          { /* this needs to run to load package */ }
 void ps__kill_if_env()   { ps__dummy("ps__kill_if_env"); }

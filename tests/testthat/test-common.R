@@ -286,3 +286,20 @@ test_that("open_files", {
   files <- ps_open_files(ps_handle())
   expect_false(basename(tmp) %in% basename(files$path))
 })
+
+test_that("interrupt", {
+  skip_on_cran()
+  px <- processx::process$new(px(), c("sleep", "10"))
+  on.exit(px$kill(), add = TRUE)
+  ps <- ps_handle(px$get_pid())
+
+  expect_true(ps_is_running(ps))
+
+  ps_interrupt(ps)
+
+  deadline <- Sys.time() + 3
+  while (ps_is_running(ps) && Sys.time() < deadline) Sys.sleep(0.05)
+  expect_true(Sys.time() < deadline)
+  expect_false(ps_is_running(ps))
+  if (ps_os_type()[["POSIX"]]) expect_equal(px$get_exit_status(), -2)
+})

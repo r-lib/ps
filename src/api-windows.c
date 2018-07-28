@@ -474,7 +474,7 @@ SEXP psll_suspend(SEXP p) {
   }
 
   PROTECT(ret = ps__proc_suspend(handle->pid));
-  if (isNull(ret)) ps__throw_error();
+  if (isNull(ret)) goto error;
 
   UNPROTECT(1);
   return R_NilValue;
@@ -501,7 +501,7 @@ SEXP psll_resume(SEXP p) {
   }
 
   PROTECT(ret = ps__proc_resume(handle->pid));
-  if (isNull(ret)) ps__throw_error();
+  if (isNull(ret)) goto error;
 
   UNPROTECT(1);
   return R_NilValue;
@@ -689,4 +689,79 @@ SEXP psll_open_files(SEXP p) {
 
   UNPROTECT(1);
   return result;
+}
+
+SEXP psll_interrupt(SEXP p, SEXP interrupt_path) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  const char *cinterrupt_path = CHAR(STRING_ELT(interrupt_path, 0));
+  WCHAR *wpath;
+  SEXP running, ret;
+  int iret;
+  STARTUPINFOW startup = { 0 };
+  PROCESS_INFORMATION info = { 0 };
+  HANDLE hProcess;
+  WCHAR *arguments;
+  DWORD process_flags;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  hProcess = ps__handle_from_pid(handle->pid);
+  if (!hProcess) goto error;
+
+  running = ps__is_running(handle);
+  if (!LOGICAL(running)[0]) {
+    ps__no_such_process(handle->pid, 0);
+    goto error;
+  }
+
+  iret = ps__utf8_to_utf16(cinterrupt_path, &wpath);
+  if (iret) goto error;
+
+  iret = ps__utf8_to_utf16("interrupt.exe");
+  if (iret) goto error;
+
+  startup.cb = sizeof(startup);
+  startup.lpReserved = NULL;
+  startup.lpDesktop = NULL;
+  startup.lpTitle = NULL;
+  startup.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+
+  startup.cbReserved2 = processx__stdio_size(handle->child_stdio_buffer);
+  startup.lpReserved2 = (BYTE*) handle->child_stdio_buffer;
+
+  startup.hStdInput = processx__stdio_handle(handle->child_stdio_buffer, 0);
+  startup.hStdOutput = processx__stdio_handle(handle->child_stdio_buffer, 1);
+  startup.hStdError = processx__stdio_handle(handle->child_stdio_buffer, 2);
+  startup.wShowWindow = options.windows_hide ? SW_HIDE : SW_SHOWDEFAULT;
+
+  process_flags = CREATE_UNICODE_ENVIRONMENT |
+    CREATE_SUSPENDED |
+    CREATE_NO_WINDOW;
+
+  iret = CreateProcessW(
+    /* lpApplicationName =    */ wpath,
+    /* lpCommandLine =        */ arguments,
+    /* lpProcessAttributes =  */ NULL,
+    /* lpThreadAttributes =   */ NULL,
+    /* bInheritHandles =      */ 0,
+    /* dwCreationFlags =      */ process_flags,
+    /* lpEnvironment =        */ NULL,
+    /* lpCurrentDirectory =   */ NULL,
+    /* lpStartupInfo =        */ &startup,
+    /* lpProcessInformation = */ &info);
+
+  if (!iret) {
+    ps__set_error_from_errno(0);
+    goto error;
+  }
+
+  CloseHandle(info.hThread);
+  CloseHandle(info.hProcess);
+
+  return R_NilValue;
+
+ error:
+  if (hProcess) CloseHandle(hProcess);
+  ps__throw_error();
+  return R_NilValue;
 }

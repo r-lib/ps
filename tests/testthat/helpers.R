@@ -18,18 +18,6 @@ wait_for_status <- function(ps, status, timeout = 5) {
   while (ps_status(ps) != status && Sys.time() < limit) Sys.sleep(0.05)
 }
 
-get_tool <- function(prog) {
-  if (ps_os_type()[["WINDOWS"]]) prog <- paste0(prog, ".exe")
-  exe <- system.file(package = "ps", "bin", .Platform$r_arch, prog)
-  if (exe == "") {
-    pkgpath <- system.file(package = "ps")
-    if (basename(pkgpath) == "inst") pkgpath <- dirname(pkgpath)
-    exe <- file.path(pkgpath, "src", prog)
-    if (!file.exists(exe)) return("")
-  }
-  exe
-}
-
 px <- function() get_tool("px")
 
 skip_in_rstudio <- function() {
