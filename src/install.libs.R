@@ -1,6 +1,6 @@
 
 progs <- if (WINDOWS) {
-           "px.exe"
+           c("px.exe", "interrupt.exe")
          } else {
            "px"
          }

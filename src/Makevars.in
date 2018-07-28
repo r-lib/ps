@@ -5,7 +5,7 @@ PKG_LIBS = @LIBS@
 
 .PHONY: all clean
 
-all: px $(SHLIB) @TARGETS@
+all: px @TARGETS@ $(SHLIB)
 
 px: px.c
 	$(CC) $(CFLAGS) -Wall px.c -o px
