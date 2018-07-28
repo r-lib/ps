@@ -10,5 +10,6 @@
 ^.*\.dSYM$
 ^src/px$
 ^src/px\.exe$
+^src/interrupt\.exe$
 ^docs$
 ^_pkgdown\.yml$

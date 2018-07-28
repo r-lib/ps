@@ -7,5 +7,6 @@
 /src/*.dSYM
 /src/px
 /src/px.exe
+/src/interrupt.exe
 /src-i386
 /src-x64

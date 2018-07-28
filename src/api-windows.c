@@ -695,12 +695,13 @@ SEXP psll_interrupt(SEXP p, SEXP interrupt_path) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   const char *cinterrupt_path = CHAR(STRING_ELT(interrupt_path, 0));
   WCHAR *wpath;
-  SEXP running, ret;
+  SEXP running;
   int iret;
   STARTUPINFOW startup = { 0 };
   PROCESS_INFORMATION info = { 0 };
   HANDLE hProcess;
-  WCHAR *arguments;
+  char arguments[100];
+  WCHAR *warguments;
   DWORD process_flags;
 
   if (!handle) error("Process pointer cleaned up already");
@@ -717,30 +718,26 @@ SEXP psll_interrupt(SEXP p, SEXP interrupt_path) {
   iret = ps__utf8_to_utf16(cinterrupt_path, &wpath);
   if (iret) goto error;
 
-  iret = ps__utf8_to_utf16("interrupt.exe");
+  iret = snprintf(arguments, sizeof(arguments) - 1, "interrupt.exe %d c", handle->pid);
+  if  (iret < 0) goto error;
+
+  iret = ps__utf8_to_utf16(arguments, &warguments);
   if (iret) goto error;
 
   startup.cb = sizeof(startup);
   startup.lpReserved = NULL;
   startup.lpDesktop = NULL;
   startup.lpTitle = NULL;
-  startup.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+  startup.dwFlags = 0;
 
-  startup.cbReserved2 = processx__stdio_size(handle->child_stdio_buffer);
-  startup.lpReserved2 = (BYTE*) handle->child_stdio_buffer;
+  startup.cbReserved2 = 0;
+  startup.lpReserved2 = 0;
 
-  startup.hStdInput = processx__stdio_handle(handle->child_stdio_buffer, 0);
-  startup.hStdOutput = processx__stdio_handle(handle->child_stdio_buffer, 1);
-  startup.hStdError = processx__stdio_handle(handle->child_stdio_buffer, 2);
-  startup.wShowWindow = options.windows_hide ? SW_HIDE : SW_SHOWDEFAULT;
-
-  process_flags = CREATE_UNICODE_ENVIRONMENT |
-    CREATE_SUSPENDED |
-    CREATE_NO_WINDOW;
+  process_flags = CREATE_UNICODE_ENVIRONMENT | CREATE_NO_WINDOW;
 
   iret = CreateProcessW(
     /* lpApplicationName =    */ wpath,
-    /* lpCommandLine =        */ arguments,
+    /* lpCommandLine =        */ warguments,
     /* lpProcessAttributes =  */ NULL,
     /* lpThreadAttributes =   */ NULL,
     /* bInheritHandles =      */ 0,
