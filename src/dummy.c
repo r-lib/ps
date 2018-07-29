@@ -38,6 +38,10 @@ void psw__realpath()     { ps__dummy("psw__realpath"); }
 #ifndef PS__WINDOWS
 void ps__pids()          { ps__dummy("ps_pids"); }
 void ps__boot_time()     { ps__dummy("ps_boot_time"); }
+void ps__cpu_count_logical()
+                         { ps__dummy("ps_cpu_count"); }
+void ps__cpu_count_physical()
+                         { ps__dummy("ps_cpu_count"); }
 
 void psll_handle()       { ps__dummy("ps_handle"); }
 void psll_format()       { ps__dummy("ps_format"); }

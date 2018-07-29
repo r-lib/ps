@@ -67,5 +67,9 @@ ps_cpu_count_logical <- function() {
 }
 
 ps_cpu_count_physical <- function() {
-  .Call(ps__cpu_count_physical)
+  if (ps_os_type()[["LINUX"]]) {
+    ps_cpu_count_physical_linux()
+  } else {
+    .Call(ps__cpu_count_physical)
+  }
 }

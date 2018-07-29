@@ -941,3 +941,17 @@ SEXP psll_open_files(SEXP p) {
   UNPROTECT(1);
   return result;
 }
+
+SEXP ps__cpu_count_logical() {
+  int n = sysconf(_SC_NPROCESSORS_ONLN);
+  if (n >= 1) return ScalarInteger(n);
+  ps__set_error_from_errno(0);
+  ps__throw_error();
+  return R_NilValue;
+}
+
+/* This is not used, because it is much easier to parse this file from R */
+
+SEXP ps__cpu_count_physical() {
+  return R_NilValue;
+}
