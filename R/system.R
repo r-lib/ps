@@ -49,6 +49,13 @@ ps_boot_time <- function() {
   format_unix_time(.Call(ps__boot_time))
 }
 
+#' List users connected to the system
+#'
+#' @return A data frame (tibble) with columns
+#'  `username`, `tty`, `hostname`, `start_time`, `pid`. `tty` and `pid`
+#'  are `NA` on Windows. `pid` is the process id of the login process.
+#'  For local users the `hostname` column is the empty string.
+#'
 #' @export
 
 ps_users <- function() {
