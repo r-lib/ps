@@ -19,6 +19,8 @@ Internal <- NULL
   ps_boot_time <<- memoize(ps_boot_time)
   get_terminal_map <<- memoize(get_terminal_map)
   NA_time <<- memoize(NA_time)
+  ps_cpu_count_logical <<- memoize(ps_cpu_count_logical)
+  ps_cpu_count_physical <<- memoize(ps_cpu_count_physical)
 }
 ## nocov end
 

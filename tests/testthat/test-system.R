@@ -52,3 +52,9 @@ test_that("supported_str", {
 test_that("ps_os_name", {
   expect_true(ps_os_name() %in% names(ps_os_type()))
 })
+
+test_that("ps_cpu_count", {
+  log <- ps_cpu_count(logical = TRUE)
+  phy <- ps_cpu_count(logical = FALSE)
+  if (!is.na(log) && !is.na(phy)) expect_true(log >= phy)
+})

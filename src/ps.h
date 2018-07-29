@@ -44,6 +44,8 @@ SEXP psll_open_files(SEXP p);
 SEXP ps__os_type();
 SEXP ps__pids();
 SEXP ps__boot_time();
+SEXP ps__cpu_count_logical();
+SEXP ps__cpu_count_physical();
 
 /* Generic utils used from R */
 

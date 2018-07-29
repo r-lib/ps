@@ -616,3 +616,25 @@ SEXP psll_open_files(SEXP p) {
   ps__check_for_zombie(handle);
   return R_NilValue;
 }
+
+SEXP ps__cpu_count_logical() {
+  int num;
+  size_t size = sizeof(int);
+
+  if (sysctlbyname("hw.logicalcpu", &num, &size, NULL, 2)) {
+    return ScalarInteger(NA_INTEGER);
+  } else {
+    return ScalarInteger(num);
+  }
+}
+
+SEXP ps__cpu_count_physical() {
+  int num;
+  size_t size = sizeof(int);
+
+  if (sysctlbyname("hw.physicalcpu", &num, &size, NULL, 0)) {
+    return ScalarInteger(NA_INTEGER);
+  } else {
+    return ScalarInteger(num);
+  }
+}

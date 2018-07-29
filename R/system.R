@@ -48,3 +48,24 @@ ps_pids_linux <- function() {
 ps_boot_time <- function() {
   format_unix_time(.Call(ps__boot_time))
 }
+
+#' Number of logical or physical CPUs
+#'
+#' @param logical If `FALSE` the number of phyical cores only. If cannot
+#' be determined, it returns `NA`.
+#' @return Integer scalar, the number of CPUs.
+#'
+#' @export
+
+ps_cpu_count <- function(logical = TRUE) {
+  assert_flag(logical)
+  if (logical) ps_cpu_count_logical() else ps_cpu_count_physical()
+}
+
+ps_cpu_count_logical <- function() {
+  .Call(ps__cpu_count_logical)
+}
+
+ps_cpu_count_physical <- function() {
+  .Call(ps__cpu_count_physical)
+}
