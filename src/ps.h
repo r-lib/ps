@@ -44,6 +44,7 @@ SEXP psll_open_files(SEXP p);
 SEXP ps__os_type();
 SEXP ps__pids();
 SEXP ps__boot_time();
+SEXP ps__wait(SEXP procs, SEXP timeout);
 
 /* Generic utils used from R */
 

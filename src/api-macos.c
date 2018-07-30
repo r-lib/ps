@@ -7,6 +7,7 @@
 #include <libproc.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/event.h>
 
 #include "ps-internal.h"
 #include "arch/macos/process_info.h"
@@ -614,5 +615,90 @@ SEXP psll_open_files(SEXP p) {
  error:
   if (fds_pointer != NULL) free(fds_pointer);
   ps__check_for_zombie(handle);
+  return R_NilValue;
+}
+
+LibExtern Rboolean R_interrupts_suspended;
+LibExtern int R_interrupts_pending;
+
+int ps__difftime(struct timeval x, struct timeval y, struct timespec *res) {
+
+  if (x.tv_usec < y.tv_usec) {
+    int nsec = (y.tv_usec - x.tv_usec) / 1000000 + 1;
+    y.tv_usec -= 1000000 * nsec;
+    y.tv_sec += nsec;
+  }
+
+  if (x.tv_usec - y.tv_usec > 1000000) {
+    int nsec = (y.tv_usec - x.tv_usec) / 1000000;
+    y.tv_usec += 1000000 * nsec;
+    y.tv_sec -= nsec;
+  }
+
+  res->tv_sec = x.tv_sec - y.tv_sec;
+  res->tv_nsec = (x.tv_usec - y.tv_usec) * 1000;
+
+  return 0;
+}
+
+SEXP ps__wait(SEXP procs, SEXP timeout) {
+  long ctimeout = INTEGER(timeout)[0];
+  size_t i, num_procs = LENGTH(procs);
+  struct kevent *chlist = 0;
+  struct kevent *evlist = 0;
+  int kq = -1, nev;
+  struct timespec ts;
+  struct timeval now, deadline;
+
+  if ((kq = kqueue()) == -1) goto error;
+
+  chlist = (struct kevent*) R_alloc(num_procs, sizeof(struct kevent));
+  evlist = (struct kevent*) R_alloc(num_procs, sizeof(struct kevent));
+
+  for (i = 0; i < num_procs; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(procs, i));
+    pid_t pid = handle->pid;
+    EV_SET(&chlist[i], pid, EVFILT_PROC, EV_ADD|EV_ENABLE|EV_CLEAR,
+	   NOTE_EXIT, 0, NULL);
+  }
+
+  if (ctimeout >= 0) {
+    gettimeofday(&deadline, NULL);
+    now = deadline;
+    deadline.tv_sec += ctimeout / 1000;
+    deadline.tv_usec += ctimeout % 1000 * 1000;
+    deadline.tv_sec += deadline.tv_usec / 1000000;
+    deadline.tv_usec = deadline.tv_usec % 1000000;
+    ts.tv_sec = ctimeout / 1000;
+    ts.tv_nsec = ctimeout % 1000 * 1000 * 1000;
+  }
+
+  while (1) {
+    nev = kevent(kq, chlist, (int) num_procs, evlist, (int) num_procs,
+		 ctimeout >= 0 ? &ts : NULL);
+
+    if (nev >= 0) break;
+    if (nev == -1 && errno != EINTR) goto error;
+
+    if (R_interrupts_pending && ! R_interrupts_suspended) {
+      close(kq);
+      R_CheckUserInterrupt();
+    }
+
+    if (ctimeout >= 0) {
+      gettimeofday(&now, NULL);
+      ps__difftime(deadline, now, &ts);
+    }
+  }
+
+  /* TODO: return actual result */
+
+  close(kq);
+  return R_NilValue;
+
+ error:
+  if (kq >= 0) close(kq);
+  ps__set_error_from_errno();
+  ps__throw_error();
   return R_NilValue;
 }

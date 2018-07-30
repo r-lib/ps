@@ -941,3 +941,8 @@ SEXP psll_open_files(SEXP p) {
   UNPROTECT(1);
   return result;
 }
+
+SEXP ps__wait(SEXP procs, SEXP timeout) {
+  /* TODO */
+  return R_NilValue;
+}

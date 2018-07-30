@@ -48,3 +48,19 @@ ps_pids_linux <- function() {
 ps_boot_time <- function() {
   format_unix_time(.Call(ps__boot_time))
 }
+
+#' Wait for some processes to finish
+#'
+#' @param procs List of `ps_handle` objects. Processes to wait on.
+#' @return TODO
+#'
+#' @export
+
+ps_wait <- function(procs, timeout = Inf) {
+  os <- ps_os_type()
+  if (os[["LINUX"]]) {
+    ps_wait_linux(procs, timeout)
+  } else {
+    .Call(ps__wait, procs, timeout)
+  }
+}
