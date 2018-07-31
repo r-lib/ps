@@ -843,8 +843,26 @@ SEXP ps__kill_if_env(SEXP r_marker, SEXP r_after, SEXP r_pid, SEXP r_sig) {
   return R_NilValue;
 }
 
-SEXP ps__find_if_env(SEXP marker, SEXP after, SEXP pid) {
-  /* TODO */
+SEXP ps__find_if_env(SEXP r_marker, SEXP r_after, SEXP r_pid) {
+  SEXP phandle;
+  pid_t pid = INTEGER(r_pid)[0];
+  int match;
+  ps_handle_t *handle;
+
+  PROTECT(phandle = psll_handle(r_pid,  R_NilValue));
+  handle = R_ExternalPtrAddr(phandle);
+
+  match = psl__linux_match_environ(r_marker, r_pid);
+  if (match == -1) ps__throw_error();
+
+  if (match) {
+    UNPROTECT(1);
+    PS__CHECK_HANDLE(handle);
+    return phandle;
+  }
+
+  UNPROTECT(1);
+  return R_NilValue;
 }
 
 SEXP psll_num_fds(SEXP p) {
