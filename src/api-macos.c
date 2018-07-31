@@ -502,6 +502,37 @@ SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
   return R_NilValue;
 }
 
+SEXP ps__find_if_env(SEXP marker, SEXP after, SEXP pid) {
+  const char *cmarker = CHAR(STRING_ELT(marker, 0));
+  pid_t cpid = INTEGER(pid)[0];
+  SEXP env;
+  size_t i, len;
+  SEXP phandle;
+  ps_handle_t *handle;
+
+  PROTECT(phandle = psll_handle(pid, R_NilValue));
+  handle = R_ExternalPtrAddr(phandle);
+
+  PROTECT(env = ps__get_environ(cpid));
+  if (isNull(env)) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  len = LENGTH(env);
+
+  for (i = 0; i < len; i++) {
+    if (strstr(CHAR(STRING_ELT(env, i)), cmarker)) {
+      UNPROTECT(2);
+      PS__CHECK_HANDLE(handle);
+      return phandle;
+    }
+  }
+
+  UNPROTECT(2);
+  return R_NilValue;
+}
+
 SEXP psll_num_fds(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   struct proc_fdinfo *fds_pointer;

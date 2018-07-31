@@ -843,6 +843,10 @@ SEXP ps__kill_if_env(SEXP r_marker, SEXP r_after, SEXP r_pid, SEXP r_sig) {
   return R_NilValue;
 }
 
+SEXP ps__find_if_env(SEXP marker, SEXP after, SEXP pid) {
+  /* TODO */
+}
+
 SEXP psll_num_fds(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   char path[512];

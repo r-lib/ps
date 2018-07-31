@@ -638,6 +638,10 @@ SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
   return R_NilValue;
 }
 
+SEXP ps__find_if_env(SEXP marker, SEXP after, SEXP pid) {
+  /* TODO */
+}
+
 SEXP psll_num_fds(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   HANDLE  hProcess = NULL;
