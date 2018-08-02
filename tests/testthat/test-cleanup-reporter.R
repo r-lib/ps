@@ -18,6 +18,9 @@ test_that("unit: test, mode: cleanup-fail", {
   )
 
   expect_true(out$running)
+  deadline <- Sys.time() + 2
+  while (out$p$is_alive() && Sys.time() < deadline) Sys.sleep(0.05)
+  expect_true(Sys.time() < deadline)
   expect_false(out$p$is_alive())
 })
 
