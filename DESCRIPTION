@@ -20,11 +20,13 @@ Imports:
 Suggests:
     callr,
     covr,
-    processx,
+    processx (>= 3.2.0),
     R6,
     rlang,
     testthat,
     tibble
 RoxygenNote: 6.1.0
+Remotes:
+    r-lib/processx
 Roxygen: list(markdown = TRUE)
 Biarch: true
