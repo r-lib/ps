@@ -21,6 +21,10 @@ globalVariables("private")
 #'   processes.
 #' * `process_fail`: Whether to create an expectation, that fails if there
 #'   are any processes alive.
+#' * `process_timeout`: How long to wait for the processes to quit. This is
+#'   sometimes needed, because even if some kill signals were sent to
+#'   child processes, it might take a short time for these to take effect.
+#'   It defaults to one second.
 #'
 #' @note Some IDEs, like RStudio, start child processes frequently, and
 #' sometimes crash when these are killed, only use this reporter in a
@@ -62,7 +66,8 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
       initialize = function(
         file = getOption("testthat.output_file", stdout()),
         unit = c("test", "testsuite"),
-        process_cleanup = TRUE, process_fail = TRUE) {
+        process_cleanup = TRUE, process_fail = TRUE,
+        process_timeout = 1000) {
 
         if (!ps::ps_is_supported()) {
           stop("CleanupReporter is not supported on this platform")
@@ -72,6 +77,7 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         private$unit <- match.arg(unit)
         private$process_cleanup <- process_cleanup
         private$process_fail <- process_fail
+        private$process_timeout <- process_timeout
 
         invisible(self)
       },
@@ -102,10 +108,13 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
 
       cleanup = function(test, quote = "'") {
         Sys.unsetenv(private$tree_id)
+        deadline <- Sys.time() + private$process_timeout / 1000
+        if (private$process_fail) {
+          while (length(ret <- ps::ps_find_tree(private$tree_id)) &&
+                 Sys.time() < deadline) Sys.sleep(0.05)
+        }
         if (private$process_cleanup) {
           ret <- ps::ps_kill_tree(private$tree_id)
-        } else {
-          ret <- ps::ps_find_tree(private$tree_id)
         }
         if (private$process_fail)  {
           testthat::with_reporter(self, start_end_reporter = FALSE, {
@@ -131,6 +140,7 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
       unit = NULL,
       process_cleanup = NULL,
       process_fail = NULL,
+      process_timeout = NULL,
       tree_id = NULL
     )
   )

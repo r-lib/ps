@@ -32,14 +32,16 @@ values:
 \itemize{
 \item \code{"test"}: at the end of each \code{\link[testthat:test_that]{testthat::test_that()}} block
 (the default),
-\item \code{"context"}: at the end of each context,
-\item \code{"file"}: at the end of each test file, or
 \item \code{"testsuite"}: at the end of the test suite.
 }
 \item \code{process_cleanup}: Logical scalar, whether to kill the leftover
 processes.
 \item \code{process_fail}: Whether to create an expectation, that fails if there
 are any processes alive.
+\item \code{process_timeout}: How long to wait for the processes to quit. This is
+sometimes needed, because even if some kill signals were sent to
+child processes, it might take a short time for these to take effect.
+It defaults to one second.
 }
 }
 \note{
