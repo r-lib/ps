@@ -21,6 +21,8 @@ Suggests:
     callr,
     covr,
     processx,
+    R6,
+    rlang,
     testthat,
     tibble
 RoxygenNote: 6.1.0
