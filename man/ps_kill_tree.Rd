@@ -62,4 +62,3 @@ cleaned pids, names are the process names.
 If \code{expr} throws an error, then so does \code{with_process_cleanup()}, the
 same error. Nevertheless processes are still cleaned up.
 }
-\keyword{internal}
