@@ -18,7 +18,7 @@ specified granularity.
 \description{
 \code{CleanupReporter} takes an existing testthat \code{Reporter} object, and
 wraps it, so it checks for leftover child processes, at the specified
-place, see the \code{unit} argument below.
+place, see the \code{proc_unit} argument below.
 }
 \details{
 Child processes can be reported via a failed expectation, cleaned up
@@ -27,21 +27,27 @@ silently, or cleaned up and reptorted (the default).
 The constructor of the \code{CleanupReporter} class has options:
 \itemize{
 \item \code{file}: the output file, if any, this is passed to \code{reporter}.
-\item \code{unit}: when to perform the child process check and cleanup. Possible
-values:
+\item \code{proc_unit}: when to perform the child process check and cleanup.
+Possible values:
 \itemize{
 \item \code{"test"}: at the end of each \code{\link[testthat:test_that]{testthat::test_that()}} block
 (the default),
 \item \code{"testsuite"}: at the end of the test suite.
 }
-\item \code{process_cleanup}: Logical scalar, whether to kill the leftover
-processes.
-\item \code{process_fail}: Whether to create an expectation, that fails if there
-are any processes alive.
-\item \code{process_timeout}: How long to wait for the processes to quit. This is
+\item \code{proc_cleanup}: Logical scalar, whether to kill the leftover
+processes, \code{TRUE} by default.
+\item \code{proc_fail}: Whether to create an expectation, that fails if there
+are any processes alive, \code{TRUE} by default.
+\item \code{proc_timeout}: How long to wait for the processes to quit. This is
 sometimes needed, because even if some kill signals were sent to
 child processes, it might take a short time for these to take effect.
 It defaults to one second.
+\item \code{rconn_unit}: when to perform the R connection cleanup. Possible values
+are \code{"test"} and \code{"testsuite"}, like for \code{proc_unit}.
+\item \code{rconn_cleanup}: Logical scalar, whether to clean up leftover R
+connections. \code{TRUE} by default.
+\item \code{rconn_fail}: Whether to fail for leftover R connections. \code{TRUE} by
+default.
 }
 }
 \note{
@@ -58,7 +64,7 @@ library(mypackage)
 
 if  (ps::ps_is_supported()) {
   reporter <- ps::CleanupReporter(testthat::ProgressReporter)$new(
-    unit = "test", process_cleanup = TRUE)
+    proc_unit = "test", proc_cleanup = TRUE)
 } else {
   ## ps does not support this platform
   reporter <- "progress"
