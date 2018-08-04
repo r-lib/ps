@@ -42,11 +42,15 @@ are any processes alive, \code{TRUE} by default.
 sometimes needed, because even if some kill signals were sent to
 child processes, it might take a short time for these to take effect.
 It defaults to one second.
-\item \code{rconn_unit}: when to perform the R connection cleanup. Possible values
+\item \code{rconn_unit}: When to perform the R connection cleanup. Possible values
 are \code{"test"} and \code{"testsuite"}, like for \code{proc_unit}.
 \item \code{rconn_cleanup}: Logical scalar, whether to clean up leftover R
 connections. \code{TRUE} by default.
 \item \code{rconn_fail}: Whether to fail for leftover R connections. \code{TRUE} by
+default.
+\item \code{file_unit}: When to check for open files. Possible values are
+\code{"test"} and \code{"testsuite"}, like for \code{proc_unit}.
+\item \code{file_fail}: Whether to fail for leftover open files. \code{TRUE} by
 default.
 }
 }

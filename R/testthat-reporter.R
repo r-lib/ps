@@ -25,11 +25,15 @@ globalVariables("private")
 #'   sometimes needed, because even if some kill signals were sent to
 #'   child processes, it might take a short time for these to take effect.
 #'   It defaults to one second.
-#' * `rconn_unit`: when to perform the R connection cleanup. Possible values
+#' * `rconn_unit`: When to perform the R connection cleanup. Possible values
 #'   are `"test"` and `"testsuite"`, like for `proc_unit`.
 #' * `rconn_cleanup`: Logical scalar, whether to clean up leftover R
 #'   connections. `TRUE` by default.
 #' * `rconn_fail`: Whether to fail for leftover R connections. `TRUE` by
+#'   default.
+#' * `file_unit`: When to check for open files. Possible values are
+#'    `"test"` and `"testsuite"`, like for `proc_unit`.
+#' * `file_fail`: Whether to fail for leftover open files. `TRUE` by
 #'   default.
 #'
 #' @note Some IDEs, like RStudio, start child processes frequently, and
@@ -74,7 +78,8 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         proc_unit = c("test", "testsuite"),
         proc_cleanup = TRUE, proc_fail = TRUE, proc_timeout = 1000,
         rconn_unit = c("test", "testsuite"),
-        rconn_cleanup = TRUE, rconn_fail = TRUE) {
+        rconn_cleanup = TRUE, rconn_fail = TRUE,
+        file_unit = c("test", "testsuite"), file_fail = TRUE) {
 
         if (!ps::ps_is_supported()) {
           stop("CleanupReporter is not supported on this platform")
@@ -90,11 +95,15 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         private$rconn_cleanup <- rconn_cleanup
         private$rconn_fail <- rconn_fail
 
+        private$file_unit <- match.arg(file_unit)
+        private$file_fail <- file_fail
+
         invisible(self)
       },
 
       start_test = function(context, test) {
         super$start_test(context, test)
+        if (private$file_unit == "test") private$files <- ps_open_files(ps_handle())
         if (private$rconn_unit == "test") private$rconns <- showConnections()
         if (private$proc_unit == "test") private$tree_id <- ps::ps_mark_tree()
       },
@@ -102,11 +111,13 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
       end_test = function(context, test) {
         if (private$proc_unit == "test") self$do_proc_cleanup(test)
         if (private$rconn_unit == "test") self$do_rconn_cleanup(test)
+        if (private$file_unit == "test") self$do_file_cleanup(test)
         super$end_test(context, test)
       },
 
       start_reporter = function() {
         super$start_reporter()
+        if (private$file_unit == "testsuite") private$files <- ps_open_files(ps_handle())
         if (private$rconn_unit == "testsuite") private$rconns <- showConnections()
         if (private$proc_unit == "testsuite") private$tree_id <- ps::ps_mark_tree()
       },
@@ -118,6 +129,9 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         }
         if (private$rconn_unit  == "testsuite") {
           self$do_rconn_cleanup("testsuite", quote = "")
+        }
+        if (private$file_unit  == "testsuite") {
+          self$do_file_cleanup("testsuite", quote = "")
         }
       },
 
@@ -142,7 +156,6 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         old <- private$rconns
         new <- showConnections()
         private$rconns <- NULL
-        act <- testthat::quasi_label(rlang::enquo(test), test)
         leftover <- ! new[, "description"] %in% old[, "description"]
 
         if (private$rconn_cleanup) {
@@ -152,6 +165,7 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         }
 
         if (private$rconn_fail) {
+          act <- testthat::quasi_label(rlang::enquo(test), test)
           testthat::expect(
             sum(leftover) == 0,
             sprintf(
@@ -159,6 +173,24 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
               encodeString(act$lab, quote = quote),
               paste0(encodeString(new[leftover, "description"], quote = "'"),
                      " (", rownames(new)[leftover], ")", collapse = ",  ")))
+        }
+      },
+
+      do_file_cleanup = function(test, quote = "'") {
+        old <- private$files
+        new <- ps_open_files(ps_handle())
+        private$files <- NULL
+        leftover <- ! new$path %in% old$path
+
+        if (private$file_fail) {
+          act <- testthat::quasi_label(rlang::enquo(test), test)
+          testthat::expect(
+            sum(leftover) == 0,
+            sprintf(
+              "%s did not close open files: %s",
+              encodeString(act$lab, quote = quote),
+              paste0(encodeString(new$path[leftover], quote = "'"),
+                     collapse = ",  ")))
         }
       },
 
@@ -185,8 +217,11 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
       rconn_unit = NULL,
       rconn_cleanup = NULL,
       rconn_fail = NULL,
-
       rconns = NULL,
+
+      file_unit = NULL,
+      file_fail = NULL,
+      files = NULL,
 
       tree_id = NULL
     )
