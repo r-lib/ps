@@ -95,6 +95,8 @@ if [ -n "$WINDOWS" ]; then
     LIBRARIES="psapi kernel32 advapi32 shell32 netapi32 iphlpapi wtsapi32"
     LIBRARIES="${LIBRARIES} ws2_32 PowrProf"
 
+    TARGETS=interrupt
+
 elif [ -n "$MACOS" ]; then
     MACROS="${MACROS} PS__MACOS"
     PS__MACOS=1
@@ -153,7 +155,8 @@ LIBS=`for l in $LIBRARIES; do echo "-l${l}"; done | tr "\n", " "`
 
 cat src/Makevars.in | \
     sed "s|@OBJECTS@|${OBJECTS}|" | \
-    sed "s/@LIBS@/${LIBS}/" > src/Makevars
+    sed "s/@LIBS@/${LIBS}/" | \
+    sed "s/@TARGETS@/${TARGETS}/" > src/Makevars
 
 # MACROS will be set as preprocessor macros
 echo "/* Macros created by configure */" > src/config.h

@@ -1,4 +1,5 @@
 
+
 #' Create a process handle
 #'
 #' @param pid Process id. Integer scalar. `NULL` means the current R
@@ -922,4 +923,26 @@ ps_open_files <- function(p) {
   requireNamespace("tibble", quietly = TRUE)
   class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
+}
+
+#' Interrupt a process
+#'
+#' Sends `SIGINT` on POSIX, and CTRL+C or CTRL+BREAK on Windows.
+#'
+#' @param p Process handle.
+#' @param ctrl_c On Windows, whether to send CTRL+C. If `FALSE`, then
+#'   CTRL+BREAK is sent. Ignored on non-Windows platforms.
+#'
+#' @family process handle functions
+#' @export
+
+ps_interrupt  <- function(p, ctrl_c = TRUE) {
+  assert_ps_handle(p)
+  assert_flag(ctrl_c)
+  if (ps_os_type()[["WINDOWS"]]) {
+    interrupt <- get_tool("interrupt")
+    .Call(psll_interrupt, p, ctrl_c, interrupt)
+  } else {
+    .Call(psll_interrupt, p, ctrl_c, NULL)
+  }
 }

@@ -7,7 +7,7 @@ output:
 
 ```{r echo = FALSE}
 options(width = 100)
-suppressPackageStartupMessages(suppressMessages(library(dplyr)))
+suppressWarnings(suppressPackageStartupMessages(suppressMessages(library(dplyr))))
 ```
 
 # ps
@@ -239,6 +239,9 @@ POSIX systems only. It makes an effort to work around pid reuse.
 `ps_kill(p)` terminates the process. Sends `SIGKILL` on POSIX systems,
 uses `TerminateProcess()` on Windows. It make an effort to work around
 pid reuse.
+
+`ps_interrupt(p)` interrupts a process. It sends a `SIGINT` signal on
+POSIX systems, and it can send a CTRL+C or a CTRL+BREAK event on Windows.
 
 ## Finished and zombie processes
 

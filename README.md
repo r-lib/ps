@@ -348,6 +348,10 @@ POSIX systems only. It makes an effort to work around pid reuse.
 uses `TerminateProcess()` on Windows. It make an effort to work around
 pid reuse.
 
+`ps_interrupt(p)` interrupts a process. It sends a `SIGINT` signal on
+POSIX systems, and it can send a CTRL+C or a CTRL+BREAK event on
+Windows.
+
 ## Finished and zombie processes
 
 ps handles finished and Zombie processes as much as possible.

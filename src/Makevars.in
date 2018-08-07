@@ -5,10 +5,13 @@ PKG_LIBS = @LIBS@
 
 .PHONY: all clean
 
-all: px $(SHLIB)
+all: px @TARGETS@ $(SHLIB)
 
 px: px.c
 	$(CC) $(CFLAGS) -Wall px.c -o px
 
+interrupt: interrupt.c
+	$(CC) $(CFLAGS) -Wall interrupt.c -o interrupt
+
 clean:
-	rm -rf $(SHLIB) $(OBJECTS) px.exe px
+	rm -rf $(SHLIB) $(OBJECTS) px.exe px interrupt.exe interrupt
