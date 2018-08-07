@@ -10,6 +10,9 @@
 
 * `ps_users()` lists users connected to the system.
 
+* New functions to mark and clean up child processes: `ps_mark_tree()`,
+  `ps_find_tree()`, `ps_kill_tree()`, `with_process_cleanup()`.
+
 # ps 1.0.0
 
 First released version.
