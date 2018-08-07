@@ -33,11 +33,13 @@ test_that("pid", {
   ps <- ps_handle(p1$get_pid())
   expect_identical(ps_pid(ps), p1$get_pid())
 
+  skip_if_no_processx()
+
   ## Even if it has quit already
   p2 <- processx::process$new(px(), c("sleep", "10"))
-  pid2 <- p2$get_pid()
   on.exit(p2$kill(), add = TRUE)
-  ps <-  ps_handle(pid2)
+  pid2 <- p2$get_pid()
+  ps <- ps_handle(pid2)
   p2$kill()
 
   expect_false(p2$is_alive())
@@ -99,6 +101,8 @@ test_that("ppid", {
 test_that("name", {
   ## Argument check
   expect_error(ps_name(123), class = "invalid_argument")
+
+  skip_if_no_processx()
 
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)
@@ -229,6 +233,8 @@ test_that("kill", {
 test_that("children", {
   ## Argument check
   expect_error(ps_children(123), class = "invalid_argument")
+
+  skip_if_no_processx()
 
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)

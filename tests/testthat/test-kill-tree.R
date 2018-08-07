@@ -134,6 +134,7 @@ test_that("with_process_cleanup", {
 test_that("find_tree",  {
   skip_on_cran()
   skip_in_rstudio()
+  skip_if_no_processx()
 
   res <- ps_find_tree(get_id())
   expect_equal(length(res), 0)
@@ -179,6 +180,7 @@ test_that("find_tree, grandchild", {
       args = list(d = tmp))
   })
   on.exit(lapply(p, function(x) x$kill()), add = TRUE)
+  on.exit(ps_kill_tree(id), add = TRUE)
 
   timeout <- Sys.time() + 10
   while (length(dir(tmp)) < N && Sys.time() < timeout) Sys.sleep(0.1)
@@ -211,6 +213,7 @@ test_that("find_tree, orphaned grandchild", {
     system2(px(), c("outln", "ok","sleep", "5"),
             stdout = file.path(tmp, x), wait = FALSE)
   })
+  on.exit(ps_kill_tree(id), add = TRUE)
 
   timeout <- Sys.time() + 10
   while (sum(file_size(dir(tmp, full.names = TRUE)) > 0) < N &&
