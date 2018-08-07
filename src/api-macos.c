@@ -7,6 +7,7 @@
 #include <libproc.h>
 #include <errno.h>
 #include <string.h>
+#include <utmpx.h>
 
 #include "ps-internal.h"
 #include "arch/macos/process_info.h"
@@ -615,4 +616,31 @@ SEXP psll_open_files(SEXP p) {
   if (fds_pointer != NULL) free(fds_pointer);
   ps__check_for_zombie(handle);
   return R_NilValue;
+}
+
+SEXP ps__users() {
+  struct utmpx *utx;
+  SEXP result;
+  PROTECT_INDEX pidx;
+  int len = 10, num = 0;
+
+  PROTECT_WITH_INDEX(result = allocVector(VECSXP, len), &pidx);
+
+  while ((utx = getutxent()) != NULL) {
+
+    if (utx->ut_type != USER_PROCESS) continue;
+
+    if (++num == len) {
+      len *= 2;
+      REPROTECT(result = Rf_lengthgets(result, len), pidx);
+    }
+    SET_VECTOR_ELT(
+      result, num,
+      ps__build_list("sssdi", utx->ut_user, utx->ut_line, utx->ut_host,
+		     (double) PS__TV2DOUBLE(utx->ut_tv), utx->ut_pid));
+  }
+
+  endutxent();
+  UNPROTECT(1);
+  return result;
 }

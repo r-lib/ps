@@ -7,6 +7,7 @@
 #include <tlhelp32.h>
 #include <string.h>
 #include <math.h>
+#include <wtsapi32.h>
 
 static void psll_finalizer(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
@@ -763,4 +764,117 @@ SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path) {
   if (hProcess) CloseHandle(hProcess);
   ps__throw_error();
   return R_NilValue;
+}
+
+SEXP ps__users() {
+  HANDLE hServer = WTS_CURRENT_SERVER_HANDLE;
+  WCHAR *buffer_user = NULL;
+  LPTSTR buffer_addr = NULL;
+  PWTS_SESSION_INFO sessions = NULL;
+  DWORD count;
+  DWORD i;
+  DWORD sessionId;
+  DWORD bytes;
+  PWTS_CLIENT_ADDRESS address;
+  char address_str[50];
+  double unix_time;
+
+  PWINSTATIONQUERYINFORMATIONW WinStationQueryInformationW;
+  WINSTATION_INFO station_info;
+  HINSTANCE hInstWinSta = NULL;
+  ULONG returnLen;
+
+  SEXP retlist, raddress, username;
+
+  hInstWinSta = LoadLibraryA("winsta.dll");
+  WinStationQueryInformationW = (PWINSTATIONQUERYINFORMATIONW) \
+    GetProcAddress(hInstWinSta, "WinStationQueryInformationW");
+
+  if (WTSEnumerateSessions(hServer, 0, 1, &sessions, &count) == 0) {
+    ps__set_error_from_windows_error(0);
+    goto error;
+  }
+
+  PROTECT(retlist = allocVector(VECSXP, count));
+
+  for (i = 0; i < count; i++) {
+    SET_VECTOR_ELT(retlist, i, R_NilValue);
+    raddress = R_NilValue;
+    sessionId = sessions[i].SessionId;
+    if (buffer_user != NULL)
+      WTSFreeMemory(buffer_user);
+    if (buffer_addr != NULL)
+      WTSFreeMemory(buffer_addr);
+
+    buffer_user = NULL;
+    buffer_addr = NULL;
+
+    // username
+    bytes = 0;
+    if (WTSQuerySessionInformationW(hServer, sessionId, WTSUserName,
+				    &buffer_user, &bytes) == 0) {
+      ps__set_error_from_windows_error(0);
+      goto error;
+    }
+    if (bytes <= 2) continue;
+
+    // address
+    bytes = 0;
+    if (WTSQuerySessionInformation(hServer, sessionId, WTSClientAddress,
+				   &buffer_addr, &bytes) == 0) {
+      ps__set_error_from_windows_error(0);
+      goto error;
+    }
+
+    address = (PWTS_CLIENT_ADDRESS) buffer_addr;
+    if (address->AddressFamily == 0 &&  // AF_INET
+	(address->Address[0] || address->Address[1] ||
+	 address->Address[2] || address->Address[3])) {
+      snprintf(address_str,
+	       sizeof(address_str),
+	       "%u.%u.%u.%u",
+	       address->Address[0],
+	       address->Address[1],
+	       address->Address[2],
+	       address->Address[3]);
+      raddress = mkString(address_str);
+    } else {
+      raddress = mkString("");
+    }
+    PROTECT(raddress);
+
+    // login time
+    if (!WinStationQueryInformationW(hServer,
+				     sessionId,
+				     WinStationInformation,
+				     &station_info,
+				     sizeof(station_info),
+				     &returnLen))  {
+	goto error;
+      }
+
+    unix_time = ps__filetime_to_unix(station_info.ConnectTime);
+
+    PROTECT(username = ps__utf16_to_strsxp(buffer_user, -1));
+
+    SET_VECTOR_ELT(
+      retlist, i,
+      ps__build_list("OOOdi", username, ScalarString(NA_STRING), raddress,
+		     unix_time, NA_INTEGER));
+    UNPROTECT(2);
+  }
+
+  WTSFreeMemory(sessions);
+  WTSFreeMemory(buffer_user);
+  WTSFreeMemory(buffer_addr);
+  FreeLibrary(hInstWinSta);
+
+  UNPROTECT(1);
+  return retlist;
+
+ error:
+  if (hInstWinSta != NULL) FreeLibrary(hInstWinSta);
+  if (sessions != NULL) WTSFreeMemory(sessions);
+  if (buffer_user != NULL) WTSFreeMemory(buffer_user);
+  if (buffer_addr != NULL) WTSFreeMemory(buffer_addr);
 }

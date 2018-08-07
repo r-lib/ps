@@ -45,6 +45,7 @@ SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path);
 SEXP ps__os_type();
 SEXP ps__pids();
 SEXP ps__boot_time();
+SEXP ps__users();
 
 /* Generic utils used from R */
 

@@ -52,3 +52,7 @@ test_that("supported_str", {
 test_that("ps_os_name", {
   expect_true(ps_os_name() %in% names(ps_os_type()))
 })
+
+test_that("ps_users runs", {
+  expect_error(ps_users(), NA)
+})

@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <utmp.h>
 
 #include <Rinternals.h>
 
@@ -24,6 +25,8 @@ typedef struct {
   long int cutime, cstime, priority, nice, num_threads, itrealvalue;
   unsigned long long starttime;
 } psl_stat_t;
+
+#define PS__TV2DOUBLE(t) ((t).tv_sec + (t).tv_usec / 1000000.0)
 
 #define PS__CHECK_STAT(stat, handle)					\
   if (psll_linux_boot_time + (stat).starttime / psll_linux_clock_ticks != \
@@ -938,6 +941,35 @@ SEXP psll_open_files(SEXP p) {
 
   PS__CHECK_HANDLE(handle);
 
+  UNPROTECT(1);
+  return result;
+}
+
+SEXP ps__users() {
+  struct utmp *ut;
+  SEXP result;
+  PROTECT_INDEX pidx;
+  int len = 10, num = 0;
+
+  PROTECT_WITH_INDEX(result = allocVector(VECSXP, len), &pidx);
+
+  setutent();
+
+  while ((ut = getutent()) != NULL) {
+
+    if (ut->ut_type != USER_PROCESS) continue;
+
+    if (++num == len) {
+      len *= 2;
+      REPROTECT(result = Rf_lengthgets(result, len), pidx);
+    }
+    SET_VECTOR_ELT(
+      result, num,
+      ps__build_list("sssdi", ut->ut_user, ut->ut_line, ut->ut_host,
+		     (double) PS__TV2DOUBLE(ut->ut_tv), ut->ut_pid));
+  }
+
+  endutent();
   UNPROTECT(1);
   return result;
 }
