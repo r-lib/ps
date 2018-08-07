@@ -914,4 +914,6 @@ SEXP ps__users() {
   if (sessions != NULL) WTSFreeMemory(sessions);
   if (buffer_user != NULL) WTSFreeMemory(buffer_user);
   if (buffer_addr != NULL) WTSFreeMemory(buffer_addr);
+  ps__throw_error();
+  return R_NilValue;
 }
