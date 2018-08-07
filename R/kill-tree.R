@@ -8,6 +8,9 @@
 #' related to the current R process. (I.e. they are not connected in the
 #' process tree.)
 #'
+#' `ps_find_tree()` finds the processes that set the supplied environment
+#' variable and returns them in a list.
+#'
 #' `ps_kill_tree()` finds the processes that set the supplied environment
 #' variable, and kills them (or sends them the specified signal on Unix).
 #'
@@ -25,6 +28,8 @@
 #' @return `ps_mark_tree()` returns the name of the environment variable,
 #' which can be used as the `marker` in `ps_kill_tree()`.
 #'
+#' `ps_find_tree()` returns a list of `ps_handle` objects.
+#'
 #' `ps_kill_tree()` returns the pids of the killed processes, in a named
 #' integer vector. The names are the file names of the executables, when
 #' available.
@@ -32,7 +37,7 @@
 #' `with_process_cleanup()` returns the value of the evaluated expression.
 #'
 #' @rdname ps_kill_tree
-#' @keywords internal
+#' @export
 
 ps_mark_tree <- function() {
   id <- get_id()
@@ -55,6 +60,7 @@ get_id <- function() {
 #' @param expr R expression to evaluate in the new context.
 #'
 #' @rdname ps_kill_tree
+#' @export
 
 with_process_cleanup <- function(expr) {
   id <- ps_mark_tree()
@@ -88,12 +94,30 @@ print.with_process_cleanup <- function(x, ...) {
 }
 
 
+#' @rdname ps_kill_tree
+#' @export
+
+ps_find_tree <- function(marker) {
+  assert_string(marker)
+  after <- as.numeric(strsplit(marker, "_", fixed = TRUE)[[1]][2])
+
+  pids <- setdiff(ps_pids(), Sys.getpid())
+
+  not_null(lapply(pids, function(p) {
+    tryCatch(
+      .Call(ps__find_if_env, marker, after, p),
+      error = function(e) NULL
+    )
+  }))
+}
+
 #' @param marker String scalar, the name of the environment variable to
 #' use to find the marked processes.
 #' @param sig The signal to send to the marked processes on Unix. On
 #' Windows this argument is ignored currently.
 #'
 #' @rdname ps_kill_tree
+#' @export
 
 ps_kill_tree <- function(marker, sig = signals()$SIGKILL) {
 

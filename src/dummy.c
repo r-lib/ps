@@ -69,6 +69,7 @@ void psll_interrupt()    { ps__dummy("ps_interrupt"); }
 
 void ps__init()          { /* this needs to run to load package */ }
 void ps__kill_if_env()   { ps__dummy("ps__kill_if_env"); }
+void ps__find_if_env()   { ps__dummy("ps__find_if_env"); }
 
 void psp__pid_exists()   { ps__dummy("psp__pid_exists"); }
 void psp__stat_st_rdev() { ps__dummy("psp__stat_st_rdev"); }

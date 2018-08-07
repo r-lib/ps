@@ -51,6 +51,7 @@ SEXP ps__users();
 
 SEXP ps__init(SEXP psenv, SEXP constenv);
 SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig);
+SEXP ps__find_if_env(SEXP marker, SEXP after, SEXP pid);
 
 SEXP psp__zombie();
 SEXP psp__waitpid(SEXP pid);

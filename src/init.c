@@ -44,6 +44,7 @@ static const R_CallMethodDef callMethods[]  = {
   /* Utils */
   { "ps__init",          (DL_FUNC) ps__init,          2 },
   { "ps__kill_if_env",   (DL_FUNC) ps__kill_if_env,   4 },
+  { "ps__find_if_env",   (DL_FUNC) ps__find_if_env,   3 },
 
   { "psp__pid_exists",   (DL_FUNC) psp__pid_exists,   1 },
   { "psp__stat_st_rdev", (DL_FUNC) psp__stat_st_rdev, 1 },

@@ -130,3 +130,94 @@ test_that("with_process_cleanup", {
 
   lapply(p, function(pp) expect_false(pp$is_alive()))
 })
+
+test_that("find_tree",  {
+  skip_on_cran()
+  skip_in_rstudio()
+
+  res <- ps_find_tree(get_id())
+  expect_equal(length(res), 0)
+  expect_true(is.list(res))
+
+  ## Child processes
+  id <- ps_mark_tree()
+  on.exit(Sys.unsetenv(id), add = TRUE)
+  p <- lapply(1:5, function(x) processx::process$new(px(), c("sleep", "10")))
+  on.exit(lapply(p, function(x) x$kill()), add = TRUE)
+  res <- ps_find_tree(id)
+  names <- not_null(lapply(res, function(p) fallback(ps_name(p), NULL)))
+  res <- res[names %in% c("px", "px.exe")]
+  expect_equal(length(res), 5)
+  expect_equal(
+    sort(map_int(res, ps_pid)),
+    sort(map_int(p, function(x) x$get_pid())))
+
+  lapply(p, function(x) x$kill())
+})
+
+test_that("find_tree, grandchild", {
+  skip_on_cran()
+  skip_in_rstudio()
+
+  id <- ps_mark_tree()
+  on.exit(Sys.unsetenv(id), add = TRUE)
+
+  dir.create(tmp <- tempfile())
+  on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
+
+  N <- 3
+  p <- lapply(1:N, function(x) {
+    callr::r_bg(
+      function(d) {
+        callr::r(
+          function(d) {
+            cat("OK\n", file = file.path(d, Sys.getpid()))
+            Sys.sleep(5)
+          },
+          args = list(d = d))
+      },
+      args = list(d = tmp))
+  })
+  on.exit(lapply(p, function(x) x$kill()), add = TRUE)
+
+  timeout <- Sys.time() + 10
+  while (length(dir(tmp)) < N && Sys.time() < timeout) Sys.sleep(0.1)
+
+  res <- ps_find_tree(id)
+  names <- not_null(lapply(res, function(p) fallback(ps_name(p), NULL)))
+  res <- res[names %in% c("R", "Rterm.exe")]
+  expect_equal(length(res), N * 2)
+  cpids <- map_int(p, function(x) x$get_pid())
+  res_pids <- map_int(res, ps_pid)
+  expect_true(all(cpids %in% res_pids))
+  ccpids <- as.integer(dir(tmp))
+  expect_true(all(ccpids %in% res_pids))
+})
+
+test_that("find_tree, orphaned grandchild", {
+  skip_on_cran()
+  skip_in_rstudio()
+
+  id <- ps_mark_tree()
+  on.exit(Sys.unsetenv(id), add = TRUE)
+
+  dir.create(tmp <- tempfile())
+  on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
+
+  cmdline <- paste(px(), "sleep 5")
+
+  N <- 3
+  lapply(1:N, function(x) {
+    system2(px(), c("outln", "ok","sleep", "5"),
+            stdout = file.path(tmp, x), wait = FALSE)
+  })
+
+  timeout <- Sys.time() + 10
+  while (sum(file_size(dir(tmp, full.names = TRUE)) > 0) < N &&
+         Sys.time() < timeout) Sys.sleep(0.1)
+
+  res <- ps_find_tree(id)
+  names <- not_null(lapply(res, function(p) fallback(ps_name(p), NULL)))
+  res <- res[names %in% c("px", "px.exe")]
+  expect_equal(length(res), N)
+})
