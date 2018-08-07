@@ -8,6 +8,8 @@
 * `ps_interrupt()` interrupts a process. It sends a `SIGINT` signal on
   POSIX systems, and it can send CTRL+C or CTRL+BREAK events on Windows.
 
+* `ps_users()` lists users connected to the system.
+
 # ps 1.0.0
 
 First released version.
