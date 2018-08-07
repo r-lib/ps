@@ -13,6 +13,9 @@
 * New functions to mark and clean up child processes: `ps_mark_tree()`,
   `ps_find_tree()`, `ps_kill_tree()`, `with_process_cleanup()`.
 
+* New reporter `CleanupReporter`, to be used with testthat: it checks for
+  leftover child processes in `test_that()` blocks.
+
 # ps 1.0.0
 
 First released version.
