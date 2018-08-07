@@ -9,7 +9,8 @@ ps_interrupt(p, ctrl_c = TRUE)
 \arguments{
 \item{p}{Process handle.}
 
-\item{ctrl_c}{Whether to send CTRL+C. If \code{FALSE}, then CTRL+BREAK is sent.}
+\item{ctrl_c}{On Windows, whether to send CTRL+C. If \code{FALSE}, then
+CTRL+BREAK is sent. Ignored on non-Windows platforms.}
 }
 \description{
 Sends \code{SIGINT} on POSIX, and CTRL+C or CTRL+BREAK on Windows.
@@ -30,3 +31,4 @@ Other process handle functions: \code{\link{ps_children}},
   \code{\link{ps_terminate}}, \code{\link{ps_uids}},
   \code{\link{ps_username}}
 }
+\concept{process handle functions}

@@ -930,7 +930,8 @@ ps_open_files <- function(p) {
 #' Sends `SIGINT` on POSIX, and CTRL+C or CTRL+BREAK on Windows.
 #'
 #' @param p Process handle.
-#' @param ctrl_c Whether to send CTRL+C. If `FALSE`, then CTRL+BREAK is sent.
+#' @param ctrl_c On Windows, whether to send CTRL+C. If `FALSE`, then
+#'   CTRL+BREAK is sent. Ignored on non-Windows platforms.
 #'
 #' @family process handle functions
 #' @export

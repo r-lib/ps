@@ -46,6 +46,7 @@ Other process handle functions: \code{\link{ps_children}},
   \code{\link{ps_terminate}}, \code{\link{ps_uids}},
   \code{\link{ps_username}}
 }
+\concept{process handle functions}
 \section{Examples}{
 \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
 p <- ps_handle()
