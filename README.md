@@ -1,6 +1,4 @@
 
-    ## Warning: package 'dplyr' was built under R version 3.5.1
-
 # ps
 
 > List, Query, Manipulate System
@@ -349,6 +347,10 @@ POSIX systems only. It makes an effort to work around pid reuse.
 `ps_kill(p)` terminates the process. Sends `SIGKILL` on POSIX systems,
 uses `TerminateProcess()` on Windows. It make an effort to work around
 pid reuse.
+
+`ps_interrupt(p)` interrupts a process. It sends a `SIGINT` signal on
+POSIX systems, and it can send a CTRL+C or a CTRL+BREAK event on
+Windows.
 
 ## Finished and zombie processes
 
