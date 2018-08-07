@@ -134,6 +134,7 @@ test_that("with_process_cleanup", {
 test_that("find_tree",  {
   skip_on_cran()
   skip_in_rstudio()
+  skip_if_no_processx()
 
   res <- ps_find_tree(get_id())
   expect_equal(length(res), 0)
