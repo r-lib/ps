@@ -19,6 +19,7 @@ test_that("terminal", {
   ## It is a character special file
   out <- processx::run("ls", c("-l", tty))$stdout
   expect_equal(substr(out, 1, 1), "c")
+  gc()
 })
 
 test_that("username, uids, gids", {
@@ -36,6 +37,7 @@ test_that("username, uids, gids", {
 
   ps2_gid <- parse_ps(c("-o", "rgid", "-p", ps_pid(ps)))
   expect_equal(ps_gids(ps)[["real"]], as.numeric(ps2_gid))
+  gc()
 })
 
 
