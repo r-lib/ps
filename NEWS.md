@@ -1,5 +1,5 @@
 
-# ps 1.0.0.9000
+# ps 1.1.0
 
 * `ps_num_fds()` returns the number of open files/handles.
 
