@@ -44,22 +44,38 @@ SEXP psll_send_signal(SEXP p, SEXP sig) {
 
 
 SEXP psll_suspend(SEXP p) {
-  return psll_send_signal(p, ScalarInteger(SIGSTOP));
+  SEXP res, s;
+  PROTECT(s = ScalarInteger(SIGSTOP));
+  PROTECT(res = psll_send_signal(p, s));
+  UNPROTECT(2);
+  return res;
 }
 
 
 SEXP psll_resume(SEXP p) {
-  return psll_send_signal(p, ScalarInteger(SIGCONT));
+  SEXP res, s;
+  PROTECT(s = ScalarInteger(SIGCONT));
+  PROTECT(res = psll_send_signal(p, s));
+  UNPROTECT(2);
+  return res;
 }
 
 
 SEXP psll_terminate(SEXP p) {
-  return psll_send_signal(p, ScalarInteger(SIGTERM));
+  SEXP res, s;
+  PROTECT(s = ScalarInteger(SIGTERM));
+  PROTECT(res = psll_send_signal(p, s));
+  UNPROTECT(2);
+  return res;
 }
 
 
 SEXP psll_kill(SEXP p) {
-  return psll_send_signal(p, ScalarInteger(SIGKILL));
+  SEXP res, s;
+  PROTECT(s = ScalarInteger(SIGKILL));
+  PROTECT(res = psll_send_signal(p, s));
+  UNPROTECT(2);
+  return res;
 }
 
 SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path) {
