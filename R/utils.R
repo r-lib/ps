@@ -131,6 +131,12 @@ assert_string <- function(x) {
                             " is not a string (character scalar)"))
 }
 
+assert_character <- function(x) {
+  if (is.character(x)) return()
+  stop(ps__invalid_argument(match.call()$x,
+                            " is not of type character"))
+}
+
 assert_pid <- function(x) {
   if (is.integer(x) && length(x) == 1 && !is.na(x)) return()
   stop(ps__invalid_argument(match.call()$x,

@@ -69,6 +69,14 @@ test_that("kill_tree, grandchild", {
   while (length(dir(tmp)) < N && Sys.time() < timeout) Sys.sleep(0.1)
 
   res <- ps_kill_tree(id)
+
+  ## Older processx versions do not close the connections on kill,
+  ## so the cleanup reporter picks them up
+  lapply(p, function(pp) {
+    close(pp$get_output_connection())
+    close(pp$get_error_connection())
+  })
+
   res <- res[names(res) %in% c("R", "Rterm.exe")]
   expect_equal(length(res), N * 2)
   expect_true(all(names(res) %in% c("R", "Rterm.exe")))
@@ -194,6 +202,14 @@ test_that("find_tree, grandchild", {
   expect_true(all(cpids %in% res_pids))
   ccpids <- as.integer(dir(tmp))
   expect_true(all(ccpids %in% res_pids))
+
+  ## Older processx versions do not close the connections on kill,
+  ## so the cleanup reporter picks them up
+  lapply(p, function(pp) {
+    pp$kill()
+    close(pp$get_output_connection())
+    close(pp$get_error_connection())
+  })
 })
 
 test_that("find_tree, orphaned grandchild", {

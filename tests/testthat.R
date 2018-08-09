@@ -2,7 +2,7 @@ library(testthat)
 library(ps)
 
 if (ps::ps_is_supported()) {
-  reporter <- ps::CleanupReporter(testthat::ProgressReporter)$new()
+  reporter <- ps::CleanupReporter(testthat::SummaryReporter)$new()
 } else {
   ## ps does not support this platform
   reporter <- "progress"
