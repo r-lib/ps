@@ -13,3 +13,4 @@
 ^src/interrupt\.exe$
 ^docs$
 ^_pkgdown\.yml$
+^cran-comments\.md$
