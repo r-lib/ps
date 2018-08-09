@@ -856,8 +856,8 @@ SEXP ps__find_if_env(SEXP r_marker, SEXP r_after, SEXP r_pid) {
   if (match == -1) ps__throw_error();
 
   if (match) {
-    UNPROTECT(1);
     PS__CHECK_HANDLE(handle);
+    UNPROTECT(1);
     return phandle;
   }
 
