@@ -66,7 +66,7 @@ process tree.)" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ps</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.1.0</span>
       </span>
     </div>
 
@@ -125,6 +125,8 @@ process tree.)</p>
 
 <span class='fu'>with_process_cleanup</span>(<span class='no'>expr</span>)
 
+<span class='fu'>ps_find_tree</span>(<span class='no'>marker</span>)
+
 <span class='fu'>ps_kill_tree</span>(<span class='no'>marker</span>, <span class='kw'>sig</span> <span class='kw'>=</span> <span class='fu'><a href='signals.html'>signals</a></span>()$<span class='no'>SIGKILL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -150,6 +152,7 @@ Windows this argument is ignored currently.</p></td>
 
     <p><code>ps_mark_tree()</code> returns the name of the environment variable,
 which can be used as the <code>marker</code> in <code>ps_kill_tree()</code>.</p>
+<p><code>ps_find_tree()</code> returns a list of <code>ps_handle</code> objects.</p>
 <p><code>ps_kill_tree()</code> returns the pids of the killed processes, in a named
 integer vector. The names are the file names of the executables, when
 available.</p>
@@ -157,12 +160,19 @@ available.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>ps_kill_tree()</code> finds the processes that set the supplied environment
+    <p><code>ps_find_tree()</code> finds the processes that set the supplied environment
+variable and returns them in a list.</p>
+<p><code>ps_kill_tree()</code> finds the processes that set the supplied environment
 variable, and kills them (or sends them the specified signal on Unix).</p>
 <p><code>with_process_cleanup()</code> evaluates an R expression, and cleans up all
 external processes that were started by the R process while evaluating
 the expression. This includes child processes of child processes, etc.,
-recursively.</p>
+recursively. It returns a list with entries: <code>result</code> is the result of
+the expression, <code>visible</code> is TRUE if the expression should be printed
+to the screen, and <code>process_cleanup</code> is a named integer vector of the
+cleaned pids, names are the process names.</p>
+<p>If <code>expr</code> throws an error, then so does <code>with_process_cleanup()</code>, the
+same error. Nevertheless processes are still cleaned up.</p>
     
 
   </div>

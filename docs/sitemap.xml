@@ -4,6 +4,9 @@
     <loc>http://ps.r-lib.org/index.html</loc>
   </url>
   <url>
+    <loc>http://ps.r-lib.org/reference/CleanupReporter.html</loc>
+  </url>
+  <url>
     <loc>http://ps.r-lib.org/reference/ps.html</loc>
   </url>
   <url>
@@ -34,6 +37,9 @@
     <loc>http://ps.r-lib.org/reference/ps_handle.html</loc>
   </url>
   <url>
+    <loc>http://ps.r-lib.org/reference/ps_interrupt.html</loc>
+  </url>
+  <url>
     <loc>http://ps.r-lib.org/reference/ps_is_running.html</loc>
   </url>
   <url>
@@ -49,7 +55,13 @@
     <loc>http://ps.r-lib.org/reference/ps_name.html</loc>
   </url>
   <url>
+    <loc>http://ps.r-lib.org/reference/ps_num_fds.html</loc>
+  </url>
+  <url>
     <loc>http://ps.r-lib.org/reference/ps_num_threads.html</loc>
+  </url>
+  <url>
+    <loc>http://ps.r-lib.org/reference/ps_open_files.html</loc>
   </url>
   <url>
     <loc>http://ps.r-lib.org/reference/ps_os_type.html</loc>
@@ -86,6 +98,9 @@
   </url>
   <url>
     <loc>http://ps.r-lib.org/reference/ps_username.html</loc>
+  </url>
+  <url>
+    <loc>http://ps.r-lib.org/reference/ps_users.html</loc>
   </url>
   <url>
     <loc>http://ps.r-lib.org/reference/signals.html</loc>

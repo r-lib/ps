@@ -58,7 +58,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ps</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.1.0</span>
       </span>
     </div>
 
@@ -101,9 +101,23 @@
       <small>Source: <a href='https://github.com/r-lib/ps/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="ps-1-1-0" class="section level1">
+<h1 class="page-header">
+<a href="#ps-1-1-0" class="anchor"></a>ps 1.1.0<small> 2018-08-10 </small>
+</h1>
+<ul>
+<li><p>New <code><a href="../reference/ps_num_fds.html">ps_num_fds()</a></code> returns the number of open files/handles.</p></li>
+<li><p>New <code><a href="../reference/ps_open_files.html">ps_open_files()</a></code> lists all open files of a process.</p></li>
+<li><p>New <code><a href="../reference/ps_interrupt.html">ps_interrupt()</a></code> interrupts a process. It sends a <code>SIGINT</code> signal on POSIX systems, and it can send CTRL+C or CTRL+BREAK events on Windows.</p></li>
+<li><p>New <code><a href="../reference/ps_users.html">ps_users()</a></code> lists users connected to the system.</p></li>
+<li><p>New <code><a href="../reference/ps_kill_tree.html">ps_mark_tree()</a></code>, <code><a href="../reference/ps_kill_tree.html">ps_find_tree()</a></code>, <code><a href="../reference/ps_kill_tree.html">ps_kill_tree()</a></code>, <code><a href="../reference/ps_kill_tree.html">with_process_cleanup()</a></code>: functions to mark and clean up child processes.</p></li>
+<li><p>New <code>CleanupReporter</code>, to be used with testthat: it checks for leftover child processes and open files in <code>test_that()</code> blocks.</p></li>
+</ul>
+</div>
     <div id="ps-1-0-0" class="section level1">
 <h1 class="page-header">
-<a href="#ps-1-0-0" class="anchor"></a>ps 1.0.0</h1>
+<a href="#ps-1-0-0" class="anchor"></a>ps 1.0.0<small> 2018-07-22 </small>
+</h1>
 <p>First released version.</p>
 </div>
   </div>
@@ -112,6 +126,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#ps-1-1-0">1.1.0</a></li>
         <li><a href="#ps-1-0-0">1.0.0</a></li>
       </ul>
     </div>
