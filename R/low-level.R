@@ -932,6 +932,56 @@ ps_open_files <- function(p) {
   d
 }
 
+#' List network connections of a process
+#'
+#' For a zombie process it throws a `zombie_process` error.
+#'
+#' @param p Process handle.
+#' @return Data frame, or tibble if the _tibble_ package is available,
+#'    with columns: `fd` and `path`. `fd` is numeric file descriptor on
+#'    POSIX systems, `NA` on Windows. `path` is an absolute path to the
+#'    file.
+#'
+#' @family process handle functions
+#' @export
+#'
+#' @rawRd
+#' \section{Examples}{
+#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' p <- ps_handle()
+#' ps_connections(p)
+#' sc <- socketConnection("httpbin.org", port = 80)
+#' ps_connections(p)
+#' close(sc)
+#' ps_connections(p)
+#' ')}
+#' }
+#'
+#' @export
+
+ps_connections <- function(p) {
+  assert_ps_handle(p)
+  l <- not_null(.Call(psll_connections, p))
+
+  d <- data.frame(
+    stringsAsFactors = FALSE,
+    fd = vapply(l, "[[", integer(1), 1),
+    family = match_names(ps_env$constants$address_families,
+                       vapply(l, "[[", integer(1), 2)),
+    type = match_names(ps_env$constants$socket_types,
+                       vapply(l, "[[", integer(1), 3)),
+    laddr = vapply(l, "[[", character(1), 4),
+    lport = vapply(l, "[[", integer(1), 5),
+    raddr = vapply(l, "[[", character(1), 6),
+    rport = vapply(l, "[[", integer(1), 7),
+    state = match_names(ps_env$constants$tcp_statuses,
+                        vapply(l, "[[", integer(1), 8)))
+
+  requireNamespace("tibble", quietly = TRUE)
+  class(d) <- unique(c("tbl_df", "tbl", class(d)))
+  d
+}
+
 #' Interrupt a process
 #'
 #' Sends `SIGINT` on POSIX, and CTRL+C or CTRL+BREAK on Windows.

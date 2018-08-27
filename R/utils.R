@@ -186,3 +186,7 @@ get_tool <- function(prog) {
   }
   exe
 }
+
+match_names <- function(map, x) {
+  names(map)[match(x, map)]
+}
