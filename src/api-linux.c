@@ -28,12 +28,16 @@ typedef struct {
 
 #define PS__TV2DOUBLE(t) ((t).tv_sec + (t).tv_usec / 1000000.0)
 
-#define PS__CHECK_STAT(stat, handle)					\
-  if (psll_linux_boot_time + (stat).starttime * psll_linux_clock_period != \
-      handle->create_time) {						\
-    ps__no_such_process(handle->pid, 0);				\
-    ps__throw_error();							\
-  }
+#define PS__CHECK_STAT(stat, handle)			\
+  do {							\
+    double starttime = psll_linux_boot_time +		\
+      (stat).starttime * psll_linux_clock_period;	\
+    double diff = starttime - (handle)->create_time;	\
+    if (fabs(diff) > psll_linux_clock_period) {		\
+      ps__no_such_process((handle)->pid, 0);		\
+      ps__throw_error();				\
+    }							\
+  } while (0)
 
 #define PS__CHECK_HANDLE(handle)			\
   do {							\
@@ -218,6 +222,7 @@ int psll__parse_stat_file(long pid, psl_stat_t *stat, char **name) {
 
 void ps__check_for_zombie(ps_handle_t *handle, int err) {
   psl_stat_t stat;
+  double diff;
 
   if (!handle) error("Process pointer cleaned up already");
 
@@ -226,8 +231,9 @@ void ps__check_for_zombie(ps_handle_t *handle, int err) {
     ps__throw_error();
   }
 
-  if (psll_linux_boot_time + stat.starttime * psll_linux_clock_period !=
-      handle->create_time) {
+  diff = (psll_linux_boot_time + stat.starttime * psll_linux_clock_period) -
+         handle->create_time;
+  if (fabs(diff) > psll_linux_clock_period) {
     ps__no_such_process(handle->pid, 0);
     err = 1;
   } else if (stat.state == 'Z') {
