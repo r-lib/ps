@@ -261,8 +261,12 @@ int psll_linux_get_boot_time() {
   return 0;
 }
 
-int psll_linux_get_clock_ticks() {
+int psll_linux_get_clock_ticks(void) {
   psll_linux_clock_ticks = sysconf(_SC_CLK_TCK);
+  if (psll_linux_clock_ticks == -1) {
+    ps__set_error_from_errno();
+    return -1;
+  }
   return 0;
 }
 
@@ -278,7 +282,9 @@ int psll_linux_ctime(long pid, double *ctime) {
 
   if (!psll_linux_clock_ticks) {
     ret = psll_linux_get_clock_ticks();
-    if (ret) return ret;
+    if (ret) {
+      ps__throw_error();
+    }
   }
 
   *ctime = psll_linux_boot_time + stat.starttime / psll_linux_clock_ticks;
