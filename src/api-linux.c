@@ -15,7 +15,7 @@
 #include "common.h"
 
 double psll_linux_boot_time = 0;
-double psll_linux_clock_ticks = 0;
+double psll_linux_clock_period = 0;
 
 typedef struct {
   char state;
@@ -29,7 +29,7 @@ typedef struct {
 #define PS__TV2DOUBLE(t) ((t).tv_sec + (t).tv_usec / 1000000.0)
 
 #define PS__CHECK_STAT(stat, handle)					\
-  if (psll_linux_boot_time + (stat).starttime / psll_linux_clock_ticks != \
+  if (psll_linux_boot_time + (stat).starttime * psll_linux_clock_period != \
       handle->create_time) {						\
     ps__no_such_process(handle->pid, 0);				\
     ps__throw_error();							\
@@ -226,7 +226,7 @@ void ps__check_for_zombie(ps_handle_t *handle, int err) {
     ps__throw_error();
   }
 
-  if (psll_linux_boot_time + stat.starttime / psll_linux_clock_ticks !=
+  if (psll_linux_boot_time + stat.starttime * psll_linux_clock_period !=
       handle->create_time) {
     ps__no_such_process(handle->pid, 0);
     err = 1;
@@ -261,12 +261,13 @@ int psll_linux_get_boot_time() {
   return 0;
 }
 
-int psll_linux_get_clock_ticks(void) {
-  psll_linux_clock_ticks = sysconf(_SC_CLK_TCK);
+int psll_linux_get_clock_period(void) {
+  double psll_linux_clock_ticks = sysconf(_SC_CLK_TCK);
   if (psll_linux_clock_ticks == -1) {
     ps__set_error_from_errno();
     return -1;
   }
+  psll_linux_clock_period = 1.0 / psll_linux_clock_ticks;
   return 0;
 }
 
@@ -280,14 +281,14 @@ int psll_linux_ctime(long pid, double *ctime) {
     if (ret) return ret;
   }
 
-  if (!psll_linux_clock_ticks) {
-    ret = psll_linux_get_clock_ticks();
+  if (!psll_linux_clock_period) {
+    ret = psll_linux_get_clock_period();
     if (ret) {
       ps__throw_error();
     }
   }
 
-  *ctime = psll_linux_boot_time + stat.starttime / psll_linux_clock_ticks;
+  *ctime = psll_linux_boot_time + stat.starttime * psll_linux_clock_period;
 
   return 0;
 }
@@ -716,10 +717,10 @@ SEXP psll_cpu_times(SEXP p) {
   PS__CHECK_STAT(stat, handle);
 
   PROTECT(result = allocVector(REALSXP, 4));
-  REAL(result)[0] = stat.utime / psll_linux_clock_ticks;
-  REAL(result)[1] = stat.stime / psll_linux_clock_ticks;
-  REAL(result)[2] = stat.cutime / psll_linux_clock_ticks;
-  REAL(result)[3] = stat.cstime / psll_linux_clock_ticks;
+  REAL(result)[0] = stat.utime * psll_linux_clock_period;
+  REAL(result)[1] = stat.stime * psll_linux_clock_period;
+  REAL(result)[2] = stat.cutime * psll_linux_clock_period;
+  REAL(result)[3] = stat.cstime * psll_linux_clock_period;
   PROTECT(names = ps__build_string("user", "system", "childen_user",
 				   "children_system", NULL));
   setAttrib(result, R_NamesSymbol, names);
