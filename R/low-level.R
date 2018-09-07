@@ -938,9 +938,17 @@ ps_open_files <- function(p) {
 #'
 #' @param p Process handle.
 #' @return Data frame, or tibble if the _tibble_ package is available,
-#'    with columns: `fd` and `path`. `fd` is numeric file descriptor on
-#'    POSIX systems, `NA` on Windows. `path` is an absolute path to the
-#'    file.
+#'    with columns:
+#'    * `fd`: integer file descriptor on POSIX systems, `NA` on Windows.
+#'    * `family`: Address family, string, typically `AF_UNIX`, `AF_INET` or
+#'       `AF_INET6`.
+#'    * `type`: Socket type, string, typically `SOCK_STREAM` (TCP) or
+#'       `SOCK_DGRAM` (UDP).
+#'    * `laddr`: Local address, string, `NA` for UNIX sockets.
+#'    * `lport`: Local port, integer, `NA` for UNIX sockets.
+#'    * `raddr`: Remote address, string, `NA` for UNIX sockets.
+#'    * `rport`: Remote port, integer, `NA` for UNIX sockets.
+#'    * `state`: Socket state, e.g. `CONN_ESTABLISHED`, etc.
 #'
 #' @family process handle functions
 #' @export
@@ -961,6 +969,8 @@ ps_open_files <- function(p) {
 
 ps_connections <- function(p) {
   assert_ps_handle(p)
+  if (ps_os_type()[["LINUX"]]) return(psl_connections(p))
+
   l <- not_null(.Call(psll_connections, p))
 
   d <- data.frame(

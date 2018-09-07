@@ -11,9 +11,19 @@ ps_connections(p)
 }
 \value{
 Data frame, or tibble if the \emph{tibble} package is available,
-with columns: \code{fd} and \code{path}. \code{fd} is numeric file descriptor on
-POSIX systems, \code{NA} on Windows. \code{path} is an absolute path to the
-file.
+with columns:
+\itemize{
+\item \code{fd}: integer file descriptor on POSIX systems, \code{NA} on Windows.
+\item \code{family}: Address family, string, typically \code{AF_UNIX}, \code{AF_INET} or
+\code{AF_INET6}.
+\item \code{type}: Socket type, string, typically \code{SOCK_STREAM} (TCP) or
+\code{SOCK_DGRAM} (UDP).
+\item \code{laddr}: Local address, string, \code{NA} for UNIX sockets.
+\item \code{lport}: Local port, integer, \code{NA} for UNIX sockets.
+\item \code{raddr}: Remote address, string, \code{NA} for UNIX sockets.
+\item \code{rport}: Remote port, integer, \code{NA} for UNIX sockets.
+\item \code{state}: Socket state, e.g. \code{CONN_ESTABLISHED}, etc.
+}
 }
 \description{
 For a zombie process it throws a \code{zombie_process} error.

@@ -10,6 +10,7 @@ void ps__dummy(const char *what) {
   ps__throw_error();
 }
 
+/* Not implemented on Linux, only on Windows and macOS */
 #ifdef  PS__LINUX
 #ifndef PS__MACOS
 #ifndef PS__WINDOWS
@@ -18,6 +19,7 @@ void ps__pids()          { ps__dummy("ps_pids"); }
 #endif
 #endif
 
+/* Not implemented on Windows */
 #ifdef PS__WINDOWS
 #ifndef PS__POSIX
 void psp__pid_exists()   { ps__dummy("psp__pid_exists"); }
@@ -27,12 +29,20 @@ void psp__stat_st_rdev() { ps__dummy("psp__stat_st_rdev"); }
 #endif
 #endif
 
+/* Only implemented on windows */
 #ifdef PS__POSIX
 #ifndef PS__WINDOWS
 void psw__realpath()     { ps__dummy("psw__realpath"); }
 #endif
 #endif
 
+#ifndef PS__LINUX
+#if defined(PS__WINDOWS) || defined(PS__MACOS)
+void ps__inet_ntop()     { ps__dummy("ps__inet_ntop"); }
+#endif
+#endif
+
+/* All C functions called from R */
 #ifndef PS__MACOS
 #ifndef PS__LINUX
 #ifndef PS__WINDOWS
@@ -66,6 +76,7 @@ void psll_kill()         { ps__dummy("ps_kill"); }
 void psll_num_fds()      { ps__dummy("ps_num_fds"); }
 void psll_open_files()   { ps__dummy("ps_open_files"); }
 void psll_interrupt()    { ps__dummy("ps_interrupt"); }
+void psll_connections()  { ps__dummy("ps_connections"); }
 
 void ps__init()          { /* this needs to run to load package */ }
 void ps__kill_if_env()   { ps__dummy("ps__kill_if_env"); }
@@ -77,6 +88,8 @@ void psp__zombie()       { ps__dummy("psp__zombie"); }
 void psp__waitpid()      { ps__dummy("psp__waitpid"); }
 
 void psw__realpath()     { ps__dummy("psw__realpath"); }
+
+void ps__inet_ntop()     { ps__dummy("ps__inet_ntop"); }
 #endif
 #endif
 #endif
