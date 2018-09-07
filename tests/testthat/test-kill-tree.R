@@ -137,6 +137,8 @@ test_that("with_process_cleanup", {
          Sys.time() < timeout) Sys.sleep(0.05)
 
   lapply(p, function(pp) expect_false(pp$is_alive()))
+  rm(p)
+  gc()
 })
 
 test_that("find_tree",  {
