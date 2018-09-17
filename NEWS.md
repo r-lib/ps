@@ -1,5 +1,7 @@
 
-# ps 1.1.0.9000
+# devel
+
+* Fix `ps::ps()` printing without the tibble package (#43)
 
 # ps 1.1.0
 
