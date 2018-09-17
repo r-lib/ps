@@ -25,6 +25,15 @@ ps_handle <- function(pid = NULL, time = NULL) {
   .Call(psll_handle, pid, time)
 }
 
+#' @rdname ps_handle
+#' @export
+
+as.character.ps_handle <- function(x, ...) {
+  pieces <- .Call(psll_format, x)
+  paste0("<ps::ps_handle> PID=", pieces[[2]], ", NAME=", pieces[[1]],
+         ", AT=", format_unix_time(pieces[[3]]))
+}
+
 #' @param x Process handle.
 #' @param ... Not used currently.
 #'
@@ -32,9 +41,7 @@ ps_handle <- function(pid = NULL, time = NULL) {
 #' @export
 
 format.ps_handle <- function(x, ...) {
-  pieces <- .Call(psll_format, x)
-  paste0("<ps::ps_handle> PID=", pieces[[2]], ", NAME=", pieces[[1]],
-         ", AT=", format_unix_time(pieces[[3]]))
+  as.character(x, ...)
 }
 
 #' @rdname ps_handle

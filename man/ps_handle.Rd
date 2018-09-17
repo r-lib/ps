@@ -2,11 +2,14 @@
 % Please edit documentation in R/low-level.R
 \name{ps_handle}
 \alias{ps_handle}
+\alias{as.character.ps_handle}
 \alias{format.ps_handle}
 \alias{print.ps_handle}
 \title{Create a process handle}
 \usage{
 ps_handle(pid = NULL, time = NULL)
+
+\method{as.character}{ps_handle}(x, ...)
 
 \method{format}{ps_handle}(x, ...)
 
