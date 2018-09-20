@@ -48,6 +48,10 @@
  * ============================================================================
  */
 
+#ifndef AF_INET6
+#define AF_INET6 23
+#endif
+
 #define LO_T 1e-7
 #define HI_T 429.4967296
 
@@ -725,6 +729,81 @@ SEXP psw__realpath(SEXP path) {
   return res;
 }
 
+SEXP ps__define_tcp_statuses() {
+  SEXP result, names;
+
+  PROTECT(result = allocVector(INTSXP, 13));
+  PROTECT(names = allocVector(STRSXP, 13));
+
+  INTEGER(result)[0] = MIB_TCP_STATE_CLOSED;
+  SET_STRING_ELT(names, 0, mkChar("CONN_CLOSE"));
+  INTEGER(result)[1] = MIB_TCP_STATE_CLOSING;
+  SET_STRING_ELT(names, 1, mkChar("CONN_CLOSING"));
+  INTEGER(result)[2] = MIB_TCP_STATE_CLOSE_WAIT;
+  SET_STRING_ELT(names, 2, mkChar("CONN_CLOSE_WAIT"));
+  INTEGER(result)[3] = MIB_TCP_STATE_LISTEN;
+  SET_STRING_ELT(names, 3, mkChar("CONN_LISTEN"));
+  INTEGER(result)[4] = MIB_TCP_STATE_ESTAB;
+  SET_STRING_ELT(names, 4, mkChar("CONN_ESTABLISHED"));
+  INTEGER(result)[5] = MIB_TCP_STATE_SYN_SENT;
+  SET_STRING_ELT(names, 5, mkChar("CONN_SYN_SENT"));
+  INTEGER(result)[6] = MIB_TCP_STATE_SYN_RCVD;
+  SET_STRING_ELT(names, 6, mkChar("CONN_SYN_RECV"));
+  INTEGER(result)[7] = MIB_TCP_STATE_FIN_WAIT1;
+  SET_STRING_ELT(names, 7, mkChar("CONN_FIN_WAIT_1"));
+  INTEGER(result)[8] = MIB_TCP_STATE_FIN_WAIT2;
+  SET_STRING_ELT(names, 8, mkChar("CONN_FIN_WAIT_2"));
+  INTEGER(result)[9] = MIB_TCP_STATE_LAST_ACK;
+  SET_STRING_ELT(names, 9, mkChar("CONN_LAST_ACK"));
+  INTEGER(result)[10] = MIB_TCP_STATE_TIME_WAIT;
+  SET_STRING_ELT(names, 10, mkChar("CONN_TIME_WAIT"));
+  INTEGER(result)[11] = MIB_TCP_STATE_DELETE_TCB;
+  SET_STRING_ELT(names, 11, mkChar("CONN_DELETE_TCB"));
+  INTEGER(result)[12] = PS__CONN_NONE;
+  SET_STRING_ELT(names, 12, mkChar("PS__CONN_NONE"));
+
+  setAttrib(result, R_NamesSymbol, names);
+  UNPROTECT(2);
+  return result;
+}
+
+SEXP ps__define_socket_address_families() {
+  SEXP afenv = PROTECT(Rf_allocSExp(ENVSXP));
+
+  defineVar(install("AF_INET"), PROTECT(ScalarInteger(AF_INET)), afenv);
+  UNPROTECT(1);
+
+  defineVar(install("AF_INET6"), PROTECT(ScalarInteger(AF_INET6)), afenv);
+  UNPROTECT(1);
+
+  UNPROTECT(1);
+  return afenv;
+}
+
+SEXP ps__define_socket_types() {
+  SEXP env = PROTECT(Rf_allocSExp(ENVSXP));
+
+  defineVar(install("SOCK_STREAM"), PROTECT(ScalarInteger(SOCK_STREAM)), env);
+  UNPROTECT(1);
+
+  defineVar(install("SOCK_DGRAM"), PROTECT(ScalarInteger(SOCK_DGRAM)), env);
+  UNPROTECT(1);
+
+  UNPROTECT(1);
+  return env;
+}
+
 SEXP ps__init(SEXP psenv, SEXP constenv) {
+
+  /* Connection statuses */
+  defineVar(install("tcp_statuses"), ps__define_tcp_statuses(), constenv);
+
+  /* Socket address families */
+  defineVar(install("address_families"),
+	    ps__define_socket_address_families(), constenv);
+
+  /* Socket types */
+  defineVar(install("socket_types"), ps__define_socket_types(), constenv);
+
   return R_NilValue;
 }
