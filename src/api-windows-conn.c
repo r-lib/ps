@@ -92,7 +92,6 @@ SEXP psll_connections(SEXP p) {
 
   static long null_address[4] = { 0, 0, 0, 0 };
   unsigned long pid;
-  int pid_return;
   typedef PSTR (NTAPI * _RtlIpv4AddressToStringA)(struct in_addr *, PSTR);
   _RtlIpv4AddressToStringA rtlIpv4AddressToStringA;
   typedef PSTR (NTAPI * _RtlIpv6AddressToStringA)(struct in6_addr *, PSTR);
@@ -117,6 +116,7 @@ SEXP psll_connections(SEXP p) {
   SEXP conn;
   char *addr_local = NULL, *addr_remote = NULL;
   int port_local = 0, port_remote = 0;
+  char *empty_string = "";
 
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   if (!handle) error("Process pointer cleaned up already");
@@ -154,10 +154,10 @@ SEXP psll_connections(SEXP p) {
 
   table = NULL;
   conn = R_NilValue;
-  addr_local = 0;
-  addr_remote = 0;
-  port_local = 0;
-  port_remote = 0;
+  addr_local = empty_string;
+  addr_remote = empty_string;
+  port_local = NA_INTEGER;
+  port_remote = NA_INTEGER;
   tableSize = 0;
 
   err = __GetExtendedTcpTable(getExtendedTcpTable,
@@ -218,6 +218,181 @@ SEXP psll_connections(SEXP p) {
   table = NULL;
   tableSize = 0;
 
+  // TCP IPv6
+
+  table = NULL;
+  conn = R_NilValue;
+  addr_local = empty_string;
+  addr_remote = empty_string;
+  port_local = NA_INTEGER;
+  port_remote = NA_INTEGER;
+  tableSize = 0;
+
+  err = __GetExtendedTcpTable(getExtendedTcpTable,
+			      AF_INET6, &table, &tableSize);
+  if (err == ERROR_NOT_ENOUGH_MEMORY) {
+    ps__no_memory("");
+    ps__throw_error();
+  }
+
+  if (err == NO_ERROR) {
+    tcp6Table = table;
+
+    for (i = 0; i < tcp6Table->dwNumEntries; i++) {
+
+      if (tcp6Table->table[i].dwOwningPid != pid) continue;
+
+      if (memcmp(tcp6Table->table[i].ucLocalAddr, null_address, 16) != 0 ||
+	  tcp6Table->table[i].dwLocalPort != 0) {
+	struct in6_addr addr;
+
+	memcpy(&addr, tcp6Table->table[i].ucLocalAddr, 16);
+	rtlIpv6AddressToStringA(&addr, addressBufferLocal);
+	addr_local = addressBufferLocal;
+	port_local = BYTESWAP_USHORT(tcp6Table->table[i].dwLocalPort);
+      }
+
+      // On Windows <= XP, remote addr is filled even if socket
+      // is in LISTEN mode in which case we just ignore it.
+      if ((memcmp(tcp6Table->table[i].ucRemoteAddr, null_address, 16) != 0 ||
+	   tcp6Table->table[i].dwRemotePort != 0) &&
+	  (tcp6Table->table[i].dwState != MIB_TCP_STATE_LISTEN)) {
+	struct in6_addr addr;
+
+	memcpy(&addr, tcp6Table->table[i].ucRemoteAddr, 16);
+	rtlIpv6AddressToStringA(&addr, addressBufferRemote);
+	addr_remote = addressBufferRemote;
+	port_remote = BYTESWAP_USHORT(tcp6Table->table[i].dwRemotePort);
+      }
+
+      PROTECT(conn = ps__build_list("iiisisii",
+        NA_INTEGER, AF_INET6, SOCK_STREAM, addr_local, port_local, addr_remote,
+        port_remote, tcp6Table->table[i].dwState));
+
+      if (++ret_num == ret_len) {
+	ret_len *= 2;
+	REPROTECT(retlist = Rf_lengthgets(retlist, ret_len), ret_idx);
+      }
+      SET_VECTOR_ELT(retlist, ret_num, conn);
+      UNPROTECT(1);
+    }
+  } else {
+    ps__set_error_from_windows_error(err);
+    free(table);
+    ps__throw_error();
+  }
+
+  free(table);
+  table = NULL;
+  tableSize = 0;
+
+  // UDP IPv4
+
+  table = NULL;
+  conn = R_NilValue;
+  addr_local = empty_string;
+  addr_remote = empty_string;
+  port_local = NA_INTEGER;
+  port_remote = NA_INTEGER;
+  tableSize = 0;
+
+  err = __GetExtendedUdpTable(getExtendedUdpTable,
+			      AF_INET, &table, &tableSize);
+  if (err == ERROR_NOT_ENOUGH_MEMORY) {
+    ps__no_memory("");
+    ps__throw_error();
+  }
+
+  if (err == NO_ERROR) {
+    udp4Table = table;
+
+    for (i = 0; i < udp4Table->dwNumEntries; i++) {
+      if (udp4Table->table[i].dwOwningPid != pid) continue;
+
+      if (udp4Table->table[i].dwLocalAddr != 0 ||
+	  udp4Table->table[i].dwLocalPort != 0) {
+	struct in_addr addr;
+
+	addr.S_un.S_addr = udp4Table->table[i].dwLocalAddr;
+	rtlIpv4AddressToStringA(&addr, addressBufferLocal);
+	addr_local = addressBufferLocal;
+	port_local = BYTESWAP_USHORT(udp4Table->table[i].dwLocalPort);
+      }
+
+      PROTECT(conn = ps__build_list("iiisisii",
+        NA_INTEGER, AF_INET, SOCK_DGRAM, addr_local, port_local, addr_remote,
+        port_remote, PS__CONN_NONE));
+
+      if (++ret_num == ret_len) {
+	ret_len *= 2;
+	REPROTECT(retlist = Rf_lengthgets(retlist, ret_len), ret_idx);
+      }
+      SET_VECTOR_ELT(retlist, ret_num, conn);
+      UNPROTECT(1);
+    }
+  } else {
+    ps__set_error_from_windows_error(err);
+    free(table);
+    ps__throw_error();
+  }
+
+  free(table);
+  table = NULL;
+  tableSize = 0;
+
+  // UDP IPv6
+
+  table = NULL;
+  conn = R_NilValue;
+  addr_local = empty_string;
+  addr_remote = empty_string;
+  port_local = NA_INTEGER;
+  port_remote = NA_INTEGER;
+  tableSize = 0;
+
+  err = __GetExtendedUdpTable(getExtendedUdpTable,
+			      AF_INET6, &table, &tableSize);
+  if (err == ERROR_NOT_ENOUGH_MEMORY) {
+    ps__no_memory("");
+    ps__throw_error();
+  }
+
+  if (err == NO_ERROR) {
+    udp6Table = table;
+
+    for (i = 0; i < udp6Table->dwNumEntries; i++) {
+      if (udp6Table->table[i].dwOwningPid != pid) continue;
+
+      if (memcmp(udp6Table->table[i].ucLocalAddr, null_address, 16) != 0 ||
+	  udp6Table->table[i].dwLocalPort != 0) {
+	struct in6_addr addr;
+
+	memcpy(&addr, udp6Table->table[i].ucLocalAddr, 16);
+	rtlIpv6AddressToStringA(&addr, addressBufferLocal);
+	addr_local = addressBufferLocal;
+	port_local = BYTESWAP_USHORT(udp6Table->table[i].dwLocalPort);
+      }
+
+      PROTECT(conn = ps__build_list("iiisisii",
+        NA_INTEGER, AF_INET6, SOCK_DGRAM, addr_local, port_local, addr_remote,
+        port_remote, PS__CONN_NONE));
+
+      if (++ret_num == ret_len) {
+	ret_len *= 2;
+	REPROTECT(retlist = Rf_lengthgets(retlist, ret_len), ret_idx);
+      }
+      SET_VECTOR_ELT(retlist, ret_num, conn);
+      UNPROTECT(1);
+    }
+  } else {
+    ps__set_error_from_windows_error(err);
+    free(table);
+    ps__throw_error();
+  }
+
+  free(table);
+  table = NULL;
+  tableSize = 0;
 
   UNPROTECT(1);
   return retlist;

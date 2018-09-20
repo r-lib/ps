@@ -987,6 +987,12 @@ ps_connections <- function(p) {
     state = match_names(ps_env$constants$tcp_statuses,
                         vapply(l, "[[", integer(1), 8)))
 
+  d$laddr[d$laddr == ""] <- NA_character_
+  d$raddr[d$raddr == ""] <- NA_character_
+
+  d$lport[d$lport == 0] <- NA_integer_
+  d$rport[d$rport == 0] <- NA_integer_
+
   requireNamespace("tibble", quietly = TRUE)
   class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
