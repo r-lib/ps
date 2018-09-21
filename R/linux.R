@@ -10,7 +10,7 @@ psl_connections <- function(p) {
 
   flt <- function(x, col, values) x[x[[col]] %in% values, ]
 
-  unix <- flt(psl__read_table("/proc/net/unix")[, 1:7],  "V7",  sock$id)
+  unix <- flt(psl__read_table("/proc/net/unix"),         "V7",  sock$id)
   tcp  <- flt(psl__read_table("/proc/net/tcp") [, 1:10], "V10", sock$id)
   tcp6 <- flt(psl__read_table("/proc/net/tcp6")[, 1:10], "V10", sock$id)
   udp  <- flt(psl__read_table("/proc/net/udp") [, 1:10], "V10", sock$id)
@@ -39,20 +39,44 @@ psl_connections <- function(p) {
   }
   net <- rbind(tcp, tcp6, udp, udp6)
 
-  ## The status column is 01...09, 0A, 0B, but R might parse it as integer
-  unix$V6 <- str_tail(paste0('0', as.character(unix$V6)), 2)
-  net$V4 <- str_tail(paste0('0', as.character(net$V4)), 2)
+  ## Unix socket might or might not have a path
+  if (length(unix)) {
+    unix$V8 <- unix$V8 %||% ""
+    unix$V8[unix$V8 == ""] <- NA_character_
+  }
 
-  d <- unix %&&% data.frame(
+  ## The status column is 01...09, 0A, 0B, but R might parse it as integer
+  if (length(unix)) {
+    unix$V6 <- str_tail(paste0('0', as.character(unix$V6)), 2)
+  }
+  if (length(net)) {
+    net$V4 <- str_tail(paste0('0', as.character(net$V4)), 2)
+  }
+
+  d <- data.frame(
     stringsAsFactors = FALSE,
-    fd = sockx$fd[match(unix$V7, sockx$id)],
-    family = "AF_UNIX",
-    type = match_names(ps_env$constants$socket_types, unix$V5),
-    laddr = NA_character_,
-    lport = NA_integer_,
-    raddr = NA_character_,
-    rport = NA_integer_,
-    state = match_names(ps_env$constants$tcp_statuses, unix$V6))
+    fd = integer(),
+    family = character(),
+    type = character(),
+    laddr = character(),
+    lport = integer(),
+    raddr = character(),
+    rport = integer(),
+    state = character()
+  )
+
+  if (!is.null(unix)) {
+    d <- data.frame(
+      stringsAsFactors = FALSE,
+      fd = sockx$fd[match(unix$V7, sockx$id)],
+      family = "AF_UNIX",
+      type = match_names(ps_env$constants$socket_types, unix$V5),
+      laddr = NA_character_,
+      lport = NA_integer_,
+      raddr = unix$V8,
+      rport = NA_integer_,
+      state = NA_character_)
+  }
 
   if (!is.null(net)) {
 
@@ -81,10 +105,10 @@ psl_connections <- function(p) {
 }
 
 psl__read_table <- function(file, stringsAsFactors = FALSE, header = FALSE,
-                            skip = 1, ...) {
+                            skip = 1, fill = TRUE, ...) {
   tryCatch(
     read.table(file, stringsAsFactors = stringsAsFactors, header = header,
-               skip = skip, ...),
+               skip = skip, fill = fill, ...),
     error = function(e) NULL
   )
 }

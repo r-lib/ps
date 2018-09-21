@@ -948,7 +948,8 @@ ps_open_files <- function(p) {
 #'    * `lport`: Local port, integer, `NA` for UNIX sockets.
 #'    * `raddr`: Remote address, string, `NA` for UNIX sockets.
 #'    * `rport`: Remote port, integer, `NA` for UNIX sockets.
-#'    * `state`: Socket state, e.g. `CONN_ESTABLISHED`, etc.
+#'    * `state`: Socket state, e.g. `CONN_ESTABLISHED`, etc. It is `NA`
+#'      for UNIX sockets.
 #'
 #' @family process handle functions
 #' @export
