@@ -20,6 +20,8 @@ Imports:
 Suggests:
     callr,
     covr,
+    curl,
+    pingr,
     processx (>= 3.1.0),
     R6,
     rlang,
