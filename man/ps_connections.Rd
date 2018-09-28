@@ -20,9 +20,11 @@ with columns:
 \code{SOCK_DGRAM} (UDP).
 \item \code{laddr}: Local address, string, \code{NA} for UNIX sockets.
 \item \code{lport}: Local port, integer, \code{NA} for UNIX sockets.
-\item \code{raddr}: Remote address, string, \code{NA} for UNIX sockets.
+\item \code{raddr}: Remote address, string, \code{NA} for UNIX sockets. This is
+always \code{NA} for \code{AF_INET} sockets on Linux.
 \item \code{rport}: Remote port, integer, \code{NA} for UNIX sockets.
-\item \code{state}: Socket state, e.g. \code{CONN_ESTABLISHED}, etc.
+\item \code{state}: Socket state, e.g. \code{CONN_ESTABLISHED}, etc. It is \code{NA}
+for UNIX sockets.
 }
 }
 \description{

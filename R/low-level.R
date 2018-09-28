@@ -946,7 +946,8 @@ ps_open_files <- function(p) {
 #'       `SOCK_DGRAM` (UDP).
 #'    * `laddr`: Local address, string, `NA` for UNIX sockets.
 #'    * `lport`: Local port, integer, `NA` for UNIX sockets.
-#'    * `raddr`: Remote address, string, `NA` for UNIX sockets.
+#'    * `raddr`: Remote address, string, `NA` for UNIX sockets. This is
+#'      always `NA` for `AF_INET` sockets on Linux.
 #'    * `rport`: Remote port, integer, `NA` for UNIX sockets.
 #'    * `state`: Socket state, e.g. `CONN_ESTABLISHED`, etc. It is `NA`
 #'      for UNIX sockets.

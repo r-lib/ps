@@ -40,16 +40,14 @@ psl_connections <- function(p) {
   net <- rbind(tcp, tcp6, udp, udp6)
 
   ## Unix socket might or might not have a path
-  if (length(unix)) {
-    unix$V8 <- unix$V8 %||% ""
-    unix$V8[unix$V8 == ""] <- NA_character_
-  }
+  unix$V8 <- unix$V8 %||% ""
+  unix$V8[unix$V8 == ""] <- NA_character_
 
   ## The status column is 01...09, 0A, 0B, but R might parse it as integer
-  if (length(unix)) {
+  if (length(unix) &&  nrow(unix)) {
     unix$V6 <- str_tail(paste0('0', as.character(unix$V6)), 2)
   }
-  if (length(net)) {
+  if (length(net) && nrow(net)) {
     net$V4 <- str_tail(paste0('0', as.character(net$V4)), 2)
   }
 
@@ -65,15 +63,15 @@ psl_connections <- function(p) {
     state = character()
   )
 
-  if (!is.null(unix)) {
+  if (length(unix) &&  nrow(unix)) {
     d <- data.frame(
       stringsAsFactors = FALSE,
       fd = sockx$fd[match(unix$V7, sockx$id)],
       family = "AF_UNIX",
       type = match_names(ps_env$constants$socket_types, unix$V5),
-      laddr = NA_character_,
+      laddr = unix$V8,
       lport = NA_integer_,
-      raddr = unix$V8,
+      raddr = NA_character_,
       rport = NA_integer_,
       state = NA_character_)
   }

@@ -773,6 +773,9 @@ SEXP psll_connections(SEXP p) {
   }
 
   free(fds_pointer);
+
+  PS__CHECK_HANDLE(handle);
+
   UNPROTECT(1);
   return result;
 
