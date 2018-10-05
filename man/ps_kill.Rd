@@ -30,7 +30,6 @@ Other process handle functions: \code{\link{ps_children}},
   \code{\link{ps_username}}
 }
 \concept{process handle functions}
-\section{Examples}{
 \Sexpr[stage=install,strip.white=FALSE,results=rd]{
 ps:::decorate_examples(os = "POSIX",  '
 px <- processx::process$new("sleep", "10")
@@ -41,4 +40,3 @@ p
 ps_is_running(p)
 px$get_exit_status()
 ')}
-}
