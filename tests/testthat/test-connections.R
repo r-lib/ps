@@ -71,12 +71,10 @@ test_that("UNIX sockets with path", {
 test_that("TCP", {
   skip_if_offline()
   before <- ps_connections(ps_handle())
-  ips <- curl::nslookup(httpbin_url(), multiple = TRUE, ipv4_only = TRUE)
   cx <- curl::curl(httpbin_url(), open = "r")
   on.exit(close(cx), add = TRUE)
   after <- ps_connections(ps_handle())
   new <- after[! after$fd %in% before$fd, ]
-  expect_true(new$raddr %in% ips)
   expect_equal(new$family, "AF_INET")
   expect_equal(new$type, "SOCK_STREAM")
   expect_true(is_ipv4_address(new$laddr))
@@ -190,12 +188,14 @@ test_that("TCP6", {
   skip_without_ipv6()
   skip_without_ipv6_connection()
   before <- ps_connections(ps_handle())
-  ips <- curl::nslookup(ipv6_host(), multiple = TRUE, ipv4_only = FALSE)
   cx <- curl::curl(ipv6_url(), open = "r")
   on.exit(close(cx), add = TRUE)
   after <- ps_connections(ps_handle())
   new <- after[! after$fd %in% before$fd, ]
-  expect_true(new$raddr %in% ips)
+  expect_equal(new$family, "AF_INET6")
+  expect_equal(new$type, "SOCK_STREAM")
+  expect_true(is.integer(new$lport))
+  expect_equal(new$rport, 443L)
 })
 
 test_that("TCP6 on loopback", {
@@ -225,12 +225,13 @@ test_that("TCP6 on loopback", {
 
   deadline <- Sys.time() + as.difftime(5, units = "secs")
   while (nc2$is_alive() && Sys.time() < deadline &&
-         ! port %in% (cl2 <- ps_connections(p2))$rport) Sys.sleep(0.1)
+         ! port %in% (cl2 <- try(ps_connections(p2))$rport)) Sys.sleep(0.1)
 
-  if (!nc2$is_alive()) {
+  if (!nc2$is_alive() || inherits(cl2, "try-error")) {
     close(nc$get_input_connection())
     close(nc$get_error_connection())
     close(nc2$get_input_connection())
+    nc$kill(); nc2$kill(); gc()
     skip("Could not bind to IPv6 address")
   }
 
@@ -296,12 +297,13 @@ test_that("UDP6 on loopback", {
 
   deadline <- Sys.time() + as.difftime(5, units = "secs")
   while (nc2$is_alive() && Sys.time() < deadline &&
-         ! port %in% (cl2 <- ps_connections(p2))$rport) Sys.sleep(0.1)
+         ! port %in% (cl2 <- try(ps_connections(p2))$rport)) Sys.sleep(0.1)
 
-  if (!nc2$is_alive()) {
+  if (!nc2$is_alive() || inherits(cl2,"try-error")) {
     close(nc$get_input_connection())
     close(nc$get_error_connection())
     close(nc2$get_input_connection())
+    nc$kill(); nc2$kill(); gc()
     skip("Could not bind to IPv6 address")
   }
 
