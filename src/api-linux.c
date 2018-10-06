@@ -1023,8 +1023,8 @@ SEXP psll_connections(SEXP p) {
     
     ret = psll__readlink(path, &linkname);
     if (ret) {
-      closedir(dirs);
       if (errno == ENOENT || errno == ESRCH || errno == EINVAL) continue;
+      closedir(dirs);
       ps__check_for_zombie(handle, 1);
     }
 
