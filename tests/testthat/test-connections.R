@@ -267,8 +267,7 @@ test_that("UDP6", {
   expect_equal(nrow(cl), 1)
   expect_equal(cl$family, "AF_INET6")
   expect_equal(cl$type, "SOCK_DGRAM")
-  expect_equal(cl$raddr, "2001:4860:4860:8888")
-  expect_true(is.na(cl$state))
+  expect_match(cl$raddr, "2001:4860:4860:8888", fixed = TRUE)
 })
 
 test_that("UDP6 on loopback", {
