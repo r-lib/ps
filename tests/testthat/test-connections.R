@@ -120,7 +120,7 @@ test_that("UDP", {
   skip_if_no_processx()
 
   nc <- processx::process$new(
-    "socat", c("-", "UDP:8.8.8.8:53"), stdin = "|")
+    "socat", c("-", "UDP4-CONNECT:8.8.8.8:53,pf=ip4"), stdin = "|")
   on.exit(nc$kill(), add = TRUE)
   p <- nc$as_ps_handle()
 
@@ -137,7 +137,6 @@ test_that("UDP", {
   expect_equal(cl$family, "AF_INET")
   expect_equal(cl$type, "SOCK_DGRAM")
   expect_equal(cl$raddr, "8.8.8.8")
-  expect_true(is.na(cl$state))
 })
 
 test_that("UDP on loopback", {
