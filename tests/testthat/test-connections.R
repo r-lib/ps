@@ -215,9 +215,11 @@ test_that("TCP6 on loopback", {
   p2 <- nc2$as_ps_handle()
 
   deadline <- Sys.time() + as.difftime(5, units = "secs")
-  while (Sys.time() < deadline &&
+  while (nc2$is_alive() && Sys.time() < deadline &&
          ! port %in% (cl2 <- ps_connections(p2))$rport) Sys.sleep(0.1)
 
+  if (!nc2$is_alive()) stop("Could not bind to IPv6 address")
+  
   cl2 <- cl2[!is.na(cl2$rport & cl2$rport == port), ]
   expect_equal(cl2$family, "AF_INET6")
   expect_equal(cl2$type, "SOCK_STREAM")
@@ -278,8 +280,10 @@ test_that("UDP6 on loopback", {
   p2 <- nc2$as_ps_handle()
 
   deadline <- Sys.time() + as.difftime(5, units = "secs")
-  while (Sys.time() < deadline &&
+  while (nc2$is_alive() && Sys.time() < deadline &&
          ! port %in% (cl2 <- ps_connections(p2))$rport) Sys.sleep(0.1)
+
+  if (!nc2$is_alive()) stop("Could not bind to IPv6 address")
 
   cl2 <- cl2[!is.na(cl2$rport & cl2$rport == port), ]
   expect_equal(cl2$family, "AF_INET6")

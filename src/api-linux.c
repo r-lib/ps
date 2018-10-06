@@ -1020,7 +1020,7 @@ SEXP psll_connections(SEXP p) {
       closedir(dirs);
       ps__throw_error();
     }
-    
+
     ret = psll__readlink(path, &linkname);
     if (ret) {
       if (errno == ENOENT || errno == ESRCH || errno == EINVAL) continue;
