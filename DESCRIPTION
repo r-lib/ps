@@ -27,6 +27,8 @@ Suggests:
     rlang,
     testthat,
     tibble
+Remotes:
+    r-lib/processx
 RoxygenNote: 6.1.0
 Roxygen: list(markdown = TRUE)
 Biarch: true
