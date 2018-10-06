@@ -106,7 +106,7 @@ test_that("TCP on loopback", {
   on.exit(nc2$kill(), add = TRUE)
   p2 <- nc2$as_ps_handle()
 
-  deadline <- Sys.time() + 3
+  deadline <- Sys.time() + as.difftime(5, units = "secs")
   while (Sys.time() < deadline &&
          ! port %in% (cl2 <- ps_connections(p2))$rport) Sys.sleep(0.1)
 
@@ -127,7 +127,7 @@ test_that("UDP", {
   on.exit(nc$kill(), add = TRUE)
   p <- nc$as_ps_handle()
 
-  deadline <- Sys.time() + 3
+  deadline <- Sys.time() + as.difftime(5, units = "secs")
   while (Sys.time() < deadline &&
          ! 53 %in% (cl <- ps_connections(p))$rport) {
     Sys.sleep(.1)
@@ -166,7 +166,7 @@ test_that("UDP on loopback", {
   on.exit(nc2$kill(), add = TRUE)
   p2 <- nc2$as_ps_handle()
 
-  deadline <- Sys.time() + 3
+  deadline <- Sys.time() + as.difftime(5, units = "secs")
   while (Sys.time() < deadline &&
          ! port %in% (cl2 <- ps_connections(p2))$rport) Sys.sleep(0.1)
 
@@ -214,7 +214,7 @@ test_that("TCP6 on loopback", {
   on.exit(nc2$kill(), add = TRUE)
   p2 <- nc2$as_ps_handle()
 
-  deadline <- Sys.time() + 3
+  deadline <- Sys.time() + as.difftime(5, units = "secs")
   while (Sys.time() < deadline &&
          ! port %in% (cl2 <- ps_connections(p2))$rport) Sys.sleep(0.1)
 
@@ -237,7 +237,7 @@ test_that("UDP6", {
   on.exit(nc$kill(), add = TRUE)
   p <- nc$as_ps_handle()
 
-  deadline <- Sys.time() + 3
+  deadline <- Sys.time() + as.difftime(5, units = "secs")
   while (Sys.time() < deadline &&
          ! 53 %in% (cl <- ps_connections(p))$rport) {
     Sys.sleep(.1)
@@ -277,7 +277,7 @@ test_that("UDP6 on loopback", {
   on.exit(nc2$kill(), add = TRUE)
   p2 <- nc2$as_ps_handle()
 
-  deadline <- Sys.time() + 3
+  deadline <- Sys.time() + as.difftime(5, units = "secs")
   while (Sys.time() < deadline &&
          ! port %in% (cl2 <- ps_connections(p2))$rport) Sys.sleep(0.1)
 
