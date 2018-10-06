@@ -38,6 +38,7 @@ test_that("UNIX sockets", {
   expect_identical(cl$raddr, NA_character_)
   expect_identical(cl$lport, NA_integer_)
   expect_identical(cl$state, NA_character_)
+  close(px$get_output_connection())
   px$kill(); gc()
 })
 
@@ -63,6 +64,7 @@ test_that("UNIX sockets with path", {
   cl <- ps_connections(p)
   cl <- cl[!is.na(cl$laddr) & cl$laddr == sfile, ]
   expect_equal(nrow(cl), 1)
+  close(nc$get_input_connection())
   nc$kill(); gc()
 })
 
@@ -114,6 +116,9 @@ test_that("TCP on loopback", {
   expect_equal(cl2$family, "AF_INET")
   expect_equal(cl2$type, "SOCK_STREAM")
   expect_equal(cl2$state, "CONN_ESTABLISHED")
+  close(nc$get_input_connection())
+  close(nc$get_error_connection())
+  close(nc2$get_input_connection())
   nc$kill(); nc2$kill(); gc()
 })
 
@@ -140,6 +145,7 @@ test_that("UDP", {
   expect_equal(cl$family, "AF_INET")
   expect_equal(cl$type, "SOCK_DGRAM")
   expect_equal(cl$raddr, "8.8.8.8")
+  close(nc$get_input_connection())
   nc$kill(); gc()
 })
 
@@ -173,6 +179,9 @@ test_that("UDP on loopback", {
   cl2 <- cl2[!is.na(cl2$rport & cl2$rport == port), ]
   expect_equal(cl2$family, "AF_INET")
   expect_equal(cl2$type, "SOCK_DGRAM")
+  close(nc$get_input_connection())
+  close(nc$get_error_connection())
+  close(nc2$get_input_connection())
   nc$kill(); nc2$kill(); gc()
 })
 
@@ -218,12 +227,19 @@ test_that("TCP6 on loopback", {
   while (nc2$is_alive() && Sys.time() < deadline &&
          ! port %in% (cl2 <- ps_connections(p2))$rport) Sys.sleep(0.1)
 
-  if (!nc2$is_alive()) stop("Could not bind to IPv6 address")
-  
+  if (!nc2$is_alive()) {
+    close(nc$get_input_connection())
+    close(nc$get_error_connection())
+    close(nc2$get_input_connection())
+    skip("Could not bind to IPv6 address")
+  }
+
   cl2 <- cl2[!is.na(cl2$rport & cl2$rport == port), ]
   expect_equal(cl2$family, "AF_INET6")
   expect_equal(cl2$type, "SOCK_STREAM")
-  expect_equal(cl2$state, "CONN_ESTABLISHED")
+  close(nc$get_input_connection())
+  close(nc$get_error_connection())
+  close(nc2$get_input_connection())
   nc$kill(); nc2$kill(); gc()
 })
 
@@ -283,10 +299,18 @@ test_that("UDP6 on loopback", {
   while (nc2$is_alive() && Sys.time() < deadline &&
          ! port %in% (cl2 <- ps_connections(p2))$rport) Sys.sleep(0.1)
 
-  if (!nc2$is_alive()) stop("Could not bind to IPv6 address")
+  if (!nc2$is_alive()) {
+    close(nc$get_input_connection())
+    close(nc$get_error_connection())
+    close(nc2$get_input_connection())
+    skip("Could not bind to IPv6 address")
+  }
 
   cl2 <- cl2[!is.na(cl2$rport & cl2$rport == port), ]
   expect_equal(cl2$family, "AF_INET6")
   expect_equal(cl2$type, "SOCK_DGRAM")
+  close(nc$get_input_connection())
+  close(nc$get_error_connection())
+  close(nc2$get_input_connection())
   nc$kill(); nc2$kill(); gc()
 })
