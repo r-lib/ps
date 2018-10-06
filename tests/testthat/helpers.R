@@ -61,9 +61,12 @@ have_ipv6_connection <- local({
     if (is.null(ok) || myurl != url) {
       myurl <<- url
       tryCatch({
-        curl::curl_fetch_memory(url)
+        cx <- curl::curl(url)
+        open(cx)
         ok <<- TRUE
-      }, error = function(x) ok <<- FALSE)
+      },
+      error = function(x) ok <<- FALSE,
+      finally = close(cx))
     }
     ok
   }
@@ -113,4 +116,13 @@ wait_for_string <- function(proc, string, timeout) {
 
 is_ipv4_address <- function(x) {
   grepl("^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$", x)
+}
+
+cleanup_process <- function(p) {
+  tryCatch(close(p$get_input_connection()), error = function(x) x)
+  tryCatch(close(p$get_output_connection()), error = function(x) x)
+  tryCatch(close(p$get_error_connection()), error = function(x) x)
+  tryCatch(close(p$get_poll_connection()), error = function(x) x)
+  tryCatch(p$kill(), error = function(x) x)
+  gc()
 }
