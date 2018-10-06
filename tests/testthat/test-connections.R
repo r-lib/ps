@@ -38,6 +38,7 @@ test_that("UNIX sockets", {
   expect_identical(cl$raddr, NA_character_)
   expect_identical(cl$lport, NA_integer_)
   expect_identical(cl$state, NA_character_)
+  px$kill(); gc()
 })
 
 test_that("UNIX sockets with path", {
@@ -62,6 +63,7 @@ test_that("UNIX sockets with path", {
   cl <- ps_connections(p)
   cl <- cl[!is.na(cl$laddr) & cl$laddr == sfile, ]
   expect_equal(nrow(cl), 1)
+  nc$kill(); gc()
 })
 
 test_that("TCP", {
@@ -112,6 +114,7 @@ test_that("TCP on loopback", {
   expect_equal(cl2$family, "AF_INET")
   expect_equal(cl2$type, "SOCK_STREAM")
   expect_equal(cl2$state, "CONN_ESTABLISHED")
+  nc$kill(); nc2$kill(); gc()
 })
 
 test_that("UDP", {
@@ -137,6 +140,7 @@ test_that("UDP", {
   expect_equal(cl$family, "AF_INET")
   expect_equal(cl$type, "SOCK_DGRAM")
   expect_equal(cl$raddr, "8.8.8.8")
+  nc$kill(); gc()
 })
 
 test_that("UDP on loopback", {
@@ -169,6 +173,7 @@ test_that("UDP on loopback", {
   cl2 <- cl2[!is.na(cl2$rport & cl2$rport == port), ]
   expect_equal(cl2$family, "AF_INET")
   expect_equal(cl2$type, "SOCK_DGRAM")
+  nc$kill(); nc2$kill(); gc()
 })
 
 test_that("TCP6", {
@@ -217,6 +222,7 @@ test_that("TCP6 on loopback", {
   expect_equal(cl2$family, "AF_INET6")
   expect_equal(cl2$type, "SOCK_STREAM")
   expect_equal(cl2$state, "CONN_ESTABLISHED")
+  nc$kill(); nc2$kill(); gc()
 })
 
 test_that("UDP6", {
@@ -278,5 +284,5 @@ test_that("UDP6 on loopback", {
   cl2 <- cl2[!is.na(cl2$rport & cl2$rport == port), ]
   expect_equal(cl2$family, "AF_INET6")
   expect_equal(cl2$type, "SOCK_DGRAM")
-
+  nc$kill(); nc2$kill(); gc()
 })
