@@ -37,6 +37,42 @@ skip_without_program <- function(prog) {
   if (Sys.which(prog) == "") skip(paste(prog, "is not available"))
 }
 
+have_ipv6_support <- function() {
+  ps_os_type()[["WINDOWS"]] ||
+    !is.null(ps_env$constants$address_families$AF_INET6)
+}
+
+skip_without_ipv6 <- function() {
+  if (!have_ipv6_support()) skip("Needs IPv6")
+}
+
+ipv6_url <- function() {
+  paste0("https://", ipv6_host())
+}
+
+ipv6_host <- function() {
+  "ipv6.test-ipv6.com"
+}
+
+have_ipv6_connection <- local({
+  ok <- NULL
+  myurl <- NULL
+  function(url = ipv6_url()) {
+    if (is.null(ok) || myurl != url) {
+      myurl <<- url
+      tryCatch({
+        curl::curl_fetch_memory(url)
+        ok <<- TRUE
+      }, error = function(x) ok <<- FALSE)
+    }
+    ok
+  }
+})
+
+skip_without_ipv6_connection <- function() {
+  if (!have_ipv6_connection()) skip("Needs working IPv6 connection")
+}
+
 httpbin_url <- function() {
   "eu.httpbin.org"
 }
@@ -70,4 +106,11 @@ wait_for_string <- function(proc, string, timeout) {
     if (deadline < Sys.time()) stop("Cannot start proces")
     if (!proc$is_alive()) stop("Cannot start process")
   }
+}
+
+## This is not perfect, e.g. we don't check that the numbers are <255,
+## but will do for our purposes
+
+is_ipv4_address <- function(x) {
+  grepl("^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$", x)
 }
