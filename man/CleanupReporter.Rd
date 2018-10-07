@@ -52,6 +52,10 @@ default.
 \code{"test"} and \code{"testsuite"}, like for \code{proc_unit}.
 \item \code{file_fail}: Whether to fail for leftover open files. \code{TRUE} by
 default.
+\item \code{conn_unit}: When to check for open network connections.
+Possible values are \code{"test"} and \code{"testsuite"}, like for \code{proc_unit}.
+\item \code{conn_fail}: Whether to fail for leftover network connections.
+\code{TRUE} by default.
 }
 }
 \note{
