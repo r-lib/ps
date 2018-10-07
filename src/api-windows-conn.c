@@ -366,6 +366,8 @@ SEXP psll_connections(SEXP p) {
   table = NULL;
   tableSize = 0;
 
+  PS__CHECK_HANDLE(handle);
+
   UNPROTECT(1);
   return retlist;
 }
