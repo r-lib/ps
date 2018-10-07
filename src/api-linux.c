@@ -962,6 +962,8 @@ SEXP psll_open_files(SEXP p) {
       ps__check_for_zombie(handle, 1);
     }
 
+    if (strncmp("socket:", linkname, 7) == 0) continue;
+
     fd = strtol(entry->d_name, NULL, 10);
     if (fd == dfd) continue;
     if (++num == len) {
