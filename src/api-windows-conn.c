@@ -10,18 +10,14 @@
 #endif
 #include <wincrypt.h>
 #include <iphlpapi.h>
+#include <stdlib.h>
 
 #define BYTESWAP_USHORT(x) ((((USHORT)(x) << 8) | ((USHORT)(x) >> 8)) & 0xffff)
 #ifndef AF_INET6
 #define AF_INET6 23
 #endif
 
-typedef DWORD (WINAPI * _GetExtendedTcpTable)(PVOID, PDWORD, BOOL, ULONG,
-                                              TCP_TABLE_CLASS, ULONG);
-
-// https://msdn.microsoft.com/library/aa365928.aspx
-static DWORD __GetExtendedTcpTable(_GetExtendedTcpTable call,
-                                   ULONG address_family,
+static DWORD MyGetExtendedTcpTable(ULONG address_family,
                                    PVOID * data, DWORD * size) {
 
   // Due to other processes being active on the machine, it's possible
@@ -34,16 +30,16 @@ static DWORD __GetExtendedTcpTable(_GetExtendedTcpTable call,
   DWORD error = ERROR_INSUFFICIENT_BUFFER;
   *size = 0;
   *data = NULL;
-  error = call(NULL, size, FALSE, address_family,
-	       TCP_TABLE_OWNER_PID_ALL, 0);
+  error = GetExtendedTcpTable(NULL, size, FALSE, address_family,
+			      TCP_TABLE_OWNER_PID_ALL, 0);
   while (error == ERROR_INSUFFICIENT_BUFFER) {
     *data = malloc(*size);
     if (*data == NULL) {
       error = ERROR_NOT_ENOUGH_MEMORY;
       continue;
     }
-    error = call(*data, size, FALSE, address_family,
-		 TCP_TABLE_OWNER_PID_ALL, 0);
+    error = GetExtendedTcpTable(*data, size, FALSE, address_family,
+				TCP_TABLE_OWNER_PID_ALL, 0);
     if (error != NO_ERROR) {
       free(*data);
       *data = NULL;
@@ -52,12 +48,7 @@ static DWORD __GetExtendedTcpTable(_GetExtendedTcpTable call,
   return error;
 }
 
-typedef DWORD (WINAPI * _GetExtendedUdpTable)(PVOID, PDWORD, BOOL, ULONG,
-                                              UDP_TABLE_CLASS, ULONG);
-
-// https://msdn.microsoft.com/library/aa365930.aspx
-static DWORD __GetExtendedUdpTable(_GetExtendedUdpTable call,
-                                   ULONG address_family,
+static DWORD MyGetExtendedUdpTable(ULONG address_family,
                                    PVOID * data, DWORD * size) {
 
   // Due to other processes being active on the machine, it's possible
@@ -70,16 +61,16 @@ static DWORD __GetExtendedUdpTable(_GetExtendedUdpTable call,
   DWORD error = ERROR_INSUFFICIENT_BUFFER;
   *size = 0;
   *data = NULL;
-  error = call(NULL, size, FALSE, address_family,
-	       UDP_TABLE_OWNER_PID, 0);
+  error = GetExtendedUdpTable(NULL, size, FALSE, address_family,
+			      UDP_TABLE_OWNER_PID, 0);
   while (error == ERROR_INSUFFICIENT_BUFFER) {
     *data = malloc(*size);
     if (*data == NULL) {
       error = ERROR_NOT_ENOUGH_MEMORY;
       continue;
     }
-    error = call(*data, size, FALSE, address_family,
-		 UDP_TABLE_OWNER_PID, 0);
+    error = GetExtendedUdpTable(*data, size, FALSE, address_family,
+				UDP_TABLE_OWNER_PID, 0);
     if (error != NO_ERROR) {
       free(*data);
       *data = NULL;
@@ -96,8 +87,6 @@ SEXP psll_connections(SEXP p) {
   _RtlIpv4AddressToStringA rtlIpv4AddressToStringA;
   typedef PSTR (NTAPI * _RtlIpv6AddressToStringA)(struct in6_addr *, PSTR);
   _RtlIpv6AddressToStringA rtlIpv6AddressToStringA;
-  _GetExtendedTcpTable getExtendedTcpTable;
-  _GetExtendedUdpTable getExtendedUdpTable;
   PVOID table = NULL;
   DWORD tableSize;
   DWORD err;
@@ -125,7 +114,6 @@ SEXP psll_connections(SEXP p) {
   // Import some functions.
   {
     HMODULE ntdll;
-    HMODULE iphlpapi;
 
     ntdll = LoadLibrary(TEXT("ntdll.dll"));
     rtlIpv4AddressToStringA = (_RtlIpv4AddressToStringA)GetProcAddress(
@@ -133,19 +121,7 @@ SEXP psll_connections(SEXP p) {
     rtlIpv6AddressToStringA = (_RtlIpv6AddressToStringA)GetProcAddress(
       ntdll, "RtlIpv6AddressToStringA");
     /* TODO: Check these two function pointers */
-
-    iphlpapi = LoadLibrary(TEXT("iphlpapi.dll"));
-    getExtendedTcpTable = (_GetExtendedTcpTable)GetProcAddress(iphlpapi,
-      "GetExtendedTcpTable");
-    getExtendedUdpTable = (_GetExtendedUdpTable)GetProcAddress(iphlpapi,
-      "GetExtendedUdpTable");
     FreeLibrary(ntdll);
-    FreeLibrary(iphlpapi);
-  }
-
-  if ((getExtendedTcpTable == NULL) || (getExtendedUdpTable == NULL)) {
-    ps__not_implemented("ps_connections");
-    ps__throw_error();
   }
 
   PROTECT_WITH_INDEX(retlist = allocVector(VECSXP, ret_len), &ret_idx);
@@ -160,8 +136,7 @@ SEXP psll_connections(SEXP p) {
   port_remote = NA_INTEGER;
   tableSize = 0;
 
-  err = __GetExtendedTcpTable(getExtendedTcpTable,
-			      AF_INET, &table, &tableSize);
+  err = MyGetExtendedTcpTable(AF_INET, &table, &tableSize);
   if (err == ERROR_NOT_ENOUGH_MEMORY) {
     ps__no_memory("");
     ps__throw_error();
@@ -228,8 +203,7 @@ SEXP psll_connections(SEXP p) {
   port_remote = NA_INTEGER;
   tableSize = 0;
 
-  err = __GetExtendedTcpTable(getExtendedTcpTable,
-			      AF_INET6, &table, &tableSize);
+  err = MyGetExtendedTcpTable(AF_INET6, &table, &tableSize);
   if (err == ERROR_NOT_ENOUGH_MEMORY) {
     ps__no_memory("");
     ps__throw_error();
@@ -296,8 +270,7 @@ SEXP psll_connections(SEXP p) {
   port_remote = NA_INTEGER;
   tableSize = 0;
 
-  err = __GetExtendedUdpTable(getExtendedUdpTable,
-			      AF_INET, &table, &tableSize);
+  err = MyGetExtendedUdpTable(AF_INET, &table, &tableSize);
   if (err == ERROR_NOT_ENOUGH_MEMORY) {
     ps__no_memory("");
     ps__throw_error();
@@ -350,8 +323,7 @@ SEXP psll_connections(SEXP p) {
   port_remote = NA_INTEGER;
   tableSize = 0;
 
-  err = __GetExtendedUdpTable(getExtendedUdpTable,
-			      AF_INET6, &table, &tableSize);
+  err = MyGetExtendedUdpTable(AF_INET6, &table, &tableSize);
   if (err == ERROR_NOT_ENOUGH_MEMORY) {
     ps__no_memory("");
     ps__throw_error();
