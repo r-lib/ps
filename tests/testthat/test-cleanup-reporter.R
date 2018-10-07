@@ -345,7 +345,7 @@ test_that("files already open are ignored", {
 test_that("Network cleanup, test, fail", {
   skip_if_offline()
   out <- list()
-  on.exit(try(close(out$conn), silent = TRUE), add = TRUE)
+  on.exit({ try(close(out$conn), silent = TRUE); gc() }, add = TRUE)
   expect_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
