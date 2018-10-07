@@ -212,6 +212,18 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         old <- private$conns[, 1:6]
         new <- ps_connections(ps_handle())[, 1:6]
         private$conns <- NULL
+
+        ## This is a connection that is used internally on macOS,
+        ## for DNS resolution. We'll just ignore it. Looks like this:
+        ## # A tibble: 2 x 6
+        ##    fd family  type        laddr lport raddr
+        ## <int> <chr>   <chr>       <chr> <int> <chr>
+        ##     7 AF_UNIX SOCK_STREAM <NA>     NA /var/run/mDNSResponder
+        ##    10 AF_UNIX SOCK_STREAM <NA>     NA /var/run/mDNSResponder
+        new <- new[
+          new$family != "AF_UNIX" | new$type != "SOCK_STREAM" |
+          tolower(basename(new$raddr)) != "mdnsresponder", ]
+
         leftover <- ! apply(new, 1, paste, collapse = "&") %in%
           apply(old, 1, paste, collapse = "&")
 
