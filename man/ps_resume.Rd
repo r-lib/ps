@@ -30,6 +30,7 @@ Other process handle functions: \code{\link{ps_children}},
   \code{\link{ps_uids}}, \code{\link{ps_username}}
 }
 \concept{process handle functions}
+\section{Examples}{
 \Sexpr[stage=install,strip.white=FALSE,results=rd]{
 ps:::decorate_examples(os = "POSIX",  '
 px <- processx::process$new("sleep", "10")
@@ -41,3 +42,4 @@ ps_resume(p)
 ps_status(p)
 ps_kill(p)
 ')}
+}
