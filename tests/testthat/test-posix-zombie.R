@@ -54,4 +54,5 @@ test_that("zombie api", {
   chk(ps_num_threads(p))
   chk(ps_num_fds(p))
   chk(ps_open_files(p))
+  chk(ps_connections(p))
 })

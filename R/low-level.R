@@ -932,6 +932,74 @@ ps_open_files <- function(p) {
   d
 }
 
+#' List network connections of a process
+#'
+#' For a zombie process it throws a `zombie_process` error.
+#'
+#' @param p Process handle.
+#' @return Data frame, or tibble if the _tibble_ package is available,
+#'    with columns:
+#'    * `fd`: integer file descriptor on POSIX systems, `NA` on Windows.
+#'    * `family`: Address family, string, typically `AF_UNIX`, `AF_INET` or
+#'       `AF_INET6`.
+#'    * `type`: Socket type, string, typically `SOCK_STREAM` (TCP) or
+#'       `SOCK_DGRAM` (UDP).
+#'    * `laddr`: Local address, string, `NA` for UNIX sockets.
+#'    * `lport`: Local port, integer, `NA` for UNIX sockets.
+#'    * `raddr`: Remote address, string, `NA` for UNIX sockets. This is
+#'      always `NA` for `AF_INET` sockets on Linux.
+#'    * `rport`: Remote port, integer, `NA` for UNIX sockets.
+#'    * `state`: Socket state, e.g. `CONN_ESTABLISHED`, etc. It is `NA`
+#'      for UNIX sockets.
+#'
+#' @family process handle functions
+#' @export
+#'
+#' @rawRd
+#' \section{Examples}{
+#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' p <- ps_handle()
+#' ps_connections(p)
+#' sc <- socketConnection("httpbin.org", port = 80)
+#' ps_connections(p)
+#' close(sc)
+#' ps_connections(p)
+#' ')}
+#' }
+#'
+#' @export
+
+ps_connections <- function(p) {
+  assert_ps_handle(p)
+  if (ps_os_type()[["LINUX"]]) return(psl_connections(p))
+
+  l <- not_null(.Call(psll_connections, p))
+
+  d <- data.frame(
+    stringsAsFactors = FALSE,
+    fd = vapply(l, "[[", integer(1), 1),
+    family = match_names(ps_env$constants$address_families,
+                       vapply(l, "[[", integer(1), 2)),
+    type = match_names(ps_env$constants$socket_types,
+                       vapply(l, "[[", integer(1), 3)),
+    laddr = vapply(l, "[[", character(1), 4),
+    lport = vapply(l, "[[", integer(1), 5),
+    raddr = vapply(l, "[[", character(1), 6),
+    rport = vapply(l, "[[", integer(1), 7),
+    state = match_names(ps_env$constants$tcp_statuses,
+                        vapply(l, "[[", integer(1), 8)))
+
+  d$laddr[d$laddr == ""] <- NA_character_
+  d$raddr[d$raddr == ""] <- NA_character_
+
+  d$lport[d$lport == 0] <- NA_integer_
+  d$rport[d$rport == 0] <- NA_integer_
+
+  requireNamespace("tibble", quietly = TRUE)
+  class(d) <- unique(c("tbl_df", "tbl", class(d)))
+  d
+}
+
 #' Interrupt a process
 #'
 #' Sends `SIGINT` on POSIX, and CTRL+C or CTRL+BREAK on Windows.

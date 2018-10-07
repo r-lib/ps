@@ -74,7 +74,7 @@ static SEXP ps__is_running(ps_handle_t *handle) {
   return R_NilValue;
 }
 
-static void PS__CHECK_HANDLE(ps_handle_t *handle) {
+void PS__CHECK_HANDLE(ps_handle_t *handle) {
   SEXP ret = ps__is_running(handle);
   if (!LOGICAL(ret)[0]) {
     ps__no_such_process(handle->pid, 0);

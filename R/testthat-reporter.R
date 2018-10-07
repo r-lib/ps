@@ -35,6 +35,10 @@ globalVariables("private")
 #'    `"test"` and `"testsuite"`, like for `proc_unit`.
 #' * `file_fail`: Whether to fail for leftover open files. `TRUE` by
 #'   default.
+#' * `conn_unit`: When to check for open network connections.
+#'   Possible values are `"test"` and `"testsuite"`, like for `proc_unit`.
+#' * `conn_fail`: Whether to fail for leftover network connections.
+#'   `TRUE` by default.
 #'
 #' @note Some IDEs, like RStudio, start child processes frequently, and
 #' sometimes crash when these are killed, only use this reporter in a
@@ -79,7 +83,8 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         proc_cleanup = TRUE, proc_fail = TRUE, proc_timeout = 1000,
         rconn_unit = c("test", "testsuite"),
         rconn_cleanup = TRUE, rconn_fail = TRUE,
-        file_unit = c("test", "testsuite"), file_fail = TRUE) {
+        file_unit = c("test", "testsuite"), file_fail = TRUE,
+        conn_unit = c("test", "testsuite"), conn_fail = TRUE) {
 
         if (!ps::ps_is_supported()) {
           stop("CleanupReporter is not supported on this platform")
@@ -98,6 +103,9 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         private$file_unit <- match.arg(file_unit)
         private$file_fail <- file_fail
 
+        private$conn_unit <- match.arg(conn_unit)
+        private$conn_fail <- conn_fail
+
         invisible(self)
       },
 
@@ -106,12 +114,14 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         if (private$file_unit == "test") private$files <- ps_open_files(ps_handle())
         if (private$rconn_unit == "test") private$rconns <- showConnections()
         if (private$proc_unit == "test") private$tree_id <- ps::ps_mark_tree()
+        if (private$conn_unit == "test") private$conns <- ps_connections(ps_handle())
       },
 
       end_test = function(context, test) {
         if (private$proc_unit == "test") self$do_proc_cleanup(test)
         if (private$rconn_unit == "test") self$do_rconn_cleanup(test)
         if (private$file_unit == "test") self$do_file_cleanup(test)
+        if (private$conn_unit == "test") self$do_conn_cleanup(test)
         super$end_test(context, test)
       },
 
@@ -120,6 +130,7 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         if (private$file_unit == "testsuite") private$files <- ps_open_files(ps_handle())
         if (private$rconn_unit == "testsuite") private$rconns <- showConnections()
         if (private$proc_unit == "testsuite") private$tree_id <- ps::ps_mark_tree()
+        if (private$conn_unit == "testsuite") private$conns <- ps_connections(ps_handle())
       },
 
       end_reporter = function() {
@@ -132,6 +143,9 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         }
         if (private$file_unit  == "testsuite") {
           self$do_file_cleanup("testsuite", quote = "")
+        }
+        if (private$conn_unit  == "testsuite") {
+          self$do_conn_cleanup("testsuite", quote = "")
         }
       },
 
@@ -194,6 +208,49 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         }
       },
 
+      do_conn_cleanup = function(test, quote = "'") {
+        old <- private$conns[, 1:6]
+        private$conns <- NULL
+
+        ## On windows, sometimes it takes time to remove the connection
+        ## from the processes connection tables, so we try waiting a bit.
+        ## We haven't seen issues with this on other OSes yet.
+        deadline <- Sys.time() + as.difftime(0.5, units = "secs")
+        repeat {
+          new <- ps_connections(ps_handle())[, 1:6]
+          ## This is a connection that is used internally on macOS,
+          ## for DNS resolution. We'll just ignore it. Looks like this:
+          ## # A tibble: 2 x 6
+          ##    fd family  type        laddr lport raddr
+          ## <int> <chr>   <chr>       <chr> <int> <chr>
+          ##     7 AF_UNIX SOCK_STREAM <NA>     NA /var/run/mDNSResponder
+          ##    10 AF_UNIX SOCK_STREAM <NA>     NA /var/run/mDNSResponder
+          new <- new[
+            new$family != "AF_UNIX" | new$type != "SOCK_STREAM" |
+            tolower(basename(new$raddr)) != "mdnsresponder", ]
+
+          leftover <- ! apply(new, 1, paste, collapse = "&") %in%
+            apply(old, 1, paste, collapse = "&")
+
+          if (!ps_os_type()[["WINDOWS"]] ||
+              sum(leftover) == 0 ||
+              Sys.time() >= deadline) break;
+
+          Sys.sleep(0.05)
+        }
+
+        if (private$conn_fail) {
+          left <- new[leftover,]
+          act <- testthat::quasi_label(rlang::enquo(test), test)
+          testthat::expect(
+            sum(leftover) == 0,
+            sprintf(
+              "%s did not close network connections: \n%s",
+              encodeString(act$lab, quote = quote),
+              paste(format(left), collapse = "\n")))
+        }
+      },
+
       expect_cleanup = function(test, pids, quote) {
         act <- testthat::quasi_label(rlang::enquo(test), test)
         act$pids <- length(pids)
@@ -222,6 +279,10 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
       file_unit = NULL,
       file_fail = NULL,
       files = NULL,
+
+      conn_unit = NULL,
+      conn_fail = NULL,
+      conns = NULL,
 
       tree_id = NULL
     )

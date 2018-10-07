@@ -40,11 +40,13 @@ static const R_CallMethodDef callMethods[]  = {
   { "psll_num_fds",      (DL_FUNC) psll_num_fds,      1 },
   { "psll_open_files",   (DL_FUNC) psll_open_files,   1 },
   { "psll_interrupt",    (DL_FUNC) psll_interrupt,    3 },
+  { "psll_connections",  (DL_FUNC) psll_connections,  1 },
 
   /* Utils */
   { "ps__init",          (DL_FUNC) ps__init,          2 },
   { "ps__kill_if_env",   (DL_FUNC) ps__kill_if_env,   4 },
   { "ps__find_if_env",   (DL_FUNC) ps__find_if_env,   3 },
+  { "ps__inet_ntop",     (DL_FUNC) ps__inet_ntop,     2 },
 
   { "psp__pid_exists",   (DL_FUNC) psp__pid_exists,   1 },
   { "psp__stat_st_rdev", (DL_FUNC) psp__stat_st_rdev, 1 },

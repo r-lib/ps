@@ -62,6 +62,8 @@ SEXP psll__is_running(ps_handle_t *handle);
 SEXP ps__get_pw_uid(SEXP r_uid);
 SEXP ps__define_signals();
 SEXP ps__define_errno();
+SEXP ps__define_socket_address_families();
+SEXP ps__define_socket_types();
 
 /* Errors */
 

@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <string.h>
 #include <utmpx.h>
+#include <arpa/inet.h>
 
 #include "ps-internal.h"
 #include "arch/macos/process_info.h"
@@ -39,7 +40,6 @@
   case SZOMB:  result = mkString("zombie");   break;	\
   default:     error;					\
   }
-
 
 void ps__check_for_zombie(ps_handle_t *handle) {
   struct kinfo_proc kp;
@@ -645,6 +645,142 @@ SEXP psll_open_files(SEXP p) {
 
  error:
   if (fds_pointer != NULL) free(fds_pointer);
+  ps__check_for_zombie(handle);
+  return R_NilValue;
+}
+
+SEXP psll_connections(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  long pid;
+  int pidinfo_result;
+  int iterations;
+  int i;
+  unsigned long nb;
+
+  struct proc_fdinfo *fds_pointer = NULL;
+  struct proc_fdinfo *fdp_pointer;
+  struct socket_fdinfo si;
+
+  SEXP result;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  pid = handle->pid;
+
+  if (pid == 0) return allocVector(VECSXP, 0);
+
+  pidinfo_result = ps__proc_pidinfo(pid, PROC_PIDLISTFDS, 0, NULL, 0);
+  if (pidinfo_result <= 0) goto error;
+
+  fds_pointer = malloc(pidinfo_result);
+  if (fds_pointer == NULL) {
+    ps__no_memory("");
+    ps__throw_error();
+  }
+
+  pidinfo_result = ps__proc_pidinfo(pid, PROC_PIDLISTFDS, 0, fds_pointer,
+				    pidinfo_result);
+  if (pidinfo_result <= 0) goto error;
+
+  iterations = (pidinfo_result / PROC_PIDLISTFD_SIZE);
+  PROTECT(result = allocVector(VECSXP, iterations));
+  for (i = 0; i < iterations; i++) {
+    fdp_pointer = &fds_pointer[i];
+
+    if (fdp_pointer->proc_fdtype == PROX_FDTYPE_SOCKET) {
+      errno = 0;
+      nb = proc_pidfdinfo((pid_t)pid, fdp_pointer->proc_fd,
+			  PROC_PIDFDSOCKETINFO, &si, sizeof(si));
+
+      // --- errors checking
+      if ((nb <= 0) || (nb < sizeof(si))) {
+	if (errno == EBADF) {
+	  // let's assume socket has been closed
+	  continue;
+	} else {
+	  ps__set_error("proc_pidinfo(PROC_PIDFDSOCKETINFO) failed for %d",
+			(int) pid);
+	  goto error;
+	}
+      }
+      // --- /errors checking
+
+      //
+      int fd, family, type, lport, rport, state;
+      char lip[512], rip[512];
+
+      SEXP tuple;
+
+      fd = (int)fdp_pointer->proc_fd;
+      family = si.psi.soi_family;
+      type = si.psi.soi_type;
+
+      if ((family == AF_INET) || (family == AF_INET6)) {
+	if (family == AF_INET) {
+	  inet_ntop(AF_INET,
+		    &si.psi.soi_proto.pri_tcp.tcpsi_ini.	\
+		    insi_laddr.ina_46.i46a_addr4,
+		    lip,
+		    sizeof(lip));
+	  inet_ntop(AF_INET,
+		    &si.psi.soi_proto.pri_tcp.tcpsi_ini.insi_faddr.	\
+		    ina_46.i46a_addr4,
+		    rip,
+		    sizeof(rip));
+	} else {
+	  inet_ntop(AF_INET6,
+		    &si.psi.soi_proto.pri_tcp.tcpsi_ini.	\
+		    insi_laddr.ina_6,
+		    lip, sizeof(lip));
+	  inet_ntop(AF_INET6,
+		    &si.psi.soi_proto.pri_tcp.tcpsi_ini.	\
+		    insi_faddr.ina_6,
+		    rip, sizeof(rip));
+	}
+
+	// check for inet_ntop failures
+	if (errno != 0) {
+	  ps__set_error_from_errno(0);
+	  goto error;
+	}
+
+	lport = ntohs(si.psi.soi_proto.pri_tcp.tcpsi_ini.insi_lport);
+	rport = ntohs(si.psi.soi_proto.pri_tcp.tcpsi_ini.insi_fport);
+	if (type == SOCK_STREAM)
+	  state = (int)si.psi.soi_proto.pri_tcp.tcpsi_state;
+	else
+	  state = NA_INTEGER;
+
+	// construct the python list
+	PROTECT(tuple = ps__build_list("iiisisii", fd, family, type,
+				       lip, lport, rip, rport,state));
+	SET_VECTOR_ELT(result, i, tuple);
+	UNPROTECT(1);
+
+      } else if (family == AF_UNIX) {
+	SEXP laddr, raddr;
+	PROTECT(laddr = ps__str_to_utf8(si.psi.soi_proto.pri_un.unsi_addr.ua_sun.sun_path));
+	PROTECT(raddr = ps__str_to_utf8(si.psi.soi_proto.pri_un.unsi_caddr.ua_sun.sun_path));
+
+	// construct the python list
+	PROTECT(tuple = ps__build_list("iiiOiOii", fd, family, type,
+				       laddr, 0, raddr, 0, NA_INTEGER));
+
+	SET_VECTOR_ELT(result, i, tuple);
+	UNPROTECT(3);
+      }
+    }
+  }
+
+  free(fds_pointer);
+
+  PS__CHECK_HANDLE(handle);
+
+  UNPROTECT(1);
+  return result;
+
+ error:
+  if (fds_pointer) free(fds_pointer);
   ps__check_for_zombie(handle);
   return R_NilValue;
 }

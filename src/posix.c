@@ -999,3 +999,181 @@ SEXP ps__define_errno() {
   UNPROTECT(1);
   return env;
 }
+
+SEXP ps__define_socket_address_families() {
+  SEXP afenv = PROTECT(Rf_allocSExp(ENVSXP));
+
+#define PS_ADD_AF(af)						\
+  defineVar(install(#af), PROTECT(ScalarInteger(af)), afenv);	\
+  UNPROTECT(1)
+
+#ifdef AF_UNSPEC
+  PS_ADD_AF(AF_UNSPEC);
+#endif
+
+#ifdef AF_INET
+  PS_ADD_AF(AF_INET);
+#endif
+
+#if defined(AF_UNIX)
+  PS_ADD_AF(AF_UNIX);
+#endif
+
+#ifdef AF_AX25
+  /* Amateur Radio AX.25 */
+  PS_ADD_AF(AF_AX25);
+#endif
+#ifdef AF_IPX
+  PS_ADD_AF(AF_IPX); /* Novell IPX */
+#endif
+#ifdef AF_APPLETALK
+  /* Appletalk DDP */
+  PS_ADD_AF(AF_APPLETALK);
+#endif
+#ifdef AF_NETROM
+  /* Amateur radio NetROM */
+  PS_ADD_AF(AF_NETROM);
+#endif
+#ifdef AF_BRIDGE
+  /* Multiprotocol bridge */
+  PS_ADD_AF(AF_BRIDGE);
+#endif
+#ifdef AF_ATMPVC
+  /* ATM PVCs */
+  PS_ADD_AF(AF_ATMPVC);
+#endif
+#ifdef AF_AAL5
+  /* Reserved for Werner's ATM */
+  PS_ADD_AF(AF_AAL5);
+#endif
+#ifdef HAVE_SOCKADDR_ALG
+  PS_ADD_AF(AF_ALG); /* Linux crypto */
+#endif
+#ifdef AF_X25
+  /* Reserved for X.25 project */
+  PS_ADD_AF(AF_X25);
+#endif
+#ifdef AF_INET6
+  PS_ADD_AF(AF_INET6); /* IP version 6 */
+#endif
+#ifdef AF_ROSE
+  /* Amateur Radio X.25 PLP */
+  PS_ADD_AF(AF_ROSE);
+#endif
+#ifdef AF_DECnet
+  /* Reserved for DECnet project */
+  PS_ADD_AF(AF_DECnet);
+#endif
+#ifdef AF_NETBEUI
+  /* Reserved for 802.2LLC project */
+  PS_ADD_AF(AF_NETBEUI);
+#endif
+#ifdef AF_SECURITY
+  /* Security callback pseudo AF */
+  PS_ADD_AF(AF_SECURITY);
+#endif
+#ifdef AF_KEY
+  /* PF_KEY key management API */
+  PS_ADD_AF(AF_KEY);
+#endif
+#ifdef AF_NETLINK
+  PS_ADD_AF(AF_NETLINK);
+#endif /* AF_NETLINK */
+
+#ifdef AF_VSOCK
+  PS_ADD_AF(AF_VSOCK);
+#endif
+
+#ifdef AF_ROUTE
+  /* Alias to emulate 4.4BSD */
+  PS_ADD_AF(AF_ROUTE);
+#endif
+#ifdef AF_LINK
+  PS_ADD_AF(AF_LINK);
+#endif
+#ifdef AF_ASH
+  /* Ash */
+  PS_ADD_AF(AF_ASH);
+#endif
+#ifdef AF_ECONET
+  /* Acorn Econet */
+  PS_ADD_AF(AF_ECONET);
+#endif
+#ifdef AF_ATMSVC
+  /* ATM SVCs */
+  PS_ADD_AF(AF_ATMSVC);
+#endif
+#ifdef AF_SNA
+  /* Linux SNA Project (nutters!) */
+  PS_ADD_AF(AF_SNA);
+#endif
+#ifdef AF_IRDA
+  /* IRDA sockets */
+  PS_ADD_AF(AF_IRDA);
+#endif
+#ifdef AF_PPPOX
+  /* PPPoX sockets */
+  PS_ADD_AF(AF_PPPOX);
+#endif
+#ifdef AF_WANPIPE
+  /* Wanpipe API Sockets */
+  PS_ADD_AF(AF_WANPIPE);
+#endif
+#ifdef AF_LLC
+  /* Linux LLC */
+  PS_ADD_AF(AF_LLC);
+#endif
+
+#ifdef USE_BLUETOOTH
+  PS_ADD_AF(AF_BLUETOOTH);
+#endif
+
+#ifdef AF_CAN
+  /* Controller Area Network */
+  PS_ADD_AF(AF_CAN);
+#endif
+
+  /* Reliable Datagram Sockets */
+#ifdef AF_RDS
+  PS_ADD_AF(AF_RDS);
+#endif
+
+#ifdef AF_SYSTEM
+  PS_ADD_AF(AF_SYSTEM);
+#endif
+
+#ifdef AF_PACKET
+  PS_ADD_AF(AF_PACKET);
+#endif
+
+  UNPROTECT(1);
+  return afenv;
+}
+
+SEXP ps__define_socket_types() {
+  SEXP env = PROTECT(Rf_allocSExp(ENVSXP));
+
+#define PS_ADD_SOCKET_TYPE(type)					\
+  defineVar(install(#type), PROTECT(ScalarInteger(type)), env);		\
+  UNPROTECT(1)
+
+  PS_ADD_SOCKET_TYPE(SOCK_STREAM);
+  PS_ADD_SOCKET_TYPE(SOCK_DGRAM);
+
+#ifdef SOCK_RAW
+    PS_ADD_SOCKET_TYPE(SOCK_RAW);
+#endif
+    PS_ADD_SOCKET_TYPE(SOCK_SEQPACKET);
+#if defined(SOCK_RDM)
+    PS_ADD_SOCKET_TYPE(SOCK_RDM);
+#endif
+#ifdef SOCK_CLOEXEC
+    PS_ADD_SOCKET_TYPE(SOCK_CLOEXEC);
+#endif
+#ifdef SOCK_NONBLOCK
+    PS_ADD_SOCKET_TYPE(SOCK_NONBLOCK);
+#endif
+
+  UNPROTECT(1);
+  return env;
+}

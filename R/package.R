@@ -10,8 +10,16 @@ Internal <- NULL
   if (!is.null(ps_env$constants$signals)) {
     ps_env$constants$signals <- as.list(ps_env$constants$signals)
   }
-  if (!is.null(ps_env$constants$errno))  {
+  if (!is.null(ps_env$constants$errno)) {
     ps_env$constants$errno <- as.list(ps_env$constants$errno)
+  }
+  if (!is.null(ps_env$constants$address_families)) {
+    ps_env$constants$address_families <-
+      as.list(ps_env$constants$address_families)
+  }
+  if (!is.null(ps_env$constants$socket_types)) {
+    ps_env$constants$socket_types <-
+      as.list(ps_env$constants$socket_types)
   }
 
   Internal <<- get(".Internal", asNamespace("base"))

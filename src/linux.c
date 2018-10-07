@@ -29,6 +29,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <signal.h>
+#include <arpa/inet.h>
 
 #include "common.h"
 #include "posix.h"
@@ -74,6 +75,40 @@ int ps__read_file(const char *path, char **buffer, size_t buffer_size) {
   return -1;
 }
 
+SEXP ps__inet_ntop(SEXP raw, SEXP fam) {
+  char dst[INET6_ADDRSTRLEN];
+  int af = INTEGER(fam)[0];
+  const char *ret = inet_ntop(af, RAW(raw), dst, INET6_ADDRSTRLEN);
+  if (!ret) {
+    return R_NilValue;
+  } else {
+    return mkString(dst);
+  }
+}
+
+SEXP ps__define_tcp_statuses() {
+  SEXP result, names;
+
+  PROTECT(result = ps__build_string("01", "02", "03", "04", "05", "06",
+				    "07", "08", "09", "0A", "0B", "0C", 0));
+  PROTECT(names = ps__build_string("CONN_ESTABLISHED",
+				   "CONN_SYN_SENT",
+				   "CONN_SYN_RECV",
+				   "CONN_FIN_WAIT_1",
+				   "CONN_FIN_WAIT_2",
+				   "CONN_TIME_WAIT",
+				   "CONN_CLOSE",
+				   "CONN_CLOSE_WAIT",
+				   "CONN_LAST_ACK",
+				   "CONN_LISTEN",
+				   "CONN_CLOSING",
+				   "PS__CONN_NONE", 0));
+
+  setAttrib(result, R_NamesSymbol, names);
+  UNPROTECT(2);
+  return result;
+}
+
 SEXP ps__init(SEXP psenv, SEXP constenv) {
 
   /* Signals */
@@ -81,6 +116,16 @@ SEXP ps__init(SEXP psenv, SEXP constenv) {
 
   /* errno values */
   defineVar(install("errno"), ps__define_errno(), constenv);
+
+  /* Connection statuses */
+  defineVar(install("tcp_statuses"), ps__define_tcp_statuses(), constenv);
+
+  /* Socket address families */
+  defineVar(install("address_families"),
+	    ps__define_socket_address_families(), constenv);
+
+  /* Socket address families */
+  defineVar(install("socket_types"), ps__define_socket_types(), constenv);
 
   return R_NilValue;
 }

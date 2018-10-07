@@ -89,7 +89,8 @@ if [ -n "$WINDOWS" ]; then
     _CT_SECURE_NO_WARNINGS=""
     PSAPI_VERSION=1
 
-    OBJECTS="${OBJECTS} windows.o api-windows.o arch/windows/process_info.o"
+    OBJECTS="${OBJECTS} windows.o api-windows.o api-windows-conn.o"
+    OBJECTS="${OBJECTS} arch/windows/process_info.o"
     OBJECTS="${OBJECTS} arch/windows/process_handles.o"
 
     LIBRARIES="psapi kernel32 advapi32 shell32 netapi32 iphlpapi wtsapi32"

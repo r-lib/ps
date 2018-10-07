@@ -962,6 +962,8 @@ SEXP psll_open_files(SEXP p) {
       ps__check_for_zombie(handle, 1);
     }
 
+    if (strncmp("socket:", linkname, 7) == 0) continue;
+
     fd = strtol(entry->d_name, NULL, 10);
     if (fd == dfd) continue;
     if (++num == len) {
@@ -969,6 +971,81 @@ SEXP psll_open_files(SEXP p) {
       REPROTECT(result = Rf_lengthgets(result, len), pidx);
     }
     SET_VECTOR_ELT(result, num, ps__build_list("si", linkname, fd));
+  } while (1);
+
+  /* OSX throws on zombies, so for consistency we do the same here*/
+  ps__check_for_zombie(handle, 0);
+
+  PS__CHECK_HANDLE(handle);
+
+  UNPROTECT(1);
+  return result;
+}
+
+SEXP psll_connections(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  char path[512];
+  DIR *dirs;
+  int ret;
+  char *linkname;
+  int fd, dfd;
+  size_t l;
+  SEXP result;
+  PROTECT_INDEX pidx;
+  int len = 10, num = 0;
+
+  PROTECT_WITH_INDEX(result = allocVector(VECSXP, len), &pidx);
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  ret = snprintf(path, sizeof(path), "/proc/%d/fd", handle->pid);
+  if (ret < 0) ps__throw_error();
+
+  dirs = opendir(path);
+  if (!dirs) ps__check_for_zombie(handle, 1);
+
+  do {
+    errno = 0;
+    struct dirent *entry = readdir(dirs);
+    if (!entry) {
+      closedir(dirs);
+      if (!errno) break;
+      ps__check_for_zombie(handle, 1);
+    }
+
+    if (!strncmp(".", entry->d_name, 2) ||
+	!strncmp("..", entry->d_name, 3)) continue;
+
+    ret = snprintf(path, sizeof(path), "/proc/%i/fd/%s", handle->pid,
+		   entry->d_name);
+    if (ret < 0) {
+      closedir(dirs);
+      ps__throw_error();
+    }
+
+    ret = psll__readlink(path, &linkname);
+    if (ret) {
+      if (errno == ENOENT || errno == ESRCH || errno == EINVAL) continue;
+      closedir(dirs);
+      ps__check_for_zombie(handle, 1);
+    }
+
+    l = strlen(linkname);
+    if (l < 10) continue;
+
+    linkname[7] = '\0';
+    if (strcmp(linkname, "socket:")) continue;
+
+    if (++num == len) {
+      len *= 2;
+      REPROTECT(result = Rf_lengthgets(result, len), pidx);
+    }
+
+    linkname[l - 1] = '\0';
+    SET_VECTOR_ELT(
+      result, num,
+      ps__build_list("ss", entry->d_name, linkname + 8));
+
   } while (1);
 
   /* OSX throws on zombies, so for consistency we do the same here*/

@@ -87,6 +87,42 @@ SEXP ps__pids() {
   return R_NilValue;
 }
 
+SEXP ps__define_tcp_statuses() {
+  SEXP result, names;
+
+  PROTECT(result = allocVector(INTSXP, 12));
+  PROTECT(names = allocVector(STRSXP, 12));
+
+  INTEGER(result)[0] = TCPS_CLOSED;
+  SET_STRING_ELT(names, 0, mkChar("CONN_CLOSE"));
+  INTEGER(result)[1] = TCPS_CLOSING;
+  SET_STRING_ELT(names, 1, mkChar("CONN_CLOSING"));
+  INTEGER(result)[2] = TCPS_CLOSE_WAIT;
+  SET_STRING_ELT(names, 2, mkChar("CONN_CLOSE_WAIT"));
+  INTEGER(result)[3] = TCPS_LISTEN;
+  SET_STRING_ELT(names, 3, mkChar("CONN_LISTEN"));
+  INTEGER(result)[4] = TCPS_ESTABLISHED;
+  SET_STRING_ELT(names, 4, mkChar("CONN_ESTABLISHED"));
+  INTEGER(result)[5] = TCPS_SYN_SENT;
+  SET_STRING_ELT(names, 5, mkChar("CONN_SYN_SENT"));
+  INTEGER(result)[6] = TCPS_SYN_RECEIVED;
+  SET_STRING_ELT(names, 6, mkChar("CONN_SYN_RECV"));
+  INTEGER(result)[7] = TCPS_FIN_WAIT_1;
+  SET_STRING_ELT(names, 7, mkChar("CONN_FIN_WAIT_1"));
+  INTEGER(result)[8] = TCPS_FIN_WAIT_2;
+  SET_STRING_ELT(names, 8, mkChar("CONN_FIN_WAIT_2"));
+  INTEGER(result)[9] = TCPS_LAST_ACK;
+  SET_STRING_ELT(names, 9, mkChar("CONN_LAST_ACK"));
+  INTEGER(result)[10] = TCPS_TIME_WAIT;
+  SET_STRING_ELT(names, 10, mkChar("CONN_TIME_WAIT"));
+  INTEGER(result)[11] = PS__CONN_NONE;
+  SET_STRING_ELT(names, 11, mkChar("PS__CONN_NONE"));
+
+  setAttrib(result, R_NamesSymbol, names);
+  UNPROTECT(2);
+  return result;
+}
+
 SEXP ps__init(SEXP psenv, SEXP constenv) {
 
   /* Signals */
@@ -94,6 +130,16 @@ SEXP ps__init(SEXP psenv, SEXP constenv) {
 
   /* errno values */
   defineVar(install("errno"), ps__define_errno(), constenv);
+
+  /* Connection statuses */
+  defineVar(install("tcp_statuses"), ps__define_tcp_statuses(), constenv);
+
+  /* Socket address families */
+  defineVar(install("address_families"),
+	    ps__define_socket_address_families(), constenv);
+
+  /* Socket address families */
+  defineVar(install("socket_types"), ps__define_socket_types(), constenv);
 
   return R_NilValue;
 }

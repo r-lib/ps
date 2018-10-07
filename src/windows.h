@@ -18,3 +18,4 @@ SEXP ps__proc_kill(DWORD pid);
 
 double ps__filetime_to_unix(FILETIME ft);
 SEXP ps__convert_dos_path(WCHAR *wstr);
+void PS__CHECK_HANDLE(ps_handle_t *handle);

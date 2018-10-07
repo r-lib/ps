@@ -1,7 +1,11 @@
 
 `%||%` <-  function(l, r) if (is.null(l)) r else l
 
+`%&&%` <- function(l, r) if (is.null(l)) NULL else r
+
 not_null <- function(x) x[!map_lgl(x, is.null)]
+
+not_zchar <- function(x) x[x != ""]
 
 map_chr <- function(.x, .f, ...) {
   vapply(X = .x, FUN = .f, FUN.VALUE = character(1), ...)
@@ -37,6 +41,11 @@ str_starts_with <- function(x, p) {
 
 str_strip <- function(x) {
   sub("\\s+$", "", sub("^\\s+", "", x))
+}
+
+str_tail <- function(x, num) {
+  nc  <- nchar(x)
+  substr(x, pmax(nc - num + 1, 1), nc)
 }
 
 r_version <- function(x) {
@@ -185,4 +194,8 @@ get_tool <- function(prog) {
     if (!file.exists(exe)) return("")
   }
   exe
+}
+
+match_names <- function(map, x) {
+  names(map)[match(x, map)]
 }

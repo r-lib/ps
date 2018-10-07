@@ -55,4 +55,5 @@ test_that("process already finished", {
   chk(ps_children(p))
   chk(ps_num_fds(p))
   chk(ps_open_files(p))
+  chk(ps_connections(p))
 })
