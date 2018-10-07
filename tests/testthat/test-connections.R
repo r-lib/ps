@@ -70,7 +70,7 @@ test_that("TCP", {
   cx <- curl::curl(httpbin_url(), open = "r")
   on.exit({ close(cx); rm(cx); gc() }, add = TRUE)
   after <- ps_connections(ps_handle())
-  new <- after[! after$fd %in% before$fd, ]
+  new <- after[! after$lport %in% before$lport, ]
   expect_equal(new$family, "AF_INET")
   expect_equal(new$type, "SOCK_STREAM")
   expect_true(is_ipv4_address(new$laddr))
