@@ -210,22 +210,34 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
 
       do_conn_cleanup = function(test, quote = "'") {
         old <- private$conns[, 1:6]
-        new <- ps_connections(ps_handle())[, 1:6]
         private$conns <- NULL
 
-        ## This is a connection that is used internally on macOS,
-        ## for DNS resolution. We'll just ignore it. Looks like this:
-        ## # A tibble: 2 x 6
-        ##    fd family  type        laddr lport raddr
-        ## <int> <chr>   <chr>       <chr> <int> <chr>
-        ##     7 AF_UNIX SOCK_STREAM <NA>     NA /var/run/mDNSResponder
-        ##    10 AF_UNIX SOCK_STREAM <NA>     NA /var/run/mDNSResponder
-        new <- new[
-          new$family != "AF_UNIX" | new$type != "SOCK_STREAM" |
-          tolower(basename(new$raddr)) != "mdnsresponder", ]
+        ## On windows, sometimes it takes time to remove the connection
+        ## from the processes connection tables, so we try waiting a bit.
+        ## We haven't seen issues with this on other OSes yet.
+        deadline <- Sys.time() + as.difftime(0.5, units = "secs")
+        repeat {
+          new <- ps_connections(ps_handle())[, 1:6]
+          ## This is a connection that is used internally on macOS,
+          ## for DNS resolution. We'll just ignore it. Looks like this:
+          ## # A tibble: 2 x 6
+          ##    fd family  type        laddr lport raddr
+          ## <int> <chr>   <chr>       <chr> <int> <chr>
+          ##     7 AF_UNIX SOCK_STREAM <NA>     NA /var/run/mDNSResponder
+          ##    10 AF_UNIX SOCK_STREAM <NA>     NA /var/run/mDNSResponder
+          new <- new[
+            new$family != "AF_UNIX" | new$type != "SOCK_STREAM" |
+            tolower(basename(new$raddr)) != "mdnsresponder", ]
 
-        leftover <- ! apply(new, 1, paste, collapse = "&") %in%
-          apply(old, 1, paste, collapse = "&")
+          leftover <- ! apply(new, 1, paste, collapse = "&") %in%
+            apply(old, 1, paste, collapse = "&")
+
+          if (!ps_os_type()[["WINDOWS"]] ||
+              sum(leftover) == 0 ||
+              Sys.time() >= deadline) break;
+
+          Sys.sleep(0.05)
+        }
 
         if (private$conn_fail) {
           left <- new[leftover,]
