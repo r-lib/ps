@@ -5,7 +5,7 @@ NULL
 #' Process table
 #'
 #' @param user Username, to filter the results to matching processes.
-#' @param after Start time (POSIXt), to filter the results to processes
+#' @param after Start time (`POSIXt`), to filter the results to processes
 #'   that started after this.
 #' @return Data frame (tibble), see columns below.
 #'

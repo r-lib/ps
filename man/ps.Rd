@@ -9,7 +9,7 @@ ps(user = NULL, after = NULL)
 \arguments{
 \item{user}{Username, to filter the results to matching processes.}
 
-\item{after}{Start time (POSIXt), to filter the results to processes
+\item{after}{Start time (\code{POSIXt}), to filter the results to processes
 that started after this.}
 }
 \value{

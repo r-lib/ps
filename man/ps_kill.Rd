@@ -10,7 +10,7 @@ ps_kill(p)
 \item{p}{Process handle.}
 }
 \description{
-Kill the current process with SIGKILL pre-emptively checking
+Kill the current process with SIGKILL preemptively checking
 whether PID has been reused. On Windows it uses \code{TerminateProcess()}.
 }
 \seealso{

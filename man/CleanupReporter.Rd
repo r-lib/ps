@@ -2,7 +2,7 @@
 % Please edit documentation in R/testthat-reporter.R
 \name{CleanupReporter}
 \alias{CleanupReporter}
-\title{testthat reporter that checks if child proceses are cleaned up in tests}
+\title{testthat reporter that checks if child processes are cleaned up in tests}
 \usage{
 CleanupReporter(reporter = testthat::ProgressReporter)
 }
@@ -22,7 +22,7 @@ place, see the \code{proc_unit} argument below.
 }
 \details{
 Child processes can be reported via a failed expectation, cleaned up
-silently, or cleaned up and reptorted (the default).
+silently, or cleaned up and reported (the default).
 
 The constructor of the \code{CleanupReporter} class has options:
 \itemize{

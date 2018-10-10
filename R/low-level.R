@@ -525,7 +525,7 @@ ps_num_threads <- function(p) {
 
 #' CPU times of the process
 #'
-#' All times are measued in seconds:
+#' All times are measured in seconds:
 #' * `user`: Amount of time that this process has been scheduled in user
 #'   mode.
 #' * `system`: Amount of time that this process has been scheduled in
@@ -564,23 +564,23 @@ ps_cpu_times <- function(p) {
 #'
 #' A list with information about memory usage. Portable fields:
 #' * `rss`: "Resident Set Size", this is the non-swapped physical memory a
-#'   process has used. On UNIX it matches "top"‘s RES column (see doc). On
+#'   process has used. On UNIX it matches "top"‘s 'RES' column (see doc). On
 #'   Windows this is an alias for `wset` field and it matches "Memory"
 #'   column of `taskmgr.exe`.
 #' * `vmem`: "Virtual Memory Size", this is the total amount of virtual
-#'   memory used by the process. On UNIX it matches "top"‘s VIRT column
+#'   memory used by the process. On UNIX it matches "top"‘s 'VIRT' column
 #'   (see doc). On Windows this is an alias for the `pagefile` field and
 #'   it matches the "Working set (memory)" column of `taskmgr.exe`.
 #'
 #' Non-portable fields:
 #' * `shared`: (Linux) memory that could be potentially shared with other
-#'   processes. This matches "top"‘s SHR column (see doc).
-#' * `text`: (Linux): aka TRS (text resident set) the amount of memory
-#'   devoted to executable code. This matches "top"‘s CODE column (see
+#'   processes. This matches "top"‘s 'SHR' column (see doc).
+#' * `text`: (Linux): aka 'TRS' (text resident set) the amount of memory
+#'   devoted to executable code. This matches "top"‘s 'CODE' column (see
 #'   doc).
-#' * `data`: (Linux): aka DRS (data resident set) the amount of physical
+#' * `data`: (Linux): aka 'DRS' (data resident set) the amount of physical
 #'   memory devoted to other than executable code. It matches "top"‘s
-#'   DATA column (see doc).
+#'   'DATA' column (see doc).
 #' * `lib`: (Linux): the memory used by shared libraries.
 #' * `dirty`: (Linux): the number of dirty pages.
 #' * `pfaults`: (macOS): number of page faults.
@@ -648,7 +648,7 @@ ps_send_signal <- function(p, sig) {
 
 #' Suspend (stop) the process
 #'
-#' Suspend process execution with `SIGSTOP` pre-emptively checking
+#' Suspend process execution with `SIGSTOP` preemptively checking
 #' whether PID has been reused. On Windows this has the effect of
 #' suspending all process threads.
 #'
@@ -679,7 +679,7 @@ ps_suspend <- function(p) {
 
 #' Resume (continue) a stopped process
 #'
-#' Resume process execution with SIGCONT pre-emptively checking
+#' Resume process execution with SIGCONT preemptively checking
 #' whether PID has been reused. On Windows this has the effect of resuming
 #' all process threads.
 #'
@@ -740,7 +740,7 @@ ps_terminate <- function(p) {
 
 #' Kill a process
 #'
-#' Kill the current process with SIGKILL pre-emptively checking
+#' Kill the current process with SIGKILL preemptively checking
 #' whether PID has been reused. On Windows it uses `TerminateProcess()`.
 #'
 #' @param p Process handle.
@@ -855,7 +855,7 @@ ps_ppid_map <- function() {
   )
 }
 
-#' Number of open file desciptors
+#' Number of open file descriptors
 #'
 #' Note that in some IDEs, e.g. RStudio or R.app on macOS, the IDE itself
 #' opens files from other threads, in addition to the files opened from the
@@ -1002,11 +1002,11 @@ ps_connections <- function(p) {
 
 #' Interrupt a process
 #'
-#' Sends `SIGINT` on POSIX, and CTRL+C or CTRL+BREAK on Windows.
+#' Sends `SIGINT` on POSIX, and 'CTRL+C' or 'CTRL+BREAK' on Windows.
 #'
 #' @param p Process handle.
-#' @param ctrl_c On Windows, whether to send CTRL+C. If `FALSE`, then
-#'   CTRL+BREAK is sent. Ignored on non-Windows platforms.
+#' @param ctrl_c On Windows, whether to send 'CTRL+C'. If `FALSE`, then
+#'   'CTRL+BREAK' is sent. Ignored on non-Windows platforms.
 #'
 #' @family process handle functions
 #' @export

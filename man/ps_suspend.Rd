@@ -10,7 +10,7 @@ ps_suspend(p)
 \item{p}{Process handle.}
 }
 \description{
-Suspend process execution with \code{SIGSTOP} pre-emptively checking
+Suspend process execution with \code{SIGSTOP} preemptively checking
 whether PID has been reused. On Windows this has the effect of
 suspending all process threads.
 }

@@ -10,7 +10,7 @@ ps_resume(p)
 \item{p}{Process handle.}
 }
 \description{
-Resume process execution with SIGCONT pre-emptively checking
+Resume process execution with SIGCONT preemptively checking
 whether PID has been reused. On Windows this has the effect of resuming
 all process threads.
 }

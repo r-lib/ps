@@ -15,7 +15,7 @@ Named real vector or length four: \code{user}, \code{system},
 non-Linux systems.
 }
 \description{
-All times are measued in seconds:
+All times are measured in seconds:
 \itemize{
 \item \code{user}: Amount of time that this process has been scheduled in user
 mode.

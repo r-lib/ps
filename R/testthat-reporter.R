@@ -1,14 +1,14 @@
 
 globalVariables("private")
 
-#' testthat reporter that checks if child proceses are cleaned up in tests
+#' testthat reporter that checks if child processes are cleaned up in tests
 #'
 #' `CleanupReporter` takes an existing testthat `Reporter` object, and
 #' wraps it, so it checks for leftover child processes, at the specified
 #' place, see the `proc_unit` argument below.
 #'
 #' Child processes can be reported via a failed expectation, cleaned up
-#' silently, or cleaned up and reptorted (the default).
+#' silently, or cleaned up and reported (the default).
 #'
 #' The constructor of the `CleanupReporter` class has options:
 #' * `file`: the output file, if any, this is passed to `reporter`.

@@ -16,11 +16,11 @@ Named real vector.
 A list with information about memory usage. Portable fields:
 \itemize{
 \item \code{rss}: "Resident Set Size", this is the non-swapped physical memory a
-process has used. On UNIX it matches "top"‘s RES column (see doc). On
+process has used. On UNIX it matches "top"‘s 'RES' column (see doc). On
 Windows this is an alias for \code{wset} field and it matches "Memory"
 column of \code{taskmgr.exe}.
 \item \code{vmem}: "Virtual Memory Size", this is the total amount of virtual
-memory used by the process. On UNIX it matches "top"‘s VIRT column
+memory used by the process. On UNIX it matches "top"‘s 'VIRT' column
 (see doc). On Windows this is an alias for the \code{pagefile} field and
 it matches the "Working set (memory)" column of \code{taskmgr.exe}.
 }
@@ -29,13 +29,13 @@ it matches the "Working set (memory)" column of \code{taskmgr.exe}.
 Non-portable fields:
 \itemize{
 \item \code{shared}: (Linux) memory that could be potentially shared with other
-processes. This matches "top"‘s SHR column (see doc).
-\item \code{text}: (Linux): aka TRS (text resident set) the amount of memory
-devoted to executable code. This matches "top"‘s CODE column (see
+processes. This matches "top"‘s 'SHR' column (see doc).
+\item \code{text}: (Linux): aka 'TRS' (text resident set) the amount of memory
+devoted to executable code. This matches "top"‘s 'CODE' column (see
 doc).
-\item \code{data}: (Linux): aka DRS (data resident set) the amount of physical
+\item \code{data}: (Linux): aka 'DRS' (data resident set) the amount of physical
 memory devoted to other than executable code. It matches "top"‘s
-DATA column (see doc).
+'DATA' column (see doc).
 \item \code{lib}: (Linux): the memory used by shared libraries.
 \item \code{dirty}: (Linux): the number of dirty pages.
 \item \code{pfaults}: (macOS): number of page faults.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/low-level.R
 \name{ps_num_fds}
 \alias{ps_num_fds}
-\title{Number of open file desciptors}
+\title{Number of open file descriptors}
 \usage{
 ps_num_fds(p)
 }
