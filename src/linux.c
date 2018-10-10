@@ -70,7 +70,6 @@ int ps__read_file(const char *path, char **buffer, size_t buffer_size) {
 
  error:
   if (fd >= 0) close(fd);
-  if (*buffer) free(*buffer);
   *buffer = 0;
   return -1;
 }
