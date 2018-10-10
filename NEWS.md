@@ -1,5 +1,5 @@
 
-# devel
+# ps 1.2.0
 
 * New `ps_connections()` to list network connections. The
   `CleanupReporter()` testthat reporter can check for leftover open
