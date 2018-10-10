@@ -20,6 +20,8 @@ typedef struct {
 #ifdef PS__LINUX
 
 #include <signal.h>
+#include <unistd.h>
+#include <sys/types.h>
 
 typedef struct {
   pid_t pid;
