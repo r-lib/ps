@@ -79,5 +79,9 @@ SEXP psll_kill(SEXP p) {
 }
 
 SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path) {
-  return psll_send_signal(p, ScalarInteger(SIGINT));
+  SEXP res, s;
+  PROTECT(s = ScalarInteger(SIGINT));
+  PROTECT(res = psll_send_signal(p, s));
+  UNPROTECT(2);
+  return res;
 }
