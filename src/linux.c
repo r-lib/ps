@@ -110,21 +110,28 @@ SEXP ps__define_tcp_statuses() {
 
 SEXP ps__init(SEXP psenv, SEXP constenv) {
 
+  SEXP sig, err, tcp, af, st;
+
   /* Signals */
-  defineVar(install("signals"), ps__define_signals(), constenv);
+  PROTECT(sig = ps__define_signals());
+  defineVar(install("signals"), sig, constenv);
 
   /* errno values */
-  defineVar(install("errno"), ps__define_errno(), constenv);
+  PROTECT(err = ps__define_errno());
+  defineVar(install("errno"), err, constenv);
 
   /* Connection statuses */
-  defineVar(install("tcp_statuses"), ps__define_tcp_statuses(), constenv);
+  PROTECT(tcp = ps__define_tcp_statuses());
+  defineVar(install("tcp_statuses"), tcp, constenv);
 
   /* Socket address families */
-  defineVar(install("address_families"),
-	    ps__define_socket_address_families(), constenv);
+  PROTECT(af = ps__define_socket_address_families());
+  defineVar(install("address_families"), af, constenv);
 
   /* Socket address families */
-  defineVar(install("socket_types"), ps__define_socket_types(), constenv);
+  PROTECT(st = ps__define_socket_types());
+  defineVar(install("socket_types"), st, constenv);
 
+  UNPROTECT(5);
   return R_NilValue;
 }
