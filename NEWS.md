@@ -1,7 +1,21 @@
 
 # devel
 
-* Fix `ps::ps()` printing without the tibble package (#43)
+* New `ps_connections()` to list network connections. The
+  `CleanupReporter()` testthat reporter can check for leftover open
+  network connections in test cases.
+
+* `ps_open_files()` does not include open sockets now on Linux, they are
+  rather included in `ps_connections()`.
+
+* `CleanupReporter()` now ignores `/dev/urandom`, some packages (curl,
+  openssl, etc.) keep this file open.
+
+* Fix `ps()` printing without the tibble package (#43).
+
+* Fix compilation with ICC (#39).
+
+* Fix a crash on Linux (#47).
 
 # ps 1.1.0
 
