@@ -196,6 +196,10 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
         private$files <- NULL
         leftover <- ! new$path %in% old$path
 
+        ## Need to ignore some open files:
+        ## * /dev/urandom might be opened internally by curl, openssl, etc.
+        leftover <- leftover & new$path != "/dev/urandom"
+
         if (private$file_fail) {
           act <- testthat::quasi_label(rlang::enquo(test), test)
           testthat::expect(
