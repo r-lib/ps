@@ -858,7 +858,6 @@ SEXP ps__kill_if_env(SEXP r_marker, SEXP r_after, SEXP r_pid, SEXP r_sig) {
 
 SEXP ps__find_if_env(SEXP r_marker, SEXP r_after, SEXP r_pid) {
   SEXP phandle;
-  pid_t pid = INTEGER(r_pid)[0];
   int match;
   ps_handle_t *handle;
 
@@ -988,7 +987,6 @@ SEXP psll_connections(SEXP p) {
   DIR *dirs;
   int ret;
   char *linkname;
-  int fd, dfd;
   size_t l;
   SEXP result;
   PROTECT_INDEX pidx;
