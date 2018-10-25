@@ -147,6 +147,12 @@ it is a costly operation.</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="ps_cmdline.html">ps_cmdline()</a></code> </p>
+        </td>
+        <td><p>Command line of the process</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="ps_cpu_times.html">ps_cpu_times()</a></code> </p>
         </td>
         <td><p>CPU times of the process</p></td>
@@ -244,11 +250,43 @@ it is a costly operation.</p></td>
     </tbody><tbody>
       <tr>
         <th colspan="2">
+          <h2 id="section-files-and-network-connections" class="hasAnchor"><a href="#section-files-and-network-connections" class="anchor"></a>Files and Network Connections</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="ps_connections.html">ps_connections()</a></code> </p>
+        </td>
+        <td><p>List network connections of a process</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ps_num_fds.html">ps_num_fds()</a></code> </p>
+        </td>
+        <td><p>Number of open file descriptors</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ps_open_files.html">ps_open_files()</a></code> </p>
+        </td>
+        <td><p>Open files of a process</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
           <h2 id="section-process-manipulation" class="hasAnchor"><a href="#section-process-manipulation" class="anchor"></a>Process manipulation</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
       <tr>
+        
+        <td>
+          <p><code><a href="ps_interrupt.html">ps_interrupt()</a></code> </p>
+        </td>
+        <td><p>Interrupt a process</p></td>
+      </tr><tr>
         
         <td>
           <p><code><a href="ps_kill.html">ps_kill()</a></code> </p>
@@ -278,6 +316,20 @@ it is a costly operation.</p></td>
           <p><code><a href="ps_terminate.html">ps_terminate()</a></code> </p>
         </td>
         <td><p>Terminate a Unix process</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-users" class="hasAnchor"><a href="#section-users" class="anchor"></a>Users</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="ps_users.html">ps_users()</a></code> </p>
+        </td>
+        <td><p>List users connected to the system</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -314,7 +366,9 @@ it is a costly operation.</p></td>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#section-list-processes">List processes</a></li>
       <li><a href="#section-process-query-api">Process query API</a></li>
+      <li><a href="#section-files-and-network-connections">Files and Network Connections</a></li>
       <li><a href="#section-process-manipulation">Process manipulation</a></li>
+      <li><a href="#section-users">Users</a></li>
       <li><a href="#section-utility-functions">Utility functions</a></li>
     </ul>
   </div>
