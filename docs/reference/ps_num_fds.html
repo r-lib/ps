@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Start time of a process — ps_create_time • ps</title>
+<title>Number of open file descriptors — ps_num_fds • ps</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,11 +30,11 @@
 
 
 
-<meta property="og:title" content="Start time of a process — ps_create_time" />
+<meta property="og:title" content="Number of open file descriptors — ps_num_fds" />
 
-<meta property="og:description" content="The pid and the start time pair serves as the identifier of the process,
-as process ids might be reused, but the chance of starting two processes
-with identical ids within the resolution of the timer is minimal." />
+<meta property="og:description" content="Note that in some IDEs, e.g. RStudio or R.app on macOS, the IDE itself
+opens files from other threads, in addition to the files opened from the
+main R thread." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -103,20 +103,20 @@ with identical ids within the resolution of the timer is minimal." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Start time of a process</h1>
+    <h1>Number of open file descriptors</h1>
     <small class="dont-index">Source: <a href='https://github.com/r-lib/ps/blob/master/R/low-level.R'><code>R/low-level.R</code></a></small>
-    <div class="hidden name"><code>ps_create_time.Rd</code></div>
+    <div class="hidden name"><code>ps_num_fds.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>The pid and the start time pair serves as the identifier of the process,
-as process ids might be reused, but the chance of starting two processes
-with identical ids within the resolution of the timer is minimal.</p>
+    <p>Note that in some IDEs, e.g. RStudio or R.app on macOS, the IDE itself
+opens files from other threads, in addition to the files opened from the
+main R thread.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>ps_create_time</span>(<span class='no'>p</span>)</pre>
+    <pre class="usage"><span class='fu'>ps_num_fds</span>(<span class='no'>p</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -129,22 +129,22 @@ with identical ids within the resolution of the timer is minimal.</p>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>POSIXct</code> object, start time, in GMT.</p>
+    <p>Integer scalar.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This function works even if the process has already finished.</p>
+    <p>For a zombie process it throws a <code>zombie_process</code> error.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other process handle functions: <code><a href='ps_children.html'>ps_children</a></code>,
   <code><a href='ps_cmdline.html'>ps_cmdline</a></code>, <code><a href='ps_connections.html'>ps_connections</a></code>,
-  <code><a href='ps_cpu_times.html'>ps_cpu_times</a></code>, <code><a href='ps_cwd.html'>ps_cwd</a></code>,
-  <code><a href='ps_environ.html'>ps_environ</a></code>, <code><a href='ps_exe.html'>ps_exe</a></code>,
-  <code><a href='ps_handle.html'>ps_handle</a></code>, <code><a href='ps_interrupt.html'>ps_interrupt</a></code>,
-  <code><a href='ps_is_running.html'>ps_is_running</a></code>, <code><a href='ps_kill.html'>ps_kill</a></code>,
-  <code><a href='ps_memory_info.html'>ps_memory_info</a></code>, <code><a href='ps_name.html'>ps_name</a></code>,
-  <code><a href='ps_num_fds.html'>ps_num_fds</a></code>, <code><a href='ps_num_threads.html'>ps_num_threads</a></code>,
+  <code><a href='ps_cpu_times.html'>ps_cpu_times</a></code>, <code><a href='ps_create_time.html'>ps_create_time</a></code>,
+  <code><a href='ps_cwd.html'>ps_cwd</a></code>, <code><a href='ps_environ.html'>ps_environ</a></code>,
+  <code><a href='ps_exe.html'>ps_exe</a></code>, <code><a href='ps_handle.html'>ps_handle</a></code>,
+  <code><a href='ps_interrupt.html'>ps_interrupt</a></code>, <code><a href='ps_is_running.html'>ps_is_running</a></code>,
+  <code><a href='ps_kill.html'>ps_kill</a></code>, <code><a href='ps_memory_info.html'>ps_memory_info</a></code>,
+  <code><a href='ps_name.html'>ps_name</a></code>, <code><a href='ps_num_threads.html'>ps_num_threads</a></code>,
   <code><a href='ps_open_files.html'>ps_open_files</a></code>, <code><a href='ps_pid.html'>ps_pid</a></code>,
   <code><a href='ps_ppid.html'>ps_ppid</a></code>, <code><a href='ps_resume.html'>ps_resume</a></code>,
   <code><a href='ps_send_signal.html'>ps_send_signal</a></code>, <code><a href='ps_status.html'>ps_status</a></code>,
@@ -156,8 +156,12 @@ with identical ids within the resolution of the timer is minimal.</p>
 
     <p><pre>
 p &lt;- ps_handle()
-p
-ps_create_time(p)
+ps_num_fds(p)
+f &lt;- file(tmp &lt;- tempfile(), "w")
+ps_num_fds(p)
+close(f)
+unlink(tmp)
+ps_num_fds(p)
 </pre></p>
     
 
