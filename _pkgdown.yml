@@ -13,6 +13,7 @@ reference:
 - title: Process query API
   contents:
   - ps_children
+  - ps_cmdline
   - ps_cpu_times
   - ps_create_time
   - ps_cwd
@@ -30,13 +31,24 @@ reference:
   - ps_uids
   - ps_username
 
+- title: Files and Network Connections
+  contents:
+  - ps_connections
+  - ps_num_fds
+  - ps_open_files
+
 - title: Process manipulation
   contents:
+  - ps_interrupt
   - ps_kill
   - ps_resume
   - ps_send_signal
   - ps_suspend
   - ps_terminate
+
+- title: Users
+  contents:
+  - ps_users
 
 - title: Utility functions
   contents:
