@@ -89,7 +89,7 @@ SEXP ps__define_tcp_statuses() {
   SEXP result, names;
 
   PROTECT(result = ps__build_string("01", "02", "03", "04", "05", "06",
-				    "07", "08", "09", "0A", "0B", "0C", 0));
+				    "07", "08", "09", "0A", "0B", "0C", NULL));
   PROTECT(names = ps__build_string("CONN_ESTABLISHED",
 				   "CONN_SYN_SENT",
 				   "CONN_SYN_RECV",
@@ -101,7 +101,7 @@ SEXP ps__define_tcp_statuses() {
 				   "CONN_LAST_ACK",
 				   "CONN_LISTEN",
 				   "CONN_CLOSING",
-				   "PS__CONN_NONE", 0));
+				   "PS__CONN_NONE", NULL));
 
   setAttrib(result, R_NamesSymbol, names);
   UNPROTECT(2);
