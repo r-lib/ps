@@ -1,4 +1,8 @@
 
+# dev
+
+* Fix a crash on Linux, that happened at load time (#50).
+
 # ps 1.2.0
 
 * New `ps_connections()` to list network connections. The
