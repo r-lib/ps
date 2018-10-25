@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Start time of a process — ps_create_time • ps</title>
+<title>List network connections of a process — ps_connections • ps</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,11 +30,9 @@
 
 
 
-<meta property="og:title" content="Start time of a process — ps_create_time" />
+<meta property="og:title" content="List network connections of a process — ps_connections" />
 
-<meta property="og:description" content="The pid and the start time pair serves as the identifier of the process,
-as process ids might be reused, but the chance of starting two processes
-with identical ids within the resolution of the timer is minimal." />
+<meta property="og:description" content="For a zombie process it throws a zombie_process error." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -103,20 +101,18 @@ with identical ids within the resolution of the timer is minimal." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Start time of a process</h1>
+    <h1>List network connections of a process</h1>
     <small class="dont-index">Source: <a href='https://github.com/r-lib/ps/blob/master/R/low-level.R'><code>R/low-level.R</code></a></small>
-    <div class="hidden name"><code>ps_create_time.Rd</code></div>
+    <div class="hidden name"><code>ps_connections.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>The pid and the start time pair serves as the identifier of the process,
-as process ids might be reused, but the chance of starting two processes
-with identical ids within the resolution of the timer is minimal.</p>
+    <p>For a zombie process it throws a <code>zombie_process</code> error.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>ps_create_time</span>(<span class='no'>p</span>)</pre>
+    <pre class="usage"><span class='fu'>ps_connections</span>(<span class='no'>p</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -129,17 +125,28 @@ with identical ids within the resolution of the timer is minimal.</p>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>POSIXct</code> object, start time, in GMT.</p>
-    
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <p>Data frame, or tibble if the <em>tibble</em> package is available,
+with columns:</p><ul>
+<li><p><code>fd</code>: integer file descriptor on POSIX systems, <code>NA</code> on Windows.</p></li>
+<li><p><code>family</code>: Address family, string, typically <code>AF_UNIX</code>, <code>AF_INET</code> or
+<code>AF_INET6</code>.</p></li>
+<li><p><code>type</code>: Socket type, string, typically <code>SOCK_STREAM</code> (TCP) or
+<code>SOCK_DGRAM</code> (UDP).</p></li>
+<li><p><code>laddr</code>: Local address, string, <code>NA</code> for UNIX sockets.</p></li>
+<li><p><code>lport</code>: Local port, integer, <code>NA</code> for UNIX sockets.</p></li>
+<li><p><code>raddr</code>: Remote address, string, <code>NA</code> for UNIX sockets. This is
+always <code>NA</code> for <code>AF_INET</code> sockets on Linux.</p></li>
+<li><p><code>rport</code>: Remote port, integer, <code>NA</code> for UNIX sockets.</p></li>
+<li><p><code>state</code>: Socket state, e.g. <code>CONN_ESTABLISHED</code>, etc. It is <code>NA</code>
+for UNIX sockets.</p></li>
+</ul>
 
-    <p>This function works even if the process has already finished.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other process handle functions: <code><a href='ps_children.html'>ps_children</a></code>,
-  <code><a href='ps_cmdline.html'>ps_cmdline</a></code>, <code><a href='ps_connections.html'>ps_connections</a></code>,
-  <code><a href='ps_cpu_times.html'>ps_cpu_times</a></code>, <code><a href='ps_cwd.html'>ps_cwd</a></code>,
+  <code><a href='ps_cmdline.html'>ps_cmdline</a></code>, <code><a href='ps_cpu_times.html'>ps_cpu_times</a></code>,
+  <code><a href='ps_create_time.html'>ps_create_time</a></code>, <code><a href='ps_cwd.html'>ps_cwd</a></code>,
   <code><a href='ps_environ.html'>ps_environ</a></code>, <code><a href='ps_exe.html'>ps_exe</a></code>,
   <code><a href='ps_handle.html'>ps_handle</a></code>, <code><a href='ps_interrupt.html'>ps_interrupt</a></code>,
   <code><a href='ps_is_running.html'>ps_is_running</a></code>, <code><a href='ps_kill.html'>ps_kill</a></code>,
@@ -156,8 +163,11 @@ with identical ids within the resolution of the timer is minimal.</p>
 
     <p><pre>
 p &lt;- ps_handle()
-p
-ps_create_time(p)
+ps_connections(p)
+sc &lt;- socketConnection("httpbin.org", port = 80)
+ps_connections(p)
+close(sc)
+ps_connections(p)
 </pre></p>
     
 
@@ -168,8 +178,6 @@ ps_create_time(p)
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
 
       <li><a href="#see-also">See also</a></li>
 
