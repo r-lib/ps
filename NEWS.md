@@ -1,5 +1,5 @@
 
-# dev
+# ps 1.2.1
 
 * Fix a crash on Linux, that happened at load time (#50).
 
