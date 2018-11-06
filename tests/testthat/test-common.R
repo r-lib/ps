@@ -155,7 +155,7 @@ test_that("cwd", {
   ps <- ps_handle(p1$get_pid())
   expect_true(ps_is_running(ps))
 
-  expect_equal(ps_cwd(ps), normalizePath(tempdir()))
+  expect_equal(normalizePath(ps_cwd(ps)), normalizePath(tempdir()))
 })
 
 test_that("environ, environ_raw", {
