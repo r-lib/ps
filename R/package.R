@@ -70,7 +70,7 @@ copy_lib <- function(libname, pkgname) {
   ns <- asNamespace(pkgname)
 
   ns$.__NAMESPACE__.$DLLs[[.packageName]] <- dll
-  for (n in names(routines)) ns[[paste0("c_", n)]] <- routines[[n]]
+  for (n in names(routines)) ns[[n]] <- routines[[n]]
 
   invisible()
 }
