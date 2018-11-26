@@ -72,6 +72,23 @@ copy_lib <- function(libname, pkgname) {
   ns$.__NAMESPACE__.$DLLs[[.packageName]] <- dll
   for (n in names(routines)) ns[[n]] <- routines[[n]]
 
+  ## Put a finalizer on the namespace, to unload the DLL
+  finalizer <- function(x) {
+    libs <- .dynLibs()
+    matchidx <- vapply(libs, "[[", character(1), "name") == "ps"
+    pkglibs <- libs[matchidx]
+    try(unloadNamespace("ps"), silent = TRUE)
+    for (lib in pkglibs) {
+      try(dyn.unload(lib[["path"]]), silent = TRUE)
+    }
+    .dynLibs(libs[!(libs %in% pkglibs)])
+  }
+
+  ## To avoid keeping this lexical scope alive
+  environment(finalizer) <- .GlobalEnv
+
+  reg.finalizer(ns, finalizer, onexit = TRUE)
+
   invisible()
 }
 
