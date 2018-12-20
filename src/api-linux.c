@@ -794,8 +794,16 @@ SEXP ps__boot_time() {
   return ScalarReal(psll_linux_boot_time);
 }
 
-SEXP ps__cpu_count(SEXP logical) {
-  TODO
+SEXP ps__cpu_count_logical() {
+  int n = sysconf(_SC_NPROCESSORS_ONLN);
+  if (n >= 1) return ScalarInteger(n);
+  return(ScalarInteger(NA_INTEGER));
+}
+
+/* This is not used, because it is much easier to parse this file from R */
+
+SEXP ps__cpu_count_physical() {
+  return R_NilValue;
 }
 
 static int psl__linux_match_environ(SEXP r_marker, SEXP r_pid) {
