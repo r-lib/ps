@@ -21,6 +21,7 @@ build_script:
 environment:
   NOT_CRAN: true
   PATH: "%PATH%;C:\\MinGW\\bin;C:\\MinGW\\msys\\1.0;C:\\MinGW\\msys\\1.0\\bin"
+  R_VERSION: release
 
 test_script:
   - travis-tool.sh run_tests
