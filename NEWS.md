@@ -1,6 +1,9 @@
 
 # ps dev
 
+* New `ps_cpu_count()` function returns the number of logical or
+  physical processors.
+
 # ps 1.2.1
 
 * Fix a crash on Linux, that happened at load time (#50).
