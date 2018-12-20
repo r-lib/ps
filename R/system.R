@@ -77,6 +77,8 @@ ps_users <- function() {
 
 #' Number of logical or phyisical CPUs
 #'
+#' If cannot be determined, it returns `NA`.
+#' 
 #' @param logical Whether to count logical CPUs.
 #' @return Integer scalar.
 #' 
@@ -92,6 +94,13 @@ ps_users <- function() {
 
 ps_cpu_count <- function(logical = TRUE) {
   assert_flag(logical)
-  num <- .Call(ps__cpu_count, logical)
-  if (num == 0) NA_integer_ else num
+  if (logical) ps_cpu_count_logical() else ps_cpu_count_physical()
+}
+
+ ps_cpu_count_logical <- function() {
+   .Call(ps__cpu_count_logical)
+ }
+ 
+ps_cpu_count_physical <- function() {
+  .Call(ps__cpu_count_physical)
 }

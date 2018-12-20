@@ -13,7 +13,7 @@ ps_cpu_count(logical = TRUE)
 Integer scalar.
 }
 \description{
-Number of logical or phyisical CPUs
+If cannot be determined, it returns \code{NA}.
 }
 \section{Examples}{
 \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
