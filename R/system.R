@@ -77,7 +77,8 @@ ps_users <- function() {
 
 #' Number of logical or phyisical CPUs
 #'
-#' If cannot be determined, it returns `NA`.
+#' If cannot be determined, it returns `NA`. It also returns `NA` on older
+#' Windows systems, e.g. Vista or older and Windows Server 2008 or older.
 #' 
 #' @param logical Whether to count logical CPUs.
 #' @return Integer scalar.
