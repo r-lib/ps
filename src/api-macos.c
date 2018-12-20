@@ -456,6 +456,26 @@ SEXP ps__boot_time() {
   return ScalarReal(unixtime);
 }
 
+SEXP ps__cpu_count_logical() {
+  int num = 0;
+  size_t size = sizeof(int);
+
+  if (sysctlbyname("hw.logicalcpu", &num, &size, NULL, 2))
+    return ScalarInteger(NA_INTEGER);
+  else 
+    return ScalarInteger(num);
+}
+
+SEXP ps__cpu_count_physical() {
+  int num = 0;
+  size_t size = sizeof(int);
+  
+  if (sysctlbyname("hw.physicalcpu", &num, &size, NULL, 0))
+    return ScalarInteger(NA_INTEGER);
+  else 
+    return ScalarInteger(num);
+}
+
 SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
   const char *cmarker = CHAR(STRING_ELT(marker, 0));
   pid_t cpid = INTEGER(pid)[0];

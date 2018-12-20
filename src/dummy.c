@@ -48,6 +48,8 @@ void ps__inet_ntop()     { ps__dummy("ps__inet_ntop"); }
 #ifndef PS__WINDOWS
 void ps__pids()          { ps__dummy("ps_pids"); }
 void ps__boot_time()     { ps__dummy("ps_boot_time"); }
+void ps__cpu_count_logical()  { ps__dummy("ps_cpu_count"); }
+void ps__cpu_count_physical() { ps__dummy("ps_cpu_count"); }
 void ps__users()         { ps__users("ps_users"); }
 
 void psll_handle()       { ps__dummy("ps_handle"); }

@@ -6,10 +6,12 @@
 
 static const R_CallMethodDef callMethods[]  = {
   /* System api */
-  { "ps__os_type",       (DL_FUNC) ps__os_type,       0 },
-  { "ps__pids",          (DL_FUNC) ps__pids,          0 },
-  { "ps__boot_time",     (DL_FUNC) ps__boot_time,     0 },
-  { "ps__users",         (DL_FUNC) ps__users,         0 },
+  { "ps__os_type",            (DL_FUNC) ps__os_type,            0 },
+  { "ps__pids",               (DL_FUNC) ps__pids,               0 },
+  { "ps__boot_time",          (DL_FUNC) ps__boot_time,          0 },
+  { "ps__cpu_count_logical",  (DL_FUNC) ps__cpu_count_logical,  0 },
+  { "ps__cpu_count_physical", (DL_FUNC) ps__cpu_count_physical, 0 },
+  { "ps__users",              (DL_FUNC) ps__users,              0 },
 
   /* ps_handle API */
   { "psll_pid",          (DL_FUNC) psll_pid,          1 },

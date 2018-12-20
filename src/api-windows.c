@@ -582,6 +582,147 @@ SEXP ps__boot_time() {
   }
 }
 
+/*
+ * Return the number of logical, active CPUs. Return 0 if undetermined.
+ * See discussion at: https://bugs.python.org/issue33166#msg314631
+ */
+#if (_WIN32_WINNT < 0x0601)  // < Windows 7 (namely Vista and XP)
+
+SEXP ps__cpu_count_logical() {
+  return ScalarInteger(NA_INTEGER);
+}
+
+SEXP ps__cpu_count_physical() {
+  return ScalarInteger(NA_INTEGER);
+}
+
+#else  // Windows >= 7
+
+unsigned int ps__get_num_cpus(int fail_on_err) {
+  unsigned int ncpus = 0;
+  SYSTEM_INFO sysinfo;
+  static DWORD(CALLBACK *_GetActiveProcessorCount)(WORD) = NULL;
+  HINSTANCE hKernel32;
+
+  // GetActiveProcessorCount is available only on 64 bit versions
+  // of Windows from Windows 7 onward.
+  // Windows Vista 64 bit and Windows XP doesn't have it.
+  hKernel32 = GetModuleHandleW(L"KERNEL32");
+  _GetActiveProcessorCount = (void*)GetProcAddress(
+    hKernel32, "GetActiveProcessorCount");
+
+  if (_GetActiveProcessorCount != NULL) {
+    ncpus = _GetActiveProcessorCount(ALL_PROCESSOR_GROUPS);
+    if ((ncpus == 0) && (fail_on_err == 1)) {
+      ps__set_error_from_windows_error(0);
+    }
+  } else {
+    ps__debug("GetActiveProcessorCount() not available; "
+		 "using GetNativeSystemInfo()");
+    GetNativeSystemInfo(&sysinfo);
+    ncpus = (unsigned int) sysinfo.dwNumberOfProcessors;
+    if ((ncpus == 0) && (fail_on_err == 1)) {
+      ps__set_error("GetNativeSystemInfo() failed to retrieve CPU count");
+      ps__throw_error();
+    }
+  }
+
+  return ncpus;
+}
+
+SEXP ps__cpu_count_logical() {
+  unsigned int ncpus;
+
+  ncpus = ps__get_num_cpus(0);
+  if (ncpus != 0) {
+    return ScalarInteger(ncpus);
+  } else {
+    return ScalarInteger(NA_INTEGER);
+  }
+}
+
+typedef BOOL (WINAPI *LPFN_GLPI)(
+    PSYSTEM_LOGICAL_PROCESSOR_INFORMATION,
+    PDWORD);
+
+// Helper function to count set bits in the processor mask.
+DWORD ps__count_set_bits(ULONG_PTR bitMask) {
+  DWORD LSHIFT = sizeof(ULONG_PTR)*8 - 1;
+  DWORD bitSetCount = 0;
+  ULONG_PTR bitTest = (ULONG_PTR)1 << LSHIFT;
+  DWORD i;
+
+  for (i = 0; i <= LSHIFT; ++i) {
+    bitSetCount += ((bitMask & bitTest)?1:0);
+    bitTest/=2;
+  }
+
+  return bitSetCount;
+}
+
+SEXP ps__cpu_count_physical() {
+  LPFN_GLPI glpi;
+  BOOL done = FALSE;
+  PSYSTEM_LOGICAL_PROCESSOR_INFORMATION buffer = NULL;
+  PSYSTEM_LOGICAL_PROCESSOR_INFORMATION ptr = NULL;
+  DWORD returnLength = 0;
+  DWORD nproc = 0;
+  DWORD byteOffset = 0;
+
+  glpi = (LPFN_GLPI) GetProcAddress(
+    GetModuleHandle(TEXT("kernel32")),
+    "GetLogicalProcessorInformation");
+
+  if (NULL == glpi) return ScalarInteger(NA_INTEGER);
+
+  while (!done) {
+    DWORD rc = glpi(buffer, &returnLength);
+
+    if (FALSE == rc) {
+      if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
+	if (buffer) free(buffer);
+	buffer = (PSYSTEM_LOGICAL_PROCESSOR_INFORMATION)  malloc(returnLength);
+
+	if (NULL == buffer) {
+	  ps__no_memory("");
+	  ps__throw_error();
+	}
+      } else {
+	ps__set_error_from_windows_error(0);
+	ps__throw_error();
+      }
+    } else {
+      done = TRUE;
+    }
+  }
+
+  ptr = buffer;
+
+  while (byteOffset + sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION) <= returnLength) {
+
+    switch (ptr->Relationship) {
+    case RelationProcessorCore:
+      // A hyperthreaded core supplies more than one logical processor.
+      nproc += ps__count_set_bits(ptr->ProcessorMask);
+      break;
+    default:
+      break;
+    }
+
+    byteOffset += sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION);
+    ptr++;
+  }
+
+  free(buffer);
+
+  if (nproc > 0) {
+    return ScalarInteger(nproc);
+  } else {
+    return ScalarInteger(NA_INTEGER);
+  }
+}
+#endif
+
 SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
   const char *cmarker = CHAR(STRING_ELT(marker, 0));
   double cafter = REAL(after)[0];

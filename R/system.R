@@ -74,3 +74,38 @@ ps_users <- function() {
   class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
 }
+
+#' Number of logical or phyisical CPUs
+#'
+#' If cannot be determined, it returns `NA`. It also returns `NA` on older
+#' Windows systems, e.g. Vista or older and Windows Server 2008 or older.
+#' 
+#' @param logical Whether to count logical CPUs.
+#' @return Integer scalar.
+#' 
+#' @export
+#'
+#' @rawRd
+#' \section{Examples}{
+#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' ps_cpu_count(logical = TRUE)
+#' ps_cpu_count(logical = FALSE)
+#' ')}
+#' }
+
+ps_cpu_count <- function(logical = TRUE) {
+  assert_flag(logical)
+  if (logical) ps_cpu_count_logical() else ps_cpu_count_physical()
+}
+
+ ps_cpu_count_logical <- function() {
+   .Call(ps__cpu_count_logical)
+ }
+ 
+ps_cpu_count_physical <- function() {
+  if (ps_os_type()[["LINUX"]]) {
+    ps_cpu_count_physical_linux()
+  } else {
+    .Call(ps__cpu_count_physical)
+  }
+}
