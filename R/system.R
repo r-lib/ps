@@ -74,3 +74,24 @@ ps_users <- function() {
   class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
 }
+
+#' Number of logical or phyisical CPUs
+#'
+#' @param logical Whether to count logical CPUs.
+#' @return Integer scalar.
+#' 
+#' @export
+#'
+#' @rawRd
+#' \section{Examples}{
+#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' ps_cpu_count(logical = TRUE)
+#' ps_cpu_count(logical = FALSE)
+#' ')}
+#' }
+
+ps_cpu_count <- function(logical = TRUE) {
+  assert_flag(logical)
+  num <- .Call(ps__cpu_count, logical)
+  if (num == 0) NA_integer_ else num
+}

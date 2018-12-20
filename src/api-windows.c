@@ -582,6 +582,29 @@ SEXP ps__boot_time() {
   }
 }
 
+static int ps__cpu_count_logical() {
+  TODO;
+}
+
+#if (_WIN32_WINNT < 0x0601)  // < Windows 7 (namely Vista and XP)
+static int ps__cpu_count_physical() {
+  TODO;
+}
+#else
+static int ps__cpu_count_physical() {
+  TODO;
+}
+#endif
+
+SEXP ps__cpu_count(SEXP logical) {
+  int clogical = LOGICAL(logical)[0];
+  if (clogical) {
+    return ScalarInteger(ps__cpu_count_logical());
+  } else {
+    return ScalarInteger(ps__cpu_count_physical());
+  }
+}
+
 SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
   const char *cmarker = CHAR(STRING_ELT(marker, 0));
   double cafter = REAL(after)[0];

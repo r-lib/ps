@@ -794,6 +794,10 @@ SEXP ps__boot_time() {
   return ScalarReal(psll_linux_boot_time);
 }
 
+SEXP ps__cpu_count(SEXP logical) {
+  TODO
+}
+
 static int psl__linux_match_environ(SEXP r_marker, SEXP r_pid) {
   const char *marker = CHAR(STRING_ELT(r_marker, 0));
   pid_t pid = INTEGER(r_pid)[0];
