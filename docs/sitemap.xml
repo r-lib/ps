@@ -22,6 +22,9 @@
     <loc>http://ps.r-lib.org/reference/ps_connections.html</loc>
   </url>
   <url>
+    <loc>http://ps.r-lib.org/reference/ps_cpu_count.html</loc>
+  </url>
+  <url>
     <loc>http://ps.r-lib.org/reference/ps_cpu_times.html</loc>
   </url>
   <url>

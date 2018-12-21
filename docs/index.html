@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">ps</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -101,23 +101,23 @@
 <p><code><a href="reference/ps_pids.html">ps_pids()</a></code> returns all process ids on the system. This can be useful to iterate over all processes.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">library</span>(ps)</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="reference/ps_pids.html">ps_pids</a></span>()[<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>]</a></code></pre></div>
-<pre><code>##  [1]  0  1 48 49 51 52 53 55 58 59 60 61 66 70 72 73 78 79 81 83</code></pre>
+<pre><code>##  [1]  0  1 50 51 53 54 55 57 60 61 62 63 68 72 74 75 80 81 83 85</code></pre>
 <p><code><a href="reference/ps.html">ps()</a></code> returns a data frame (tibble if you have the tibble package available), with data about each process. It contains a handle to each process, in the <code>ps_handle</code> column, you can use these to perform more queries on the processes.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="reference/ps.html">ps</a></span>()</a></code></pre></div>
-<pre><code>## # A tibble: 467 x 11
-##      pid  ppid name   username status    user  system     rss     vms created             ps_handle
-##  * &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dttm&gt;              &lt;I(list)&gt;
-##  1 15618 15603 R      gaborcs… runni…  0.743   0.138   1.20e8  2.73e9 2018-11-07 09:38:47 &lt;S3: ps_…
-##  2 15603 69354 R      gaborcs… runni…  1.80    0.227   1.21e8  2.69e9 2018-11-07 09:38:42 &lt;S3: ps_…
-##  3 15404     1 quick… gaborcs… runni…  0.0578  0.0362  2.86e7  3.09e9 2018-11-07 09:37:38 &lt;S3: ps_…
-##  4 15403  9730 Googl… gaborcs… runni…  0.180   0.0634  6.72e7  3.00e9 2018-11-07 09:36:59 &lt;S3: ps_…
-##  5 15402  9730 Googl… gaborcs… runni…  0.0836  0.0452  4.94e7  2.97e9 2018-11-07 09:36:58 &lt;S3: ps_…
-##  6 15364 15363 docke… gaborcs… runni…  2.05    0.277   3.06e7  2.58e9 2018-11-07 09:34:41 &lt;S3: ps_…
-##  7 15363 89645 docke… gaborcs… runni…  0.0482  0.0354  7.84e6  2.53e9 2018-11-07 09:34:41 &lt;S3: ps_…
-##  8 15278  9730 Googl… gaborcs… runni…  4.13    1.32    4.80e7  2.80e9 2018-11-07 09:33:51 &lt;S3: ps_…
-##  9 15274  9730 Googl… gaborcs… runni… 13.6     1.99    2.29e8  3.22e9 2018-11-07 09:33:43 &lt;S3: ps_…
-## 10 15272     1 backu… root     runni… NA      NA      NA      NA      2018-11-07 09:33:24 &lt;S3: ps_…
-## # ... with 457 more rows</code></pre>
+<pre><code>## # A tibble: 409 x 11
+##      pid  ppid name     username  status    user  system    rss    vms created             ps_handle
+##  * &lt;int&gt; &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dttm&gt;              &lt;I(list)&gt;
+##  1 44870 44619 R        gaborcsa… running 0.708  0.104   1.12e8 2.73e9 2018-12-21 15:05:25 &lt;S3: ps_…
+##  2 44809   501 Google … gaborcsa… running 0.0683 0.0249  2.70e7 2.96e9 2018-12-21 15:04:47 &lt;S3: ps_…
+##  3 44805     1 mdworker gaborcsa… running 0.0235 0.00959 6.88e6 2.54e9 2018-12-21 15:04:44 &lt;S3: ps_…
+##  4 44693     1 quicklo… gaborcsa… running 0.0665 0.0226  1.04e7 3.09e9 2018-12-21 15:04:17 &lt;S3: ps_…
+##  5 44619 44380 R        gaborcsa… running 5.76   0.439   1.38e8 2.71e9 2018-12-21 15:03:47 &lt;S3: ps_…
+##  6 44527     1 mdworker gaborcsa… running 0.182  0.0603  4.26e7 2.59e9 2018-12-21 15:03:03 &lt;S3: ps_…
+##  7 44526     1 mdworker gaborcsa… running 0.0930 0.0291  1.92e7 2.54e9 2018-12-21 15:03:03 &lt;S3: ps_…
+##  8 44445     1 mdworker gaborcsa… running 0.283  0.0769  5.71e7 2.57e9 2018-12-21 15:01:45 &lt;S3: ps_…
+##  9 44395     1 mdworker gaborcsa… running 0.167  0.0460  3.62e7 2.57e9 2018-12-21 15:01:40 &lt;S3: ps_…
+## 10 44386 44380 zsh      gaborcsa… running 0.0117 0.0191  1.45e6 2.53e9 2018-12-21 15:01:38 &lt;S3: ps_…
+## # ... with 399 more rows</code></pre>
 </div>
 <div id="process-api" class="section level2">
 <h2 class="hasAnchor">
@@ -126,26 +126,26 @@
 <p><code><a href="reference/ps_handle.html">ps_handle(pid)</a></code> creates a process handle for the supplied process id. If <code>pid</code> is omitted, a handle to the calling process is returned:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">p &lt;-<span class="st"> </span><span class="kw"><a href="reference/ps_handle.html">ps_handle</a></span>()</a>
 <a class="sourceLine" id="cb6-2" data-line-number="2">p</a></code></pre></div>
-<pre><code>## &lt;ps::ps_handle&gt; PID=15618, NAME=R, AT=2018-11-07 09:38:47</code></pre>
+<pre><code>## &lt;ps::ps_handle&gt; PID=44870, NAME=R, AT=2018-12-21 15:05:25</code></pre>
 <div id="query-functions" class="section level3">
 <h3 class="hasAnchor">
 <a href="#query-functions" class="anchor"></a>Query functions</h3>
 <p><code><a href="reference/ps_pid.html">ps_pid(p)</a></code> returns the pid of the process.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="reference/ps_pid.html">ps_pid</a></span>(p)</a></code></pre></div>
-<pre><code>## [1] 15618</code></pre>
+<pre><code>## [1] 44870</code></pre>
 <p><code><a href="reference/ps_create_time.html">ps_create_time()</a></code> returns the creation time of the process (according to the OS).</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="reference/ps_create_time.html">ps_create_time</a></span>(p)</a></code></pre></div>
-<pre><code>## [1] "2018-11-07 09:38:47 GMT"</code></pre>
+<pre><code>## [1] "2018-12-21 15:05:25 GMT"</code></pre>
 <p>The process id and the creation time uniquely identify a process in a system. ps uses them to make sure that it reports information about, and manipulates the correct process.</p>
 <p><code><a href="reference/ps_is_running.html">ps_is_running(p)</a></code> returns whether <code>p</code> is still running. It handles pid reuse safely.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="reference/ps_is_running.html">ps_is_running</a></span>(p)</a></code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 <p><code><a href="reference/ps_ppid.html">ps_ppid(p)</a></code> returns the pid of the parent of <code>p</code>.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw"><a href="reference/ps_ppid.html">ps_ppid</a></span>(p)</a></code></pre></div>
-<pre><code>## [1] 15603</code></pre>
+<pre><code>## [1] 44619</code></pre>
 <p><code><a href="reference/ps_ppid.html">ps_parent(p)</a></code> returns a process handle to the parent process of <code>p</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="reference/ps_ppid.html">ps_parent</a></span>(p)</a></code></pre></div>
-<pre><code>## &lt;ps::ps_handle&gt; PID=15603, NAME=R, AT=2018-11-07 09:38:42</code></pre>
+<pre><code>## &lt;ps::ps_handle&gt; PID=44619, NAME=R, AT=2018-12-21 15:03:47</code></pre>
 <p><code><a href="reference/ps_name.html">ps_name(p)</a></code> returns the name of the program <code>p</code> is running.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="reference/ps_name.html">ps_name</a></span>(p)</a></code></pre></div>
 <pre><code>## [1] "R"</code></pre>
@@ -159,7 +159,7 @@
 ## [3] "--no-save"                                                                    
 ## [4] "--no-restore"                                                                 
 ## [5] "-f"                                                                           
-## [6] "/var/folders/59/0gkmw1yj2w7bf2dfc3jznv5w0000gn/T//RtmppUEiNg/file3cf33c11b009"</code></pre>
+## [6] "/var/folders/59/0gkmw1yj2w7bf2dfc3jznv5w0000gn/T//RtmpGHnJLO/fileae4b43ed0b3f"</code></pre>
 <p><code><a href="reference/ps_status.html">ps_status(p)</a></code> returns the status of the process. Possible values are OS dependent, but typically there is <code>"running"</code> and <code>"stopped"</code>.</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw"><a href="reference/ps_status.html">ps_status</a></span>(p)</a></code></pre></div>
 <pre><code>## [1] "running"</code></pre>
@@ -191,15 +191,15 @@
 <p><code><a href="reference/ps_cpu_times.html">ps_cpu_times(p)</a></code> returns the CPU times of the process, similarly to <code>proc.time()</code>.</p>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1"><span class="kw"><a href="reference/ps_cpu_times.html">ps_cpu_times</a></span>(p)</a></code></pre></div>
 <pre><code>##            user          system    childen_user children_system 
-##       0.9372962       0.1551544              NA              NA</code></pre>
+##       0.8863935       0.1148525              NA              NA</code></pre>
 <p><code><a href="reference/ps_memory_info.html">ps_memory_info(p)</a></code> returns memory usage information. See the manual for details.</p>
 <div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1"><span class="kw"><a href="reference/ps_memory_info.html">ps_memory_info</a></span>(p)</a></code></pre></div>
 <pre><code>##        rss        vms    pfaults    pageins 
-##  124092416 2703060992      31608        325</code></pre>
+##  114286592 2695155712      28830          0</code></pre>
 <p><code><a href="reference/ps_children.html">ps_children(p)</a></code> lists all child processes (potentially recuirsively) of the current process.</p>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1"><span class="kw"><a href="reference/ps_children.html">ps_children</a></span>(<span class="kw"><a href="reference/ps_ppid.html">ps_parent</a></span>(p))</a></code></pre></div>
 <pre><code>## [[1]]
-## &lt;ps::ps_handle&gt; PID=15618, NAME=R, AT=2018-11-07 09:38:47</code></pre>
+## &lt;ps::ps_handle&gt; PID=44870, NAME=R, AT=2018-12-21 15:05:25</code></pre>
 <p><code><a href="reference/ps_num_fds.html">ps_num_fds(p)</a></code> returns the number of open file descriptors (handles on Windows):</p>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1"><span class="kw"><a href="reference/ps_num_fds.html">ps_num_fds</a></span>(p)</a></code></pre></div>
 <pre><code>## [1] 4</code></pre>
@@ -214,15 +214,15 @@
 ##      fd path                                                                                
 ##   &lt;int&gt; &lt;chr&gt;                                                                               
 ## 1     0 /dev/null                                                                           
-## 2     3 /private/var/folders/59/0gkmw1yj2w7bf2dfc3jznv5w0000gn/T/RtmppUEiNg/file3cf33c11b009</code></pre>
+## 2     3 /private/var/folders/59/0gkmw1yj2w7bf2dfc3jznv5w0000gn/T/RtmpGHnJLO/fileae4b43ed0b3f</code></pre>
 <div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" data-line-number="1">f &lt;-<span class="st"> </span><span class="kw">file</span>(tmp &lt;-<span class="st"> </span><span class="kw">tempfile</span>(), <span class="st">"w"</span>)</a>
 <a class="sourceLine" id="cb53-2" data-line-number="2"><span class="kw"><a href="reference/ps_open_files.html">ps_open_files</a></span>(p)</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 2
 ##      fd path                                                                                
 ##   &lt;int&gt; &lt;chr&gt;                                                                               
 ## 1     0 /dev/null                                                                           
-## 2     3 /private/var/folders/59/0gkmw1yj2w7bf2dfc3jznv5w0000gn/T/RtmppUEiNg/file3cf33c11b009
-## 3     4 /private/var/folders/59/0gkmw1yj2w7bf2dfc3jznv5w0000gn/T/Rtmp5G3HjH/file3d0222d724a8</code></pre>
+## 2     3 /private/var/folders/59/0gkmw1yj2w7bf2dfc3jznv5w0000gn/T/RtmpGHnJLO/fileae4b43ed0b3f
+## 3     4 /private/var/folders/59/0gkmw1yj2w7bf2dfc3jznv5w0000gn/T/RtmpqTMSjp/fileaf463fbb212f</code></pre>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1"><span class="kw">close</span>(f)</a>
 <a class="sourceLine" id="cb55-2" data-line-number="2"><span class="kw">unlink</span>(tmp)</a>
 <a class="sourceLine" id="cb55-3" data-line-number="3"><span class="kw"><a href="reference/ps_open_files.html">ps_open_files</a></span>(p)</a></code></pre></div>
@@ -230,7 +230,7 @@
 ##      fd path                                                                                
 ##   &lt;int&gt; &lt;chr&gt;                                                                               
 ## 1     0 /dev/null                                                                           
-## 2     3 /private/var/folders/59/0gkmw1yj2w7bf2dfc3jznv5w0000gn/T/RtmppUEiNg/file3cf33c11b009</code></pre>
+## 2     3 /private/var/folders/59/0gkmw1yj2w7bf2dfc3jznv5w0000gn/T/RtmpGHnJLO/fileae4b43ed0b3f</code></pre>
 </div>
 <div id="process-manipulation" class="section level3">
 <h3 class="hasAnchor">
@@ -275,46 +275,43 @@
 <a class="sourceLine" id="cb57-7" data-line-number="7"></a>
 <a class="sourceLine" id="cb57-8" data-line-number="8"><span class="kw">find_procs_by_name</span>(<span class="st">"R"</span>)</a></code></pre></div>
 <pre><code>## [[1]]
-## &lt;ps::ps_handle&gt; PID=15618, NAME=R, AT=2018-11-07 09:38:47
+## &lt;ps::ps_handle&gt; PID=44870, NAME=R, AT=2018-12-21 15:05:25
 ## 
 ## [[2]]
-## &lt;ps::ps_handle&gt; PID=15603, NAME=R, AT=2018-11-07 09:38:42
+## &lt;ps::ps_handle&gt; PID=44619, NAME=R, AT=2018-12-21 15:03:47
 ## 
 ## [[3]]
-## &lt;ps::ps_handle&gt; PID=12255, NAME=R, AT=2018-11-06 16:01:03
+## &lt;ps::ps_handle&gt; PID=43936, NAME=R, AT=2018-12-21 14:31:30
 ## 
 ## [[4]]
-## &lt;ps::ps_handle&gt; PID=3382, NAME=R, AT=2018-11-06 14:11:26
+## &lt;ps::ps_handle&gt; PID=42198, NAME=R, AT=2018-12-21 12:22:52
 ## 
 ## [[5]]
-## &lt;ps::ps_handle&gt; PID=91047, NAME=R, AT=2018-11-06 12:09:09
+## &lt;ps::ps_handle&gt; PID=42163, NAME=R, AT=2018-12-21 12:21:15
 ## 
 ## [[6]]
-## &lt;ps::ps_handle&gt; PID=71838, NAME=R, AT=2018-11-06 09:42:47
+## &lt;ps::ps_handle&gt; PID=42007, NAME=R, AT=2018-12-21 12:18:31
 ## 
 ## [[7]]
-## &lt;ps::ps_handle&gt; PID=70692, NAME=R, AT=2018-11-06 09:42:20
+## &lt;ps::ps_handle&gt; PID=40898, NAME=R, AT=2018-12-21 11:30:33
 ## 
 ## [[8]]
-## &lt;ps::ps_handle&gt; PID=69968, NAME=R, AT=2018-11-06 09:42:12
+## &lt;ps::ps_handle&gt; PID=39773, NAME=R, AT=2018-12-21 09:52:47
 ## 
 ## [[9]]
-## &lt;ps::ps_handle&gt; PID=69526, NAME=R, AT=2018-11-06 09:42:03
+## &lt;ps::ps_handle&gt; PID=91924, NAME=R, AT=2018-12-20 13:39:46
 ## 
 ## [[10]]
-## &lt;ps::ps_handle&gt; PID=69354, NAME=R, AT=2018-11-06 09:41:52
+## &lt;ps::ps_handle&gt; PID=85013, NAME=R, AT=2018-12-20 12:05:54
 ## 
 ## [[11]]
-## &lt;ps::ps_handle&gt; PID=67847, NAME=R, AT=2018-11-06 00:45:09
+## &lt;ps::ps_handle&gt; PID=16662, NAME=R, AT=2018-12-17 18:35:29
 ## 
 ## [[12]]
-## &lt;ps::ps_handle&gt; PID=66306, NAME=R, AT=2018-11-05 23:54:25
+## &lt;ps::ps_handle&gt; PID=2244, NAME=R, AT=2018-12-16 12:40:53
 ## 
 ## [[13]]
-## &lt;ps::ps_handle&gt; PID=84819, NAME=R, AT=2018-11-05 16:05:40
-## 
-## [[14]]
-## &lt;ps::ps_handle&gt; PID=84694, NAME=R, AT=2018-11-05 16:05:37</code></pre>
+## &lt;ps::ps_handle&gt; PID=1565, NAME=R, AT=2018-12-16 11:00:43</code></pre>
 <p>Without creating the full table of processes:</p>
 <div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" data-line-number="1">find_procs_by_name &lt;-<span class="st"> </span><span class="cf">function</span>(name) {</a>
 <a class="sourceLine" id="cb59-2" data-line-number="2">  procs &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw"><a href="reference/ps_pids.html">ps_pids</a></span>(), <span class="cf">function</span>(p) {</a>
@@ -330,46 +327,43 @@
 <a class="sourceLine" id="cb59-12" data-line-number="12"></a>
 <a class="sourceLine" id="cb59-13" data-line-number="13"><span class="kw">find_procs_by_name</span>(<span class="st">"R"</span>)</a></code></pre></div>
 <pre><code>## [[1]]
-## &lt;ps::ps_handle&gt; PID=3382, NAME=R, AT=2018-11-06 14:11:26
+## &lt;ps::ps_handle&gt; PID=1565, NAME=R, AT=2018-12-16 11:00:43
 ## 
 ## [[2]]
-## &lt;ps::ps_handle&gt; PID=12255, NAME=R, AT=2018-11-06 16:01:03
+## &lt;ps::ps_handle&gt; PID=2244, NAME=R, AT=2018-12-16 12:40:53
 ## 
 ## [[3]]
-## &lt;ps::ps_handle&gt; PID=15603, NAME=R, AT=2018-11-07 09:38:42
+## &lt;ps::ps_handle&gt; PID=16662, NAME=R, AT=2018-12-17 18:35:29
 ## 
 ## [[4]]
-## &lt;ps::ps_handle&gt; PID=15618, NAME=R, AT=2018-11-07 09:38:47
+## &lt;ps::ps_handle&gt; PID=39773, NAME=R, AT=2018-12-21 09:52:47
 ## 
 ## [[5]]
-## &lt;ps::ps_handle&gt; PID=66306, NAME=R, AT=2018-11-05 23:54:25
+## &lt;ps::ps_handle&gt; PID=40898, NAME=R, AT=2018-12-21 11:30:33
 ## 
 ## [[6]]
-## &lt;ps::ps_handle&gt; PID=67847, NAME=R, AT=2018-11-06 00:45:09
+## &lt;ps::ps_handle&gt; PID=42007, NAME=R, AT=2018-12-21 12:18:31
 ## 
 ## [[7]]
-## &lt;ps::ps_handle&gt; PID=69354, NAME=R, AT=2018-11-06 09:41:52
+## &lt;ps::ps_handle&gt; PID=42163, NAME=R, AT=2018-12-21 12:21:15
 ## 
 ## [[8]]
-## &lt;ps::ps_handle&gt; PID=69526, NAME=R, AT=2018-11-06 09:42:03
+## &lt;ps::ps_handle&gt; PID=42198, NAME=R, AT=2018-12-21 12:22:52
 ## 
 ## [[9]]
-## &lt;ps::ps_handle&gt; PID=69968, NAME=R, AT=2018-11-06 09:42:12
+## &lt;ps::ps_handle&gt; PID=43936, NAME=R, AT=2018-12-21 14:31:30
 ## 
 ## [[10]]
-## &lt;ps::ps_handle&gt; PID=70692, NAME=R, AT=2018-11-06 09:42:20
+## &lt;ps::ps_handle&gt; PID=44619, NAME=R, AT=2018-12-21 15:03:47
 ## 
 ## [[11]]
-## &lt;ps::ps_handle&gt; PID=71838, NAME=R, AT=2018-11-06 09:42:47
+## &lt;ps::ps_handle&gt; PID=44870, NAME=R, AT=2018-12-21 15:05:25
 ## 
 ## [[12]]
-## &lt;ps::ps_handle&gt; PID=84694, NAME=R, AT=2018-11-05 16:05:37
+## &lt;ps::ps_handle&gt; PID=85013, NAME=R, AT=2018-12-20 12:05:54
 ## 
 ## [[13]]
-## &lt;ps::ps_handle&gt; PID=84819, NAME=R, AT=2018-11-05 16:05:40
-## 
-## [[14]]
-## &lt;ps::ps_handle&gt; PID=91047, NAME=R, AT=2018-11-06 12:09:09</code></pre>
+## &lt;ps::ps_handle&gt; PID=91924, NAME=R, AT=2018-12-20 13:39:46</code></pre>
 </div>
 <div id="wait-for-a-process-to-finish" class="section level3">
 <h3 class="hasAnchor">
@@ -440,18 +434,18 @@
 <a class="sourceLine" id="cb65-40" data-line-number="40"><span class="kw">wait_for_processes</span>(<span class="kw">list</span>(p1, p2, p3, p4), <span class="dt">timeout =</span> <span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## $gone
 ## $gone[[1]]
-## &lt;ps::ps_handle&gt; PID=15634, NAME=???, AT=2018-11-07 09:38:51
+## &lt;ps::ps_handle&gt; PID=44886, NAME=???, AT=2018-12-21 15:05:28
 ## 
 ## $gone[[2]]
-## &lt;ps::ps_handle&gt; PID=15633, NAME=???, AT=2018-11-07 09:38:51
+## &lt;ps::ps_handle&gt; PID=44885, NAME=???, AT=2018-12-21 15:05:28
 ## 
 ## 
 ## $alive
 ## $alive[[1]]
-## &lt;ps::ps_handle&gt; PID=15631, NAME=sleep, AT=2018-11-07 09:38:51
+## &lt;ps::ps_handle&gt; PID=44883, NAME=sleep, AT=2018-12-21 15:05:28
 ## 
 ## $alive[[2]]
-## &lt;ps::ps_handle&gt; PID=15632, NAME=sleep, AT=2018-11-07 09:38:51</code></pre>
+## &lt;ps::ps_handle&gt; PID=44884, NAME=sleep, AT=2018-12-21 15:05:28</code></pre>
 </div>
 <div id="kill-process-tree" class="section level3">
 <h3 class="hasAnchor">
@@ -473,19 +467,19 @@
 <a class="sourceLine" id="cb67-14" data-line-number="14"><span class="kw">kill_proc_tree</span>(<span class="kw">Sys.getpid</span>(), <span class="dt">include_parent =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <pre><code>## $gone
 ## $gone[[1]]
-## &lt;ps::ps_handle&gt; PID=15631, NAME=???, AT=2018-11-07 09:38:51
+## &lt;ps::ps_handle&gt; PID=44883, NAME=???, AT=2018-12-21 15:05:28
 ## 
 ## $gone[[2]]
-## &lt;ps::ps_handle&gt; PID=15632, NAME=???, AT=2018-11-07 09:38:51
+## &lt;ps::ps_handle&gt; PID=44884, NAME=???, AT=2018-12-21 15:05:28
 ## 
 ## $gone[[3]]
-## &lt;ps::ps_handle&gt; PID=15635, NAME=???, AT=2018-11-07 09:38:53
+## &lt;ps::ps_handle&gt; PID=44887, NAME=???, AT=2018-12-21 15:05:30
 ## 
 ## $gone[[4]]
-## &lt;ps::ps_handle&gt; PID=15636, NAME=???, AT=2018-11-07 09:38:53
+## &lt;ps::ps_handle&gt; PID=44888, NAME=???, AT=2018-12-21 15:05:30
 ## 
 ## $gone[[5]]
-## &lt;ps::ps_handle&gt; PID=15637, NAME=???, AT=2018-11-07 09:38:53
+## &lt;ps::ps_handle&gt; PID=44889, NAME=???, AT=2018-12-21 15:05:30
 ## 
 ## 
 ## $alive
@@ -516,13 +510,13 @@
 <a class="sourceLine" id="cb69-19" data-line-number="19"><span class="kw">reap_children</span>()</a></code></pre></div>
 <pre><code>## $gone
 ## $gone[[1]]
-## &lt;ps::ps_handle&gt; PID=15638, NAME=???, AT=2018-11-07 09:38:53
+## &lt;ps::ps_handle&gt; PID=44890, NAME=???, AT=2018-12-21 15:05:30
 ## 
 ## $gone[[2]]
-## &lt;ps::ps_handle&gt; PID=15639, NAME=???, AT=2018-11-07 09:38:53
+## &lt;ps::ps_handle&gt; PID=44891, NAME=???, AT=2018-12-21 15:05:30
 ## 
 ## $gone[[3]]
-## &lt;ps::ps_handle&gt; PID=15640, NAME=???, AT=2018-11-07 09:38:53
+## &lt;ps::ps_handle&gt; PID=44892, NAME=???, AT=2018-12-21 15:05:30
 ## 
 ## 
 ## $alive
@@ -534,65 +528,65 @@
 <p>Process name ending with “sh”:</p>
 <div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" data-line-number="1"><span class="kw"><a href="reference/ps.html">ps</a></span>() <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb71-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="kw">grepl</span>(<span class="st">"sh$"</span>, name))</a></code></pre></div>
-<pre><code>## # A tibble: 44 x 11
-##      pid  ppid name  username  status     user  system    rss    vms created             ps_handle 
-##    &lt;int&gt; &lt;int&gt; &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dttm&gt;              &lt;I(list)&gt; 
-##  1 12161 12155 zsh   gaborcsa… running 0.00637 0.0125  1.16e6 2.53e9 2018-11-06 16:00:56 &lt;S3: ps_h…
-##  2 12155 12154 zsh   gaborcsa… running 0.296   0.186   2.23e6 2.53e9 2018-11-06 16:00:56 &lt;S3: ps_h…
-##  3  3590  3574 zsh   gaborcsa… running 0.00649 0.0113  1.16e6 2.53e9 2018-11-06 14:11:36 &lt;S3: ps_h…
-##  4  3574  3571 zsh   gaborcsa… running 0.267   0.126   2.22e6 2.53e9 2018-11-06 14:11:36 &lt;S3: ps_h…
-##  5  3337  3331 zsh   gaborcsa… running 0.00403 0.00615 1.16e6 2.53e9 2018-11-06 14:11:26 &lt;S3: ps_h…
-##  6  3331  3330 zsh   gaborcsa… running 0.230   0.109   2.22e6 2.53e9 2018-11-06 14:11:25 &lt;S3: ps_h…
-##  7  1283  1277 zsh   gaborcsa… running 0.0353  0.0771  1.16e6 2.53e9 2018-11-06 13:58:53 &lt;S3: ps_h…
-##  8  1277  1276 zsh   gaborcsa… running 0.749   0.411   2.23e6 2.53e9 2018-11-06 13:58:53 &lt;S3: ps_h…
-##  9 71793 71787 zsh   gaborcsa… running 0.00449 0.00680 1.16e6 2.53e9 2018-11-06 09:42:47 &lt;S3: ps_h…
-## 10 71787 71786 zsh   gaborcsa… running 0.229   0.111   2.22e6 2.53e9 2018-11-06 09:42:46 &lt;S3: ps_h…
-## # ... with 34 more rows</code></pre>
+<pre><code>## # A tibble: 33 x 11
+##      pid  ppid name  username  status     user  system    rss     vms created             ps_handle 
+##    &lt;int&gt; &lt;int&gt; &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;dttm&gt;              &lt;I(list)&gt; 
+##  1 44386 44380 zsh   gaborcsa… running 0.0117  0.0191  1.45e6  2.53e9 2018-12-21 15:01:38 &lt;S3: ps_h…
+##  2 44380 44379 zsh   gaborcsa… running 0.411   0.177   1.12e7  2.53e9 2018-12-21 15:01:38 &lt;S3: ps_h…
+##  3 43919 43913 zsh   gaborcsa… running 0.00275 0.00387 1.41e6  2.53e9 2018-12-21 14:31:30 &lt;S3: ps_h…
+##  4 43913 43912 zsh   gaborcsa… running 0.229   0.105   1.04e7  2.53e9 2018-12-21 14:31:30 &lt;S3: ps_h…
+##  5 43799 43793 zsh   gaborcsa… running 0.00616 0.0101  1.45e6  2.53e9 2018-12-21 14:31:19 &lt;S3: ps_h…
+##  6 43793 43792 zsh   gaborcsa… running 0.271   0.125   1.10e7  2.53e9 2018-12-21 14:31:18 &lt;S3: ps_h…
+##  7 39728 39722 zsh   gaborcsa… running 0.00434 0.00608 1.45e6  2.53e9 2018-12-21 09:52:47 &lt;S3: ps_h…
+##  8 39722 39721 zsh   gaborcsa… running 0.236   0.108   1.05e7  2.53e9 2018-12-21 09:52:47 &lt;S3: ps_h…
+##  9 39389 39383 zsh   gaborcsa… running 0.0267  0.0432  1.45e6  2.53e9 2018-12-21 09:50:09 &lt;S3: ps_h…
+## 10 39383 39382 zsh   gaborcsa… running 0.702   0.316   1.21e7  2.53e9 2018-12-21 09:50:09 &lt;S3: ps_h…
+## # ... with 23 more rows</code></pre>
 <p>Processes owned by user:</p>
 <div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb73-1" data-line-number="1"><span class="kw"><a href="reference/ps.html">ps</a></span>() <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb73-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(username <span class="op">==</span><span class="st"> </span><span class="kw">Sys.info</span>()[[<span class="st">"user"</span>]]) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb73-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(pid, name)</a></code></pre></div>
-<pre><code>## # A tibble: 330 x 2
+<pre><code>## # A tibble: 283 x 2
 ##      pid name                
 ##    &lt;int&gt; &lt;chr&gt;               
-##  1 15618 R                   
-##  2 15603 R                   
-##  3 15404 quicklookd          
-##  4 15402 Google Chrome Helper
-##  5 15364 docker-compose      
-##  6 15363 docker-compose      
-##  7 15278 Google Chrome Helper
-##  8 15274 Google Chrome Helper
-##  9 15048 Google Chrome Helper
-## 10 15046 Google Chrome Helper
-## # ... with 320 more rows</code></pre>
+##  1 44870 R                   
+##  2 44809 Google Chrome Helper
+##  3 44805 mdworker            
+##  4 44693 quicklookd          
+##  5 44619 R                   
+##  6 44527 mdworker            
+##  7 44526 mdworker            
+##  8 44445 mdworker            
+##  9 44395 mdworker            
+## 10 44386 zsh                 
+## # ... with 273 more rows</code></pre>
 <p>Processes consuming more than 100MB of memory:</p>
 <div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb75-1" data-line-number="1"><span class="kw"><a href="reference/ps.html">ps</a></span>() <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb75-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(rss <span class="op">&gt;</span><span class="st"> </span><span class="dv">100</span> <span class="op">*</span><span class="st"> </span><span class="dv">1024</span> <span class="op">*</span><span class="st"> </span><span class="dv">1024</span>)</a></code></pre></div>
-<pre><code>## # A tibble: 21 x 11
-##      pid  ppid name     username  status   user system    rss    vms created             ps_handle 
-##    &lt;int&gt; &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dttm&gt;              &lt;I(list)&gt; 
-##  1 15618 15603 R        gaborcsa… running  1.67  0.459 1.27e8 2.70e9 2018-11-07 09:38:47 &lt;S3: ps_h…
-##  2 15603 69354 R        gaborcsa… running  1.82  0.230 1.21e8 2.69e9 2018-11-07 09:38:42 &lt;S3: ps_h…
-##  3 15274  9730 Google … gaborcsa… running 14.1   2.02  2.26e8 3.22e9 2018-11-07 09:33:43 &lt;S3: ps_h…
-##  4 15048  9730 Google … gaborcsa… running  1.93  0.328 1.25e8 3.06e9 2018-11-07 09:05:18 &lt;S3: ps_h…
-##  5 14908 14899 Slack H… gaborcsa… running 47.1   5.88  5.38e8 4.18e9 2018-11-07 08:07:41 &lt;S3: ps_h…
-##  6 14907 14899 Slack H… gaborcsa… running  9.06  2.02  1.35e8 3.63e9 2018-11-07 08:07:40 &lt;S3: ps_h…
-##  7 14905 14899 Slack H… gaborcsa… running  9.21  0.865 2.95e8 3.83e9 2018-11-07 08:07:40 &lt;S3: ps_h…
-##  8 14904 14899 Slack H… gaborcsa… running  8.11  0.761 3.01e8 3.83e9 2018-11-07 08:07:40 &lt;S3: ps_h…
-##  9 14903 14899 Slack H… gaborcsa… running 19.5   2.88  3.93e8 3.98e9 2018-11-07 08:07:40 &lt;S3: ps_h…
-## 10 14900 14899 Slack H… gaborcsa… running 12.8  13.3   3.45e8 3.38e9 2018-11-07 08:07:39 &lt;S3: ps_h…
-## # ... with 11 more rows</code></pre>
+<pre><code>## # A tibble: 24 x 11
+##      pid  ppid name      username  status   user system    rss    vms created             ps_handle 
+##    &lt;int&gt; &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dttm&gt;              &lt;I(list)&gt; 
+##  1 44870 44619 R         gaborcsa… running  1.48  0.318 1.17e8 2.70e9 2018-12-21 15:05:25 &lt;S3: ps_h…
+##  2 44619 44380 R         gaborcsa… running  5.78  0.442 1.38e8 2.71e9 2018-12-21 15:03:47 &lt;S3: ps_h…
+##  3 44377   501 Google C… gaborcsa… running  4.54  0.521 1.53e8 3.23e9 2018-12-21 15:01:20 &lt;S3: ps_h…
+##  4 44375   501 Google C… gaborcsa… running  4.67  0.632 1.52e8 3.22e9 2018-12-21 15:01:17 &lt;S3: ps_h…
+##  5 44355   501 Google C… gaborcsa… running  4.09  0.491 1.30e8 3.21e9 2018-12-21 14:49:06 &lt;S3: ps_h…
+##  6 43936 43913 R         gaborcsa… running  3.07  0.182 1.46e8 2.72e9 2018-12-21 14:31:30 &lt;S3: ps_h…
+##  7 43856 43793 Emacs-x8… gaborcsa… running 14.6   3.63  1.97e8 2.83e9 2018-12-21 14:31:23 &lt;S3: ps_h…
+##  8 43759   501 Google C… gaborcsa… running 18.3   2.12  2.96e8 3.58e9 2018-12-21 14:26:10 &lt;S3: ps_h…
+##  9 42918   501 Google C… gaborcsa… running  7.18  0.884 1.44e8 3.20e9 2018-12-21 13:46:17 &lt;S3: ps_h…
+## 10 42198 42007 R         gaborcsa… running 11.5   1.64  2.98e8 2.88e9 2018-12-21 12:22:52 &lt;S3: ps_h…
+## # ... with 14 more rows</code></pre>
 <p>Top 3 memory consuming processes:</p>
 <div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb77-1" data-line-number="1"><span class="kw"><a href="reference/ps.html">ps</a></span>() <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb77-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/top_n.html">top_n</a></span>(<span class="dv">3</span>, rss) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb77-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(<span class="kw"><a href="http://dplyr.tidyverse.org/reference/desc.html">desc</a></span>(rss))</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 11
-##     pid  ppid name     username  status    user system    rss    vms created             ps_handle 
-##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dttm&gt;              &lt;I(list)&gt; 
-## 1 64244     1 iTerm2   gaborcsa… running 2.93e4 1.90e3 6.71e8 5.31e9 2018-10-30 08:48:09 &lt;S3: ps_h…
-## 2 14908 14899 Slack H… gaborcsa… running 4.71e1 5.88e0 5.38e8 4.18e9 2018-11-07 08:07:41 &lt;S3: ps_h…
-## 3 67519  9730 Google … gaborcsa… running 6.83e2 8.54e1 5.19e8 3.91e9 2018-11-06 00:23:50 &lt;S3: ps_h…</code></pre>
+##     pid  ppid name      username  status    user system    rss    vms created             ps_handle 
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dttm&gt;              &lt;I(list)&gt; 
+## 1   501     1 Google C… gaborcsa… running 14455.  5271. 4.56e8 4.07e9 2018-12-16 09:58:37 &lt;S3: ps_h…
+## 2  2458   501 Google C… gaborcsa… running  2216.   259. 4.19e8 3.75e9 2018-12-16 12:58:02 &lt;S3: ps_h…
+## 3   601     1 iTerm2    gaborcsa… running  9990.   823. 3.57e8 4.88e9 2018-12-16 09:59:14 &lt;S3: ps_h…</code></pre>
 <p>Top 3 processes which consumed the most CPU time:</p>
 <div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" data-line-number="1"><span class="kw"><a href="reference/ps.html">ps</a></span>() <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb79-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="dt">cpu_time =</span> user <span class="op">+</span><span class="st"> </span>system) <span class="op">%&gt;%</span></a>
@@ -600,11 +594,11 @@
 <a class="sourceLine" id="cb79-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(<span class="kw"><a href="http://dplyr.tidyverse.org/reference/desc.html">desc</a></span>(cpu_time)) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb79-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/select.html">select</a></span>(pid, name, cpu_time)</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 3
-##     pid name                cpu_time
-##   &lt;int&gt; &lt;chr&gt;                  &lt;dbl&gt;
-## 1   516 com.docker.hyperkit  130929.
-## 2 64244 iTerm2                31230.
-## 3  9730 Google Chrome         22743.</code></pre>
+##     pid name                 cpu_time
+##   &lt;int&gt; &lt;chr&gt;                   &lt;dbl&gt;
+## 1   501 Google Chrome          19726.
+## 2   601 iTerm2                 10813.
+## 3   535 Google Chrome Helper    9140.</code></pre>
 </div>
 </div>
 <div id="contributions" class="section level2">

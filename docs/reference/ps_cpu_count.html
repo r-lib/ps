@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>List network connections of a process — ps_connections • ps</title>
+<title>Number of logical or phyisical CPUs — ps_cpu_count • ps</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="List network connections of a process — ps_connections" />
+<meta property="og:title" content="Number of logical or phyisical CPUs — ps_cpu_count" />
 
-<meta property="og:description" content="For a zombie process it throws a zombie_process error." />
+<meta property="og:description" content="If cannot be determined, it returns NA. It also returns NA on older
+Windows systems, e.g. Vista or older and Windows Server 2008 or older." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -101,73 +102,38 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>List network connections of a process</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/ps/blob/master/R/low-level.R'><code>R/low-level.R</code></a></small>
-    <div class="hidden name"><code>ps_connections.Rd</code></div>
+    <h1>Number of logical or phyisical CPUs</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/ps/blob/master/R/system.R'><code>R/system.R</code></a></small>
+    <div class="hidden name"><code>ps_cpu_count.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>For a zombie process it throws a <code>zombie_process</code> error.</p>
+    <p>If cannot be determined, it returns <code>NA</code>. It also returns <code>NA</code> on older
+Windows systems, e.g. Vista or older and Windows Server 2008 or older.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>ps_connections</span>(<span class='no'>p</span>)</pre>
+    <pre class="usage"><span class='fu'>ps_cpu_count</span>(<span class='kw'>logical</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>p</th>
-      <td><p>Process handle.</p></td>
+      <th>logical</th>
+      <td><p>Whether to count logical CPUs.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Data frame, or tibble if the <em>tibble</em> package is available,
-with columns:</p><ul>
-<li><p><code>fd</code>: integer file descriptor on POSIX systems, <code>NA</code> on Windows.</p></li>
-<li><p><code>family</code>: Address family, string, typically <code>AF_UNIX</code>, <code>AF_INET</code> or
-<code>AF_INET6</code>.</p></li>
-<li><p><code>type</code>: Socket type, string, typically <code>SOCK_STREAM</code> (TCP) or
-<code>SOCK_DGRAM</code> (UDP).</p></li>
-<li><p><code>laddr</code>: Local address, string, <code>NA</code> for UNIX sockets.</p></li>
-<li><p><code>lport</code>: Local port, integer, <code>NA</code> for UNIX sockets.</p></li>
-<li><p><code>raddr</code>: Remote address, string, <code>NA</code> for UNIX sockets. This is
-always <code>NA</code> for <code>AF_INET</code> sockets on Linux.</p></li>
-<li><p><code>rport</code>: Remote port, integer, <code>NA</code> for UNIX sockets.</p></li>
-<li><p><code>state</code>: Socket state, e.g. <code>CONN_ESTABLISHED</code>, etc. It is <code>NA</code>
-for UNIX sockets.</p></li>
-</ul>
-
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>Other process handle functions: <code><a href='ps_children.html'>ps_children</a></code>,
-  <code><a href='ps_cmdline.html'>ps_cmdline</a></code>, <code><a href='ps_cpu_times.html'>ps_cpu_times</a></code>,
-  <code><a href='ps_create_time.html'>ps_create_time</a></code>, <code><a href='ps_cwd.html'>ps_cwd</a></code>,
-  <code><a href='ps_environ.html'>ps_environ</a></code>, <code><a href='ps_exe.html'>ps_exe</a></code>,
-  <code><a href='ps_handle.html'>ps_handle</a></code>, <code><a href='ps_interrupt.html'>ps_interrupt</a></code>,
-  <code><a href='ps_is_running.html'>ps_is_running</a></code>, <code><a href='ps_kill.html'>ps_kill</a></code>,
-  <code><a href='ps_memory_info.html'>ps_memory_info</a></code>, <code><a href='ps_name.html'>ps_name</a></code>,
-  <code><a href='ps_num_fds.html'>ps_num_fds</a></code>, <code><a href='ps_num_threads.html'>ps_num_threads</a></code>,
-  <code><a href='ps_open_files.html'>ps_open_files</a></code>, <code><a href='ps_pid.html'>ps_pid</a></code>,
-  <code><a href='ps_ppid.html'>ps_ppid</a></code>, <code><a href='ps_resume.html'>ps_resume</a></code>,
-  <code><a href='ps_send_signal.html'>ps_send_signal</a></code>, <code><a href='ps_status.html'>ps_status</a></code>,
-  <code><a href='ps_suspend.html'>ps_suspend</a></code>, <code><a href='ps_terminal.html'>ps_terminal</a></code>,
-  <code><a href='ps_terminate.html'>ps_terminate</a></code>, <code><a href='ps_uids.html'>ps_uids</a></code>,
-  <code><a href='ps_username.html'>ps_username</a></code></p></div>
+    <p>Integer scalar.</p>
     
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
 
     <p><pre>
-p &lt;- ps_handle()
-ps_connections(p)
-sc &lt;- socketConnection("httpbin.org", port = 80)
-ps_connections(p)
-close(sc)
-ps_connections(p)
+ps_cpu_count(logical = TRUE)
+ps_cpu_count(logical = FALSE)
 </pre></p>
     
 
@@ -178,8 +144,6 @@ ps_connections(p)
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#see-also">See also</a></li>
 
       <li><a href="#examples">Examples</a></li>
           </ul>
