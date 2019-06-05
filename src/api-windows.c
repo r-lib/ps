@@ -408,7 +408,7 @@ SEXP psll_cpu_times(SEXP p) {
   REAL(result)[0] = REAL(VECTOR_ELT(result2, 2))[0];
   REAL(result)[1] = REAL(VECTOR_ELT(result2, 3))[0];
   REAL(result)[2] = REAL(result)[3] = NA_REAL;
-  PROTECT(names = ps__build_string("user", "system", "childen_user",
+  PROTECT(names = ps__build_string("user", "system", "children_user",
 				   "children_system", NULL));
   setAttrib(result, R_NamesSymbol, names);
 
