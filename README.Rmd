@@ -194,7 +194,7 @@ details.
 ps_memory_info(p)
 ```
 
-`ps_children(p)` lists all child processes (potentially recuirsively) of
+`ps_children(p)` lists all child processes (potentially recursively) of
 the current process.
 
 ```{r}

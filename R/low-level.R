@@ -530,7 +530,7 @@ ps_num_threads <- function(p) {
 #'   mode.
 #' * `system`: Amount of time that this process has been scheduled in
 #'   kernel mode
-#' * `childen_user`: On Linux, amount of time that this process's
+#' * `children_user`: On Linux, amount of time that this process's
 #'   waited-for children have been scheduled in user mode.
 #' * `children_system`: On Linux, Amount of time that this process's
 #'   waited-for children have been scheduled in kernel mode.
@@ -539,7 +539,7 @@ ps_num_threads <- function(p) {
 #'
 #' @param p Process handle.
 #' @return Named real vector or length four: `user`, `system`,
-#'   `childen_user`,  `children_system`. The last two are `NA` on
+#'   `children_user`,  `children_system`. The last two are `NA` on
 #'   non-Linux systems.
 #'
 #' @family process handle functions
