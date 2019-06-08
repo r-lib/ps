@@ -5,7 +5,7 @@ format_regexp <- function() {
 
 parse_ps <- function(args) {
   out <- processx::run("ps", args)$stdout
-  strsplit(out, "\n")[[1]][[2]]
+  sub(" *$", "", strsplit(out, "\n")[[1]][[2]])
 }
 
 parse_time <- function(x) {
