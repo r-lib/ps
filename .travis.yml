@@ -18,8 +18,6 @@ matrix:
       env: R_CODECOV=true
     - os: osx
       osx_image: xcode8.3 #Sierra
-    - os: osx
-      osx_image: xcode7.3 #El-Capitan
 
 before_script:
   - ulimit -c unlimited -S       # enable core dumps
