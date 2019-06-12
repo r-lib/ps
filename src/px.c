@@ -1,8 +1,6 @@
 
-#if defined __INTEL_COMPILER
 #define _BSD_SOURCE 1
 #define _POSIX_C_SOURCE  200809L
-#endif
 
 #include <unistd.h>
 #include <stdio.h>
