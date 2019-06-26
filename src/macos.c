@@ -6,6 +6,10 @@
  * OS X platform-specific module methods for macos
  */
 
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE 1
+#endif
+
 #include <assert.h>
 #include <errno.h>
 #include <stdbool.h>

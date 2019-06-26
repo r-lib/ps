@@ -7,6 +7,9 @@
  * Used by _psutil_macos module methods.
  */
 
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE 1
+#endif
 
 #include <assert.h>
 #include <errno.h>

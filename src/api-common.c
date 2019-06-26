@@ -1,4 +1,8 @@
 
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE 1
+#endif
+
 #define R_USE_C99_IN_CXX 1
 #include <Rinternals.h>
 
