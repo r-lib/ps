@@ -76,7 +76,7 @@ PS__VERSION=546
 
 if [ -n "$WINDOWS" ]; then
     RAWVER=`$RBIN --vanilla --slave -e "system('cmd /c ver')"`
-    VER=`echo $RAWVER | grep "\[Version.*\]" | sed "s/^.*\[Version\s*//" |
+    VER=`echo $RAWVER | grep "\[[Vv]ersion.*\]" | sed "s/^.*\[[Vv]ersion\s*//" |
                       sed "s/\].*$//"`
     MAJOR=`echo $VER | cut -f1 -d.`
     MINOR=`echo $VER | cut -f2 -d.`
