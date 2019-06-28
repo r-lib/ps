@@ -1,6 +1,9 @@
 
 # ps dev
 
+* Fixed an installation problem on some Windows versions, where the
+  output of `cmd /c ver` looks different (#69).
+
 # ps 1.3.0
 
 * New `ps_cpu_count()` function returns the number of logical or
