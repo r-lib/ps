@@ -75,9 +75,7 @@ MACROS="$MACROS PS__VERSION"
 PS__VERSION=546
 
 if [ -n "$WINDOWS" ]; then
-    RAWVER=`$RBIN --vanilla --slave -e "system('cmd /c ver')"`
-    VER=`echo $RAWVER | grep "\[[Vv]ersion.*\]" | sed "s/^.*\[[Vv]ersion\s*//" |
-                      sed "s/\].*$//"`
+    VER=`$RBIN --vanilla --slave -f inst/tools/winver.R`
     MAJOR=`echo $VER | cut -f1 -d.`
     MINOR=`echo $VER | cut -f2 -d.`
     WINVER=`$RBIN --vanilla --slave -e "cat(sprintf('0x0%s', $MAJOR*100 + $MINOR))"`
