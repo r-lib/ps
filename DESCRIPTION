@@ -27,6 +27,6 @@ Suggests:
     rlang,
     testthat,
     tibble
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2.9000
 Roxygen: list(markdown = TRUE)
 Biarch: true

@@ -63,20 +63,20 @@ Some IDEs, like RStudio, start child processes frequently, and
 sometimes crash when these are killed, only use this reporter in a
 terminal session. In particular, you can always use it in the
 idiomatic \code{testthat.R} file, that calls \code{test_check()} during
-\code{R CMD check}.
+\verb{R CMD check}.
 }
 \section{Examples}{
 
 This is how to use this reporter in \code{testthat.R}:\preformatted{library(testthat)
 library(mypackage)
 
-if  (ps::ps_is_supported()) {
+if  (ps::ps_is_supported()) \{
   reporter <- ps::CleanupReporter(testthat::ProgressReporter)$new(
     proc_unit = "test", proc_cleanup = TRUE)
-} else {
+\} else \{
   ## ps does not support this platform
   reporter <- "progress"
-}
+\}
 
 test_check("mypackage", reporter = reporter)
 }

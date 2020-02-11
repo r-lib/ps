@@ -2,7 +2,7 @@
 % Please edit documentation in R/system.R
 \name{ps_cpu_count}
 \alias{ps_cpu_count}
-\title{Number of logical or phyisical CPUs}
+\title{Number of logical or physical CPUs}
 \usage{
 ps_cpu_count(logical = TRUE)
 }
