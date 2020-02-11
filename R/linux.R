@@ -142,14 +142,7 @@ psl__decode_address <- function(addr, family) {
 
 psl__cpu_count_from_lscpu <- function() {
   lines <- system("lscpu -p=core", intern = TRUE)
-  cores = list()
-
-  for (l in lines) {
-    if (!str_starts_with(l, "#")) {
-      cores[str_strip(l)] <- 1
-    }
-  }
-
+  cores <- unique(lines[!str_starts_with(lines, "#")])
   length(cores)
 }
 
