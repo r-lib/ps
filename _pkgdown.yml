@@ -4,6 +4,11 @@ authors:
   "Gábor Csárdi":
     href: https://github.com/gaborcsardi
 
+destination: docs
+
+development:
+  mode: auto
+
 reference:
 - title: List processes
   contents:
