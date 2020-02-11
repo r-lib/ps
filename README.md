@@ -15,10 +15,19 @@
   - [Supported platforms](#supported-platforms)
   - [Listing all processes](#listing-all-processes)
   - [Process API](#process-api)
+      - [Query functions](#query-functions)
+      - [Process manipulation](#process-manipulation)
   - [Finished and zombie processes](#finished-and-zombie-processes)
   - [Pid reuse](#pid-reuse)
-  - [Subprocess cleanup](#subprocess-cleanup)
   - [Recipes](#recipes)
+      - [Find process by name](#find-process-by-name)
+      - [Wait for a process to finish](#wait-for-a-process-to-finish)
+      - [Wait for several processes to
+        finish](#wait-for-several-processes-to-finish)
+      - [Kill process tree](#kill-process-tree)
+      - [Terminate children](#terminate-children)
+      - [Filtering and sorting
+        processes](#filtering-and-sorting-processes)
   - [Contributions](#contributions)
   - [License](#license)
 
