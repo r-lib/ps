@@ -170,18 +170,35 @@ file.</p>
 <code><a href='ps_terminate.html'>ps_terminate</a>()</code>,
 <code><a href='ps_uids.html'>ps_uids</a>()</code>,
 <code><a href='ps_username.html'>ps_username</a>()</code></p></div>
+
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-
-    <p><pre>
-p &lt;- ps_handle()
-ps_open_files(p)
-f &lt;- file(tmp &lt;- tempfile(), "w")
-ps_open_files(p)
-close(f)
-unlink(tmp)
-ps_open_files(p)
-</pre></p>
-
+    <pre class="examples"><div class='input'><span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span>()
+<span class='fu'>ps_open_files</span>(<span class='no'>p</span>)</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 5 x 2</span><span>
+#&gt;      fd path                                  
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>                                 
+#&gt; </span><span style='color: #555555;'>1</span><span>     0 /dev/null                             
+#&gt; </span><span style='color: #555555;'>2</span><span>     3 /tmp/RtmpiDufkF/callr-scr-43326b3bea0d
+#&gt; </span><span style='color: #555555;'>3</span><span>     4 anon_inode:[eventpoll]                
+#&gt; </span><span style='color: #555555;'>4</span><span>     5 anon_inode:[eventfd]                  
+#&gt; </span><span style='color: #555555;'>5</span><span>     6 /dev/urandom                          </div><div class='input'><span class='no'>f</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/connections.html'>file</a></span>(<span class='no'>tmp</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(), <span class='st'>"w"</span>)
+<span class='fu'>ps_open_files</span>(<span class='no'>p</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 6 x 2</span><span>
+#&gt;      fd path                                  
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>                                 
+#&gt; </span><span style='color: #555555;'>1</span><span>     0 /dev/null                             
+#&gt; </span><span style='color: #555555;'>2</span><span>     3 /tmp/RtmpiDufkF/callr-scr-43326b3bea0d
+#&gt; </span><span style='color: #555555;'>3</span><span>     4 anon_inode:[eventpoll]                
+#&gt; </span><span style='color: #555555;'>4</span><span>     5 anon_inode:[eventfd]                  
+#&gt; </span><span style='color: #555555;'>5</span><span>     6 /dev/urandom                          
+#&gt; </span><span style='color: #555555;'>6</span><span>     8 /tmp/RtmpK8ZZLC/file43b23aaa7374      </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span>(<span class='no'>f</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span>(<span class='no'>tmp</span>)
+<span class='fu'>ps_open_files</span>(<span class='no'>p</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 5 x 2</span><span>
+#&gt;      fd path                                  
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>                                 
+#&gt; </span><span style='color: #555555;'>1</span><span>     0 /dev/null                             
+#&gt; </span><span style='color: #555555;'>2</span><span>     3 /tmp/RtmpiDufkF/callr-scr-43326b3bea0d
+#&gt; </span><span style='color: #555555;'>3</span><span>     4 anon_inode:[eventpoll]                
+#&gt; </span><span style='color: #555555;'>4</span><span>     5 anon_inode:[eventfd]                  
+#&gt; </span><span style='color: #555555;'>5</span><span>     6 /dev/urandom                          </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

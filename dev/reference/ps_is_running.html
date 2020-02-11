@@ -163,14 +163,10 @@
 <code><a href='ps_terminate.html'>ps_terminate</a>()</code>,
 <code><a href='ps_uids.html'>ps_uids</a>()</code>,
 <code><a href='ps_username.html'>ps_username</a>()</code></p></div>
+
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-
-    <p><pre>
-p &lt;- ps_handle()
-p
-ps_is_running(p)
-</pre></p>
-
+    <pre class="examples"><div class='input'><span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span>()
+<span class='no'>p</span></div><div class='output co'>#&gt; &lt;ps::ps_handle&gt; PID=17330, NAME=R, AT=2020-02-11 23:46:50</div><div class='input'><span class='fu'>ps_is_running</span>(<span class='no'>p</span>)</div><div class='output co'>#&gt; [1] TRUE</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

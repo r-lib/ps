@@ -167,18 +167,13 @@ main R thread.</p>
 <code><a href='ps_terminate.html'>ps_terminate</a>()</code>,
 <code><a href='ps_uids.html'>ps_uids</a>()</code>,
 <code><a href='ps_username.html'>ps_username</a>()</code></p></div>
+
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-
-    <p><pre>
-p &lt;- ps_handle()
-ps_num_fds(p)
-f &lt;- file(tmp &lt;- tempfile(), "w")
-ps_num_fds(p)
-close(f)
-unlink(tmp)
-ps_num_fds(p)
-</pre></p>
-
+    <pre class="examples"><div class='input'><span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span>()
+<span class='fu'>ps_num_fds</span>(<span class='no'>p</span>)</div><div class='output co'>#&gt; [1] 12</div><div class='input'><span class='no'>f</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/connections.html'>file</a></span>(<span class='no'>tmp</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(), <span class='st'>"w"</span>)
+<span class='fu'>ps_num_fds</span>(<span class='no'>p</span>)</div><div class='output co'>#&gt; [1] 13</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span>(<span class='no'>f</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span>(<span class='no'>tmp</span>)
+<span class='fu'>ps_num_fds</span>(<span class='no'>p</span>)</div><div class='output co'>#&gt; [1] 12</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
