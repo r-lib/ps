@@ -9,16 +9,17 @@
 void *ps__not_implemented(const char *what);
 SEXP ps__throw_error();
 
-void ps__dummy(const char *what) {
+SEXP ps__dummy(const char *what) {
   ps__not_implemented(what);
   ps__throw_error();
+  return R_NilValue;
 }
 
 /* Not implemented on Linux, only on Windows and macOS */
 #ifdef  PS__LINUX
 #ifndef PS__MACOS
 #ifndef PS__WINDOWS
-void ps__pids()          { ps__dummy("ps_pids"); }
+SEXP ps__pids()          { ps__dummy("ps_pids"); }
 #endif
 #endif
 #endif
@@ -26,23 +27,23 @@ void ps__pids()          { ps__dummy("ps_pids"); }
 /* Not implemented on Windows */
 #ifdef PS__WINDOWS
 #ifndef PS__POSIX
-void psp__pid_exists()   { ps__dummy("psp__pid_exists"); }
-void psp__zombie()       { ps__dummy("psp__zombie"); }
-void psp__waitpid()      { ps__dummy("psp__waitpid"); }
-void psp__stat_st_rdev() { ps__dummy("psp__stat_st_rdev"); }
+SEXP psp__pid_exists(SEXP x) { return ps__dummy("psp__pid_exists"); }
+SEXP psp__zombie() { return ps__dummy("psp__zombie"); }
+SEXP psp__waitpid(SEXP x) { return ps__dummy("psp__waitpid"); }
+SEXP psp__stat_st_rdev(SEXP x) { return ps__dummy("psp__stat_st_rdev"); }
 #endif
 #endif
 
 /* Only implemented on windows */
 #ifdef PS__POSIX
 #ifndef PS__WINDOWS
-void psw__realpath()     { ps__dummy("psw__realpath"); }
+SEXP psw__realpath(SEXP x) { return ps__dummy("psw__realpath"); }
 #endif
 #endif
 
 #ifndef PS__LINUX
 #if defined(PS__WINDOWS) || defined(PS__MACOS)
-void ps__inet_ntop()     { ps__dummy("ps__inet_ntop"); }
+SEXP ps__inet_ntop(SEXP x, SEXP y) { return ps__dummy("ps__inet_ntop"); }
 #endif
 #endif
 
@@ -50,52 +51,52 @@ void ps__inet_ntop()     { ps__dummy("ps__inet_ntop"); }
 #ifndef PS__MACOS
 #ifndef PS__LINUX
 #ifndef PS__WINDOWS
-void ps__pids()          { ps__dummy("ps_pids"); }
-void ps__boot_time()     { ps__dummy("ps_boot_time"); }
-void ps__cpu_count_logical()  { ps__dummy("ps_cpu_count"); }
-void ps__cpu_count_physical() { ps__dummy("ps_cpu_count"); }
-void ps__users()         { ps__users("ps_users"); }
+SEXP ps__pids() { return ps__dummy("ps_pids"); }
+SEXP ps__boot_time() { return ps__dummy("ps_boot_time"); }
+SEXP ps__cpu_count_logical()  { return ps__dummy("ps_cpu_count"); }
+SEXP ps__cpu_count_physical() { return ps__dummy("ps_cpu_count"); }
+SEXP ps__users() { ps__users("ps_users"); }
 
-void psll_handle()       { ps__dummy("ps_handle"); }
-void psll_format()       { ps__dummy("ps_format"); }
-void psll_parent()       { ps__dummy("ps_handle"); }
-void psll_ppid()         { ps__dummy("ps_handle"); }
-void psll_is_running()   { ps__dummy("ps_is_running"); }
-void psll_name()         { ps__dummy("ps_name"); }
-void psll_exe()          { ps__dummy("ps_exe"); }
-void psll_cmdline()      { ps__dummy("ps_cmdline"); }
-void psll_status()       { ps__dummy("ps_status"); }
-void psll_username()     { ps__dummy("ps_username"); }
-void psll_cwd()          { ps__dummy("ps_cwd"); }
-void psll_uids()         { ps__dummy("ps_uids"); }
-void psll_gids()         { ps__dummy("ps_gids"); }
-void psll_terminal()     { ps__dummy("ps_terminal"); }
-void psll_environ()      { ps__dummy("ps_environ"); }
-void psll_num_threads()  { ps__dummy("ps_num_threads"); }
-void psll_cpu_times()    { ps__dummy("ps_cpu_times"); }
-void psll_memory_info()  { ps__dummy("ps_memory_info"); }
-void psll_send_signal()  { ps__dummy("ps_send_signal"); }
-void psll_suspend()      { ps__dummy("ps_suspend"); }
-void psll_resume()       { ps__dummy("ps_resume"); }
-void psll_terminate()    { ps__dummy("ps_terminate"); }
-void psll_kill()         { ps__dummy("ps_kill"); }
-void psll_num_fds()      { ps__dummy("ps_num_fds"); }
-void psll_open_files()   { ps__dummy("ps_open_files"); }
-void psll_interrupt()    { ps__dummy("ps_interrupt"); }
-void psll_connections()  { ps__dummy("ps_connections"); }
+SEXP psll_handle(SEXP x, SEXP y) { return ps__dummy("ps_handle"); }
+SEXP psll_format(SEXP x) { return ps__dummy("ps_format"); }
+SEXP psll_parent(SEXP x) { return ps__dummy("ps_handle"); }
+SEXP psll_ppid(SEXP x) { return ps__dummy("ps_handle"); }
+SEXP psll_is_running(SEXP x) { return ps__dummy("ps_is_running"); }
+SEXP psll_name(SEXP x) { return ps__dummy("ps_name"); }
+SEXP psll_exe(SEXP x) { return ps__dummy("ps_exe"); }
+SEXP psll_cmdline(SEXP x) { return ps__dummy("ps_cmdline"); }
+SEXP psll_status(SEPX x) { return ps__dummy("ps_status"); }
+SEXP psll_username(SEXP x) { return ps__dummy("ps_username"); }
+SEXP psll_cwd(SEXP x) { return ps__dummy("ps_cwd"); }
+SEXP psll_uids(SEXP x) { return ps__dummy("ps_uids"); }
+SEXP psll_gids(SEXP x) { return ps__dummy("ps_gids"); }
+SEXP psll_terminal(SEXP x) { return ps__dummy("ps_terminal"); }
+SEXP psll_environ(SEXP x) { return ps__dummy("ps_environ"); }
+SEXP psll_num_threads(SEXP x) { return ps__dummy("ps_num_threads"); }
+SEXP psll_cpu_times(SEXP x) { return ps__dummy("ps_cpu_times"); }
+SEXP psll_memory_info() { return ps__dummy("ps_memory_info"); }
+SEXP psll_send_signal(SEXP x, SEXP y) { return ps__dummy("ps_send_signal"); }
+SEXP psll_suspend(SEXP x) { return ps__dummy("ps_suspend"); }
+SEXP psll_resume(SEXP x) { return ps__dummy("ps_resume"); }
+SEXP psll_terminate(SEXP x) { return ps__dummy("ps_terminate"); }
+SEXP psll_kill(SEPX x) { return ps__dummy("ps_kill"); }
+SEXP psll_num_fds(SEXP x) { return ps__dummy("ps_num_fds"); }
+SEXP psll_open_files(SEXP x) { return ps__dummy("ps_open_files"); }
+SEXP psll_interrupt(SEXP x, SEXP y, SEXP z) { return ps__dummy("ps_interrupt"); }
+SEXP psll_connections(SEXP x) { return ps__dummy("ps_connections"); }
 
-void ps__init()          { /* this needs to run to load package */ }
-void ps__kill_if_env()   { ps__dummy("ps__kill_if_env"); }
-void ps__find_if_env()   { ps__dummy("ps__find_if_env"); }
+SEXP ps__init(SEXP x, SEXP y) { return R_NilValue; /* this needs to run to load package */ }
+SEXP ps__kill_if_env(SEXP x, SEXP y, SEXP z, SEXP a) { return ps__dummy("ps__kill_if_env"); }
+SEXP ps__find_if_env(SEXP x, SEXP y, SEXP z) { return ps__dummy("ps__find_if_env"); }
 
-void psp__pid_exists()   { ps__dummy("psp__pid_exists"); }
-void psp__stat_st_rdev() { ps__dummy("psp__stat_st_rdev"); }
-void psp__zombie()       { ps__dummy("psp__zombie"); }
-void psp__waitpid()      { ps__dummy("psp__waitpid"); }
+SEXP psp__pid_exists(SEXP x) { return ps__dummy("psp__pid_exists"); }
+SEXP psp__stat_st_rdev(SEXP x) { return ps__dummy("psp__stat_st_rdev"); }
+SEXP psp__zombie() { return ps__dummy("psp__zombie"); }
+SEXP psp__waitpid(SEXP x) { return ps__dummy("psp__waitpid"); }
 
-void psw__realpath()     { ps__dummy("psw__realpath"); }
+SEXP psw__realpath(SEXP x) { return ps__dummy("psw__realpath"); }
 
-void ps__inet_ntop()     { ps__dummy("ps__inet_ntop"); }
+SEXP ps__inet_ntop(SEXP x, SEXP y) { return ps__dummy("ps__inet_ntop"); }
 #endif
 #endif
 #endif
