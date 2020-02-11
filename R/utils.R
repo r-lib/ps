@@ -103,36 +103,9 @@ waitpid <- function(pid) {
   if (ps_os_type()[["POSIX"]]) .Call(psp__waitpid, as.integer(pid))
 }
 
-## nocov start
 caps <- function(x) {
   paste0(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(x))))
 }
-
-decorate_examples <- function(text, os = NULL) {
-  text <- gsub("\n\n", "\n", text)
-
-  if (!ps_is_supported()) {
-    text <- paste0(
-      "## ps does not support this platform, and cannot run the examples\n",
-      "## Currently supported platforms are ", supported_str(), ".\n",
-      ## "\\dontrun{",
-      text
-      ## "}"
-    )
-
-  } else if (!is.null(os) && !ps_os_type()[[os]]) {
-    text <- paste0(
-      "## these examples only work on ", caps(os), "\n",
-      ## "\\dontrun{",
-      text
-      ##"}"
-    )
-  }
-
-  ## paste0("\\examples{\n", text, "}")
-  paste0("\\preformatted{", text, "}")
-}
-## nocov end
 
 assert_string <- function(x) {
   if (is.character(x) && length(x) == 1 && !is.na(x)) return()

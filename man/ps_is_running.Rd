@@ -18,6 +18,13 @@ It returns \code{FALSE} if the process has already finished.
 \details{
 It uses the start time of the process to work around pid reuse. I.e.
 }
+\examples{
+\dontshow{if (ps::ps_is_supported()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+p <- ps_handle()
+p
+ps_is_running(p)
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other process handle functions: 
 \code{\link{ps_children}()},
@@ -48,10 +55,3 @@ Other process handle functions:
 \code{\link{ps_username}()}
 }
 \concept{process handle functions}
-\section{Examples}{
-\Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
-p <- ps_handle()
-p
-ps_is_running(p)
-')}
-}

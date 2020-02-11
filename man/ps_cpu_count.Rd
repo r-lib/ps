@@ -16,9 +16,9 @@ Integer scalar.
 If cannot be determined, it returns \code{NA}. It also returns \code{NA} on older
 Windows systems, e.g. Vista or older and Windows Server 2008 or older.
 }
-\section{Examples}{
-\Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+\examples{
+\dontshow{if (ps::ps_is_supported()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ps_cpu_count(logical = TRUE)
 ps_cpu_count(logical = FALSE)
-')}
+\dontshow{\}) # examplesIf}
 }

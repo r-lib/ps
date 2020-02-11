@@ -28,5 +28,5 @@ Suggests:
     testthat,
     tibble
 RoxygenNote: 7.0.2.9000
-Roxygen: list(markdown = TRUE)
+Roxygen: { library(roxygenlabs); list(markdown = TRUE) }
 Biarch: true

@@ -21,6 +21,12 @@ List of child processes (process objects) of the process. Note that
 this typically requires enumerating all processes on the system, so
 it is a costly operation.
 }
+\examples{
+\dontshow{if (ps::ps_is_supported()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+p <- ps_parent(ps_handle())
+ps_children(p)
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other process handle functions: 
 \code{\link{ps_cmdline}()},
@@ -51,10 +57,3 @@ Other process handle functions:
 \code{\link{ps_username}()}
 }
 \concept{process handle functions}
-\section{Examples}{
-\Sexpr[stage=install,strip.white=FALSE,results=rd]{
-ps:::decorate_examples('
-p <- ps_parent(ps_handle())
-ps_children(p)
-')}
-}

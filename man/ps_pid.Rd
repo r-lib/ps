@@ -15,6 +15,14 @@ Process id.
 \description{
 This function works even if the process has already finished.
 }
+\examples{
+\dontshow{if (ps::ps_is_supported()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+p <- ps_handle()
+p
+ps_pid(p)
+ps_pid(p) == Sys.getpid()
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other process handle functions: 
 \code{\link{ps_children}()},
@@ -45,11 +53,3 @@ Other process handle functions:
 \code{\link{ps_username}()}
 }
 \concept{process handle functions}
-\section{Examples}{
-\Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
-p <- ps_handle()
-p
-ps_pid(p)
-ps_pid(p) == Sys.getpid()
-')}
-}

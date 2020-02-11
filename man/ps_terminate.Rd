@@ -15,6 +15,17 @@ Send a \code{SIGTERM} signal to the process. Not implemented on Windows.
 \details{
 Checks if the process is still running, to work around pid reuse.
 }
+\examples{
+\dontshow{if (ps::ps_is_supported() && ps::ps_os_type()["POSIX"]) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+px <- processx::process$new("sleep", "10")
+p <- ps_handle(px$get_pid())
+p
+ps_terminate(p)
+p
+ps_is_running(p)
+px$get_exit_status()
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other process handle functions: 
 \code{\link{ps_children}()},
@@ -45,15 +56,3 @@ Other process handle functions:
 \code{\link{ps_username}()}
 }
 \concept{process handle functions}
-\section{Examples}{
-\Sexpr[stage=install,strip.white=FALSE,results=rd]{
-ps:::decorate_examples(os = "POSIX",  '
-px <- processx::process$new("sleep", "10")
-p <- ps_handle(px$get_pid())
-p
-ps_terminate(p)
-p
-ps_is_running(p)
-px$get_exit_status()
-')}
-}

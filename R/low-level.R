@@ -10,14 +10,9 @@
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' p
-#' ')}
-#' }
 
 ps_handle <- function(pid = NULL, time = NULL) {
   if (!is.null(pid)) assert_pid(pid)
@@ -61,16 +56,11 @@ print.ps_handle <- function(x, ...)  {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' p
 #' ps_pid(p)
 #' ps_pid(p) == Sys.getpid()
-#' ')}
-#' }
 
 ps_pid <- function(p) {
   assert_ps_handle(p)
@@ -90,15 +80,10 @@ ps_pid <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' p
 #' ps_create_time(p)
-#' ')}
-#' }
 
 ps_create_time <- function(p) {
   assert_ps_handle(p)
@@ -118,15 +103,10 @@ ps_create_time <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' p
 #' ps_is_running(p)
-#' ')}
-#' }
 
 ps_is_running <- function(p) {
   assert_ps_handle(p)
@@ -150,16 +130,11 @@ ps_is_running <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' p
 #' ps_ppid(p)
 #' ps_parent(p)
-#' ')}
-#' }
 
 ps_ppid <- function(p) {
   assert_ps_handle(p)
@@ -167,7 +142,6 @@ ps_ppid <- function(p) {
 }
 
 #' @rdname  ps_ppid
-#' @family process handle functions
 #' @export
 
 ps_parent <- function(p) {
@@ -188,17 +162,12 @@ ps_parent <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' p
 #' ps_name(p)
 #' ps_exe(p)
 #' ps_cmdline(p)
-#' ')}
-#' }
 
 ps_name <- function(p) {
   assert_ps_handle(p)
@@ -232,17 +201,12 @@ ps_name <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' p
 #' ps_name(p)
 #' ps_exe(p)
 #' ps_cmdline(p)
-#' ')}
-#' }
 
 ps_exe <- function(p) {
   assert_ps_handle(p)
@@ -262,17 +226,12 @@ ps_exe <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' p
 #' ps_name(p)
 #' ps_exe(p)
 #' ps_cmdline(p)
-#' ')}
-#' }
 
 ps_cmdline <- function(p) {
   assert_ps_handle(p)
@@ -304,15 +263,10 @@ ps_cmdline <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' p
 #' ps_status(p)
-#' ')}
-#' }
 
 ps_status <- function(p) {
   assert_ps_handle(p)
@@ -335,15 +289,10 @@ ps_status <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' p
 #' ps_username(p)
-#' ')}
-#' }
 
 ps_username <- function(p) {
   assert_ps_handle(p)
@@ -359,15 +308,10 @@ ps_username <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' p
 #' ps_cwd(p)
-#' ')}
-#' }
 
 ps_cwd <- function(p) {
   assert_ps_handle(p)
@@ -392,17 +336,11 @@ ps_cwd <- function(p) {
 #'   platforms.
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{
-#' ps:::decorate_examples(os = "POSIX",  '
+#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"]
 #' p <- ps_handle()
 #' p
 #' ps_uids(p)
 #' ps_gids(p)
-#' ')}
-#' }
 
 ps_uids <- function(p) {
   assert_ps_handle(p)
@@ -410,7 +348,6 @@ ps_uids <- function(p) {
 }
 
 #' @rdname ps_uids
-#' @family process handle functions
 #' @export
 
 ps_gids <- function(p) {
@@ -431,15 +368,10 @@ ps_gids <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' p
 #' ps_terminal(p)
-#' ')}
-#' }
 
 ps_terminal <- function(p) {
   assert_ps_handle(p)
@@ -474,16 +406,11 @@ ps_terminal <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' p
 #' env <- ps_environ(p)
 #' env[["R_HOME"]]
-#' ')}
-#' }
 
 ps_environ <- function(p) {
   assert_ps_handle(p)
@@ -491,7 +418,6 @@ ps_environ <- function(p) {
 }
 
 #' @rdname ps_environ
-#' @family process handle functions
 #' @export
 
 ps_environ_raw <- function(p) {
@@ -508,15 +434,10 @@ ps_environ_raw <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' p
 #' ps_num_threads(p)
-#' ')}
-#' }
 
 ps_num_threads <- function(p) {
   assert_ps_handle(p)
@@ -544,16 +465,11 @@ ps_num_threads <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' p
 #' ps_cpu_times(p)
 #' proc.time()
-#' ')}
-#' }
 
 ps_cpu_times <- function(p) {
   assert_ps_handle(p)
@@ -597,15 +513,10 @@ ps_cpu_times <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' p
 #' ps_memory_info(p)
-#' ')}
-#' }
 
 ps_memory_info <- function(p) {
   assert_ps_handle(p)
@@ -625,11 +536,7 @@ ps_memory_info <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{
-#' ps:::decorate_examples(os = "POSIX",  '
+#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"]
 #' px <- processx::process$new("sleep", "10")
 #' p <- ps_handle(px$get_pid())
 #' p
@@ -637,8 +544,6 @@ ps_memory_info <- function(p) {
 #' p
 #' ps_is_running(p)
 #' px$get_exit_status()
-#' ')}
-#' }
 
 ps_send_signal <- function(p, sig) {
   assert_ps_handle(p)
@@ -656,11 +561,7 @@ ps_send_signal <- function(p, sig) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{
-#' ps:::decorate_examples(os = "POSIX",  '
+#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"]
 #' px <- processx::process$new("sleep", "10")
 #' p <- ps_handle(px$get_pid())
 #' p
@@ -669,8 +570,6 @@ ps_send_signal <- function(p, sig) {
 #' ps_resume(p)
 #' ps_status(p)
 #' ps_kill(p)
-#' ')}
-#' }
 
 ps_suspend <- function(p) {
   assert_ps_handle(p)
@@ -687,11 +586,7 @@ ps_suspend <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{
-#' ps:::decorate_examples(os = "POSIX",  '
+#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"]
 #' px <- processx::process$new("sleep", "10")
 #' p <- ps_handle(px$get_pid())
 #' p
@@ -700,8 +595,6 @@ ps_suspend <- function(p) {
 #' ps_resume(p)
 #' ps_status(p)
 #' ps_kill(p)
-#' ')}
-#' }
 
 ps_resume <- function(p) {
   assert_ps_handle(p)
@@ -718,11 +611,7 @@ ps_resume <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{
-#' ps:::decorate_examples(os = "POSIX",  '
+#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"]
 #' px <- processx::process$new("sleep", "10")
 #' p <- ps_handle(px$get_pid())
 #' p
@@ -730,8 +619,6 @@ ps_resume <- function(p) {
 #' p
 #' ps_is_running(p)
 #' px$get_exit_status()
-#' ')}
-#' }
 
 ps_terminate <- function(p) {
   assert_ps_handle(p)
@@ -747,11 +634,7 @@ ps_terminate <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{
-#' ps:::decorate_examples(os = "POSIX",  '
+#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"]
 #' px <- processx::process$new("sleep", "10")
 #' p <- ps_handle(px$get_pid())
 #' p
@@ -759,8 +642,6 @@ ps_terminate <- function(p) {
 #' p
 #' ps_is_running(p)
 #' px$get_exit_status()
-#' ')}
-#' }
 
 ps_kill <- function(p) {
   assert_ps_handle(p)
@@ -778,15 +659,9 @@ ps_kill <- function(p) {
 #' @family process handle functions
 #' @export
 #' @importFrom utils head tail
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{
-#' ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_parent(ps_handle())
 #' ps_children(p)
-#' ')}
-#' }
 
 ps_children <- function(p, recursive = FALSE) {
   assert_ps_handle(p)
@@ -868,10 +743,7 @@ ps_ppid_map <- function() {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' ps_num_fds(p)
 #' f <- file(tmp <- tempfile(), "w")
@@ -879,8 +751,6 @@ ps_ppid_map <- function() {
 #' close(f)
 #' unlink(tmp)
 #' ps_num_fds(p)
-#' ')}
-#' }
 
 ps_num_fds <- function(p) {
   assert_ps_handle(p)
@@ -903,10 +773,7 @@ ps_num_fds <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' ps_open_files(p)
 #' f <- file(tmp <- tempfile(), "w")
@@ -914,8 +781,6 @@ ps_num_fds <- function(p) {
 #' close(f)
 #' unlink(tmp)
 #' ps_open_files(p)
-#' ')}
-#' }
 
 ps_open_files <- function(p) {
   assert_ps_handle(p)
@@ -954,20 +819,13 @@ ps_open_files <- function(p) {
 #'
 #' @family process handle functions
 #' @export
-#'
-#' @rawRd
-#' \section{Examples}{
-#' \Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
+#' @examplesIf ps::ps_is_supported()
 #' p <- ps_handle()
 #' ps_connections(p)
 #' sc <- socketConnection("httpbin.org", port = 80)
 #' ps_connections(p)
 #' close(sc)
 #' ps_connections(p)
-#' ')}
-#' }
-#'
-#' @export
 
 ps_connections <- function(p) {
   assert_ps_handle(p)

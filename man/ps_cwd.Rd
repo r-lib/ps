@@ -15,6 +15,13 @@ String scalar.
 \description{
 For a zombie process it throws a \code{zombie_process} error.
 }
+\examples{
+\dontshow{if (ps::ps_is_supported()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+p <- ps_handle()
+p
+ps_cwd(p)
+\dontshow{\}) # examplesIf}
+}
 \seealso{
 Other process handle functions: 
 \code{\link{ps_children}()},
@@ -45,10 +52,3 @@ Other process handle functions:
 \code{\link{ps_username}()}
 }
 \concept{process handle functions}
-\section{Examples}{
-\Sexpr[stage=install,strip.white=FALSE,results=rd]{ps:::decorate_examples('
-p <- ps_handle()
-p
-ps_cwd(p)
-')}
-}
