@@ -25,6 +25,23 @@
 #' If `expr` throws an error, then so does `with_process_cleanup()`, the
 #' same error. Nevertheless processes are still cleaned up.
 #'
+#' @section Note:
+#' Note that `with_process_cleanup()` is problematic if the R process is
+#' multi-threaded and the other threads start subprocesses.
+#' `with_process_cleanup()` cleans up those processes as well, which is
+#' probably not what you want. This is an issue for example in RStudio.
+#' Do not use `with_process_cleanup()`, unless you are sure that the
+#' R process is single-threaded, or the other threads do not start
+#' subprocesses. E.g. using it in package test cases is usually fine,
+#' because RStudio runs these in a separate single-threaded process.
+#'
+#' The same holds for manually running `ps_mark_tree()` and then
+#' `ps_find_tree()` or `ps_kill_tree()`.
+#'
+#' A safe way to use process cleanup is to use the processx package to
+#' start subprocesses, and set the `cleanup_tree = TRUE` in
+#' [processx::run()] or the [processx::process] constructor.
+#'
 #' @return `ps_mark_tree()` returns the name of the environment variable,
 #' which can be used as the `marker` in `ps_kill_tree()`.
 #'

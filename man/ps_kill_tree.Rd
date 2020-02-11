@@ -62,3 +62,22 @@ cleaned pids, names are the process names.
 If \code{expr} throws an error, then so does \code{with_process_cleanup()}, the
 same error. Nevertheless processes are still cleaned up.
 }
+\section{Note}{
+
+Note that \code{with_process_cleanup()} is problematic if the R process is
+multi-threaded and the other threads start subprocesses.
+\code{with_process_cleanup()} cleans up those processes as well, which is
+probably not what you want. This is an issue for example in RStudio.
+Do not use \code{with_process_cleanup()}, unless you are sure that the
+R process is single-threaded, or the other threads do not start
+subprocesses. E.g. using it in package test cases is usually fine,
+because RStudio runs these in a separate single-threaded process.
+
+The same holds for manually running \code{ps_mark_tree()} and then
+\code{ps_find_tree()} or \code{ps_kill_tree()}.
+
+A safe way to use process cleanup is to use the processx package to
+start subprocesses, and set the \code{cleanup_tree = TRUE} in
+\code{\link[processx:run]{processx::run()}} or the \link[processx:process]{processx::process} constructor.
+}
+
