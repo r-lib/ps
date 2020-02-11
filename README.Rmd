@@ -12,12 +12,6 @@ options(width = 100)
 suppressWarnings(suppressPackageStartupMessages(suppressMessages(library(dplyr))))
 ```
 
-## Introduction
-
-ps implement an API to query and manipulate system processes. Most of its
-code is based on the [psutil](https://github.com/giampaolo/psutil) Python
-package.
-
 ## Installation
 
 You can install the released version of ps from

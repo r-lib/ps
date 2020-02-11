@@ -10,7 +10,10 @@
 [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/ps)](https://www.r-pkg.org/pkg/ps)
 [![Coverage status](https://codecov.io/gh/r-lib/ps/branch/master/graph/badge.svg)](https://codecov.io/github/r-lib/ps?branch=master)
 
-  - [Introduction](#introduction)
+ps implements an API to query and manipulate system processes. Most of its
+code is based on the [psutil](https://github.com/giampaolo/psutil) Python
+package.
+
   - [Installation](#installation)
   - [Supported platforms](#supported-platforms)
   - [Listing all processes](#listing-all-processes)
@@ -30,12 +33,6 @@
         processes](#filtering-and-sorting-processes)
   - [Contributions](#contributions)
   - [License](#license)
-
-## Introduction
-
-ps implement an API to query and manipulate system processes. Most of
-its code is based on the [psutil](https://github.com/giampaolo/psutil)
-Python package.
 
 ## Installation
 
