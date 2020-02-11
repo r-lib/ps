@@ -342,7 +342,7 @@ it is a costly operation.</p></td>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-utility-functions" class="hasAnchor"><a href="#section-utility-functions" class="anchor"></a>Utility functions</h2>
+          <h2 id="section-system-information" class="hasAnchor"><a href="#section-system-information" class="anchor"></a>System information</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -353,6 +353,46 @@ it is a costly operation.</p></td>
         </td>
         <td><p>Boot time of the system</p></td>
       </tr><tr>
+        
+        <td>
+          <p><code><a href="ps_os_type.html">ps_os_type()</a></code> <code><a href="ps_os_type.html">ps_is_supported()</a></code> </p>
+        </td>
+        <td><p>Query the type of the OS</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ps_cpu_count.html">ps_cpu_count()</a></code> </p>
+        </td>
+        <td><p>Number of logical or physical CPUs</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-process-tree-cleanup" class="hasAnchor"><a href="#section-process-tree-cleanup" class="anchor"></a>Process tree cleanup</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="ps_kill_tree.html">ps_mark_tree()</a></code> <code><a href="ps_kill_tree.html">with_process_cleanup()</a></code> <code><a href="ps_kill_tree.html">ps_find_tree()</a></code> <code><a href="ps_kill_tree.html">ps_kill_tree()</a></code> </p>
+        </td>
+        <td><p>Mark a process and its (future) child tree</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="CleanupReporter.html">CleanupReporter()</a></code> </p>
+        </td>
+        <td><p>testthat reporter that checks if child processes are cleaned up in tests</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-utility-functions" class="hasAnchor"><a href="#section-utility-functions" class="anchor"></a>Utility functions</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
         
         <td>
           <p><code><a href="ps_os_type.html">ps_os_type()</a></code> <code><a href="ps_os_type.html">ps_is_supported()</a></code> </p>
@@ -377,6 +417,8 @@ it is a costly operation.</p></td>
       <li><a href="#section-files-and-network-connections">Files and Network Connections</a></li>
       <li><a href="#section-process-manipulation">Process manipulation</a></li>
       <li><a href="#section-users">Users</a></li>
+      <li><a href="#section-system-information">System information</a></li>
+      <li><a href="#section-process-tree-cleanup">Process tree cleanup</a></li>
       <li><a href="#section-utility-functions">Utility functions</a></li>
     </ul>
   </div>
