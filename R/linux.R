@@ -140,7 +140,15 @@ psl__decode_address <- function(addr, family) {
   }
 }
 
-ps_cpu_count_physical_linux <- function() {
+psl__cpu_count_from_lscpu <- function() {
+  tryCatch({
+    lines <- system("lscpu -p=core", intern = TRUE)
+    cores <- unique(lines[!str_starts_with(lines, "#")])
+    length(cores)
+  }, error = function(e) psl__cpu_count_from_cpuinfo())
+}
+
+psl__cpu_count_from_cpuinfo <- function() {
   lines <- readLines("/proc/cpuinfo")
   mapping = list()
   current = list()
@@ -164,4 +172,12 @@ ps_cpu_count_physical_linux <- function() {
   }
 
   sum(as.integer(unlist(mapping)))
+}
+
+ps_cpu_count_physical_linux <- function() {
+  if (Sys.which("lscpu") != "") {
+    psl__cpu_count_from_lscpu()
+  } else {
+    psl__cpu_count_from_cpuinfo()
+  }
 }
