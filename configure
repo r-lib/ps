@@ -4,7 +4,7 @@
 # from R CMD INSTALL, to have the R env vars set.
 
 if [ -z "$R_HOME" ]; then
-    echo &>2 R_HOME is not set, are you running R CMD INSTALL?
+    echo >&2 R_HOME is not set, are you running R CMD INSTALL?
     exit 1
 fi
 
@@ -43,7 +43,7 @@ unset NETBSD
 ## if [ "UNAME" = "NetBSD" ]; then NETBSD=true; POSIX=true; fi
 
 unset BSD
-if [ -n "$FREEBSD" -o -n "$OPENBSD" -o -n "$NETBSD" ]; then
+if [ -n "$FREEBSD" ] || [ -n "$OPENBSD" ] || [ -n "$NETBSD" ]; then
     BSD=true
 fi
 
