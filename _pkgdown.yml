@@ -55,9 +55,18 @@ reference:
   contents:
   - ps_users
 
-- title: Utility functions
+- title: System information
   contents:
   - ps_boot_time
   - ps_os_type
+  - ps_cpu_count
+
+- title: Process tree cleanup
+  contents:
+  - ps_mark_tree
+  - CleanupReporter
+
+- title: Utility functions
+  contents:
   - ps_is_supported
   - signals
