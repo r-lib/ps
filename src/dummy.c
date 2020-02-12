@@ -19,7 +19,7 @@ SEXP ps__dummy(const char *what) {
 #ifdef  PS__LINUX
 #ifndef PS__MACOS
 #ifndef PS__WINDOWS
-SEXP ps__pids()          { ps__dummy("ps_pids"); }
+SEXP ps__pids()          { return ps__dummy("ps_pids"); }
 #endif
 #endif
 #endif
