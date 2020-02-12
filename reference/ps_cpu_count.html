@@ -6,13 +6,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Number of logical or phyisical CPUs — ps_cpu_count • ps</title>
+<title>Number of logical or physical CPUs — ps_cpu_count • ps</title>
+
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -32,11 +34,12 @@
 
 
 
-<meta property="og:title" content="Number of logical or phyisical CPUs — ps_cpu_count" />
 
+<meta property="og:title" content="Number of logical or physical CPUs — ps_cpu_count" />
 <meta property="og:description" content="If cannot be determined, it returns NA. It also returns NA on older
 Windows systems, e.g. Vista or older and Windows Server 2008 or older." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -67,7 +70,7 @@ Windows systems, e.g. Vista or older and Windows Server 2008 or older." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ps</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
       </span>
     </div>
 
@@ -86,7 +89,6 @@ Windows systems, e.g. Vista or older and Windows Server 2008 or older." />
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/r-lib/ps">
@@ -107,20 +109,18 @@ Windows systems, e.g. Vista or older and Windows Server 2008 or older." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Number of logical or phyisical CPUs</h1>
+    <h1>Number of logical or physical CPUs</h1>
     <small class="dont-index">Source: <a href='https://github.com/r-lib/ps/blob/master/R/system.R'><code>R/system.R</code></a></small>
     <div class="hidden name"><code>ps_cpu_count.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    
     <p>If cannot be determined, it returns <code>NA</code>. It also returns <code>NA</code> on older
 Windows systems, e.g. Vista or older and Windows Server 2008 or older.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>ps_cpu_count</span>(<span class='kw'>logical</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -129,29 +129,21 @@ Windows systems, e.g. Vista or older and Windows Server 2008 or older.</p>
       <td><p>Whether to count logical CPUs.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Integer scalar.</p>
-    
+
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-
-    <p><pre>
-ps_cpu_count(logical = TRUE)
-ps_cpu_count(logical = FALSE)
-</pre></p>
-    
-
+    <pre class="examples"><div class='input'><span class='fu'>ps_cpu_count</span>(<span class='kw'>logical</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] 2</div><div class='input'><span class='fu'>ps_cpu_count</span>(<span class='kw'>logical</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; [1] 1</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#examples">Examples</a></li>
-          </ul>
+    </ul>
 
   </div>
 </div>

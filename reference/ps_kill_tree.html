@@ -8,11 +8,13 @@
 
 <title>Mark a process and its (future) child tree — ps_mark_tree • ps</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -32,8 +34,8 @@
 
 
 
-<meta property="og:title" content="Mark a process and its (future) child tree — ps_mark_tree" />
 
+<meta property="og:title" content="Mark a process and its (future) child tree — ps_mark_tree" />
 <meta property="og:description" content="ps_mark_tree() generates a random environment variable name and sets
 it in the  current R process. This environment variable will be (by
 default) inherited by all child (and grandchild, etc.) processes, and
@@ -41,6 +43,7 @@ will help finding these processes, even if and when they are (no longer)
 related to the current R process. (I.e. they are not connected in the
 process tree.)" />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -71,7 +74,7 @@ process tree.)" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ps</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
       </span>
     </div>
 
@@ -90,7 +93,6 @@ process tree.)" />
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/r-lib/ps">
@@ -117,14 +119,12 @@ process tree.)" />
     </div>
 
     <div class="ref-description">
-    
     <p><code>ps_mark_tree()</code> generates a random environment variable name and sets
 it in the  current R process. This environment variable will be (by
 default) inherited by all child (and grandchild, etc.) processes, and
 will help finding these processes, even if and when they are (no longer)
 related to the current R process. (I.e. they are not connected in the
 process tree.)</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>ps_mark_tree</span>()
@@ -134,7 +134,7 @@ process tree.)</p>
 <span class='fu'>ps_find_tree</span>(<span class='no'>marker</span>)
 
 <span class='fu'>ps_kill_tree</span>(<span class='no'>marker</span>, <span class='kw'>sig</span> <span class='kw'>=</span> <span class='fu'><a href='signals.html'>signals</a></span>()$<span class='no'>SIGKILL</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -153,7 +153,7 @@ use to find the marked processes.</p></td>
 Windows this argument is ignored currently.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p><code>ps_mark_tree()</code> returns the name of the environment variable,
@@ -163,7 +163,6 @@ which can be used as the <code>marker</code> in <code>ps_kill_tree()</code>.</p>
 integer vector. The names are the file names of the executables, when
 available.</p>
 <p><code>with_process_cleanup()</code> returns the value of the evaluated expression.</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><code>ps_find_tree()</code> finds the processes that set the supplied environment
@@ -179,18 +178,33 @@ to the screen, and <code>process_cleanup</code> is a named integer vector of the
 cleaned pids, names are the process names.</p>
 <p>If <code>expr</code> throws an error, then so does <code>with_process_cleanup()</code>, the
 same error. Nevertheless processes are still cleaned up.</p>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
     
+
+<p>Note that <code>with_process_cleanup()</code> is problematic if the R process is
+multi-threaded and the other threads start subprocesses.
+<code>with_process_cleanup()</code> cleans up those processes as well, which is
+probably not what you want. This is an issue for example in RStudio.
+Do not use <code>with_process_cleanup()</code>, unless you are sure that the
+R process is single-threaded, or the other threads do not start
+subprocesses. E.g. using it in package test cases is usually fine,
+because RStudio runs these in a separate single-threaded process.</p>
+<p>The same holds for manually running <code>ps_mark_tree()</code> and then
+<code>ps_find_tree()</code> or <code>ps_kill_tree()</code>.</p>
+<p>A safe way to use process cleanup is to use the processx package to
+start subprocesses, and set the <code>cleanup_tree = TRUE</code> in
+<code><a href='http://processx.r-lib.org/reference/run.html'>processx::run()</a></code> or the <a href='http://processx.r-lib.org/reference/process.html'>processx::process</a> constructor.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#details">Details</a></li>
-          </ul>
+      <li><a href="#note">Note</a></li>
+    </ul>
 
   </div>
 </div>

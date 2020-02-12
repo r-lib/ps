@@ -8,11 +8,13 @@
 
 <title>Function reference • ps</title>
 
+
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -32,7 +34,9 @@
 
 
 
+
 <meta property="og:title" content="Function reference" />
+
 
 
 
@@ -63,7 +67,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ps</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.1</span>
       </span>
     </div>
 
@@ -82,7 +86,6 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/r-lib/ps">
@@ -339,7 +342,7 @@ it is a costly operation.</p></td>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-utility-functions" class="hasAnchor"><a href="#section-utility-functions" class="anchor"></a>Utility functions</h2>
+          <h2 id="section-system-information" class="hasAnchor"><a href="#section-system-information" class="anchor"></a>System information</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -350,6 +353,46 @@ it is a costly operation.</p></td>
         </td>
         <td><p>Boot time of the system</p></td>
       </tr><tr>
+        
+        <td>
+          <p><code><a href="ps_os_type.html">ps_os_type()</a></code> <code><a href="ps_os_type.html">ps_is_supported()</a></code> </p>
+        </td>
+        <td><p>Query the type of the OS</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ps_cpu_count.html">ps_cpu_count()</a></code> </p>
+        </td>
+        <td><p>Number of logical or physical CPUs</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-process-tree-cleanup" class="hasAnchor"><a href="#section-process-tree-cleanup" class="anchor"></a>Process tree cleanup</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="ps_kill_tree.html">ps_mark_tree()</a></code> <code><a href="ps_kill_tree.html">with_process_cleanup()</a></code> <code><a href="ps_kill_tree.html">ps_find_tree()</a></code> <code><a href="ps_kill_tree.html">ps_kill_tree()</a></code> </p>
+        </td>
+        <td><p>Mark a process and its (future) child tree</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="CleanupReporter.html">CleanupReporter()</a></code> </p>
+        </td>
+        <td><p>testthat reporter that checks if child processes are cleaned up in tests</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-utility-functions" class="hasAnchor"><a href="#section-utility-functions" class="anchor"></a>Utility functions</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
         
         <td>
           <p><code><a href="ps_os_type.html">ps_os_type()</a></code> <code><a href="ps_os_type.html">ps_is_supported()</a></code> </p>
@@ -374,6 +417,8 @@ it is a costly operation.</p></td>
       <li><a href="#section-files-and-network-connections">Files and Network Connections</a></li>
       <li><a href="#section-process-manipulation">Process manipulation</a></li>
       <li><a href="#section-users">Users</a></li>
+      <li><a href="#section-system-information">System information</a></li>
+      <li><a href="#section-process-tree-cleanup">Process tree cleanup</a></li>
       <li><a href="#section-utility-functions">Utility functions</a></li>
     </ul>
   </div>
