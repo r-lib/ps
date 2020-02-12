@@ -1,5 +1,5 @@
 
-# ps dev
+# ps 1.3.1
 
 * Fixed an installation problem on some Windows versions, where the
   output of `cmd /c ver` looks different (#69).
