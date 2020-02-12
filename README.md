@@ -729,17 +729,17 @@ ps() %>%
 ```
 
     ## # A tibble: 3 x 3
-    ##     pid name                cpu_time
-    ##   <int> <chr>                  <dbl>
-    ## 1  3718 Google Chrome         15279.
-    ## 2   722 iTerm2                 7429.
-    ## 3 36368 com.docker.hyperkit    4689.
+    ##     pid name                       cpu_time
+    ##   <int> <chr>                         <dbl>
+    ## 1 40706 com.docker.hyperkit          31685.
+    ## 2 38474 Google Chrome Helper (GPU)   23568.
+    ## 3 38466 Google Chrome                20589.
 
 ## Contributions
 
 Please note that this project is released with a [Contributor Code of
-Conduct](.github/CODE_OF_CONDUCT.md). By participating in this project
-you agree to abide by its terms.
+Conduct](https://github.com/r-lib/ps/blob/master/.github/CODE_OF_CONDUCT.md).
+By participating in this project you agree to abide by its terms.
 
 ## License
 
