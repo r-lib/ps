@@ -65,7 +65,7 @@ SEXP psll_is_running(SEXP x) { return ps__dummy("ps_is_running"); }
 SEXP psll_name(SEXP x) { return ps__dummy("ps_name"); }
 SEXP psll_exe(SEXP x) { return ps__dummy("ps_exe"); }
 SEXP psll_cmdline(SEXP x) { return ps__dummy("ps_cmdline"); }
-SEXP psll_status(SEPX x) { return ps__dummy("ps_status"); }
+SEXP psll_status(SEXP x) { return ps__dummy("ps_status"); }
 SEXP psll_username(SEXP x) { return ps__dummy("ps_username"); }
 SEXP psll_cwd(SEXP x) { return ps__dummy("ps_cwd"); }
 SEXP psll_uids(SEXP x) { return ps__dummy("ps_uids"); }
@@ -79,7 +79,7 @@ SEXP psll_send_signal(SEXP x, SEXP y) { return ps__dummy("ps_send_signal"); }
 SEXP psll_suspend(SEXP x) { return ps__dummy("ps_suspend"); }
 SEXP psll_resume(SEXP x) { return ps__dummy("ps_resume"); }
 SEXP psll_terminate(SEXP x) { return ps__dummy("ps_terminate"); }
-SEXP psll_kill(SEPX x) { return ps__dummy("ps_kill"); }
+SEXP psll_kill(SEXP x) { return ps__dummy("ps_kill"); }
 SEXP psll_num_fds(SEXP x) { return ps__dummy("ps_num_fds"); }
 SEXP psll_open_files(SEXP x) { return ps__dummy("ps_open_files"); }
 SEXP psll_interrupt(SEXP x, SEXP y, SEXP z) { return ps__dummy("ps_interrupt"); }
