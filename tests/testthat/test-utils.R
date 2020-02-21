@@ -3,12 +3,10 @@ context("utils")
 
 test_that("errno", {
   err <- errno()
-  expect_true(is.list(err))
+  expect_true(is.data.frame(err))
 
-  if (ps_os_type()[["POSIX"]]) {
-    expect_true("EINVAL" %in% names(err))
-    expect_true("EBADF" %in% names(err))
-  }
+  expect_true("EINVAL" %in% err$name)
+  expect_true("EBADF" %in% err$name)
 })
 
 test_that("str_strip", {

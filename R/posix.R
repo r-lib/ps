@@ -10,10 +10,6 @@ signals <- function() {
   as.list(ps_env$constants$signals)
 }
 
-errno <- function() {
-  as.list(ps_env$constants$errno)
-}
-
 get_terminal_map <- function() {
   ls <- c(
     dir("/dev", pattern = "^tty.*", full.names = TRUE),
