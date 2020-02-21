@@ -805,5 +805,8 @@ SEXP ps__init(SEXP psenv, SEXP constenv) {
   /* Socket types */
   defineVar(install("socket_types"), ps__define_socket_types(), constenv);
 
+  /* errno values */
+  defineVar(install("errno"), ps__define_errno(), constenv);
+
   return R_NilValue;
 }
