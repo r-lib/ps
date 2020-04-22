@@ -19,7 +19,7 @@ RBIN="${R_HOME}/bin${R_ARCH_BIN}/R"
 
 unset POSIX
 if [ "$R_OSTYPE" = "unix" ]; then
-    UNAME=$(uname)
+    UNAME=`uname`
 else
     UNAME=Windows
 fi
