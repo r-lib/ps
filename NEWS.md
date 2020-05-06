@@ -4,6 +4,8 @@
 * New function `errno()` returns a table of `errno.h` error codes and
   their description.
 
+* ps now compiled again on Solaris.
+
 # ps 1.3.2
 
 * ps now compiles again on unsupported platforms like Solaris.
