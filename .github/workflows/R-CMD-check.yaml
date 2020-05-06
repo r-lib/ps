@@ -40,10 +40,6 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@master
 
-      - name: Install devscripts
-        run: sudo apt-get install devscripts
-        if: matrix.os == 'ubuntu-16.04'
-
       - name: Query dependencies
         run: |
           install.packages('remotes')
@@ -63,6 +59,7 @@ jobs:
         env:
           RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
         run: |
+          sudo apt-get -y install devscripts
           Rscript -e "remotes::install_github('r-hub/sysreqs')"
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo -s eval "$sysreqs"
