@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -38,7 +42,6 @@
 <meta property="og:title" content="List of 'errno' error codes — errno" />
 <meta property="og:description" content="For the errors that are not used on the current platform, value is
 NA_integer_." />
-<meta name="twitter:card" content="summary" />
 
 
 <meta name="robots" content="noindex">
@@ -56,7 +59,7 @@ NA_integer_." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -91,7 +94,7 @@ NA_integer_." />
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/r-lib/ps">
+  <a href="https://github.com/r-lib/ps/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -130,168 +133,165 @@ NA_integer_." />
     <pre class="examples"><div class='input'><span class='fu'>errno</span>()</div><div class='output co'>#&gt;                name value                                         description
 #&gt; 1             E2BIG     7                                  Arg list too long.
 #&gt; 2            EACCES    13                                  Permission denied.
-#&gt; 3        EADDRINUSE    98                             Address already in use.
-#&gt; 4     EADDRNOTAVAIL    99                    Cannot assign requested address.
-#&gt; 5              EADV    68                                    Advertise error.
-#&gt; 6      EAFNOSUPPORT    97    Address family not supported by protocol family.
-#&gt; 7            EAGAIN    11                   Resource temporarily unavailable.
-#&gt; 8          EALREADY   114                      Operation already in progress.
-#&gt; 9             EAUTH    NA                               Authentication error.
+#&gt; 3        EADDRINUSE    48                             Address already in use.
+#&gt; 4     EADDRNOTAVAIL    49                    Cannot assign requested address.
+#&gt; 5              EADV    NA                                    Advertise error.
+#&gt; 6      EAFNOSUPPORT    47    Address family not supported by protocol family.
+#&gt; 7            EAGAIN    35                   Resource temporarily unavailable.
+#&gt; 8          EALREADY    37                      Operation already in progress.
+#&gt; 9             EAUTH    80                               Authentication error.
 #&gt; 10      EBACKGROUND    NA          Caller not in the foreground process group
-#&gt; 11         EBADARCH    NA                         Bad CPU type in executable.
-#&gt; 12            EBADE    52                                   Invalid exchange.
-#&gt; 13         EBADEXEC    NA                 Bad executable (or shared library).
+#&gt; 11         EBADARCH    86                         Bad CPU type in executable.
+#&gt; 12            EBADE    NA                                   Invalid exchange.
+#&gt; 13         EBADEXEC    85                 Bad executable (or shared library).
 #&gt; 14            EBADF     9                                Bad file descriptor.
-#&gt; 15           EBADFD    77                       File descriptor in bad state.
-#&gt; 16        EBADMACHO    NA                              Malformed Mach-o file.
-#&gt; 17          EBADMSG    74                                        Bad message.
-#&gt; 18            EBADR    53                         Invalid request descriptor.
-#&gt; 19          EBADRPC    NA                                  RPC struct is bad.
-#&gt; 20          EBADRQC    56                               Invalid request code.
-#&gt; 21          EBADSLT    57                                       Invalid slot.
-#&gt; 22           EBFONT    59                               Bad font file format.
+#&gt; 15           EBADFD    NA                       File descriptor in bad state.
+#&gt; 16        EBADMACHO    88                              Malformed Mach-o file.
+#&gt; 17          EBADMSG    94                                        Bad message.
+#&gt; 18            EBADR    NA                         Invalid request descriptor.
+#&gt; 19          EBADRPC    72                                  RPC struct is bad.
+#&gt; 20          EBADRQC    NA                               Invalid request code.
+#&gt; 21          EBADSLT    NA                                       Invalid slot.
+#&gt; 22           EBFONT    NA                               Bad font file format.
 #&gt; 23            EBUSY    16                                      Resource busy.
-#&gt; 24        ECANCELED   125                                 Operation canceled.
+#&gt; 24        ECANCELED    89                                 Operation canceled.
 #&gt; 25           ECHILD    10                                 No child processes.
-#&gt; 26           ECHRNG    44                        Channel number out of range.
-#&gt; 27            ECOMM    70                        Communication error on send.
-#&gt; 28     ECONNABORTED   103                   Software caused connection abort.
-#&gt; 29     ECONNREFUSED   111                                 Connection refused.
-#&gt; 30       ECONNRESET   104                           Connection reset by peer.
+#&gt; 26           ECHRNG    NA                        Channel number out of range.
+#&gt; 27            ECOMM    NA                        Communication error on send.
+#&gt; 28     ECONNABORTED    53                   Software caused connection abort.
+#&gt; 29     ECONNREFUSED    61                                 Connection refused.
+#&gt; 30       ECONNRESET    54                           Connection reset by peer.
 #&gt; 31               ED    NA  The experienced user will know what is wrong.#else
-#&gt; 32          EDEADLK    35                          Resource deadlock avoided.
-#&gt; 33        EDEADLOCK    35                        File locking deadlock error.
-#&gt; 34     EDESTADDRREQ    89                       Destination address required.
-#&gt; 35          EDEVERR    NA                                       Device error.
+#&gt; 32          EDEADLK    11                          Resource deadlock avoided.
+#&gt; 33        EDEADLOCK    NA                        File locking deadlock error.
+#&gt; 34     EDESTADDRREQ    39                       Destination address required.
+#&gt; 35          EDEVERR    83                                       Device error.
 #&gt; 36            EDIED    NA                                     Translator died
 #&gt; 37             EDOM    33                   Numerical argument out of domain.
-#&gt; 38          EDOTDOT    73                                  RFS specific error
-#&gt; 39           EDQUOT   122                                Disc quota exceeded.
+#&gt; 38          EDOTDOT    NA                                  RFS specific error
+#&gt; 39           EDQUOT    69                                Disc quota exceeded.
 #&gt; 40           EEXIST    17                                        File exists.
 #&gt; 41           EFAULT    14                                        Bad address.
 #&gt; 42            EFBIG    27                                     File too large.
-#&gt; 43           EFTYPE    NA                  Inappropriate file type or format.
+#&gt; 43           EFTYPE    79                  Inappropriate file type or format.
 #&gt; 44      EGRATUITOUS    NA                     This error code has no purpose.
 #&gt; 45        EGREGIOUS    NA                                     You did *what*?
-#&gt; 46        EHOSTDOWN   112                                       Host is down.
-#&gt; 47     EHOSTUNREACH   113                                   No route to host.
-#&gt; 48        EHWPOISON   133                     Memory page has hardware error.
-#&gt; 49            EIDRM    43                                 Identifier removed.
+#&gt; 46        EHOSTDOWN    64                                       Host is down.
+#&gt; 47     EHOSTUNREACH    65                                   No route to host.
+#&gt; 48        EHWPOISON    NA                     Memory page has hardware error.
+#&gt; 49            EIDRM    90                                 Identifier removed.
 #&gt; 50            EIEIO    NA Go home and have a glass of warm, dairy-fresh milk.
-#&gt; 51           EILSEQ    84                              Illegal byte sequence.
-#&gt; 52      EINPROGRESS   115                          Operation now in progress.
+#&gt; 51           EILSEQ    92                              Illegal byte sequence.
+#&gt; 52      EINPROGRESS    36                          Operation now in progress.
 #&gt; 53            EINTR     4                          Interrupted function call.
 #&gt; 54           EINVAL    22                                   Invalid argument.
 #&gt; 55              EIO     5                                 Input/output error.
-#&gt; 56          EISCONN   106                        Socket is already connected.
+#&gt; 56          EISCONN    56                        Socket is already connected.
 #&gt; 57           EISDIR    21                                     Is a directory.
-#&gt; 58           EISNAM   120                               Is a named type file.
-#&gt; 59      EKEYEXPIRED   127                                    Key has expired.
-#&gt; 60     EKEYREJECTED   129                        Key was rejected by service.
-#&gt; 61      EKEYREVOKED   128                               Key has been revoked.
-#&gt; 62           EL2HLT    51                                     Level 2 halted.
-#&gt; 63         EL2NSYNC    45                           Level 2 not synchronized.
-#&gt; 64           EL3HLT    46                                     Level 3 halted.
-#&gt; 65           EL3RST    47                                      Level 3 reset.
-#&gt; 66          ELIBACC    79             Can not access a needed shared library.
-#&gt; 67          ELIBBAD    80               Accessing a corrupted shared library.
-#&gt; 68         ELIBEXEC    83              Cannot exec a shared library directly.
-#&gt; 69          ELIBMAX    82    Attempting to link in too many shared libraries.
-#&gt; 70          ELIBSCN    81                    .lib section in a.out corrupted.
-#&gt; 71           ELNRNG    48                           Link number out of range.
-#&gt; 72            ELOOP    40                  Too many levels of symbolic links.
-#&gt; 73      EMEDIUMTYPE   124                                  Wrong medium type.
+#&gt; 58           EISNAM    NA                               Is a named type file.
+#&gt; 59      EKEYEXPIRED    NA                                    Key has expired.
+#&gt; 60     EKEYREJECTED    NA                        Key was rejected by service.
+#&gt; 61      EKEYREVOKED    NA                               Key has been revoked.
+#&gt; 62           EL2HLT    NA                                     Level 2 halted.
+#&gt; 63         EL2NSYNC    NA                           Level 2 not synchronized.
+#&gt; 64           EL3HLT    NA                                     Level 3 halted.
+#&gt; 65           EL3RST    NA                                      Level 3 reset.
+#&gt; 66          ELIBACC    NA             Can not access a needed shared library.
+#&gt; 67          ELIBBAD    NA               Accessing a corrupted shared library.
+#&gt; 68         ELIBEXEC    NA              Cannot exec a shared library directly.
+#&gt; 69          ELIBMAX    NA    Attempting to link in too many shared libraries.
+#&gt; 70          ELIBSCN    NA                    .lib section in a.out corrupted.
+#&gt; 71           ELNRNG    NA                           Link number out of range.
+#&gt; 72            ELOOP    62                  Too many levels of symbolic links.
+#&gt; 73      EMEDIUMTYPE    NA                                  Wrong medium type.
 #&gt; 74           EMFILE    24                                Too many open files.
 #&gt; 75           EMLINK    31                                     Too many links.
-#&gt; 76         EMSGSIZE    90                                   Message too long.
-#&gt; 77        EMULTIHOP    72                                 Multihop attempted.
-#&gt; 78     ENAMETOOLONG    36                                 File name too long.
-#&gt; 79          ENAVAIL   119                      No XENIX semaphores available.
-#&gt; 80        ENEEDAUTH    NA                                 Need authenticator.
-#&gt; 81         ENETDOWN   100                                    Network is down.
-#&gt; 82        ENETRESET   102                Network dropped connection on reset.
-#&gt; 83      ENETUNREACH   101                             Network is unreachable.
+#&gt; 76         EMSGSIZE    40                                   Message too long.
+#&gt; 77        EMULTIHOP    95                                 Multihop attempted.
+#&gt; 78     ENAMETOOLONG    63                                 File name too long.
+#&gt; 79          ENAVAIL    NA                      No XENIX semaphores available.
+#&gt; 80        ENEEDAUTH    81                                 Need authenticator.
+#&gt; 81         ENETDOWN    50                                    Network is down.
+#&gt; 82        ENETRESET    52                Network dropped connection on reset.
+#&gt; 83      ENETUNREACH    51                             Network is unreachable.
 #&gt; 84           ENFILE    23                      Too many open files in system.
-#&gt; 85           ENOANO    55                                           No anode.
-#&gt; 86          ENOATTR    NA                                Attribute not found.
-#&gt; 87          ENOBUFS   105                          No buffer space available.
-#&gt; 88           ENOCSI    50                         No CSI structure available.
-#&gt; 89          ENODATA    61                               No message available.
+#&gt; 85           ENOANO    NA                                           No anode.
+#&gt; 86          ENOATTR    93                                Attribute not found.
+#&gt; 87          ENOBUFS    55                          No buffer space available.
+#&gt; 88           ENOCSI    NA                         No CSI structure available.
+#&gt; 89          ENODATA    96                               No message available.
 #&gt; 90           ENODEV    19                  Operation not supported by device.
 #&gt; 91           ENOENT     2                          No such file or directory.
 #&gt; 92          ENOEXEC     8                                  Exec format error.
-#&gt; 93           ENOKEY   126                         Required key not available.
-#&gt; 94           ENOLCK    37                                 No locks available.
-#&gt; 95          ENOLINK    67                              Link has been severed.
-#&gt; 96        ENOMEDIUM   123                                    No medium found.
+#&gt; 93           ENOKEY    NA                         Required key not available.
+#&gt; 94           ENOLCK    77                                 No locks available.
+#&gt; 95          ENOLINK    97                              Link has been severed.
+#&gt; 96        ENOMEDIUM    NA                                    No medium found.
 #&gt; 97           ENOMEM    12                             Cannot allocate memory.
-#&gt; 98           ENOMSG    42                         No message of desired type.
-#&gt; 99           ENONET    64                      Machine is not on the network.
-#&gt; 100          ENOPKG    65                              Package not installed.
-#&gt; 101     ENOPROTOOPT    92                             Protocol not available.
+#&gt; 98           ENOMSG    91                         No message of desired type.
+#&gt; 99           ENONET    NA                      Machine is not on the network.
+#&gt; 100          ENOPKG    NA                              Package not installed.
+#&gt; 101     ENOPROTOOPT    42                             Protocol not available.
 #&gt; 102          ENOSPC    28                                Device out of space.
-#&gt; 103           ENOSR    63                           Out of streams resources.
-#&gt; 104          ENOSTR    60                                       Not a STREAM.
-#&gt; 105          ENOSYS    38                           Function not implemented.
+#&gt; 103           ENOSR    98                           Out of streams resources.
+#&gt; 104          ENOSTR    99                                       Not a STREAM.
+#&gt; 105          ENOSYS    78                           Function not implemented.
 #&gt; 106         ENOTBLK    15                                 Not a block device.
-#&gt; 107        ENOTCONN   107                            Socket is not connected.
+#&gt; 107        ENOTCONN    57                            Socket is not connected.
 #&gt; 108         ENOTDIR    20                                    Not a directory.
-#&gt; 109       ENOTEMPTY    39                                Directory not empty.
-#&gt; 110         ENOTNAM   118                        Not a XENIX named type file.
-#&gt; 111 ENOTRECOVERABLE   131                              State not recoverable.
-#&gt; 112        ENOTSOCK    88                     Socket operation on non-socket.
-#&gt; 113         ENOTSUP    95                                      Not supported.
+#&gt; 109       ENOTEMPTY    66                                Directory not empty.
+#&gt; 110         ENOTNAM    NA                        Not a XENIX named type file.
+#&gt; 111 ENOTRECOVERABLE   104                              State not recoverable.
+#&gt; 112        ENOTSOCK    38                     Socket operation on non-socket.
+#&gt; 113         ENOTSUP    45                                      Not supported.
 #&gt; 114          ENOTTY    25                     Inappropriate ioctl for device.
-#&gt; 115        ENOTUNIQ    76                         Name not unique on network.
+#&gt; 115        ENOTUNIQ    NA                         Name not unique on network.
 #&gt; 116           ENXIO     6                          No such device or address.
-#&gt; 117      EOPNOTSUPP    95                  Operation not supported on socket.
-#&gt; 118       EOVERFLOW    75          Value too large to be stored in data type.
-#&gt; 119      EOWNERDEAD   130                                         Owner died.
+#&gt; 117      EOPNOTSUPP   102                  Operation not supported on socket.
+#&gt; 118       EOVERFLOW    84          Value too large to be stored in data type.
+#&gt; 119      EOWNERDEAD   105                                         Owner died.
 #&gt; 120           EPERM     1                            Operation not permitted.
-#&gt; 121    EPFNOSUPPORT    96                      Protocol family not supported.
+#&gt; 121    EPFNOSUPPORT    46                      Protocol family not supported.
 #&gt; 122           EPIPE    32                                        Broken pipe.
-#&gt; 123        EPROCLIM    NA                                 Too many processes.
-#&gt; 124    EPROCUNAVAIL    NA                          Bad procedure for program.
-#&gt; 125   EPROGMISMATCH    NA                              Program version wrong.
-#&gt; 126    EPROGUNAVAIL    NA                                RPC prog. not avail.
-#&gt; 127          EPROTO    71                                     Protocol error.
-#&gt; 128 EPROTONOSUPPORT    93                             Protocol not supported.
-#&gt; 129      EPROTOTYPE    91                     Protocol wrong type for socket.
-#&gt; 130         EPWROFF    NA                                Device power is off.
+#&gt; 123        EPROCLIM    67                                 Too many processes.
+#&gt; 124    EPROCUNAVAIL    76                          Bad procedure for program.
+#&gt; 125   EPROGMISMATCH    75                              Program version wrong.
+#&gt; 126    EPROGUNAVAIL    74                                RPC prog. not avail.
+#&gt; 127          EPROTO   100                                     Protocol error.
+#&gt; 128 EPROTONOSUPPORT    43                             Protocol not supported.
+#&gt; 129      EPROTOTYPE    41                     Protocol wrong type for socket.
+#&gt; 130         EPWROFF    82                                Device power is off.
 #&gt; 131          ERANGE    34                      Numerical result out of range.
-#&gt; 132         EREMCHG    78                             Remote address changed.
-#&gt; 133         EREMOTE    66                         File is already NFS-mounted
-#&gt; 134       EREMOTEIO   121                                   Remote I/O error.
-#&gt; 135        ERESTART    85        Interrupted system call should be restarted.
-#&gt; 136         ERFKILL   132              Operation not possible due to RF-kill.
+#&gt; 132         EREMCHG    NA                             Remote address changed.
+#&gt; 133         EREMOTE    71                         File is already NFS-mounted
+#&gt; 134       EREMOTEIO    NA                                   Remote I/O error.
+#&gt; 135        ERESTART    NA        Interrupted system call should be restarted.
+#&gt; 136         ERFKILL    NA              Operation not possible due to RF-kill.
 #&gt; 137           EROFS    30                              Read-only file system.
-#&gt; 138    ERPCMISMATCH    NA                                  RPC version wrong.
-#&gt; 139      ESHLIBVERS    NA                    Shared library version mismatch.
-#&gt; 140       ESHUTDOWN   108                  Cannot send after socket shutdown.
-#&gt; 141 ESOCKTNOSUPPORT    94                          Socket type not supported.
+#&gt; 138    ERPCMISMATCH    73                                  RPC version wrong.
+#&gt; 139      ESHLIBVERS    87                    Shared library version mismatch.
+#&gt; 140       ESHUTDOWN    58                  Cannot send after socket shutdown.
+#&gt; 141 ESOCKTNOSUPPORT    44                          Socket type not supported.
 #&gt; 142          ESPIPE    29                                       Illegal seek.
 #&gt; 143           ESRCH     3                                    No such process.
-#&gt; 144          ESRMNT    69                                      Srmount error.
-#&gt; 145          ESTALE   116                              Stale NFS file handle.
-#&gt; 146        ESTRPIPE    86                                 Streams pipe error.
-#&gt; 147           ETIME    62                             STREAM ioctl() timeout.
-#&gt; 148       ETIMEDOUT   110                                Operation timed out.
-#&gt; 149    ETOOMANYREFS   109                 Too many references: cannot splice.
+#&gt; 144          ESRMNT    NA                                      Srmount error.
+#&gt; 145          ESTALE    70                              Stale NFS file handle.
+#&gt; 146        ESTRPIPE    NA                                 Streams pipe error.
+#&gt; 147           ETIME   101                             STREAM ioctl() timeout.
+#&gt; 148       ETIMEDOUT    60                                Operation timed out.
+#&gt; 149    ETOOMANYREFS    59                 Too many references: cannot splice.
 #&gt; 150         ETXTBSY    26                                     Text file busy.
-#&gt; 151         EUCLEAN   117                           Structure needs cleaning.
-#&gt; 152         EUNATCH    49                       Protocol driver not attached.
-#&gt; 153          EUSERS    87                                     Too many users.
-#&gt; 154     EWOULDBLOCK    11                   Resource temporarily unavailable.
+#&gt; 151         EUCLEAN    NA                           Structure needs cleaning.
+#&gt; 152         EUNATCH    NA                       Protocol driver not attached.
+#&gt; 153          EUSERS    68                                     Too many users.
+#&gt; 154     EWOULDBLOCK    35                   Resource temporarily unavailable.
 #&gt; 155           EXDEV    18                                      Improper link.
-#&gt; 156          EXFULL    54                                      Exchange full.</div></pre>
+#&gt; 156          EXFULL    NA                                      Exchange full.</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#details">Details</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -302,7 +302,7 @@ NA_integer_." />
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
 </div>
 
       </footer>
