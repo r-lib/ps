@@ -40,6 +40,10 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@master
 
+      - name: Install devscripts
+        run: sudo apt-get install devscripts
+        if: matrix.os == 'ubuntu-16.04'
+
       - name: Query dependencies
         run: |
           install.packages('remotes')
