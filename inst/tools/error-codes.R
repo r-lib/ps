@@ -194,4 +194,5 @@ defs <- sprintf("
 #endif
 ", data$name, data$name, data$txt, data$name, data$name, data$txt)
 
-cat(sprintf(code, paste(defs, collapse = "\n")))
+txt <- paste0(sprintf(code, paste(defs, collapse = "\n")), collapse = "\n")
+writeBin(charToRaw(txt), con = "src/error-codes.c")

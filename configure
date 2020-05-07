@@ -147,7 +147,7 @@ fi
 # Create Makevars file
 # ------------------------------------------------------------------------
 
-$RBIN --vanilla --slave -f inst/tools/error-codes.R > src/error-codes.c
+$RBIN --vanilla --slave -f inst/tools/error-codes.R
 
 # OBJECTS (= source files)
 # LIBRARIES -> PKG_LIBS
