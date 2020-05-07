@@ -176,11 +176,11 @@
 }) <span class='co'># examplesIf</span></div><div class='output co'>#&gt; &gt; px &lt;- processx::process$new("sleep", "10")
 #&gt; &gt; p &lt;- ps_handle(px$get_pid())
 #&gt; &gt; p
-#&gt; &lt;ps::ps_handle&gt; PID=1844, NAME=sleep, AT=2020-05-07 14:50:19
+#&gt; &lt;ps::ps_handle&gt; PID=1944, NAME=sleep, AT=2020-05-07 20:57:50
 #&gt; &gt; ps_terminate(p)
 #&gt; NULL
 #&gt; &gt; p
-#&gt; &lt;ps::ps_handle&gt; PID=1844, NAME=sleep, AT=2020-05-07 14:50:19
+#&gt; &lt;ps::ps_handle&gt; PID=1944, NAME=???, AT=2020-05-07 20:57:50
 #&gt; &gt; ps_is_running(p)
 #&gt; [1] FALSE
 #&gt; &gt; px$get_exit_status()
