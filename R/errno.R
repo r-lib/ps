@@ -6,7 +6,8 @@
 #'
 #' A data frame with columns: `name`, `value`, `description`.
 #' @export
-#' @examples errno()
+#' @examplesIf ps::ps_is_supported()
+#' errno()
 
 errno <- function() {
   err <- as.list(ps_env$constants$errno)
