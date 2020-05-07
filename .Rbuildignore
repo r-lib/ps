@@ -17,3 +17,4 @@
 ^revdep$
 ^header\.md$
 ^\.Rproj\.user$
+^.*\.Rproj$
