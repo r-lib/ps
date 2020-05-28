@@ -175,11 +175,11 @@ whether PID has been reused. On Windows it uses <code>TerminateProcess()</code>.
 }) <span class='co'># examplesIf</span></div><div class='output co'>#&gt; &gt; px &lt;- processx::process$new("sleep", "10")
 #&gt; &gt; p &lt;- ps_handle(px$get_pid())
 #&gt; &gt; p
-#&gt; &lt;ps::ps_handle&gt; PID=2094, NAME=sleep, AT=2020-05-08 10:33:33
+#&gt; &lt;ps::ps_handle&gt; PID=2159, NAME=sleep, AT=2020-05-28 13:51:59
 #&gt; &gt; ps_kill(p)
 #&gt; NULL
 #&gt; &gt; p
-#&gt; &lt;ps::ps_handle&gt; PID=2094, NAME=???, AT=2020-05-08 10:33:33
+#&gt; &lt;ps::ps_handle&gt; PID=2159, NAME=???, AT=2020-05-28 13:51:59
 #&gt; &gt; ps_is_running(p)
 #&gt; [1] FALSE
 #&gt; &gt; px$get_exit_status()

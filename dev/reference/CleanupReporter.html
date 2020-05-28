@@ -192,11 +192,11 @@ idiomatic <code>testthat.R</code> file, that calls <code>test_check()</code> dur
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mypackage</span>)
 
 <span class='kw'>if</span>  (<span class='kw pkg'>ps</span><span class='kw ns'>::</span><span class='fu'><a href='ps_os_type.html'>ps_is_supported</a></span>()) {
-  <span class='no'>reporter</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;- <span class='kw pkg'>ps</span><span class='kw ns'>::</span><span class='fu'>CleanupReporter</span>(<span class='kw pkg'>testthat</span><span class='kw ns'>::</span><span class='no'><a href='https://testthat.r-lib.org/reference/ProgressReporter.html'>ProgressReporter</a></span>)$<span class='fu'>new</span>(
+  <span class='no'>reporter</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>ps</span><span class='kw ns'>::</span><span class='fu'>CleanupReporter</span>(<span class='kw pkg'>testthat</span><span class='kw ns'>::</span><span class='no'><a href='https://testthat.r-lib.org/reference/ProgressReporter.html'>ProgressReporter</a></span>)$<span class='fu'>new</span>(
     <span class='kw'>proc_unit</span> <span class='kw'>=</span> <span class='st'>"test"</span>, <span class='kw'>proc_cleanup</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 } <span class='kw'>else</span> {
   <span class='co'>## ps does not support this platform</span>
-  <span class='no'>reporter</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;- <span class='st'>"progress"</span>
+  <span class='no'>reporter</span> <span class='kw'>&lt;-</span> <span class='st'>"progress"</span>
 }
 
 <span class='fu'><a href='https://testthat.r-lib.org/reference/test_dir.html'>test_check</a></span>(<span class='st'>"mypackage"</span>, <span class='kw'>reporter</span> <span class='kw'>=</span> <span class='no'>reporter</span>)</pre>
