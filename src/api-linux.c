@@ -35,7 +35,7 @@ typedef struct {
 #define PS__CHECK_STAT(stat, handle)			\
   do {							\
     double starttime = psll_linux_boot_time +		\
-      (stat).starttime * psll_linux_clock_period;	\
+      ((double)(stat.starttime) * psll_linux_clock_period);	\
     double diff = starttime - (handle)->create_time;	\
     if (fabs(diff) > psll_linux_clock_period) {		\
       ps__no_such_process((handle)->pid, 0);		\
@@ -235,7 +235,8 @@ void ps__check_for_zombie(ps_handle_t *handle, int err) {
     ps__throw_error();
   }
 
-  diff = (psll_linux_boot_time + stat.starttime * psll_linux_clock_period) -
+  diff = (psll_linux_boot_time +
+           ((double)stat.starttime * psll_linux_clock_period)) -
          handle->create_time;
   if (fabs(diff) > psll_linux_clock_period) {
     ps__no_such_process(handle->pid, 0);
@@ -298,7 +299,8 @@ int psll_linux_ctime(long pid, double *ctime) {
     }
   }
 
-  *ctime = psll_linux_boot_time + stat.starttime * psll_linux_clock_period;
+  *ctime = psll_linux_boot_time +
+    ((double)stat.starttime * psll_linux_clock_period);
 
   return 0;
 }
