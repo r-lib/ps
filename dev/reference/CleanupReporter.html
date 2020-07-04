@@ -124,7 +124,7 @@ wraps it, so it checks for leftover child processes, at the specified
 place, see the <code>proc_unit</code> argument below.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>CleanupReporter</span>(<span class='kw'>reporter</span> <span class='kw'>=</span> <span class='kw pkg'>testthat</span><span class='kw ns'>::</span><span class='no'><a href='https://testthat.r-lib.org/reference/ProgressReporter.html'>ProgressReporter</a></span>)</pre>
+    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/ps/man/CleanupReporter.html'>CleanupReporter</a></span>(reporter = <span class='kw'>testthat</span>::<span class='kw'><a href='https://testthat.r-lib.org/reference/ProgressReporter.html'>ProgressReporter</a></span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -188,18 +188,18 @@ idiomatic <code>testthat.R</code> file, that calls <code>test_check()</code> dur
 
     
 
-<p>This is how to use this reporter in <code>testthat.R</code>:</p><pre><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>testthat</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mypackage</span>)
+<p>This is how to use this reporter in <code>testthat.R</code>:</p><pre><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://testthat.r-lib.org'>testthat</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'>mypackage</span>)
 
-<span class='kw'>if</span>  (<span class='kw pkg'>ps</span><span class='kw ns'>::</span><span class='fu'><a href='ps_os_type.html'>ps_is_supported</a></span>()) {
-  <span class='no'>reporter</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>ps</span><span class='kw ns'>::</span><span class='fu'>CleanupReporter</span>(<span class='kw pkg'>testthat</span><span class='kw ns'>::</span><span class='no'><a href='https://testthat.r-lib.org/reference/ProgressReporter.html'>ProgressReporter</a></span>)$<span class='fu'>new</span>(
-    <span class='kw'>proc_unit</span> <span class='kw'>=</span> <span class='st'>"test"</span>, <span class='kw'>proc_cleanup</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-} <span class='kw'>else</span> {
+<span class='co'>if</span>  (<span class='kw'>ps</span>::<span class='fu'><a href='https://rdrr.io/pkg/ps/man/ps_os_type.html'>ps_is_supported</a></span>()) {
+  <span class='kw'>reporter</span> <span class='op'>&lt;-</span> <span class='kw'>ps</span>::<span class='fu'><a href='https://rdrr.io/pkg/ps/man/CleanupReporter.html'>CleanupReporter</a></span>(<span class='kw'>testthat</span>::<span class='kw'><a href='https://testthat.r-lib.org/reference/ProgressReporter.html'>ProgressReporter</a></span>)<span class='op'>$</span><span class='fu'>new</span>(
+    proc_unit = <span class='st'>"test"</span>, proc_cleanup = <span class='fl'>TRUE</span>)
+} <span class='co'>else</span> {
   <span class='co'>## ps does not support this platform</span>
-  <span class='no'>reporter</span> <span class='kw'>&lt;-</span> <span class='st'>"progress"</span>
+  <span class='kw'>reporter</span> <span class='op'>&lt;-</span> <span class='st'>"progress"</span>
 }
 
-<span class='fu'><a href='https://testthat.r-lib.org/reference/test_dir.html'>test_check</a></span>(<span class='st'>"mypackage"</span>, <span class='kw'>reporter</span> <span class='kw'>=</span> <span class='no'>reporter</span>)</pre>
+<span class='fu'><a href='https://testthat.r-lib.org/reference/test_dir.html'>test_check</a></span>(<span class='st'>"mypackage"</span>, reporter = <span class='kw'>reporter</span>)</pre>
 
 
   </div>

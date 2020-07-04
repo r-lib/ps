@@ -119,7 +119,7 @@
 <a href="#ps-133" class="anchor"></a>ps 1.3.3<small> 2020-05-08 </small>
 </h1>
 <ul>
-<li><p>New function <code><a href="../reference/errno.html">errno()</a></code> returns a table of <code>errno.h</code> error codes and their description.</p></li>
+<li><p>New function <code><a href="https://rdrr.io/pkg/ps/man/errno.html">errno()</a></code> returns a table of <code>errno.h</code> error codes and their description.</p></li>
 <li><p>ps now compiles again on Solaris.</p></li>
 </ul>
 </div>
@@ -144,7 +144,7 @@
 <a href="#ps-130" class="anchor"></a>ps 1.3.0<small> 2018-12-21 </small>
 </h1>
 <ul>
-<li>New <code><a href="../reference/ps_cpu_count.html">ps_cpu_count()</a></code> function returns the number of logical or physical processors.</li>
+<li>New <code><a href="https://rdrr.io/pkg/ps/man/ps_cpu_count.html">ps_cpu_count()</a></code> function returns the number of logical or physical processors.</li>
 </ul>
 </div>
     <div id="ps-121" class="section level1">
@@ -160,10 +160,10 @@
 <a href="#ps-120" class="anchor"></a>ps 1.2.0<small> 2018-10-16 </small>
 </h1>
 <ul>
-<li><p>New <code><a href="../reference/ps_connections.html">ps_connections()</a></code> to list network connections. The <code><a href="../reference/CleanupReporter.html">CleanupReporter()</a></code> testthat reporter can check for leftover open network connections in test cases.</p></li>
-<li><p><code><a href="../reference/ps_open_files.html">ps_open_files()</a></code> does not include open sockets now on Linux, they are rather included in <code><a href="../reference/ps_connections.html">ps_connections()</a></code>.</p></li>
-<li><p><code><a href="../reference/CleanupReporter.html">CleanupReporter()</a></code> now ignores <code>/dev/urandom</code>, some packages (curl, openssl, etc.) keep this file open.</p></li>
-<li><p>Fix <code><a href="../reference/ps.html">ps()</a></code> printing without the tibble package (<a href='https://github.com/r-lib/ps/issues/43'>#43</a>).</p></li>
+<li><p>New <code><a href="https://rdrr.io/pkg/ps/man/ps_connections.html">ps_connections()</a></code> to list network connections. The <code><a href="https://rdrr.io/pkg/ps/man/CleanupReporter.html">CleanupReporter()</a></code> testthat reporter can check for leftover open network connections in test cases.</p></li>
+<li><p><code><a href="https://rdrr.io/pkg/ps/man/ps_open_files.html">ps_open_files()</a></code> does not include open sockets now on Linux, they are rather included in <code><a href="https://rdrr.io/pkg/ps/man/ps_connections.html">ps_connections()</a></code>.</p></li>
+<li><p><code><a href="https://rdrr.io/pkg/ps/man/CleanupReporter.html">CleanupReporter()</a></code> now ignores <code>/dev/urandom</code>, some packages (curl, openssl, etc.) keep this file open.</p></li>
+<li><p>Fix <code><a href="https://rdrr.io/pkg/ps/man/ps.html">ps()</a></code> printing without the tibble package (<a href='https://github.com/r-lib/ps/issues/43'>#43</a>).</p></li>
 <li><p>Fix compilation with ICC (<a href='https://github.com/r-lib/ps/issues/39'>#39</a>).</p></li>
 <li><p>Fix a crash on Linux (<a href='https://github.com/r-lib/ps/issues/47'>#47</a>).</p></li>
 </ul>
@@ -173,12 +173,12 @@
 <a href="#ps-110" class="anchor"></a>ps 1.1.0<small> 2018-08-10 </small>
 </h1>
 <ul>
-<li><p>New <code><a href="../reference/ps_num_fds.html">ps_num_fds()</a></code> returns the number of open files/handles.</p></li>
-<li><p>New <code><a href="../reference/ps_open_files.html">ps_open_files()</a></code> lists all open files of a process.</p></li>
-<li><p>New <code><a href="../reference/ps_interrupt.html">ps_interrupt()</a></code> interrupts a process. It sends a <code>SIGINT</code> signal on POSIX systems, and it can send CTRL+C or CTRL+BREAK events on Windows.</p></li>
-<li><p>New <code><a href="../reference/ps_users.html">ps_users()</a></code> lists users connected to the system.</p></li>
-<li><p>New <code><a href="../reference/ps_kill_tree.html">ps_mark_tree()</a></code>, <code><a href="../reference/ps_kill_tree.html">ps_find_tree()</a></code>, <code><a href="../reference/ps_kill_tree.html">ps_kill_tree()</a></code>, <code><a href="../reference/ps_kill_tree.html">with_process_cleanup()</a></code>: functions to mark and clean up child processes.</p></li>
-<li><p>New <code>CleanupReporter</code>, to be used with testthat: it checks for leftover child processes and open files in <code>test_that()</code> blocks.</p></li>
+<li><p>New <code><a href="https://rdrr.io/pkg/ps/man/ps_num_fds.html">ps_num_fds()</a></code> returns the number of open files/handles.</p></li>
+<li><p>New <code><a href="https://rdrr.io/pkg/ps/man/ps_open_files.html">ps_open_files()</a></code> lists all open files of a process.</p></li>
+<li><p>New <code><a href="https://rdrr.io/pkg/ps/man/ps_interrupt.html">ps_interrupt()</a></code> interrupts a process. It sends a <code>SIGINT</code> signal on POSIX systems, and it can send CTRL+C or CTRL+BREAK events on Windows.</p></li>
+<li><p>New <code><a href="https://rdrr.io/pkg/ps/man/ps_users.html">ps_users()</a></code> lists users connected to the system.</p></li>
+<li><p>New <code><a href="https://rdrr.io/pkg/ps/man/ps_kill_tree.html">ps_mark_tree()</a></code>, <code><a href="https://rdrr.io/pkg/ps/man/ps_kill_tree.html">ps_find_tree()</a></code>, <code><a href="https://rdrr.io/pkg/ps/man/ps_kill_tree.html">ps_kill_tree()</a></code>, <code><a href="https://rdrr.io/pkg/ps/man/ps_kill_tree.html">with_process_cleanup()</a></code>: functions to mark and clean up child processes.</p></li>
+<li><p>New <code>CleanupReporter</code>, to be used with testthat: it checks for leftover child processes and open files in <code><a href="https://testthat.r-lib.org/reference/test_that.html">test_that()</a></code> blocks.</p></li>
 </ul>
 </div>
     <div id="ps-100" class="section level1">
