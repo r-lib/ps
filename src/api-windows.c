@@ -586,17 +586,10 @@ SEXP ps__boot_time() {
  * Return the number of logical, active CPUs. Return 0 if undetermined.
  * See discussion at: https://bugs.python.org/issue33166#msg314631
  */
-#if (_WIN32_WINNT < 0x0601)  // < Windows 7 (namely Vista and XP)
 
-SEXP ps__cpu_count_logical() {
-  return ScalarInteger(NA_INTEGER);
-}
-
-SEXP ps__cpu_count_physical() {
-  return ScalarInteger(NA_INTEGER);
-}
-
-#else  // Windows >= 7
+#ifndef ALL_PROCESSOR_GROUPS
+#define ALL_PROCESSOR_GROUPS 0xffff
+#endif
 
 unsigned int ps__get_num_cpus(int fail_on_err) {
   unsigned int ncpus = 0;
@@ -721,7 +714,6 @@ SEXP ps__cpu_count_physical() {
     return ScalarInteger(NA_INTEGER);
   }
 }
-#endif
 
 SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
   const char *cmarker = CHAR(STRING_ELT(marker, 0));
