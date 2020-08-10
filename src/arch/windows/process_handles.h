@@ -13,7 +13,6 @@
 
 #include <stdio.h>
 #include <windows.h>
-#include <strsafe.h>
 #include <winternl.h>
 #include <psapi.h>
 

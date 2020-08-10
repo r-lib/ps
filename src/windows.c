@@ -31,7 +31,6 @@
 
 #include "common.h"
 #include "arch/windows/process_info.h"
-#include "arch/windows/process_handles.h"
 #ifndef __MINGW32__
 #include "arch/windows/ntextapi.h"
 #else
@@ -565,12 +564,14 @@ SEXP ps__proc_info(DWORD pid) {
   mem_private = 0;
 #endif
 
-  PROTECT(retlist = ps__build_named_list(
 #if defined(_WIN64)
-    "kkdddiKKKKKK" "kKKKKKKKKK",
+#define BUILD_NAMED_LIST_PROTO "kkdddiKKKKKK" "kKKKKKKKKK"
 #else
-    "kkdddiKKKKKK" "kIIIIIIIII",
+#define BUILD_NAMED_LIST_PROTO "kkdddiKKKKKK" "kIIIIIIIII"
 #endif
+
+  PROTECT(retlist = ps__build_named_list(
+    BUILD_NAMED_LIST_PROTO,
     "num_handles",         process->HandleCount,                  /* 0 */
     "ctx_switches",        ctx_switches,	                  /* 1 */
     "user_time",           user_time,		                  /* 2 */
