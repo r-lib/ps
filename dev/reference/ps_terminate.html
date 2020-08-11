@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ps</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.3.3.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.3.4.9000</span>
       </span>
     </div>
 
@@ -176,11 +176,11 @@
 }) <span class='co'># examplesIf</span></div><div class='output co'>#&gt; &gt; px &lt;- processx::process$new("sleep", "10")
 #&gt; &gt; p &lt;- ps_handle(px$get_pid())
 #&gt; &gt; p
-#&gt; &lt;ps::ps_handle&gt; PID=2054, NAME=sleep, AT=2020-08-11 09:20:07
+#&gt; &lt;ps::ps_handle&gt; PID=2268, NAME=sleep, AT=2020-08-11 14:45:44
 #&gt; &gt; ps_terminate(p)
 #&gt; NULL
 #&gt; &gt; p
-#&gt; &lt;ps::ps_handle&gt; PID=2054, NAME=sleep, AT=2020-08-11 09:20:07
+#&gt; &lt;ps::ps_handle&gt; PID=2268, NAME=???, AT=2020-08-11 14:45:44
 #&gt; &gt; ps_is_running(p)
 #&gt; [1] FALSE
 #&gt; &gt; px$get_exit_status()
