@@ -43,7 +43,7 @@ memory devoted to other than executable code. It matches "top"‘s
 }
 
 For on explanation of Windows fields see the
-\href{http://msdn.microsoft.com/en-us/library/windows/desktop/ms684874(v=vs.85).aspx}{PROCESS_MEMORY_COUNTERS_EX}
+\href{https://docs.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex}{PROCESS_MEMORY_COUNTERS_EX}
 structure.
 
 Throws a \code{zombie_process()} error for zombie processes.
