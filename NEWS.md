@@ -3,6 +3,10 @@
 
 # ps 1.3.3
 
+* `ps_cpu_count()` now reports the correct number on Windows, even if
+  the package binary was built on a Windows version with a different
+  API (#77).
+
 * New function `errno()` returns a table of `errno.h` error codes and
   their description.
 

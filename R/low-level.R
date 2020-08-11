@@ -503,7 +503,7 @@ ps_cpu_times <- function(p) {
 #' * `pageins`: (macOS): number of actual pageins.
 #'
 #' For on explanation of Windows fields see the
-#' [PROCESS_MEMORY_COUNTERS_EX](http://msdn.microsoft.com/en-us/library/windows/desktop/ms684874(v=vs.85).aspx)
+#' [PROCESS_MEMORY_COUNTERS_EX](https://docs.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex)
 #' structure.
 #'
 #' Throws a `zombie_process()` error for zombie processes.
