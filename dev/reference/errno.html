@@ -122,7 +122,7 @@ NA_integer_." />
 <code>NA_integer_</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/ps/man/errno.html'>errno</a></span>()</pre>
+    <pre class="usage"><span class='fu'>errno</span>()</pre>
 
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -130,8 +130,8 @@ NA_integer_." />
     <p>A data frame with columns: <code>name</code>, <code>value</code>, <code>description</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='kw'>ps</span>::<span class='fu'><a href='https://rdrr.io/pkg/ps/man/ps_os_type.html'>ps_is_supported</a></span>()) (<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='op'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='kw'>withAutoprint</span> <span class='co'>else</span> <span class='kw'>force</span>)({ <span class='co'># examplesIf</span>
-<span class='fu'><a href='https://rdrr.io/pkg/ps/man/errno.html'>errno</a></span>()
+    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='kw'>ps</span>::<span class='fu'><a href='ps_os_type.html'>ps_is_supported</a></span>()) (<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='op'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='kw'>withAutoprint</span> <span class='co'>else</span> <span class='kw'>force</span>)({ <span class='co'># examplesIf</span>
+<span class='fu'>errno</span>()
 }) <span class='co'># examplesIf</span></div><div class='output co'>#&gt; &gt; errno()
 #&gt;                name value                                         description
 #&gt; 1             E2BIG     7                                  Arg list too long.

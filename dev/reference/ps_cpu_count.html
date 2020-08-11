@@ -122,7 +122,7 @@ Windows systems, e.g. Vista or older and Windows Server 2008 or older." />
 Windows systems, e.g. Vista or older and Windows Server 2008 or older.</p>
     </div>
 
-    <pre class="usage"><span class='fu'><a href='https://rdrr.io/pkg/ps/man/ps_cpu_count.html'>ps_cpu_count</a></span>(logical = <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>ps_cpu_count</span>(logical = <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -138,9 +138,9 @@ Windows systems, e.g. Vista or older and Windows Server 2008 or older.</p>
     <p>Integer scalar.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='kw'>ps</span>::<span class='fu'><a href='https://rdrr.io/pkg/ps/man/ps_os_type.html'>ps_is_supported</a></span>()) (<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='op'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='kw'>withAutoprint</span> <span class='co'>else</span> <span class='kw'>force</span>)({ <span class='co'># examplesIf</span>
-<span class='fu'><a href='https://rdrr.io/pkg/ps/man/ps_cpu_count.html'>ps_cpu_count</a></span>(logical = <span class='fl'>TRUE</span>)
-<span class='fu'><a href='https://rdrr.io/pkg/ps/man/ps_cpu_count.html'>ps_cpu_count</a></span>(logical = <span class='fl'>FALSE</span>)
+    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='kw'>ps</span>::<span class='fu'><a href='ps_os_type.html'>ps_is_supported</a></span>()) (<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='op'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='kw'>withAutoprint</span> <span class='co'>else</span> <span class='kw'>force</span>)({ <span class='co'># examplesIf</span>
+<span class='fu'>ps_cpu_count</span>(logical = <span class='fl'>TRUE</span>)
+<span class='fu'>ps_cpu_count</span>(logical = <span class='fl'>FALSE</span>)
 }) <span class='co'># examplesIf</span></div><div class='output co'>#&gt; &gt; ps_cpu_count(logical = TRUE)
 #&gt; [1] 4
 #&gt; &gt; ps_cpu_count(logical = FALSE)
