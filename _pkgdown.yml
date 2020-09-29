@@ -60,6 +60,7 @@ reference:
   - ps_boot_time
   - ps_os_type
   - ps_cpu_count
+  - ps_tty_size
 
 - title: Process tree cleanup
   contents:
@@ -70,3 +71,4 @@ reference:
   contents:
   - ps_is_supported
   - signals
+  - errno
