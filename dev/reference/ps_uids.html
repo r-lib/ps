@@ -80,12 +80,6 @@ names: real, effective and saved." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -122,9 +116,9 @@ names: real, effective and saved." />
 names: <code>real</code>, <code>effective</code> and <code>saved</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ps_uids</span>(<span class='kw'>p</span>)
+    <pre class="usage"><span class='fu'>ps_uids</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
 
-<span class='fu'>ps_gids</span>(<span class='kw'>p</span>)</pre>
+<span class='fu'>ps_gids</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -177,19 +171,12 @@ platforms.</p>
 <code><a href='ps_username.html'>ps_username</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='kw'>ps</span>::<span class='fu'><a href='ps_os_type.html'>ps_is_supported</a></span>() <span class='op'>&amp;&amp;</span> <span class='kw'>ps</span>::<span class='fu'><a href='ps_os_type.html'>ps_os_type</a></span>()[<span class='st'>"POSIX"</span>]) (<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='op'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='kw'>withAutoprint</span> <span class='co'>else</span> <span class='kw'>force</span>)({ <span class='co'># examplesIf</span>
-<span class='kw'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span>()
-<span class='kw'>p</span>
-<span class='fu'>ps_uids</span>(<span class='kw'>p</span>)
-<span class='fu'>ps_gids</span>(<span class='kw'>p</span>)
-}) <span class='co'># examplesIf</span></div><div class='output co'>#&gt; &gt; p &lt;- ps_handle()
-#&gt; &gt; p
-#&gt; &lt;ps::ps_handle&gt; PID=2181, NAME=R, AT=2020-08-11 14:45:32
-#&gt; &gt; ps_uids(p)
-#&gt;      real effective     saved 
-#&gt;       501       501       501 
-#&gt; &gt; ps_gids(p)
-#&gt;      real effective     saved 
+    <pre class="examples"><div class='input'><span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='va'>p</span>
+</div><div class='output co'>#&gt; &lt;ps::ps_handle&gt; PID=2057, NAME=R, AT=2020-09-29 16:02:50</div><div class='input'><span class='fu'>ps_uids</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;      real effective     saved 
+#&gt;       501       501       501 </div><div class='input'><span class='fu'>ps_gids</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;      real effective     saved 
 #&gt;        20        20        20 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -206,7 +193,7 @@ platforms.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

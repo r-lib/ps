@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Process name — ps_name • ps</title>
+<title>Query the size of the current terminal — ps_tty_size • ps</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,11 @@
 
 
 
-<meta property="og:title" content="Process name — ps_name" />
-<meta property="og:description" content="The name of the program, which is typically the name of the executable." />
+<meta property="og:title" content="Query the size of the current terminal — ps_tty_size" />
+<meta property="og:description" content="If the standard output of the current R process is not a terminal,
+e.g. because it is redirected to a file, or the R process is running in
+a GUI, then it will throw an error. You need to handle this error if
+you want to use this function in a package." />
 
 
 <meta name="robots" content="noindex">
@@ -105,73 +108,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Process name</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/ps/blob/master/R/low-level.R'><code>R/low-level.R</code></a></small>
-    <div class="hidden name"><code>ps_name.Rd</code></div>
+    <h1>Query the size of the current terminal</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/ps/blob/master/R/system.R'><code>R/system.R</code></a></small>
+    <div class="hidden name"><code>ps_tty_size.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The name of the program, which is typically the name of the executable.</p>
+    <p>If the standard output of the current R process is not a terminal,
+e.g. because it is redirected to a file, or the R process is running in
+a GUI, then it will throw an error. You need to handle this error if
+you want to use this function in a package.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ps_name</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ps_tty_size</span><span class='op'>(</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>p</th>
-      <td><p>Process handle.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Character scalar.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>On on Unix this can change, e.g. via an exec*() system call.</p>
-<p><code>ps_name()</code> works on zombie processes.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <p>If an error happens, the error message is different depending on
+what type of device the standard output is. Some common error messages
+are:</p><ul>
+<li><p>"Inappropriate ioctl for device."</p></li>
+<li><p>"Operation not supported on socket."</p></li>
+<li><p>"Operation not supported by device."</p></li>
+</ul>
 
-    <div class='dont-index'><p>Other process handle functions: 
-<code><a href='ps_children.html'>ps_children</a>()</code>,
-<code><a href='ps_cmdline.html'>ps_cmdline</a>()</code>,
-<code><a href='ps_connections.html'>ps_connections</a>()</code>,
-<code><a href='ps_cpu_times.html'>ps_cpu_times</a>()</code>,
-<code><a href='ps_create_time.html'>ps_create_time</a>()</code>,
-<code><a href='ps_cwd.html'>ps_cwd</a>()</code>,
-<code><a href='ps_environ.html'>ps_environ</a>()</code>,
-<code><a href='ps_exe.html'>ps_exe</a>()</code>,
-<code><a href='ps_handle.html'>ps_handle</a>()</code>,
-<code><a href='ps_interrupt.html'>ps_interrupt</a>()</code>,
-<code><a href='ps_is_running.html'>ps_is_running</a>()</code>,
-<code><a href='ps_kill.html'>ps_kill</a>()</code>,
-<code><a href='ps_memory_info.html'>ps_memory_info</a>()</code>,
-<code><a href='ps_num_fds.html'>ps_num_fds</a>()</code>,
-<code><a href='ps_num_threads.html'>ps_num_threads</a>()</code>,
-<code><a href='ps_open_files.html'>ps_open_files</a>()</code>,
-<code><a href='ps_pid.html'>ps_pid</a>()</code>,
-<code><a href='ps_ppid.html'>ps_ppid</a>()</code>,
-<code><a href='ps_resume.html'>ps_resume</a>()</code>,
-<code><a href='ps_send_signal.html'>ps_send_signal</a>()</code>,
-<code><a href='ps_status.html'>ps_status</a>()</code>,
-<code><a href='ps_suspend.html'>ps_suspend</a>()</code>,
-<code><a href='ps_terminal.html'>ps_terminal</a>()</code>,
-<code><a href='ps_terminate.html'>ps_terminate</a>()</code>,
-<code><a href='ps_uids.html'>ps_uids</a>()</code>,
-<code><a href='ps_username.html'>ps_username</a>()</code></p></div>
+<p>Whatever the error message, <code>ps_tty_size</code> always fails with an error of
+class <code>ps_unknown_tty_size</code>, which you can catch.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span>
-<span class='va'>p</span>
-</div><div class='output co'>#&gt; &lt;ps::ps_handle&gt; PID=2057, NAME=R, AT=2020-09-29 16:02:50</div><div class='input'><span class='fu'>ps_name</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "R"</div><div class='input'><span class='fu'><a href='ps_exe.html'>ps_exe</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "/Library/Frameworks/R.framework/Versions/4.0/Resources/bin/exec/R"</div><div class='input'><span class='fu'><a href='ps_cmdline.html'>ps_cmdline</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "/Library/Frameworks/R.framework/Resources/bin/exec/R"                
-#&gt; [2] "--no-echo"                                                           
-#&gt; [3] "--no-restore"                                                        
-#&gt; [4] "--file=/Users/runner/work/_temp/dedaa93c-c2bd-4a13-9964-6a03f42093c8"</div></pre>
+    <pre class="examples"><div class='input'><span class='co'># An example that falls back to the 'width' option</span>
+<span class='kw'><a href='https://rdrr.io/r/base/conditions.html'>tryCatch</a></span><span class='op'>(</span>
+  <span class='fu'>ps_tty_size</span><span class='op'>(</span><span class='op'>)</span>,
+  ps_unknown_tty_size <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>err</span><span class='op'>)</span> <span class='op'>{</span>
+    <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>width <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"width"</span><span class='op'>)</span>, height <span class='op'>=</span> <span class='cn'>NA_integer_</span><span class='op'>)</span>
+  <span class='op'>}</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt;  width height 
+#&gt;     80     NA </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

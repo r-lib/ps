@@ -80,12 +80,6 @@ Windows systems, e.g. Vista or older and Windows Server 2008 or older." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -122,7 +116,7 @@ Windows systems, e.g. Vista or older and Windows Server 2008 or older." />
 Windows systems, e.g. Vista or older and Windows Server 2008 or older.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ps_cpu_count</span>(logical = <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>ps_cpu_count</span><span class='op'>(</span>logical <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -138,13 +132,9 @@ Windows systems, e.g. Vista or older and Windows Server 2008 or older.</p>
     <p>Integer scalar.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='kw'>ps</span>::<span class='fu'><a href='ps_os_type.html'>ps_is_supported</a></span>()) (<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='op'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='kw'>withAutoprint</span> <span class='co'>else</span> <span class='kw'>force</span>)({ <span class='co'># examplesIf</span>
-<span class='fu'>ps_cpu_count</span>(logical = <span class='fl'>TRUE</span>)
-<span class='fu'>ps_cpu_count</span>(logical = <span class='fl'>FALSE</span>)
-}) <span class='co'># examplesIf</span></div><div class='output co'>#&gt; &gt; ps_cpu_count(logical = TRUE)
-#&gt; [1] 4
-#&gt; &gt; ps_cpu_count(logical = FALSE)
-#&gt; [1] 4</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>ps_cpu_count</span><span class='op'>(</span>logical <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 4</div><div class='input'><span class='fu'>ps_cpu_count</span><span class='op'>(</span>logical <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 4</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -160,7 +150,7 @@ Windows systems, e.g. Vista or older and Windows Server 2008 or older.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

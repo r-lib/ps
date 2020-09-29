@@ -103,6 +103,9 @@
     <loc>http://ps.r-lib.org/reference/ps_terminate.html</loc>
   </url>
   <url>
+    <loc>http://ps.r-lib.org/reference/ps_tty_size.html</loc>
+  </url>
+  <url>
     <loc>http://ps.r-lib.org/reference/ps_uids.html</loc>
   </url>
   <url>

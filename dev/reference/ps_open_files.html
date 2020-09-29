@@ -81,12 +81,6 @@ main R thread." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -124,7 +118,7 @@ opens files from other threads, in addition to the files opened from the
 main R thread.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ps_open_files</span>(<span class='kw'>p</span>)</pre>
+    <pre class="usage"><span class='fu'>ps_open_files</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -175,34 +169,24 @@ file.</p>
 <code><a href='ps_username.html'>ps_username</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='kw'>ps</span>::<span class='fu'><a href='ps_os_type.html'>ps_is_supported</a></span>()) (<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='op'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='kw'>withAutoprint</span> <span class='co'>else</span> <span class='kw'>force</span>)({ <span class='co'># examplesIf</span>
-<span class='kw'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span>()
-<span class='fu'>ps_open_files</span>(<span class='kw'>p</span>)
-<span class='kw'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/connections.html'>file</a></span>(<span class='kw'>tmp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(), <span class='st'>"w"</span>)
-<span class='fu'>ps_open_files</span>(<span class='kw'>p</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span>(<span class='kw'>f</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span>(<span class='kw'>tmp</span>)
-<span class='fu'>ps_open_files</span>(<span class='kw'>p</span>)
-}) <span class='co'># examplesIf</span></div><div class='output co'>#&gt; &gt; p &lt;- ps_handle()
-#&gt; &gt; ps_open_files(p)
-#&gt; <span style='color: #555555;'># A tibble: 1 x 2</span><span>
+    <pre class="examples"><div class='input'><span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='fu'>ps_open_files</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 1 x 2</span><span>
 #&gt;      fd path                                                         
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>                                                        
-#&gt; </span><span style='color: #555555;'>1</span><span>     3 /Users/runner/work/_temp/126466f3-6cb9-4cae-b3e7-ad427fad1e8d
-#&gt; &gt; f &lt;- file(tmp &lt;- tempfile(), "w")
-#&gt; &gt; ps_open_files(p)
-#&gt; </span><span style='color: #555555;'># A tibble: 2 x 2</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span>     3 /Users/runner/work/_temp/dedaa93c-c2bd-4a13-9964-6a03f42093c8</div><div class='input'><span class='va'>f</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/connections.html'>file</a></span><span class='op'>(</span><span class='va'>tmp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"w"</span><span class='op'>)</span>
+<span class='fu'>ps_open_files</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 2 x 2</span><span>
 #&gt;      fd path                                                                    
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>                                                                   
-#&gt; </span><span style='color: #555555;'>1</span><span>     3 /Users/runner/work/_temp/126466f3-6cb9-4cae-b3e7-ad427fad1e8d           
-#&gt; </span><span style='color: #555555;'>2</span><span>    19 /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmpn5L5sk/fil…
-#&gt; &gt; close(f)
-#&gt; &gt; unlink(tmp)
-#&gt; &gt; ps_open_files(p)
-#&gt; </span><span style='color: #555555;'># A tibble: 1 x 2</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span>     3 /Users/runner/work/_temp/dedaa93c-c2bd-4a13-9964-6a03f42093c8           
+#&gt; </span><span style='color: #555555;'>2</span><span>    19 /private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpABzV0M/fil…</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/connections.html'>close</a></span><span class='op'>(</span><span class='va'>f</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='va'>tmp</span><span class='op'>)</span>
+<span class='fu'>ps_open_files</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 1 x 2</span><span>
 #&gt;      fd path                                                         
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>                                                        
-#&gt; </span><span style='color: #555555;'>1</span><span>     3 /Users/runner/work/_temp/126466f3-6cb9-4cae-b3e7-ad427fad1e8d</div></span></pre>
+#&gt; </span><span style='color: #555555;'>1</span><span>     3 /Users/runner/work/_temp/dedaa93c-c2bd-4a13-9964-6a03f42093c8</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -218,7 +202,7 @@ file.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

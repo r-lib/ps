@@ -80,12 +80,6 @@ NA_integer_." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -122,7 +116,7 @@ NA_integer_." />
 <code>NA_integer_</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>errno</span>()</pre>
+    <pre class="usage"><span class='fu'>errno</span><span class='op'>(</span><span class='op'>)</span></pre>
 
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -130,10 +124,8 @@ NA_integer_." />
     <p>A data frame with columns: <code>name</code>, <code>value</code>, <code>description</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='kw'>ps</span>::<span class='fu'><a href='ps_os_type.html'>ps_is_supported</a></span>()) (<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='op'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='kw'>withAutoprint</span> <span class='co'>else</span> <span class='kw'>force</span>)({ <span class='co'># examplesIf</span>
-<span class='fu'>errno</span>()
-}) <span class='co'># examplesIf</span></div><div class='output co'>#&gt; &gt; errno()
-#&gt;                name value                                         description
+    <pre class="examples"><div class='input'><span class='fu'>errno</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;                name value                                         description
 #&gt; 1             E2BIG     7                                  Arg list too long.
 #&gt; 2            EACCES    13                                  Permission denied.
 #&gt; 3        EADDRINUSE    48                             Address already in use.
@@ -305,7 +297,7 @@ NA_integer_." />
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>

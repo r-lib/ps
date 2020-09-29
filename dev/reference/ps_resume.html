@@ -81,12 +81,6 @@ all process threads." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -124,7 +118,7 @@ whether PID has been reused. On Windows this has the effect of resuming
 all process threads.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ps_resume</span>(<span class='kw'>p</span>)</pre>
+    <pre class="usage"><span class='fu'>ps_resume</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -166,29 +160,15 @@ all process threads.</p>
 <code><a href='ps_username.html'>ps_username</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='kw'>ps</span>::<span class='fu'><a href='ps_os_type.html'>ps_is_supported</a></span>() <span class='op'>&amp;&amp;</span> <span class='kw'>ps</span>::<span class='fu'><a href='ps_os_type.html'>ps_os_type</a></span>()[<span class='st'>"POSIX"</span>]) (<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/numeric_version.html'>getRversion</a></span>() <span class='op'>&gt;=</span> <span class='st'>"3.4"</span>) <span class='kw'>withAutoprint</span> <span class='co'>else</span> <span class='kw'>force</span>)({ <span class='co'># examplesIf</span>
-<span class='kw'>px</span> <span class='op'>&lt;-</span> <span class='kw'>processx</span>::<span class='kw'><a href='http://processx.r-lib.org/reference/process.html'>process</a></span><span class='op'>$</span><span class='fu'>new</span>(<span class='st'>"sleep"</span>, <span class='st'>"10"</span>)
-<span class='kw'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span>(<span class='kw'>px</span><span class='op'>$</span><span class='fu'>get_pid</span>())
-<span class='kw'>p</span>
-<span class='fu'><a href='ps_suspend.html'>ps_suspend</a></span>(<span class='kw'>p</span>)
-<span class='fu'><a href='ps_status.html'>ps_status</a></span>(<span class='kw'>p</span>)
-<span class='fu'>ps_resume</span>(<span class='kw'>p</span>)
-<span class='fu'><a href='ps_status.html'>ps_status</a></span>(<span class='kw'>p</span>)
-<span class='fu'><a href='ps_kill.html'>ps_kill</a></span>(<span class='kw'>p</span>)
-}) <span class='co'># examplesIf</span></div><div class='output co'>#&gt; &gt; px &lt;- processx::process$new("sleep", "10")
-#&gt; &gt; p &lt;- ps_handle(px$get_pid())
-#&gt; &gt; p
-#&gt; &lt;ps::ps_handle&gt; PID=2265, NAME=sleep, AT=2020-08-11 14:45:43
-#&gt; &gt; ps_suspend(p)
-#&gt; NULL
-#&gt; &gt; ps_status(p)
-#&gt; [1] "stopped"
-#&gt; &gt; ps_resume(p)
-#&gt; NULL
-#&gt; &gt; ps_status(p)
-#&gt; [1] "running"
-#&gt; &gt; ps_kill(p)
-#&gt; NULL</div></pre>
+    <pre class="examples"><div class='input'><span class='va'>px</span> <span class='op'>&lt;-</span> <span class='fu'>processx</span><span class='fu'>::</span><span class='va'><a href='http://processx.r-lib.org/reference/process.html'>process</a></span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='st'>"sleep"</span>, <span class='st'>"10"</span><span class='op'>)</span>
+<span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='va'>px</span><span class='op'>$</span><span class='fu'>get_pid</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>p</span>
+</div><div class='output co'>#&gt; &lt;ps::ps_handle&gt; PID=2123, NAME=sleep, AT=2020-09-29 16:03:00</div><div class='input'><span class='fu'><a href='ps_suspend.html'>ps_suspend</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='fu'><a href='ps_status.html'>ps_status</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "stopped"</div><div class='input'><span class='fu'>ps_resume</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='fu'><a href='ps_status.html'>ps_status</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "running"</div><div class='input'><span class='fu'><a href='ps_kill.html'>ps_kill</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; NULL</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -204,7 +184,7 @@ all process threads.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>
