@@ -4,6 +4,9 @@
 #endif
 
 #include <errno.h>
+#include <sys/ioctl.h>
+#include <stdio.h>
+#include <unistd.h>
 
 #include "ps-internal.h"
 
@@ -88,4 +91,19 @@ SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path) {
   PROTECT(res = psll_send_signal(p, s));
   UNPROTECT(2);
   return res;
+}
+
+SEXP ps__tty_size() {
+  struct winsize w;
+  int err = ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+  if (err == -1) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  SEXP result = Rf_allocVector(INTSXP, 2);
+  INTEGER(result)[0] = w.ws_col;
+  INTEGER(result)[1] = w.ws_row;
+
+  return result;
 }

@@ -1050,3 +1050,23 @@ SEXP ps__users() {
   ps__throw_error();
   return R_NilValue;
 }
+
+SEXP ps__tty_size() {
+  CONSOLE_SCREEN_BUFFER_INFO info;
+
+  BOOL ok = GetConsoleScreenBufferInfo(
+    GetStdHandle(STD_OUTPUT_HANDLE),
+    &info
+  );
+
+  if (!ok) {
+    ps__set_error_from_windows_error(0);
+    ps__throw_error();
+  }
+
+  SEXP result = Rf_allocVector(INTSXP, 2);
+  INTEGER(result)[0] = info.srWindow.Right  - info.srWindow.Left + 1;
+  INTEGER(result)[1] = info.srWindow.Bottom - info.srWindow.Top + 1;
+
+  return result;
+}
