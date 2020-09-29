@@ -1065,8 +1065,8 @@ SEXP ps__tty_size() {
   }
 
   SEXP result = Rf_allocVector(INTSXP, 2);
-  INTEGER(result)[0] = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-  INTEGER(result)[1] = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+  INTEGER(result)[0] = info.srWindow.Right  - info.srWindow.Left + 1;
+  INTEGER(result)[1] = info.srWindow.Bottom - info.srWindow.Top + 1;
 
   return result;
 }
