@@ -49,6 +49,7 @@ SEXP ps__boot_time();
 SEXP ps__cpu_count_logical();
 SEXP ps__cpu_count_physical();
 SEXP ps__users();
+SEXP ps__tty_size();
 
 /* Generic utils used from R */
 
