@@ -230,8 +230,10 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
           ##     7 AF_UNIX SOCK_STREAM <NA>     NA /var/run/mDNSResponder
           ##    10 AF_UNIX SOCK_STREAM <NA>     NA /var/run/mDNSResponder
           new <- new[
-            new$family != "AF_UNIX" | new$type != "SOCK_STREAM" |
-            tolower(basename(new$raddr)) != "mdnsresponder", ]
+            new$family != "AF_UNIX" |
+            new$type != "SOCK_STREAM" |
+            is.na(new$raddr) |
+            paste(tolower(basename(new$raddr))) != "mdnsresponder", ]
 
           leftover <- ! apply(new, 1, paste, collapse = "&") %in%
             apply(old, 1, paste, collapse = "&")
