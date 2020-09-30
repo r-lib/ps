@@ -3,6 +3,9 @@
 
 * New `ps_tty_size()` function to query the size of the terminal.
 
+* Fixed an issue in `CLeanupReporter()` that triggered random failures
+  on macOS.
+
 # ps 1.3.4
 
 * `ps_cpu_count()` now reports the correct number on Windows, even if
