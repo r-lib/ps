@@ -94,7 +94,8 @@ test_that("only kill", {
   on.exit(if (!is.null(out$p)) out$p$kill(), add = TRUE)
   with_reporter(
     CleanupReporter(testthat::SilentReporter)$new(
-      proc_unit = "test", proc_cleanup = TRUE, proc_fail = FALSE), {
+      proc_unit = "test", proc_cleanup = TRUE, proc_fail = FALSE,
+      conn_fail = FALSE), {
         test_that("foobar", {
           out$p <<- processx::process$new(px(), c("sleep", "5"))
           out$running <<- out$p$is_alive()
