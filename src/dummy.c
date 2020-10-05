@@ -60,6 +60,7 @@ SEXP ps__tty_size() { ps__dummy("ps_tty_size"); }
 SEXP ps__disk_partitions(SEXP x) { ps__dummy("ps_disk_partitions"); }
 SEXP ps__disk_usage() { ps__dummy("ps_disk_usage"); }
 SEXP ps__system_memory() { ps__dummy("ps_system_memory"); }
+SEXP ps__system_swap() { ps__dummy("ps_system_swap"); }
 
 SEXP psll_handle(SEXP x, SEXP y) { return ps__dummy("ps_handle"); }
 SEXP psll_format(SEXP x) { return ps__dummy("ps_format"); }

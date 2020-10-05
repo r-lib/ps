@@ -992,3 +992,35 @@ SEXP ps__system_memory() {
     "speculative", (double) vm.speculative_count * pagesize
   );
 }
+
+SEXP ps__system_swap() {
+  int mib[2];
+  size_t size;
+  struct xsw_usage totals;
+  vm_statistics_data_t vm;
+  int pagesize = getpagesize();
+
+  mib[0] = CTL_VM;
+  mib[1] = VM_SWAPUSAGE;
+  size = sizeof(totals);
+  if (sysctl(mib, 2, &totals, &size, NULL, 0) == -1) {
+  if (errno != 0) {
+      ps__set_error_from_errno();
+    } else {
+      ps__set_error("sysctl(VM_SWAPUSAGE) syscall failed");
+    }
+    ps__throw_error();
+  }
+
+  // vm
+  if (ps__sys_vminfo(&vm)) ps__throw_error();
+
+  return ps__build_named_list(
+    "ddddd",
+    "total", (double) totals.xsu_total,
+    "used",  (double) totals.xsu_used,
+    "free",  (double) totals.xsu_avail,
+    "sin",   (double) vm.pageins * pagesize,
+    "sout",  (double) vm.pageouts * pagesize
+  );
+}

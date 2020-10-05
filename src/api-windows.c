@@ -1262,3 +1262,8 @@ SEXP ps__system_memory() {
   // TODO
   return R_NilValue;
 }
+
+SEXP ps__system_swap() {
+  // TODO
+  return R_NilValue;
+}

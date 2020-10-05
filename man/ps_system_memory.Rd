@@ -7,7 +7,7 @@
 ps_system_memory()
 }
 \value{
-List with entries. All numbers are in bytes:
+Named list. All numbers are in bytes:
 \itemize{
 \item \code{total}: total physical memory (exclusive swap).
 \item \code{avail} the memory that can be given instantly to processes without
@@ -27,6 +27,11 @@ and so it is in RAM.
 \item \code{inactive}: (Unix only) memory that is marked as not used.
 \item \code{wired}: (macOS only) memory that is marked to always stay in RAM. It
 is never moved to disk.
+\item \code{buffers}: (Linux only) cache for things like file system metadata.
+\item \code{cached}: (Linux only) cache for various things.
+\item \code{shared}: (Linux only) memory that may be simultaneously accessed by
+multiple processes.
+\item \code{slab}:  (Linux only) in-kernel data structures cache.
 }
 }
 \description{
@@ -36,5 +41,9 @@ Statistics about system memory usage
 \dontshow{if (ps::ps_is_supported()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ps_system_memory()
 \dontshow{\}) # examplesIf}
+}
+\seealso{
+Other memory functions: 
+\code{\link{ps_system_swap}()}
 }
 \concept{memory functions}

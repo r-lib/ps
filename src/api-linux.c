@@ -1146,6 +1146,12 @@ error:
 }
 
 SEXP ps__system_memory() {
+  // This is implemented in R on Linux
+  ps__throw_error();
+  return R_NilValue;
+}
+
+SEXP ps__system_swap() {
   // TODO
   return R_NilValue;
 }

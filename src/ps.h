@@ -53,6 +53,7 @@ SEXP ps__tty_size();
 SEXP ps__disk_partitions(SEXP all);
 SEXP ps__disk_usage(SEXP paths);
 SEXP ps__system_memory();
+SEXP ps__system_swap();
 
 /* Generic utils used from R */
 
