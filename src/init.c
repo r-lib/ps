@@ -19,6 +19,8 @@ static const R_CallMethodDef callMethods[]  = {
   { "ps__tty_size",           (DL_FUNC) ps__tty_size,           0 },
   { "ps__disk_partitions",    (DL_FUNC) ps__disk_partitions,    1 },
   { "ps__disk_usage",         (DL_FUNC) ps__disk_usage,         1 },
+  { "ps__system_memory",      (DL_FUNC) ps__system_memory,      0 },
+  { "ps__system_swap",        (DL_FUNC) ps__system_swap,        0 },
 
   /* ps_handle API */
   { "psll_pid",          (DL_FUNC) psll_pid,          1 },

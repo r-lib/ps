@@ -1,6 +1,9 @@
 
 # ps development version
 
+* New `ps_system_memory()` and `ps_system_swap()` functions, to
+  return information about system memory and swap usage.
+
 * New `ps_disk_partitions()` and `ps_disk_usage()` functions, they
   return information about file systems, similarly to the `mount` and
   `df` Unix commands.

@@ -24,6 +24,8 @@ test_that("terminal", {
 
 test_that("username, uids, gids", {
   if (Sys.which("ps") == "") skip("No ps program")
+  ret <- system("ps -p 1 2>/dev/null")
+  if (ret != 0) skip("ps does not work properly")
   p1 <- processx::process$new("sleep", "10")
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())

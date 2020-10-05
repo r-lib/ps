@@ -14,6 +14,9 @@
 #include <utmpx.h>
 #include <arpa/inet.h>
 
+#include <mach/mach.h>
+#include <mach/mach_vm.h>
+
 #include "ps-internal.h"
 #include "arch/macos/process_info.h"
 
@@ -937,4 +940,87 @@ error:
   if (fs != NULL) free(fs);
   ps__throw_error();
   return R_NilValue;
+}
+
+int ps__sys_vminfo(vm_statistics_data_t *vmstat) {
+  kern_return_t ret;
+  mach_msg_type_number_t count = sizeof(*vmstat) / sizeof(integer_t);
+  mach_port_t mport = mach_host_self();
+
+  ret = host_statistics(mport, HOST_VM_INFO, (host_info_t)vmstat, &count);
+  if (ret != KERN_SUCCESS) {
+    ps__set_error(
+      "host_statistics(HOST_VM_INFO) syscall failed: %s",
+      mach_error_string(ret)
+    );
+    return 1;
+  }
+  mach_port_deallocate(mach_task_self(), mport);
+  return 0;
+}
+
+SEXP ps__system_memory() {
+  int mib[2];
+  uint64_t total;
+  size_t len = sizeof(total);
+  vm_statistics_data_t vm;
+  int pagesize = getpagesize();
+  // physical mem
+  mib[0] = CTL_HW;
+  mib[1] = HW_MEMSIZE;
+
+  // This is also available as sysctlbyname("hw.memsize").
+  if (sysctl(mib, 2, &total, &len, NULL, 0)) {
+    if (errno != 0) {
+      ps__set_error_from_errno();
+    } else {
+      ps__set_error("sysctl(HW_MEMSIZE) syscall failed");
+    }
+    ps__throw_error();
+  }
+
+  // vm
+  if (ps__sys_vminfo(&vm)) ps__throw_error();
+
+  return ps__build_named_list(
+    "dddddd",
+    "total",       (double) total,
+    "active",      (double) vm.active_count * pagesize,
+    "inactive",    (double) vm.inactive_count * pagesize,
+    "wired",       (double) vm.wire_count * pagesize,
+    "free",        (double) vm.free_count * pagesize,
+    "speculative", (double) vm.speculative_count * pagesize
+  );
+}
+
+SEXP ps__system_swap() {
+  int mib[2];
+  size_t size;
+  struct xsw_usage totals;
+  vm_statistics_data_t vm;
+  int pagesize = getpagesize();
+
+  mib[0] = CTL_VM;
+  mib[1] = VM_SWAPUSAGE;
+  size = sizeof(totals);
+  if (sysctl(mib, 2, &totals, &size, NULL, 0) == -1) {
+  if (errno != 0) {
+      ps__set_error_from_errno();
+    } else {
+      ps__set_error("sysctl(VM_SWAPUSAGE) syscall failed");
+    }
+    ps__throw_error();
+  }
+
+  // vm
+  if (ps__sys_vminfo(&vm)) ps__throw_error();
+
+  return ps__build_named_list(
+    "ddddd",
+    "total", (double) totals.xsu_total,
+    "used",  (double) totals.xsu_used,
+    "free",  (double) totals.xsu_avail,
+    "sin",   (double) vm.pageins * pagesize,
+    "sout",  (double) vm.pageouts * pagesize
+  );
 }
