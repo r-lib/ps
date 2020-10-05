@@ -13,6 +13,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <utmp.h>
+#include <mntent.h>
 
 #include <Rinternals.h>
 
@@ -1100,4 +1101,46 @@ SEXP ps__users() {
   endutent();
   UNPROTECT(1);
   return result;
+}
+
+SEXP ps__disk_partitions(SEXP all) {
+  FILE *file = NULL;
+  struct mntent *entry;
+  SEXP result;
+  PROTECT_INDEX pidx;
+  int len = 30, num = -1;
+
+  file = setmntent("/etc/mtab", "r");
+  if ((file == 0) || (file == NULL)) {
+    ps__set_error_from_errno();
+    goto error;
+  }
+
+  PROTECT_WITH_INDEX(result = allocVector(VECSXP, len), &pidx);
+
+  while ((entry = getmntent(file))) {
+    if (entry == NULL) {
+      ps__set_error_from_errno();
+      goto error;
+    }
+
+    if (++num == len) {
+      len *= 2;
+      REPROTECT(result = Rf_lengthgets(result, len), pidx);
+    }
+    SET_VECTOR_ELT(
+      result, num,
+      ps__build_list("ssss", entry->mnt_fsname, entry->mnt_dir,
+                     entry->mnt_type, entry->mnt_opts));
+  }
+
+  endmntent(file);
+
+  UNPROTECT(1);
+  return result;
+
+error:
+  if (file != NULL) endmntent(file);
+  ps__throw_error();
+  return R_NilValue;
 }

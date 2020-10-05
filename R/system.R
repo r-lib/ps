@@ -79,10 +79,10 @@ ps_users <- function() {
 #'
 #' If cannot be determined, it returns `NA`. It also returns `NA` on older
 #' Windows systems, e.g. Vista or older and Windows Server 2008 or older.
-#' 
+#'
 #' @param logical Whether to count logical CPUs.
 #' @return Integer scalar.
-#' 
+#'
 #' @export
 #' @examplesIf ps::ps_is_supported()
 #' ps_cpu_count(logical = TRUE)
@@ -96,7 +96,7 @@ ps_cpu_count <- function(logical = TRUE) {
  ps_cpu_count_logical <- function() {
    .Call(ps__cpu_count_logical)
  }
- 
+
 ps_cpu_count_physical <- function() {
   if (ps_os_type()[["LINUX"]]) {
     ps_cpu_count_physical_linux()

@@ -1,6 +1,10 @@
 
 # ps development version
 
+* New `ps_disk_partitions()` and `ps_disk_usage()` functions, they
+  return information about file systems, similarly to the `mount` and
+  `df` Unix commands.
+
 * New `ps_tty_size()` function to query the size of the terminal.
 
 * Fixed an issue in `CLeanupReporter()` that triggered random failures

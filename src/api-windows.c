@@ -1070,3 +1070,190 @@ SEXP ps__tty_size() {
 
   return result;
 }
+
+static char *ps__get_drive_type(int type) {
+  switch (type) {
+  case DRIVE_FIXED:
+    return "fixed";
+  case DRIVE_CDROM:
+    return "cdrom";
+  case DRIVE_REMOVABLE:
+    return "removable";
+  case DRIVE_UNKNOWN:
+    return "unknown";
+  case DRIVE_NO_ROOT_DIR:
+    return "unmounted";
+  case DRIVE_REMOTE:
+    return "remote";
+  case DRIVE_RAMDISK:
+    return "ramdisk";
+  default:
+    return "?";
+  }
+}
+
+
+
+SEXP ps__disk_partitions(SEXP rall) {
+  DWORD num_bytes;
+  char drive_strings[255];
+  char *drive_letter = drive_strings;
+  char mp_buf[MAX_PATH];
+  char mp_path[MAX_PATH];
+  int all = LOGICAL(rall)[0];
+  int type;
+  int ret;
+  unsigned int old_mode = 0;
+  char opts[20];
+  HANDLE mp_h;
+  BOOL mp_flag= TRUE;
+  LPTSTR fs_type[MAX_PATH + 1] = { 0 };
+  DWORD pflags = 0;
+
+  SEXP result;
+  PROTECT_INDEX pidx;
+  int len = 10, num = -1;
+  PROTECT_WITH_INDEX(result = allocVector(VECSXP, len), &pidx);
+
+  // avoid to visualize a message box in case something goes wrong
+  // see https://github.com/giampaolo/psutil/issues/264
+  old_mode = SetErrorMode(SEM_FAILCRITICALERRORS);
+
+  num_bytes = GetLogicalDriveStrings(254, drive_letter);
+
+  if (num_bytes == 0) {
+    ps__set_error_from_errno(0);
+    goto error;
+  }
+
+  while (*drive_letter != 0) {
+    opts[0] = 0;
+    fs_type[0] = 0;
+
+    type = GetDriveType(drive_letter);
+
+    // by default we only show hard drives and cd-roms
+    if (all == 0) {
+      if ((type == DRIVE_UNKNOWN) ||
+          (type == DRIVE_NO_ROOT_DIR) ||
+          (type == DRIVE_REMOTE) ||
+          (type == DRIVE_RAMDISK)) {
+        goto next;
+      }
+      // floppy disk: skip it by default as it introduces a
+      // considerable slowdown.
+      if ((type == DRIVE_REMOVABLE) &&
+          (strcmp(drive_letter, "A:\\")  == 0)) {
+        goto next;
+      }
+    }
+
+    ret = GetVolumeInformation(
+      (LPCTSTR)drive_letter, NULL, _ARRAYSIZE(drive_letter),
+      NULL, NULL, &pflags, (LPTSTR)fs_type, _ARRAYSIZE(fs_type));
+    if (ret == 0) {
+      // We might get here in case of a floppy hard drive, in
+      // which case the error is (21, "device not ready").
+      // Let's pretend it didn't happen as we already have
+      // the drive name and type ('removable').
+      strcat_s(opts, _countof(opts), "");
+      SetLastError(0);
+    } else {
+      if (pflags & FILE_READ_ONLY_VOLUME) {
+        strcat_s(opts, _countof(opts), "ro");
+      } else {
+        strcat_s(opts, _countof(opts), "rw");
+      }
+      if (pflags & FILE_VOLUME_IS_COMPRESSED) {
+        strcat_s(opts, _countof(opts), ",compressed");
+      }
+
+      // Check for mount points on this volume and add/get info
+      // (checks first to know if we can even have mount points)
+      if (pflags & FILE_SUPPORTS_REPARSE_POINTS) {
+        mp_h = FindFirstVolumeMountPoint(
+          drive_letter, mp_buf, MAX_PATH);
+        if (mp_h != INVALID_HANDLE_VALUE) {
+          while (mp_flag) {
+
+            // Append full mount path with drive letter
+            strcpy_s(mp_path, _countof(mp_path), drive_letter);
+            strcat_s(mp_path, _countof(mp_path), mp_buf);
+
+            SetErrorMode(old_mode);
+            // TODO: should call FindVolumeMountPointClose on error
+            if (++num == len) {
+              len *= 2;
+              REPROTECT(result = Rf_lengthgets(result, len), pidx);
+            }
+            SET_VECTOR_ELT(
+              result, num,
+              ps__build_list(
+                "ssss", drive_letter, mp_path, fs_type, opts));
+            SetErrorMode(SEM_FAILCRITICALERRORS);
+
+            // Continue looking for more mount points
+            mp_flag = FindNextVolumeMountPoint(
+              mp_h, mp_buf, MAX_PATH);
+          }
+          FindVolumeMountPointClose(mp_h);
+        }
+      }
+    }
+
+    if (strlen(opts) > 0) {
+      strcat_s(opts, _countof(opts), ",");
+    }
+    strcat_s(opts, _countof(opts), ps__get_drive_type(type));
+
+    SetErrorMode(old_mode);
+
+    if (++num == len) {
+      len *= 2;
+      REPROTECT(result = Rf_lengthgets(result, len), pidx);
+    }
+    SET_VECTOR_ELT(
+      result, num,
+      ps__build_list(
+        "ssss", drive_letter, drive_letter, fs_type, opts));
+
+    next:
+      drive_letter = strchr(drive_letter, 0) + 1;
+  }
+
+  UNPROTECT(1);
+  return result;
+
+  error:
+    SetErrorMode(old_mode);
+    return R_NilValue;
+}
+
+SEXP ps__disk_usage(SEXP paths) {
+  BOOL retval;
+  ULARGE_INTEGER freeuser, total, free;
+  int i, n = Rf_length(paths);
+  SEXP result = PROTECT(allocVector(VECSXP, n));
+
+  for (i = 0; i < n; i++) {
+    const char *path = CHAR(STRING_ELT(paths, i));
+    wchar_t *wpath;
+    int iret = ps__utf8_to_utf16(path, &wpath);
+    if (iret) goto error;
+    retval = GetDiskFreeSpaceExW(wpath, &freeuser, &total, &free);
+    if (!retval) goto error;
+    SET_VECTOR_ELT(
+      result, i,
+      allocVector(REALSXP, 3));
+    REAL(VECTOR_ELT(result, i))[0] = (double) total.QuadPart;
+    REAL(VECTOR_ELT(result, i))[1] = (double) free.QuadPart;
+    REAL(VECTOR_ELT(result, i))[2] = (double) freeuser.QuadPart;
+  }
+
+  UNPROTECT(1);
+  return result;
+
+error:
+  ps__throw_error();
+  return R_NilValue;
+}
