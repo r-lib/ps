@@ -1075,3 +1075,8 @@ SEXP ps__disk_partitions() {
   // TODO
   return R_NilValue;
 }
+
+SEXP ps__disk_usage(SEXP paths) {
+  // TODO
+  return R_NilValue;
+}

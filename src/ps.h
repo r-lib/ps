@@ -51,6 +51,7 @@ SEXP ps__cpu_count_physical();
 SEXP ps__users();
 SEXP ps__tty_size();
 SEXP ps__disk_partitions();
+SEXP ps__disk_usage(SEXP paths);
 
 /* Generic utils used from R */
 

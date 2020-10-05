@@ -79,10 +79,10 @@ ps_users <- function() {
 #'
 #' If cannot be determined, it returns `NA`. It also returns `NA` on older
 #' Windows systems, e.g. Vista or older and Windows Server 2008 or older.
-#' 
+#'
 #' @param logical Whether to count logical CPUs.
 #' @return Integer scalar.
-#' 
+#'
 #' @export
 #' @examplesIf ps::ps_is_supported()
 #' ps_cpu_count(logical = TRUE)
@@ -96,7 +96,7 @@ ps_cpu_count <- function(logical = TRUE) {
  ps_cpu_count_logical <- function() {
    .Call(ps__cpu_count_logical)
  }
- 
+
 ps_cpu_count_physical <- function() {
   if (ps_os_type()[["LINUX"]]) {
     ps_cpu_count_physical_linux()
@@ -145,7 +145,7 @@ ps_tty_size <- function() {
 
 #' @export
 
-ps_disk_partititions <- function() {
+ps_disk_partitions <- function() {
   l <- not_null(.Call(ps__disk_partitions))
 
   d <- data.frame(
@@ -154,6 +154,35 @@ ps_disk_partititions <- function() {
     mountpoint = vapply(l, "[[", character(1), 2),
     fstype = vapply(l, "[[", character(1), 3),
     options = vapply(l, "[[", character(1), 4)
+  )
+
+  requireNamespace("tibble", quietly = TRUE)
+  class(d) <- unique(c("tbl_df", "tbl", class(d)))
+  d
+}
+
+#' @export
+
+ps_disk_usage <- function(paths = ps_disk_partitions()$mountpoint) {
+  assert_character(paths)
+  l <- .Call(ps__disk_usage, paths)
+  l2 <- lapply(l, function(fs) {
+    total <- fs[[5]] * fs[[1]]
+    avail_to_root <- fs[[6]] * fs[[1]]
+    avail = fs[[7]] * fs[[1]]
+    used  <-  total - avail_to_root
+    total_user <- used + avail
+    usage_percent <- used / total_user
+    list(total = total, used = used, free = avail, percent = usage_percent)
+  })
+
+  d <- data.frame(
+    stringsAsFactors = FALSE,
+    mountpoint = paths,
+    total = vapply(l2, "[[", double(1), "total"),
+    used = vapply(l2, "[[", double(1), "used"),
+    available = vapply(l2, "[[", double(1), "free"),
+    capacity = vapply(l2, "[[", double(1), "percent")
   )
 
   requireNamespace("tibble", quietly = TRUE)
