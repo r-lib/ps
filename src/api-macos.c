@@ -466,17 +466,17 @@ SEXP ps__cpu_count_logical() {
 
   if (sysctlbyname("hw.logicalcpu", &num, &size, NULL, 2))
     return ScalarInteger(NA_INTEGER);
-  else 
+  else
     return ScalarInteger(num);
 }
 
 SEXP ps__cpu_count_physical() {
   int num = 0;
   size_t size = sizeof(int);
-  
+
   if (sysctlbyname("hw.physicalcpu", &num, &size, NULL, 0))
     return ScalarInteger(NA_INTEGER);
-  else 
+  else
     return ScalarInteger(num);
 }
 
@@ -834,4 +834,107 @@ SEXP ps__users() {
   endutxent();
   UNPROTECT(1);
   return result;
+}
+
+SEXP ps__disk_partitions() {
+  int num;
+  int i;
+  int len;
+  uint64_t flags;
+  char opts[400];
+  struct statfs *fs = NULL;
+  SEXP result;
+
+  // get the number of mount points
+  num = getfsstat(NULL, 0, MNT_NOWAIT);
+  if (num == -1) {
+    ps__set_error_from_errno();
+    goto error;
+  }
+
+  len = sizeof(*fs) * num;
+  fs = malloc(len);
+  if (fs == NULL) {
+    ps__no_memory("");
+    goto error;
+  }
+
+  num = getfsstat(fs, len, MNT_NOWAIT);
+  if (num == -1) {
+    ps__set_error_from_errno();
+    goto error;
+  }
+
+  PROTECT(result = allocVector(VECSXP, num));
+
+  for (i = 0; i < num; i++) {
+    opts[0] = 0;
+    flags = fs[i].f_flags;
+
+    // see sys/mount.h
+    if (flags & MNT_RDONLY)
+      strlcat(opts, "ro", sizeof(opts));
+    else
+      strlcat(opts, "rw", sizeof(opts));
+    if (flags & MNT_SYNCHRONOUS)
+      strlcat(opts, ",sync", sizeof(opts));
+    if (flags & MNT_NOEXEC)
+      strlcat(opts, ",noexec", sizeof(opts));
+    if (flags & MNT_NOSUID)
+      strlcat(opts, ",nosuid", sizeof(opts));
+    if (flags & MNT_UNION)
+      strlcat(opts, ",union", sizeof(opts));
+    if (flags & MNT_ASYNC)
+      strlcat(opts, ",async", sizeof(opts));
+    if (flags & MNT_EXPORTED)
+      strlcat(opts, ",exported", sizeof(opts));
+    if (flags & MNT_QUARANTINE)
+      strlcat(opts, ",quarantine", sizeof(opts));
+    if (flags & MNT_LOCAL)
+      strlcat(opts, ",local", sizeof(opts));
+    if (flags & MNT_QUOTA)
+      strlcat(opts, ",quota", sizeof(opts));
+    if (flags & MNT_ROOTFS)
+      strlcat(opts, ",rootfs", sizeof(opts));
+    if (flags & MNT_DOVOLFS)
+      strlcat(opts, ",dovolfs", sizeof(opts));
+    if (flags & MNT_DONTBROWSE)
+      strlcat(opts, ",dontbrowse", sizeof(opts));
+    if (flags & MNT_IGNORE_OWNERSHIP)
+      strlcat(opts, ",ignore-ownership", sizeof(opts));
+    if (flags & MNT_AUTOMOUNTED)
+      strlcat(opts, ",automounted", sizeof(opts));
+    if (flags & MNT_JOURNALED)
+      strlcat(opts, ",journaled", sizeof(opts));
+    if (flags & MNT_NOUSERXATTR)
+      strlcat(opts, ",nouserxattr", sizeof(opts));
+    if (flags & MNT_DEFWRITE)
+      strlcat(opts, ",defwrite", sizeof(opts));
+    if (flags & MNT_MULTILABEL)
+      strlcat(opts, ",multilabel", sizeof(opts));
+    if (flags & MNT_NOATIME)
+      strlcat(opts, ",noatime", sizeof(opts));
+    if (flags & MNT_UPDATE)
+      strlcat(opts, ",update", sizeof(opts));
+    if (flags & MNT_RELOAD)
+      strlcat(opts, ",reload", sizeof(opts));
+    if (flags & MNT_FORCE)
+      strlcat(opts, ",force", sizeof(opts));
+    if (flags & MNT_CMDFLAGS)
+      strlcat(opts, ",cmdflags", sizeof(opts));
+
+    SET_VECTOR_ELT(
+      result, i,
+      ps__build_list("ssss", fs[i].f_mntfromname, fs[i].f_mntonname,
+                     fs[i].f_fstypename, opts));
+  }
+
+  free(fs);
+  UNPROTECT(1);
+  return result;
+
+error:
+  if (fs != NULL) free(fs);
+  ps__throw_error();
+  return R_NilValue;
 }

@@ -142,3 +142,21 @@ ps_tty_size <- function() {
   )
   c(width = ret[1], height = ret[2])
 }
+
+#' @export
+
+ps_disk_partititions <- function() {
+  l <- not_null(.Call(ps__disk_partitions))
+
+  d <- data.frame(
+    stringsAsFactors = FALSE,
+    device = vapply(l, "[[", character(1), 1),
+    mountpoint = vapply(l, "[[", character(1), 2),
+    fstype = vapply(l, "[[", character(1), 3),
+    options = vapply(l, "[[", character(1), 4)
+  )
+
+  requireNamespace("tibble", quietly = TRUE)
+  class(d) <- unique(c("tbl_df", "tbl", class(d)))
+  d
+}

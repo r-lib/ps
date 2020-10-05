@@ -1101,3 +1101,8 @@ SEXP ps__users() {
   UNPROTECT(1);
   return result;
 }
+
+SEXP ps__disk_partitions() {
+  // TODO
+  return R_NilValue;
+}

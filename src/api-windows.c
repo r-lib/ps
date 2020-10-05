@@ -1070,3 +1070,8 @@ SEXP ps__tty_size() {
 
   return result;
 }
+
+SEXP ps__disk_partitions() {
+  // TODO
+  return R_NilValue;
+}
