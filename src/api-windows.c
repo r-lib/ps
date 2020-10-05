@@ -1230,6 +1230,30 @@ SEXP ps__disk_partitions(SEXP rall) {
 }
 
 SEXP ps__disk_usage(SEXP paths) {
-  // TODO
+  BOOL retval;
+  ULARGE_INTEGER freeuser, total, free;
+  int i, n = Rf_length(paths);
+  SEXP result = PROTECT(allocVector(VECSXP, n));
+
+  for (i = 0; i < n; i++) {
+    const char *path = CHAR(STRING_ELT(paths, i));
+    wchar_t *wpath;
+    int iret = ps__utf8_to_utf16(path, &wpath);
+    if (iret) goto error;
+    retval = GetDiskFreeSpaceExW(wpath, &freeuser, &total, &free);
+    if (!retval) goto error;
+    SET_VECTOR_ELT(
+      result, i,
+      allocVector(REALSXP, 3));
+    REAL(VECTOR_ELT(result, i))[0] = (double) total.QuadPart;
+    REAL(VECTOR_ELT(result, i))[1] = (double) free.QuadPart;
+    REAL(VECTOR_ELT(result, i))[2] = (double) freeuser.QuadPart;
+  }
+
+  UNPROTECT(1);
+  return result;
+
+error:
+  ps__throw_error();
   return R_NilValue;
 }

@@ -187,6 +187,35 @@ ps__disk_partitions_filter <- function(pt) {
 ps_disk_usage <- function(paths = ps_disk_partitions()$mountpoint) {
   assert_character(paths)
   l <- .Call(ps__disk_usage, paths)
+  os <- ps_os_name()
+  if (os == "WINDOWS") {
+    ps__disk_usage_format_windows(paths, l)
+  } else {
+    ps__disk_usage_format_posix(paths, l)
+  }
+}
+
+ps__disk_usage_format_windows <- function(paths, l) {
+  total <- vapply(l, "[[", double(1), 1)
+  free <- vapply(l, "[[", double(1), 2)
+  freeuser <- vapply(l, "[[", double(1), 3)
+  used <- total - free
+
+  d <- data.frame(
+    stringsAsFactors = FALSE,
+    mountpoint = paths,
+    total = total,
+    used = used,
+    available = freeuser,
+    capacity = used / total
+  )
+
+  requireNamespace("tibble", quietly = TRUE)
+  class(d) <- unique(c("tbl_df", "tbl", class(d)))
+  d
+}
+
+ps__disk_usage_format_posix <- function(paths, l) {
   l2 <- lapply(l, function(fs) {
     total <- fs[[5]] * fs[[1]]
     avail_to_root <- fs[[6]] * fs[[1]]
