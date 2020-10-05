@@ -34,6 +34,8 @@ ps_disk_partitions <- function(all = FALSE) {
   d
 }
 
+#' @importFrom utils read.delim
+
 ps__disk_partitions_filter <- function(pt) {
   os <- ps_os_name()
 
