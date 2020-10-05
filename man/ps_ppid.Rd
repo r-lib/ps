@@ -5,9 +5,9 @@
 \alias{ps_parent}
 \title{Parent pid or parent process of a process}
 \usage{
-ps_ppid(p)
+ps_ppid(p = ps_handle())
 
-ps_parent(p)
+ps_parent(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

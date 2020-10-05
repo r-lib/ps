@@ -4,7 +4,7 @@
 \alias{ps_kill}
 \title{Kill a process}
 \usage{
-ps_kill(p)
+ps_kill(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

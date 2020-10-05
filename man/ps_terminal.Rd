@@ -4,7 +4,7 @@
 \alias{ps_terminal}
 \title{Terminal device of the process}
 \usage{
-ps_terminal(p)
+ps_terminal(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

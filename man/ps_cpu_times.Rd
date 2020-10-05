@@ -4,7 +4,7 @@
 \alias{ps_cpu_times}
 \title{CPU times of the process}
 \usage{
-ps_cpu_times(p)
+ps_cpu_times(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

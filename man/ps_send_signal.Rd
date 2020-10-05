@@ -4,7 +4,7 @@
 \alias{ps_send_signal}
 \title{Send signal to a process}
 \usage{
-ps_send_signal(p, sig)
+ps_send_signal(p = ps_handle(), sig)
 }
 \arguments{
 \item{p}{Process handle.}

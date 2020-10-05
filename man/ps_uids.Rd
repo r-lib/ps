@@ -5,9 +5,9 @@
 \alias{ps_gids}
 \title{User ids and group ids of the process}
 \usage{
-ps_uids(p)
+ps_uids(p = ps_handle())
 
-ps_gids(p)
+ps_gids(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

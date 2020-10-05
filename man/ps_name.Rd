@@ -4,7 +4,7 @@
 \alias{ps_name}
 \title{Process name}
 \usage{
-ps_name(p)
+ps_name(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

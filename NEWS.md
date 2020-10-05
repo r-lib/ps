@@ -1,6 +1,10 @@
 
 # ps development version
 
+* Process functions now default to the calling R process. So e.g. you can
+  write simply `ps_connections()` to list all network connections of the
+  current process, instead of `ps_connections(ps_handle())`.
+
 * New `ps_system_memory()` and `ps_system_swap()` functions, to
   return information about system memory and swap usage.
 

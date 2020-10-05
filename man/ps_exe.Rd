@@ -4,7 +4,7 @@
 \alias{ps_exe}
 \title{Full path of the executable of a process}
 \usage{
-ps_exe(p)
+ps_exe(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

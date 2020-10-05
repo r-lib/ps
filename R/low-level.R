@@ -62,7 +62,7 @@ print.ps_handle <- function(x, ...)  {
 #' ps_pid(p)
 #' ps_pid(p) == Sys.getpid()
 
-ps_pid <- function(p) {
+ps_pid <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_pid, p)
 }
@@ -85,7 +85,7 @@ ps_pid <- function(p) {
 #' p
 #' ps_create_time(p)
 
-ps_create_time <- function(p) {
+ps_create_time <- function(p = ps_handle()) {
   assert_ps_handle(p)
   format_unix_time(.Call(psll_create_time, p))
 }
@@ -108,7 +108,7 @@ ps_create_time <- function(p) {
 #' p
 #' ps_is_running(p)
 
-ps_is_running <- function(p) {
+ps_is_running <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_is_running, p)
 }
@@ -136,7 +136,7 @@ ps_is_running <- function(p) {
 #' ps_ppid(p)
 #' ps_parent(p)
 
-ps_ppid <- function(p) {
+ps_ppid <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_ppid, p)
 }
@@ -144,7 +144,7 @@ ps_ppid <- function(p) {
 #' @rdname  ps_ppid
 #' @export
 
-ps_parent <- function(p) {
+ps_parent <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_parent, p)
 }
@@ -169,7 +169,7 @@ ps_parent <- function(p) {
 #' ps_exe(p)
 #' ps_cmdline(p)
 
-ps_name <- function(p) {
+ps_name <- function(p = ps_handle()) {
   assert_ps_handle(p)
   n <- .Call(psll_name, p)
   if (nchar(n) >= 15) {
@@ -208,7 +208,7 @@ ps_name <- function(p) {
 #' ps_exe(p)
 #' ps_cmdline(p)
 
-ps_exe <- function(p) {
+ps_exe <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_exe, p)
 }
@@ -233,7 +233,7 @@ ps_exe <- function(p) {
 #' ps_exe(p)
 #' ps_cmdline(p)
 
-ps_cmdline <- function(p) {
+ps_cmdline <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_cmdline, p)
 }
@@ -268,7 +268,7 @@ ps_cmdline <- function(p) {
 #' p
 #' ps_status(p)
 
-ps_status <- function(p) {
+ps_status <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_status, p)
 }
@@ -294,7 +294,7 @@ ps_status <- function(p) {
 #' p
 #' ps_username(p)
 
-ps_username <- function(p) {
+ps_username <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_username, p)
 }
@@ -313,7 +313,7 @@ ps_username <- function(p) {
 #' p
 #' ps_cwd(p)
 
-ps_cwd <- function(p) {
+ps_cwd <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_cwd, p)
 }
@@ -342,7 +342,7 @@ ps_cwd <- function(p) {
 #' ps_uids(p)
 #' ps_gids(p)
 
-ps_uids <- function(p) {
+ps_uids <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_uids, p)
 }
@@ -350,7 +350,7 @@ ps_uids <- function(p) {
 #' @rdname ps_uids
 #' @export
 
-ps_gids <- function(p) {
+ps_gids <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_gids, p)
 }
@@ -373,7 +373,7 @@ ps_gids <- function(p) {
 #' p
 #' ps_terminal(p)
 
-ps_terminal <- function(p) {
+ps_terminal <- function(p = ps_handle()) {
   assert_ps_handle(p)
   ttynr <- .Call(psll_terminal, p)
   if (is.na(ttynr)) {
@@ -412,7 +412,7 @@ ps_terminal <- function(p) {
 #' env <- ps_environ(p)
 #' env[["R_HOME"]]
 
-ps_environ <- function(p) {
+ps_environ <- function(p = ps_handle()) {
   assert_ps_handle(p)
   parse_envs(.Call(psll_environ, p))
 }
@@ -420,7 +420,7 @@ ps_environ <- function(p) {
 #' @rdname ps_environ
 #' @export
 
-ps_environ_raw <- function(p) {
+ps_environ_raw <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_environ, p)
 }
@@ -439,7 +439,7 @@ ps_environ_raw <- function(p) {
 #' p
 #' ps_num_threads(p)
 
-ps_num_threads <- function(p) {
+ps_num_threads <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_num_threads, p)
 }
@@ -471,7 +471,7 @@ ps_num_threads <- function(p) {
 #' ps_cpu_times(p)
 #' proc.time()
 
-ps_cpu_times <- function(p) {
+ps_cpu_times <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_cpu_times, p)
 }
@@ -518,7 +518,7 @@ ps_cpu_times <- function(p) {
 #' p
 #' ps_memory_info(p)
 
-ps_memory_info <- function(p) {
+ps_memory_info <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_memory_info, p)
 }
@@ -545,7 +545,7 @@ ps_memory_info <- function(p) {
 #' ps_is_running(p)
 #' px$get_exit_status()
 
-ps_send_signal <- function(p, sig) {
+ps_send_signal <- function(p = ps_handle(), sig) {
   assert_ps_handle(p)
   assert_signal(sig)
   .Call(psll_send_signal, p, sig)
@@ -571,7 +571,7 @@ ps_send_signal <- function(p, sig) {
 #' ps_status(p)
 #' ps_kill(p)
 
-ps_suspend <- function(p) {
+ps_suspend <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_suspend, p)
 }
@@ -596,7 +596,7 @@ ps_suspend <- function(p) {
 #' ps_status(p)
 #' ps_kill(p)
 
-ps_resume <- function(p) {
+ps_resume <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_resume, p)
 }
@@ -620,7 +620,7 @@ ps_resume <- function(p) {
 #' ps_is_running(p)
 #' px$get_exit_status()
 
-ps_terminate <- function(p) {
+ps_terminate <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_terminate, p)
 }
@@ -643,7 +643,7 @@ ps_terminate <- function(p) {
 #' ps_is_running(p)
 #' px$get_exit_status()
 
-ps_kill <- function(p) {
+ps_kill <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_kill, p)
 }
@@ -663,7 +663,7 @@ ps_kill <- function(p) {
 #' p <- ps_parent(ps_handle())
 #' ps_children(p)
 
-ps_children <- function(p, recursive = FALSE) {
+ps_children <- function(p = ps_handle(), recursive = FALSE) {
   assert_ps_handle(p)
   assert_flag(recursive)
 
@@ -752,7 +752,7 @@ ps_ppid_map <- function() {
 #' unlink(tmp)
 #' ps_num_fds(p)
 
-ps_num_fds <- function(p) {
+ps_num_fds <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_num_fds, p)
 }
@@ -782,7 +782,7 @@ ps_num_fds <- function(p) {
 #' unlink(tmp)
 #' ps_open_files(p)
 
-ps_open_files <- function(p) {
+ps_open_files <- function(p = ps_handle()) {
   assert_ps_handle(p)
 
   l <- not_null(.Call(psll_open_files, p))
@@ -827,7 +827,7 @@ ps_open_files <- function(p) {
 #' close(sc)
 #' ps_connections(p)
 
-ps_connections <- function(p) {
+ps_connections <- function(p = ps_handle()) {
   assert_ps_handle(p)
   if (ps_os_type()[["LINUX"]]) return(psl_connections(p))
 
@@ -869,7 +869,7 @@ ps_connections <- function(p) {
 #' @family process handle functions
 #' @export
 
-ps_interrupt  <- function(p, ctrl_c = TRUE) {
+ps_interrupt  <- function(p = ps_handle(), ctrl_c = TRUE) {
   assert_ps_handle(p)
   assert_flag(ctrl_c)
   if (ps_os_type()[["WINDOWS"]]) {

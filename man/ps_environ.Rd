@@ -5,9 +5,9 @@
 \alias{ps_environ_raw}
 \title{Environment variables of a process}
 \usage{
-ps_environ(p)
+ps_environ(p = ps_handle())
 
-ps_environ_raw(p)
+ps_environ_raw(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

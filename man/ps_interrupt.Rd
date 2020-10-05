@@ -4,7 +4,7 @@
 \alias{ps_interrupt}
 \title{Interrupt a process}
 \usage{
-ps_interrupt(p, ctrl_c = TRUE)
+ps_interrupt(p = ps_handle(), ctrl_c = TRUE)
 }
 \arguments{
 \item{p}{Process handle.}

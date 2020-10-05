@@ -4,7 +4,7 @@
 \alias{ps_create_time}
 \title{Start time of a process}
 \usage{
-ps_create_time(p)
+ps_create_time(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

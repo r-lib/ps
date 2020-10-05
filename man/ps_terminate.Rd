@@ -4,7 +4,7 @@
 \alias{ps_terminate}
 \title{Terminate a Unix process}
 \usage{
-ps_terminate(p)
+ps_terminate(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

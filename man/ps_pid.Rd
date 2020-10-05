@@ -4,7 +4,7 @@
 \alias{ps_pid}
 \title{Pid of a process handle}
 \usage{
-ps_pid(p)
+ps_pid(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

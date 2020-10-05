@@ -4,7 +4,7 @@
 \alias{ps_username}
 \title{Owner of the process}
 \usage{
-ps_username(p)
+ps_username(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

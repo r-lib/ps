@@ -4,7 +4,7 @@
 \alias{ps_open_files}
 \title{Open files of a process}
 \usage{
-ps_open_files(p)
+ps_open_files(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

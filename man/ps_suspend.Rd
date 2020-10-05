@@ -4,7 +4,7 @@
 \alias{ps_suspend}
 \title{Suspend (stop) the process}
 \usage{
-ps_suspend(p)
+ps_suspend(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

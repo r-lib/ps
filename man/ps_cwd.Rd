@@ -4,7 +4,7 @@
 \alias{ps_cwd}
 \title{Process current working directory as an absolute path.}
 \usage{
-ps_cwd(p)
+ps_cwd(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

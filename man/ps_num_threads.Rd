@@ -4,7 +4,7 @@
 \alias{ps_num_threads}
 \title{Number of threads}
 \usage{
-ps_num_threads(p)
+ps_num_threads(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

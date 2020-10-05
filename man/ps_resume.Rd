@@ -4,7 +4,7 @@
 \alias{ps_resume}
 \title{Resume (continue) a stopped process}
 \usage{
-ps_resume(p)
+ps_resume(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

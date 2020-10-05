@@ -4,7 +4,7 @@
 \alias{ps_cmdline}
 \title{Command line of the process}
 \usage{
-ps_cmdline(p)
+ps_cmdline(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

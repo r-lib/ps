@@ -6,7 +6,7 @@
 this typically requires enumerating all processes on the system, so
 it is a costly operation.}
 \usage{
-ps_children(p, recursive = FALSE)
+ps_children(p = ps_handle(), recursive = FALSE)
 }
 \arguments{
 \item{p}{Process handle.}

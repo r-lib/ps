@@ -4,7 +4,7 @@
 \alias{ps_is_running}
 \title{Checks whether a process is running}
 \usage{
-ps_is_running(p)
+ps_is_running(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

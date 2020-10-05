@@ -4,7 +4,7 @@
 \alias{ps_connections}
 \title{List network connections of a process}
 \usage{
-ps_connections(p)
+ps_connections(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

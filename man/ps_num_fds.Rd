@@ -4,7 +4,7 @@
 \alias{ps_num_fds}
 \title{Number of open file descriptors}
 \usage{
-ps_num_fds(p)
+ps_num_fds(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

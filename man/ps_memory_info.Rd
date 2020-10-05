@@ -4,7 +4,7 @@
 \alias{ps_memory_info}
 \title{Memory usage information}
 \usage{
-ps_memory_info(p)
+ps_memory_info(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}

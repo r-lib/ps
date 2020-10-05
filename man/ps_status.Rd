@@ -4,7 +4,7 @@
 \alias{ps_status}
 \title{Current process status}
 \usage{
-ps_status(p)
+ps_status(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}
