@@ -147,7 +147,7 @@ ps_tty_size <- function() {
 
 ps_disk_partitions <- function(all = FALSE) {
   assert_flag(all)
-  l <- not_null(.Call(ps__disk_partitions))
+  l <- not_null(.Call(ps__disk_partitions, all))
 
   d <- data.frame(
     stringsAsFactors = FALSE,

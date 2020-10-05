@@ -1103,7 +1103,7 @@ SEXP ps__users() {
   return result;
 }
 
-SEXP ps__disk_partitions() {
+SEXP ps__disk_partitions(SEXP all) {
   FILE *file = NULL;
   struct mntent *entry;
   SEXP result;

@@ -836,7 +836,7 @@ SEXP ps__users() {
   return result;
 }
 
-SEXP ps__disk_partitions() {
+SEXP ps__disk_partitions(SEXP all) {
   int num;
   int i;
   int len;
