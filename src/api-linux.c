@@ -1144,8 +1144,3 @@ error:
   ps__throw_error();
   return R_NilValue;
 }
-
-SEXP ps__disk_usage(SEXP paths) {
-  // TODO
-  return R_NilValue;
-}

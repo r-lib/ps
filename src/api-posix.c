@@ -7,6 +7,7 @@
 #include <sys/ioctl.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/statvfs.h>
 
 #include "ps-internal.h"
 
@@ -105,5 +106,29 @@ SEXP ps__tty_size() {
   INTEGER(result)[0] = w.ws_col;
   INTEGER(result)[1] = w.ws_row;
 
+  return result;
+}
+
+SEXP ps__disk_usage(SEXP paths) {
+  struct statvfs stat;
+  int i, n = Rf_length(paths);
+  SEXP result = PROTECT(allocVector(VECSXP, n));
+
+  for (i = 0; i < n; i++) {
+    const char *cpath = CHAR(STRING_ELT(paths, i));
+    int ret = statvfs(cpath, &stat);
+    if (ret == -1) {
+      ps__set_error_from_errno();
+      ps__throw_error();
+    }
+    SET_VECTOR_ELT(
+      result, i,
+      ps__build_list("idddddd", (int) stat.f_frsize, (double) stat.f_files,
+                     (double) stat.f_favail, (double) stat.f_ffree,
+                     (double) stat.f_blocks, (double) stat.f_bavail,
+                     (double) stat.f_bfree));
+  }
+
+  UNPROTECT(1);
   return result;
 }
