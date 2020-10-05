@@ -1257,3 +1257,8 @@ error:
   ps__throw_error();
   return R_NilValue;
 }
+
+SEXP ps__system_memory() {
+  // TODO
+  return R_NilValue;
+}
