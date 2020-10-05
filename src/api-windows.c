@@ -1241,7 +1241,10 @@ SEXP ps__disk_usage(SEXP paths) {
     int iret = ps__utf8_to_utf16(path, &wpath);
     if (iret) goto error;
     retval = GetDiskFreeSpaceExW(wpath, &freeuser, &total, &free);
-    if (!retval) goto error;
+    if (!retval) {
+      ps__set_error_from_windows_error(0);
+      goto error;
+    }
     SET_VECTOR_ELT(
       result, i,
       allocVector(REALSXP, 3));
@@ -1259,11 +1262,26 @@ error:
 }
 
 SEXP ps__system_memory() {
-  // TODO
-  return R_NilValue;
+  MEMORYSTATUSEX memInfo;
+  memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+
+  if (! GlobalMemoryStatusEx(&memInfo)) {
+    ps__set_error_from_windows_error(0);
+    ps__throw_error();
+  }
+
+  return ps__build_named_list(
+    "dddddd",
+    "total",      (double) memInfo.ullTotalPhys,
+    "avail",      (double) memInfo.ullAvailPhys,
+    "totpagef",   (double) memInfo.ullTotalPageFile,
+    "availpagef", (double) memInfo.ullAvailPageFile,
+    "totvirt",    (double) memInfo.ullTotalVirtual,
+    "freevirt",   (double) memInfo.ullAvailVirtual);
 }
 
 SEXP ps__system_swap() {
-  // TODO
+  // We use ps__system_memory instead
+  ps__throw_error();
   return R_NilValue;
 }
