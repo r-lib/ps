@@ -145,7 +145,8 @@ ps_tty_size <- function() {
 
 #' @export
 
-ps_disk_partitions <- function() {
+ps_disk_partitions <- function(all = FALSE) {
+  assert_flag(all)
   l <- not_null(.Call(ps__disk_partitions))
 
   d <- data.frame(
@@ -156,9 +157,29 @@ ps_disk_partitions <- function() {
     options = vapply(l, "[[", character(1), 4)
   )
 
+  if (!all) d <- ps__disk_partitions_filter(d)
+
   requireNamespace("tibble", quietly = TRUE)
   class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
+}
+
+ps__disk_partitions_filter <- function(pt) {
+  os <- ps_os_name()
+
+  if (os == "LINUX") {
+    fs <- read.delim("/proc/filesystems", header = FALSE, sep = "\t")
+    goodfs <- c(fs[[2]][fs[[1]] != "nodev"], "zfs")
+    ok <- pt$device != "none" & file.exists(pt$device) & pt$fstype %in% goodfs
+    ok <- ok | pt$device %in% c("overlay", "grpcfuse")
+    pt <- pt[ok, , drop = FALSE]
+
+  } else if (os == "MACOS") {
+    ok <- substr(pt$device, 1, 1) == "/" & file.exists(pt$device)
+    pt <- pt[ok, , drop = FALSE]
+  }
+
+  pt
 }
 
 #' @export
