@@ -1287,11 +1287,82 @@ SEXP ps__system_swap() {
 }
 
 SEXP psll_get_nice(SEXP p) {
-  // TODO
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  HANDLE hProcess = NULL;
+  DWORD priority;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  hProcess = ps__handle_from_pid(handle->pid);
+  if (!hProcess) goto error;
+
+  priority = GetPriorityClass(hProcess);
+  if (priority == 0) {
+    ps__set_error_from_windows_error(0);
+    goto error;
+  }
+
+  CloseHandle(hProcess);
+
+  switch(priority) {
+  case REALTIME_PRIORITY_CLASS:
+    return ScalarInteger(1);
+  case HIGH_PRIORITY_CLASS:
+    return ScalarInteger(2);
+  case ABOVE_NORMAL_PRIORITY_CLASS:
+    return ScalarInteger(3);
+  case NORMAL_PRIORITY_CLASS:
+    return ScalarInteger(4);
+  case IDLE_PRIORITY_CLASS:
+    return ScalarInteger(5);
+  case BELOW_NORMAL_PRIORITY_CLASS:
+    return ScalarInteger(6);
+  default:
+    error("Internal error, invalid priority class");
+  }
+
+error:
+  if (hProcess) CloseHandle(hProcess);
+  ps__throw_error();
   return R_NilValue;
 }
 
 SEXP psll_set_nice(SEXP p, SEXP value) {
-  // TODO
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  HANDLE hProcess = NULL;
+  DWORD priority = INTEGER(value)[0];
+  DWORD classes[] = {
+    REALTIME_PRIORITY_CLASS,
+    HIGH_PRIORITY_CLASS,
+    ABOVE_NORMAL_PRIORITY_CLASS,
+    NORMAL_PRIORITY_CLASS,
+    IDLE_PRIORITY_CLASS,
+    BELOW_NORMAL_PRIORITY_CLASS
+  };
+  DWORD access = PROCESS_QUERY_INFORMATION | PROCESS_SET_INFORMATION;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  hProcess = ps__handle_from_pid_waccess(handle->pid, access);
+  if (!hProcess) {
+    PS__CHECK_HANDLE(handle);
+    ps__set_error_from_windows_error(0);
+    goto error;
+  }
+
+  BOOL ret = SetPriorityClass(hProcess, classes[priority - 1]);
+  if (!ret) {
+    ps__set_error_from_windows_error(0);
+    goto error;
+  }
+
+  CloseHandle(hProcess);
+
   return R_NilValue;
+
+error:
+  if (hProcess) CloseHandle(hProcess);
+  ps__throw_error();
+  return R_NilValue;
+
 }

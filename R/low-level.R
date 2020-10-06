@@ -882,9 +882,25 @@ ps_interrupt  <- function(p = ps_handle(), ctrl_c = TRUE) {
 
 #' @export
 
+ps_windows_nice_values <- function() {
+ c("realtime",
+   "high",
+   "above_normal",
+   "normal",
+   "idle",
+   "below_normal")
+}
+
+#' @export
+
 ps_get_nice <- function(p = ps_handle()) {
   assert_ps_handle(p)
-  .Call(psll_get_nice, p)
+  code <- .Call(psll_get_nice, p)
+  if (ps_os_type()[["WINDOWS"]]) {
+    ps_windows_nice_values()[code]
+  } else {
+    code
+  }
 }
 
 #' @export
@@ -892,6 +908,10 @@ ps_get_nice <- function(p = ps_handle()) {
 ps_set_nice <- function(p = ps_handle(), value = TODO) {
   assert_ps_handle(p)
   assert_nice_value(value)
-  if (ps_os_type()[["POSIX"]]) value <- as.integer(value)
+  if (ps_os_type()[["POSIX"]]) {
+    value <- as.integer(value)
+  } else {
+    value <- match(value, ps_windows_nice_values())
+  }
   invisible(.Call(psll_set_nice, p, value))
 }

@@ -156,7 +156,7 @@ assert_nice_value <- function(x) {
     stop(ps__invalid_argument(match.call()$x,
                               " is not a valid priority value"))
   } else {
-    TODO
+    match.arg(x, ps_windows_nice_values())
   }
 }
 
