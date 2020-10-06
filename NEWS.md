@@ -5,6 +5,9 @@
   write simply `ps_connections()` to list all network connections of the
   current process, instead of `ps_connections(ps_handle())`.
 
+* New `ps_get_nice()` and `ps_set_nice()` functions to get and set the
+  priority of a process (#89).
+
 * New `ps_system_memory()` and `ps_system_swap()` functions, to
   return information about system memory and swap usage.
 
