@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/statvfs.h>
+#include <sys/resource.h>
 
 #include "ps-internal.h"
 
@@ -131,4 +132,58 @@ SEXP ps__disk_usage(SEXP paths) {
 
   UNPROTECT(1);
   return result;
+}
+
+SEXP psll_get_nice(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  pid_t pid;
+  int priority;
+  errno = 0;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  pid = handle->pid;
+
+#ifdef PS__MACOS
+  priority = getpriority(PRIO_PROCESS, (id_t)pid);
+#else
+  priority = getpriority(PRIO_PROCESS, pid);
+#endif
+
+  if (errno != 0) {
+    ps__check_for_zombie(handle, 1);
+    ps__set_error_from_errno();
+    ps__throw_error();
+  } else {
+    ps__check_for_zombie(handle, 0);
+  }
+
+  return ScalarInteger(priority);
+}
+
+SEXP psll_set_nice(SEXP p, SEXP value) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  pid_t pid;
+  int priority = INTEGER(value)[0];
+  int retval;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  pid = handle->pid;
+
+#ifdef PSUTIL_OSX
+  retval = setpriority(PRIO_PROCESS, (id_t)pid, priority);
+#else
+  retval = setpriority(PRIO_PROCESS, pid, priority);
+#endif
+
+  if (retval == -1) {
+    ps__check_for_zombie(handle, 1);
+    ps__set_error_from_errno();
+    ps__throw_error();
+  } else {
+    ps__check_for_zombie(handle, 0);
+  }
+
+  return R_NilValue;
 }

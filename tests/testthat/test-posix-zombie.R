@@ -55,4 +55,6 @@ test_that("zombie api", {
   chk(ps_num_fds(p))
   chk(ps_open_files(p))
   chk(ps_connections(p))
+  chk(ps_get_nice(p))
+  chk(ps_set_nice(p, 20L))
 })

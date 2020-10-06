@@ -52,6 +52,8 @@ static const R_CallMethodDef callMethods[]  = {
   { "psll_open_files",   (DL_FUNC) psll_open_files,   1 },
   { "psll_interrupt",    (DL_FUNC) psll_interrupt,    3 },
   { "psll_connections",  (DL_FUNC) psll_connections,  1 },
+  { "psll_get_nice",     (DL_FUNC) psll_get_nice,     1 },
+  { "psll_set_nice",     (DL_FUNC) psll_set_nice,     2 },
 
   /* Utils */
   { "ps__init",          (DL_FUNC) ps__init,          2 },

@@ -48,12 +48,13 @@
   default:     error;					\
   }
 
-void ps__check_for_zombie(ps_handle_t *handle) {
+void ps__check_for_zombie(ps_handle_t *handle, int err) {
   struct kinfo_proc kp;
   int ret;
 
   if (handle->pid == 0) {
     ps__access_denied("");
+    err = 1;
 
   } else if (errno == 0 || errno == ESRCH) {
 
@@ -61,8 +62,10 @@ void ps__check_for_zombie(ps_handle_t *handle) {
     if ((ret == -1) ||
 	(PS__TV2DOUBLE(kp.kp_proc.p_starttime) != handle->create_time)) {
       ps__no_such_process(handle->pid, 0);
+      err = 1;
     } else if (kp.kp_proc.p_stat == SZOMB) {
       ps__zombie_process(handle->pid);
+      err = 1;
     } else {
       ps__access_denied("");
     }
@@ -71,7 +74,7 @@ void ps__check_for_zombie(ps_handle_t *handle) {
     ps__set_error_from_errno();
   }
 
-  ps__throw_error();
+  if (err) ps__throw_error();
 }
 
 void psll_finalizer(SEXP p) {
@@ -209,7 +212,7 @@ SEXP psll_exe(SEXP p) {
 
   ret = proc_pidpath(handle->pid, &buf, sizeof(buf));
 
-  if (ret == 0) ps__check_for_zombie(handle);
+  if (ret == 0) ps__check_for_zombie(handle, 1);
 
   PS__CHECK_HANDLE(handle);
 
@@ -224,7 +227,7 @@ SEXP psll_cmdline(SEXP p) {
 
   result = ps__get_cmdline(handle->pid);
 
-  if (isNull(result)) ps__check_for_zombie(handle);
+  if (isNull(result)) ps__check_for_zombie(handle, 1);
 
   PROTECT(result);
   PS__CHECK_HANDLE(handle);
@@ -283,7 +286,7 @@ SEXP psll_cwd(SEXP p) {
 
   if (ps__proc_pidinfo(handle->pid, PROC_PIDVNODEPATHINFO, 0, &pathinfo,
 		       sizeof(pathinfo)) <= 0) {
-    ps__check_for_zombie(handle);
+    ps__check_for_zombie(handle, 1);
   }
 
   PS__CHECK_HANDLE(handle);
@@ -363,7 +366,7 @@ SEXP psll_environ(SEXP p) {
 
   result = ps__get_environ(handle->pid);
 
-  if (isNull(result)) ps__check_for_zombie(handle);
+  if (isNull(result)) ps__check_for_zombie(handle, 1);
 
   PROTECT(result);
   PS__CHECK_HANDLE(handle);
@@ -381,7 +384,7 @@ SEXP psll_num_threads(SEXP p) {
 
   if (ps__proc_pidinfo(handle->pid, PROC_PIDTASKINFO, 0, &pti,
 		       sizeof(pti)) <= 0) {
-    ps__check_for_zombie(handle);
+    ps__check_for_zombie(handle, 1);
   }
 
   PS__CHECK_HANDLE(handle);
@@ -399,7 +402,7 @@ SEXP psll_cpu_times(SEXP p) {
 
   if (ps__proc_pidinfo(handle->pid, PROC_PIDTASKINFO, 0, &pti,
 		       sizeof(pti)) <= 0) {
-    ps__check_for_zombie(handle);
+    ps__check_for_zombie(handle, 1);
   }
 
   PS__CHECK_HANDLE(handle);
@@ -426,7 +429,7 @@ SEXP psll_memory_info(SEXP p) {
 
   if (ps__proc_pidinfo(handle->pid, PROC_PIDTASKINFO, 0, &pti,
 		       sizeof(pti)) <= 0) {
-    ps__check_for_zombie(handle);
+    ps__check_for_zombie(handle, 1);
   }
 
   PS__CHECK_HANDLE(handle);
@@ -572,7 +575,7 @@ SEXP psll_num_fds(SEXP p) {
   pid = handle->pid;
 
   pidinfo_result = proc_pidinfo(pid, PROC_PIDLISTFDS, 0, NULL, 0);
-  if (pidinfo_result <= 0) ps__check_for_zombie(handle);
+  if (pidinfo_result <= 0) ps__check_for_zombie(handle, 1);
 
   fds_pointer = malloc(pidinfo_result);
   if (fds_pointer == NULL) {
@@ -585,7 +588,7 @@ SEXP psll_num_fds(SEXP p) {
 
   if (pidinfo_result <= 0) {
     free(fds_pointer);
-    ps__check_for_zombie(handle);
+    ps__check_for_zombie(handle, 1);
   }
 
   num = (pidinfo_result / PROC_PIDLISTFD_SIZE);
@@ -672,7 +675,7 @@ SEXP psll_open_files(SEXP p) {
 
  error:
   if (fds_pointer != NULL) free(fds_pointer);
-  ps__check_for_zombie(handle);
+  ps__check_for_zombie(handle, 1);
   return R_NilValue;
 }
 
@@ -808,7 +811,7 @@ SEXP psll_connections(SEXP p) {
 
  error:
   if (fds_pointer) free(fds_pointer);
-  ps__check_for_zombie(handle);
+  ps__check_for_zombie(handle, 1);
   return R_NilValue;
 }
 
