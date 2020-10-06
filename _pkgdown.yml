@@ -50,6 +50,9 @@ reference:
   - ps_send_signal
   - ps_suspend
   - ps_terminate
+  - ps_get_nice
+  - ps_set_nice
+  - ps_windows_nice_values
 
 - title: Users
   contents:
@@ -61,6 +64,10 @@ reference:
   - ps_os_type
   - ps_cpu_count
   - ps_tty_size
+  - ps_disk_partitions
+  - ps_disk_usage
+  - ps_system_memory
+  - ps_system_swap
 
 - title: Process tree cleanup
   contents:
