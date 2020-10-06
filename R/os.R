@@ -27,8 +27,19 @@ ps_os_name <- function() {
 
 ps_is_supported <- function() {
   os <- ps_os_type()
-  os <- os[setdiff(names(os), c("BSD", "POSIX"))]
-  any(os)
+  if (os[["LINUX"]]) {
+    # On Linux we need to check if /proc is readable
+    supported <- FALSE
+    tryCatch({
+      readLines("/proc/stat", warn = FALSE, n = 1)
+      supported <- TRUE
+    }, error = function(e) e)
+    supported
+
+  } else {
+    os <- os[setdiff(names(os), c("BSD", "POSIX"))]
+    any(os)
+  }
 }
 
 supported_str <- function() {
