@@ -10,7 +10,7 @@ ps_windows_nice_values()
 
 ps_get_nice(p = ps_handle())
 
-ps_set_nice(p = ps_handle(), value = TODO)
+ps_set_nice(p = ps_handle(), value)
 }
 \arguments{
 \item{p}{Process handle.}
