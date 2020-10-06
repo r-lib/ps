@@ -70,12 +70,15 @@ test_that("kill_tree, grandchild", {
     callr::r_bg(
       function(d) {
         cat("OK\n", file = file.path(d, Sys.getpid()))
-        callr::r(
+        # We ignore error from the grandchild, in case it gets
+        # killed first. The child still runs on, because of the sleep.
+        try(callr::r(
           function(d) {
             cat("OK\n", file = file.path(d, Sys.getpid()))
             Sys.sleep(5)
           },
-          args = list(d = d))
+          args = list(d = d)))
+        Sys.sleep(5)
       },
       args = list(d = tmp),
       cleanup = FALSE
@@ -115,7 +118,9 @@ test_that("kill_tree, grandchild", {
 
   ## Nevertheless none of them should be alive.
   ## (Taking the risk of pid reuse here...)
-  expect_false(any(ccpids %in% ps_pids()))
+  timeout <- Sys.time() + 5
+  while (any(ccpids %in% ps_pids()) && Sys.time() < timeout) Sys.sleep(0.1)
+  expect_true(Sys.time() < timeout)
 })
 
 test_that("kill_tree, orphaned grandchild", {
