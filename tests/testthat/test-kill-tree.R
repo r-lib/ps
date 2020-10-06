@@ -21,8 +21,23 @@ test_that("kill_tree",  {
   ## Child processes
   id <- ps_mark_tree()
   on.exit(Sys.unsetenv(id), add = TRUE)
-  p <- lapply(1:5, function(x) processx::process$new(px(), c("sleep", "10")))
+  dir.create(tmp <- tempfile())
+  on.exit(unlink(tmp, recursive = TRUE), add = TRUE)
+  p <- lapply(1:5, function(x) {
+    out <- file.path(tmp, basename(tempfile()))
+    processx::process$new(
+      px(),
+      c("outln", "ready", "sleep", "10"),
+      stdout = out
+    )
+  })
   on.exit(lapply(p, function(x) x$kill()), add = TRUE)
+
+  timeout <- Sys.time() + 5
+  while (length(dir(tmp)) < 5 && Sys.time() < timeout) Sys.sleep(0.1)
+
+  expect_true(Sys.time() < timeout)
+
   res <- ps_kill_tree(id)
   res <- res[names(res) %in% c("px", "px.exe")]
   expect_equal(length(res), 5)
@@ -54,19 +69,27 @@ test_that("kill_tree, grandchild", {
   p <- lapply(1:N, function(x) {
     callr::r_bg(
       function(d) {
-        callr::r(
+        cat("OK\n", file = file.path(d, Sys.getpid()))
+        # We ignore error from the grandchild, in case it gets
+        # killed first. The child still runs on, because of the sleep.
+        try(callr::r(
           function(d) {
             cat("OK\n", file = file.path(d, Sys.getpid()))
             Sys.sleep(5)
           },
-          args = list(d = d))
+          args = list(d = d)))
+        Sys.sleep(5)
       },
-      args = list(d = tmp))
+      args = list(d = tmp),
+      cleanup = FALSE
+    )
   })
   on.exit(lapply(p, function(x) x$kill()), add = TRUE)
 
   timeout <- Sys.time() + 10
-  while (length(dir(tmp)) < N && Sys.time() < timeout) Sys.sleep(0.1)
+  while (length(dir(tmp)) < 2*N && Sys.time() < timeout) Sys.sleep(0.1)
+
+  expect_true(Sys.time() < timeout)
 
   res <- ps_kill_tree(id)
 
@@ -78,12 +101,26 @@ test_that("kill_tree, grandchild", {
   })
 
   res <- res[names(res) %in% c("R", "Rterm.exe")]
-  expect_equal(length(res), N * 2)
+
+  ## We might miss some processes, because grandchildren can be
+  ## are in the same job object and they are cleaned up automatically.
+  ## To fix the, processx would need an option _not_ to create a job
+  ## object.
+  expect_true(length(res) <= N * 2)
   expect_true(all(names(res) %in% c("R", "Rterm.exe")))
   cpids <- map_int(p, function(x) x$get_pid())
   expect_true(all(cpids %in% res))
   ccpids <- as.integer(dir(tmp))
-  expect_true(all(ccpids %in% res)  )
+
+  ## Again, the opposite might not be true, because we might miss some
+  ## grandchildren.
+  expect_true(all(res %in% ccpids))
+
+  ## Nevertheless none of them should be alive.
+  ## (Taking the risk of pid reuse here...)
+  timeout <- Sys.time() + 5
+  while (any(ccpids %in% ps_pids()) && Sys.time() < timeout) Sys.sleep(0.1)
+  expect_true(Sys.time() < timeout)
 })
 
 test_that("kill_tree, orphaned grandchild", {
