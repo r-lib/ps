@@ -879,3 +879,19 @@ ps_interrupt  <- function(p = ps_handle(), ctrl_c = TRUE) {
     .Call(psll_interrupt, p, ctrl_c, NULL)
   }
 }
+
+#' @export
+
+ps_get_nice <- function(p = ps_handle()) {
+  assert_ps_handle(p)
+  .Call(psll_get_nice, p)
+}
+
+#' @export
+
+ps_set_nice <- function(p = ps_handle(), value = TODO) {
+  assert_ps_handle(p)
+  assert_nice_value(value)
+  if (ps_os_type()[["POSIX"]]) value <- as.integer(value)
+  invisible(.Call(psll_set_nice, p, value))
+}

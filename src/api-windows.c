@@ -1285,3 +1285,13 @@ SEXP ps__system_swap() {
   ps__throw_error();
   return R_NilValue;
 }
+
+SEXP psll_get_nice(SEXP p) {
+  // TODO
+  return R_NilValue;
+}
+
+SEXP psll_set_nice(SEXP p, SEXP value) {
+  // TODO
+  return R_NilValue;
+}

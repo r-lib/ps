@@ -87,6 +87,7 @@ void *ps__no_such_process(long pid, const char *name);
 void *ps__zombie_process(long pid);
 void *ps__no_memory(const char *msg);
 void *ps__not_implemented(const char *what);
+void ps__check_for_zombie(ps_handle_t *handle, int err);
 
 void *ps__set_error_from_windows_error(long err);
 

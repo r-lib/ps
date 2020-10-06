@@ -150,6 +150,16 @@ assert_signal <- function(x) {
                             " is not a signal number (see ?signals())"))
 }
 
+assert_nice_value <- function(x) {
+  if (ps_os_type()[["POSIX"]]) {
+    if (is.integer(x) && length(x) == 1 && !is.na(x) && x <= 20) return()
+    stop(ps__invalid_argument(match.call()$x,
+                              " is not a valid priority value"))
+  } else {
+    TODO
+  }
+}
+
 realpath <- function(x) {
   if (ps_os_type()[["WINDOWS"]])
     .Call(psw__realpath, x)
