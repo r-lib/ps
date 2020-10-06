@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Environment variables of a process — ps_environ • ps</title>
+<title>Disk usage statistics, per partition — ps_disk_usage • ps</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,8 @@
 
 
 
-<meta property="og:title" content="Environment variables of a process — ps_environ" />
-<meta property="og:description" content="ps_environ() returns the environment variables of the process, in a
-named vector, similarly to the return value of Sys.getenv()
-(without arguments)." />
+<meta property="og:title" content="Disk usage statistics, per partition — ps_disk_usage" />
+<meta property="og:description" content="The output is similar to the Unix df command." />
 
 
 <meta name="robots" content="noindex">
@@ -107,79 +105,49 @@ named vector, similarly to the return value of Sys.getenv()
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Environment variables of a process</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/ps/blob/master/R/low-level.R'><code>R/low-level.R</code></a></small>
-    <div class="hidden name"><code>ps_environ.Rd</code></div>
+    <h1>Disk usage statistics, per partition</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/ps/blob/master/R/disk.R'><code>R/disk.R</code></a></small>
+    <div class="hidden name"><code>ps_disk_usage.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>ps_environ()</code> returns the environment variables of the process, in a
-named vector, similarly to the return value of <code><a href='https://rdrr.io/r/base/Sys.getenv.html'>Sys.getenv()</a></code>
-(without arguments).</p>
+    <p>The output is similar to the Unix <code>df</code> command.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ps_environ</span><span class='op'>(</span>p <span class='op'>=</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='fu'>ps_environ_raw</span><span class='op'>(</span>p <span class='op'>=</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ps_disk_usage</span><span class='op'>(</span>paths <span class='op'>=</span> <span class='fu'><a href='ps_disk_partitions.html'>ps_disk_partitions</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='va'>mountpoint</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>p</th>
-      <td><p>Process handle.</p></td>
+      <th>paths</th>
+      <td><p>The mounted file systems to list. By default all file
+systems returned by <code><a href='ps_disk_partitions.html'>ps_disk_partitions()</a></code> is listed.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>ps_environ()</code> returns a named character vector (that has a
-<code>Dlist</code> class, so it is printed nicely), <code>ps_environ_raw()</code> returns a
-character vector.</p>
+    <p>A data frame with columns <code>mountpoint</code>, <code>total</code>, <code>used</code>,
+<code>available</code> and <code>capacity</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Note: this usually does not reflect changes made after the process
-started.</p>
-<p><code>ps_environ_raw()</code> is similar to <code>p$environ()</code> but returns the
-unparsed <code>"var=value"</code> strings. This is faster, and sometimes good
-enough.</p>
-<p>These functions throw a <code>zombie_process</code> error for zombie processes.</p>
+    <p>Note that on Unix a small percentage of the disk space (5% typically)
+is reserved for the superuser. <code>ps_disk_usage()</code> returns the space
+available to the calling user.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other process handle functions: 
-<code><a href='ps_children.html'>ps_children</a>()</code>,
-<code><a href='ps_cmdline.html'>ps_cmdline</a>()</code>,
-<code><a href='ps_connections.html'>ps_connections</a>()</code>,
-<code><a href='ps_cpu_times.html'>ps_cpu_times</a>()</code>,
-<code><a href='ps_create_time.html'>ps_create_time</a>()</code>,
-<code><a href='ps_cwd.html'>ps_cwd</a>()</code>,
-<code><a href='ps_exe.html'>ps_exe</a>()</code>,
-<code><a href='ps_handle.html'>ps_handle</a>()</code>,
-<code><a href='ps_interrupt.html'>ps_interrupt</a>()</code>,
-<code><a href='ps_is_running.html'>ps_is_running</a>()</code>,
-<code><a href='ps_kill.html'>ps_kill</a>()</code>,
-<code><a href='ps_memory_info.html'>ps_memory_info</a>()</code>,
-<code><a href='ps_name.html'>ps_name</a>()</code>,
-<code><a href='ps_num_fds.html'>ps_num_fds</a>()</code>,
-<code><a href='ps_num_threads.html'>ps_num_threads</a>()</code>,
-<code><a href='ps_open_files.html'>ps_open_files</a>()</code>,
-<code><a href='ps_pid.html'>ps_pid</a>()</code>,
-<code><a href='ps_ppid.html'>ps_ppid</a>()</code>,
-<code><a href='ps_resume.html'>ps_resume</a>()</code>,
-<code><a href='ps_send_signal.html'>ps_send_signal</a>()</code>,
-<code><a href='ps_status.html'>ps_status</a>()</code>,
-<code><a href='ps_suspend.html'>ps_suspend</a>()</code>,
-<code><a href='ps_terminal.html'>ps_terminal</a>()</code>,
-<code><a href='ps_terminate.html'>ps_terminate</a>()</code>,
-<code><a href='ps_uids.html'>ps_uids</a>()</code>,
-<code><a href='ps_username.html'>ps_username</a>()</code></p></div>
+    <div class='dont-index'><p>Other disk functions: 
+<code><a href='ps_disk_partitions.html'>ps_disk_partitions</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span>
-<span class='va'>p</span>
-</div><div class='output co'>#&gt; &lt;ps::ps_handle&gt; PID=2233, NAME=R, AT=2020-10-06 16:58:16</div><div class='input'><span class='va'>env</span> <span class='op'>&lt;-</span> <span class='fu'>ps_environ</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
-<span class='va'>env</span><span class='op'>[[</span><span class='st'>"R_HOME"</span><span class='op'>]</span><span class='op'>]</span>
-</div><div class='output co'>#&gt; [1] "/Library/Frameworks/R.framework/Resources"</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>ps_disk_usage</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 3 x 5</span><span>
+#&gt;   mountpoint                  total         used    available capacity
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>                       </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span> /                    </span><span style='text-decoration: underline;'>407</span><span>812</span><span style='text-decoration: underline;'>136</span><span>960 </span><span style='text-decoration: underline;'>278</span><span>467</span><span style='text-decoration: underline;'>497</span><span>984 </span><span style='text-decoration: underline;'>396</span><span>496</span><span style='text-decoration: underline;'>146</span><span>432    0.413
+#&gt; </span><span style='color: #555555;'>2</span><span> /System/Volumes/Data </span><span style='text-decoration: underline;'>407</span><span>812</span><span style='text-decoration: underline;'>136</span><span>960 </span><span style='text-decoration: underline;'>278</span><span>467</span><span style='text-decoration: underline;'>497</span><span>984 </span><span style='text-decoration: underline;'>141</span><span>426</span><span style='text-decoration: underline;'>860</span><span>032    0.663
+#&gt; </span><span style='color: #555555;'>3</span><span> /private/var/vm      </span><span style='text-decoration: underline;'>407</span><span>812</span><span style='text-decoration: underline;'>136</span><span>960 </span><span style='text-decoration: underline;'>278</span><span>467</span><span style='text-decoration: underline;'>497</span><span>984 </span><span style='text-decoration: underline;'>407</span><span>811</span><span style='text-decoration: underline;'>067</span><span>904    0.406</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

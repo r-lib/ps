@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Environment variables of a process — ps_environ • ps</title>
+<title>Get or set the priority of a process — ps_windows_nice_values • ps</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,10 @@
 
 
 
-<meta property="og:title" content="Environment variables of a process — ps_environ" />
-<meta property="og:description" content="ps_environ() returns the environment variables of the process, in a
-named vector, similarly to the return value of Sys.getenv()
-(without arguments)." />
+<meta property="og:title" content="Get or set the priority of a process — ps_windows_nice_values" />
+<meta property="og:description" content="ps_get_nice() returns the current priority, ps_set_nice() sets a
+new priority, ps_windows_nice_values() list the possible priority
+values on Windows." />
 
 
 <meta name="robots" content="noindex">
@@ -107,20 +107,22 @@ named vector, similarly to the return value of Sys.getenv()
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Environment variables of a process</h1>
+    <h1>Get or set the priority of a process</h1>
     <small class="dont-index">Source: <a href='https://github.com/r-lib/ps/blob/master/R/low-level.R'><code>R/low-level.R</code></a></small>
-    <div class="hidden name"><code>ps_environ.Rd</code></div>
+    <div class="hidden name"><code>ps_get_nice.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>ps_environ()</code> returns the environment variables of the process, in a
-named vector, similarly to the return value of <code><a href='https://rdrr.io/r/base/Sys.getenv.html'>Sys.getenv()</a></code>
-(without arguments).</p>
+    <p><code>ps_get_nice()</code> returns the current priority, <code>ps_set_nice()</code> sets a
+new priority, <code>ps_windows_nice_values()</code> list the possible priority
+values on Windows.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ps_environ</span><span class='op'>(</span>p <span class='op'>=</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>ps_windows_nice_values</span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='fu'>ps_environ_raw</span><span class='op'>(</span>p <span class='op'>=</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+<span class='fu'>ps_get_nice</span><span class='op'>(</span>p <span class='op'>=</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='fu'>ps_set_nice</span><span class='op'>(</span>p <span class='op'>=</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>value</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -129,57 +131,41 @@ named vector, similarly to the return value of <code><a href='https://rdrr.io/r/
       <th>p</th>
       <td><p>Process handle.</p></td>
     </tr>
+    <tr>
+      <th>value</th>
+      <td><p>On Windows it must be a string, one of the values of
+<code>ps_windows_nice_values()</code>. On Unix it is a priority value that is
+smaller than or equal to 20.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>ps_environ()</code> returns a named character vector (that has a
-<code>Dlist</code> class, so it is printed nicely), <code>ps_environ_raw()</code> returns a
-character vector.</p>
+    <p><code>ps_windows_nice_values()</code> return a character vector of possible
+priority values on Windows.</p>
+<p><code>ps_get_nice()</code> returns a string from
+<code>ps_windows_nice_values()</code> on Windows. On Unix it returns an integer
+smaller than or equal to 20.</p>
+<p><code>ps_set_nice()</code> return <code>NULL</code> invisibly.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Note: this usually does not reflect changes made after the process
-started.</p>
-<p><code>ps_environ_raw()</code> is similar to <code>p$environ()</code> but returns the
-unparsed <code>"var=value"</code> strings. This is faster, and sometimes good
-enough.</p>
-<p>These functions throw a <code>zombie_process</code> error for zombie processes.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <p>Priority values are different on Windows and Unix.</p>
+<p>On Unix, priority is an integer, which is maximum 20. 20 is the lowest
+priority.</p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Rules:</h3>
 
-    <div class='dont-index'><p>Other process handle functions: 
-<code><a href='ps_children.html'>ps_children</a>()</code>,
-<code><a href='ps_cmdline.html'>ps_cmdline</a>()</code>,
-<code><a href='ps_connections.html'>ps_connections</a>()</code>,
-<code><a href='ps_cpu_times.html'>ps_cpu_times</a>()</code>,
-<code><a href='ps_create_time.html'>ps_create_time</a>()</code>,
-<code><a href='ps_cwd.html'>ps_cwd</a>()</code>,
-<code><a href='ps_exe.html'>ps_exe</a>()</code>,
-<code><a href='ps_handle.html'>ps_handle</a>()</code>,
-<code><a href='ps_interrupt.html'>ps_interrupt</a>()</code>,
-<code><a href='ps_is_running.html'>ps_is_running</a>()</code>,
-<code><a href='ps_kill.html'>ps_kill</a>()</code>,
-<code><a href='ps_memory_info.html'>ps_memory_info</a>()</code>,
-<code><a href='ps_name.html'>ps_name</a>()</code>,
-<code><a href='ps_num_fds.html'>ps_num_fds</a>()</code>,
-<code><a href='ps_num_threads.html'>ps_num_threads</a>()</code>,
-<code><a href='ps_open_files.html'>ps_open_files</a>()</code>,
-<code><a href='ps_pid.html'>ps_pid</a>()</code>,
-<code><a href='ps_ppid.html'>ps_ppid</a>()</code>,
-<code><a href='ps_resume.html'>ps_resume</a>()</code>,
-<code><a href='ps_send_signal.html'>ps_send_signal</a>()</code>,
-<code><a href='ps_status.html'>ps_status</a>()</code>,
-<code><a href='ps_suspend.html'>ps_suspend</a>()</code>,
-<code><a href='ps_terminal.html'>ps_terminal</a>()</code>,
-<code><a href='ps_terminate.html'>ps_terminate</a>()</code>,
-<code><a href='ps_uids.html'>ps_uids</a>()</code>,
-<code><a href='ps_username.html'>ps_username</a>()</code></p></div>
+<ul>
+<li><p>On Windows you can only set the priority of the processes the current
+user has <code>PROCESS_SET_INFORMATION</code> access rights to. This typically
+means your own processes.</p></li>
+<li><p>On Unix you can only set the priority of the your own processes.
+The superuser can set the priority of any process.</p></li>
+<li><p>On Unix you cannot set a higher priority, unless you are the superuser.
+(I.e. you cannot set a lower number.)</p></li>
+<li><p>On Unix the default priority of a process is zero.</p></li>
+</ul>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span>
-<span class='va'>p</span>
-</div><div class='output co'>#&gt; &lt;ps::ps_handle&gt; PID=2233, NAME=R, AT=2020-10-06 16:58:16</div><div class='input'><span class='va'>env</span> <span class='op'>&lt;-</span> <span class='fu'>ps_environ</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
-<span class='va'>env</span><span class='op'>[[</span><span class='st'>"R_HOME"</span><span class='op'>]</span><span class='op'>]</span>
-</div><div class='output co'>#&gt; [1] "/Library/Frameworks/R.framework/Resources"</div></pre>
+
+
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
