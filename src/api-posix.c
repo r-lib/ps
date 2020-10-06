@@ -154,6 +154,8 @@ SEXP psll_get_nice(SEXP p) {
     ps__check_for_zombie(handle, 1);
     ps__set_error_from_errno();
     ps__throw_error();
+  } else {
+    ps__check_for_zombie(handle, 0);
   }
 
   return ScalarInteger(priority);
@@ -179,6 +181,8 @@ SEXP psll_set_nice(SEXP p, SEXP value) {
     ps__check_for_zombie(handle, 1);
     ps__set_error_from_errno();
     ps__throw_error();
+  } else {
+    ps__check_for_zombie(handle, 0);
   }
 
   return R_NilValue;

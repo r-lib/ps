@@ -940,7 +940,7 @@ ps_get_nice <- function(p = ps_handle()) {
 #' @export
 #' @rdname ps_get_nice
 
-ps_set_nice <- function(p = ps_handle(), value = TODO) {
+ps_set_nice <- function(p = ps_handle(), value) {
   assert_ps_handle(p)
   assert_nice_value(value)
   if (ps_os_type()[["POSIX"]]) {

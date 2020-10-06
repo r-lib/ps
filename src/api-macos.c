@@ -54,6 +54,7 @@ void ps__check_for_zombie(ps_handle_t *handle, int err) {
 
   if (handle->pid == 0) {
     ps__access_denied("");
+    err = 1;
 
   } else if (errno == 0 || errno == ESRCH) {
 
@@ -61,8 +62,10 @@ void ps__check_for_zombie(ps_handle_t *handle, int err) {
     if ((ret == -1) ||
 	(PS__TV2DOUBLE(kp.kp_proc.p_starttime) != handle->create_time)) {
       ps__no_such_process(handle->pid, 0);
+      err = 1;
     } else if (kp.kp_proc.p_stat == SZOMB) {
       ps__zombie_process(handle->pid);
+      err = 1;
     } else {
       ps__access_denied("");
     }
@@ -71,8 +74,7 @@ void ps__check_for_zombie(ps_handle_t *handle, int err) {
     ps__set_error_from_errno();
   }
 
-  // err is ignored, we always throw
-  ps__throw_error();
+  if (err) ps__throw_error();
 }
 
 void psll_finalizer(SEXP p) {
