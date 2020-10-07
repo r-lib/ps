@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Suspend (stop) the process — ps_suspend • ps</title>
+<title>Statistics about system memory usage — ps_system_memory • ps</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,8 @@
 
 
 
-<meta property="og:title" content="Suspend (stop) the process — ps_suspend" />
-<meta property="og:description" content="Suspend process execution with SIGSTOP preemptively checking
-whether PID has been reused. On Windows this has the effect of
-suspending all process threads." />
+<meta property="og:title" content="Statistics about system memory usage — ps_system_memory" />
+<meta property="og:description" content="Statistics about system memory usage" />
 
 
 
@@ -107,68 +105,77 @@ suspending all process threads." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Suspend (stop) the process</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/ps/blob/master/R/low-level.R'><code>R/low-level.R</code></a></small>
-    <div class="hidden name"><code>ps_suspend.Rd</code></div>
+    <h1>Statistics about system memory usage</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/ps/blob/master/R/memory.R'><code>R/memory.R</code></a></small>
+    <div class="hidden name"><code>ps_system_memory.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Suspend process execution with <code>SIGSTOP</code> preemptively checking
-whether PID has been reused. On Windows this has the effect of
-suspending all process threads.</p>
+    <p>Statistics about system memory usage</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ps_suspend</span><span class='op'>(</span>p <span class='op'>=</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ps_system_memory</span><span class='op'>(</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>p</th>
-      <td><p>Process handle.</p></td>
-    </tr>
-    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Named list. All numbers are in bytes:</p><ul>
+<li><p><code>total</code>: total physical memory (exclusive swap).</p></li>
+<li><p><code>avail</code> the memory that can be given instantly to processes without
+the system going into swap. This is calculated by summing different
+memory values depending on the platform and it is supposed to be used
+to monitor actual memory usage in a cross platform fashion.</p></li>
+<li><p><code>percent</code>: Percentage of memory that is taken.</p></li>
+<li><p><code>used</code>: memory used, calculated differently depending on
+the platform and designed for informational purposes only.
+<code>total</code> - <code>free</code> does not necessarily match <code>used</code>.</p></li>
+<li><p><code>free</code>: memory not being used at all (zeroed) that is
+readily available; note that this doesn’t reflect the actual memory
+available (use <code>available</code> instead). <code>total</code> - <code>used</code> does not
+necessarily match <code>free</code>.</p></li>
+<li><p><code>active</code>: (Unix only) memory currently in use or very recently used,
+and so it is in RAM.</p></li>
+<li><p><code>inactive</code>: (Unix only) memory that is marked as not used.</p></li>
+<li><p><code>wired</code>: (macOS only) memory that is marked to always stay in RAM. It
+is never moved to disk.</p></li>
+<li><p><code>buffers</code>: (Linux only) cache for things like file system metadata.</p></li>
+<li><p><code>cached</code>: (Linux only) cache for various things.</p></li>
+<li><p><code>shared</code>: (Linux only) memory that may be simultaneously accessed by
+multiple processes.</p></li>
+<li><p><code>slab</code>:  (Linux only) in-kernel data structures cache.</p></li>
+</ul>
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other process handle functions: 
-<code><a href='ps_children.html'>ps_children</a>()</code>,
-<code><a href='ps_cmdline.html'>ps_cmdline</a>()</code>,
-<code><a href='ps_connections.html'>ps_connections</a>()</code>,
-<code><a href='ps_cpu_times.html'>ps_cpu_times</a>()</code>,
-<code><a href='ps_create_time.html'>ps_create_time</a>()</code>,
-<code><a href='ps_cwd.html'>ps_cwd</a>()</code>,
-<code><a href='ps_environ.html'>ps_environ</a>()</code>,
-<code><a href='ps_exe.html'>ps_exe</a>()</code>,
-<code><a href='ps_handle.html'>ps_handle</a>()</code>,
-<code><a href='ps_interrupt.html'>ps_interrupt</a>()</code>,
-<code><a href='ps_is_running.html'>ps_is_running</a>()</code>,
-<code><a href='ps_kill.html'>ps_kill</a>()</code>,
-<code><a href='ps_memory_info.html'>ps_memory_info</a>()</code>,
-<code><a href='ps_name.html'>ps_name</a>()</code>,
-<code><a href='ps_num_fds.html'>ps_num_fds</a>()</code>,
-<code><a href='ps_num_threads.html'>ps_num_threads</a>()</code>,
-<code><a href='ps_open_files.html'>ps_open_files</a>()</code>,
-<code><a href='ps_pid.html'>ps_pid</a>()</code>,
-<code><a href='ps_ppid.html'>ps_ppid</a>()</code>,
-<code><a href='ps_resume.html'>ps_resume</a>()</code>,
-<code><a href='ps_send_signal.html'>ps_send_signal</a>()</code>,
-<code><a href='ps_status.html'>ps_status</a>()</code>,
-<code><a href='ps_terminal.html'>ps_terminal</a>()</code>,
-<code><a href='ps_terminate.html'>ps_terminate</a>()</code>,
-<code><a href='ps_uids.html'>ps_uids</a>()</code>,
-<code><a href='ps_username.html'>ps_username</a>()</code></p></div>
+    <div class='dont-index'><p>Other memory functions: 
+<code><a href='ps_system_swap.html'>ps_system_swap</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>px</span> <span class='op'>&lt;-</span> <span class='fu'>processx</span><span class='fu'>::</span><span class='va'><a href='http://processx.r-lib.org/reference/process.html'>process</a></span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='st'>"sleep"</span>, <span class='st'>"10"</span><span class='op'>)</span>
-<span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='va'>px</span><span class='op'>$</span><span class='fu'>get_pid</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>p</span>
-</div><div class='output co'>#&gt; &lt;ps::ps_handle&gt; PID=2315, NAME=sleep, AT=2020-10-07 12:03:12</div><div class='input'><span class='fu'>ps_suspend</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='fu'><a href='ps_status.html'>ps_status</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "stopped"</div><div class='input'><span class='fu'><a href='ps_resume.html'>ps_resume</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='fu'><a href='ps_status.html'>ps_status</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "running"</div><div class='input'><span class='fu'><a href='ps_kill.html'>ps_kill</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; NULL</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>ps_system_memory</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; $total
+#&gt; [1] 12884901888
+#&gt; 
+#&gt; $avail
+#&gt; [1] 9937666048
+#&gt; 
+#&gt; $percent
+#&gt; [1] 22.87356
+#&gt; 
+#&gt; $used
+#&gt; [1] 2940948480
+#&gt; 
+#&gt; $free
+#&gt; [1] 108769280
+#&gt; 
+#&gt; $active
+#&gt; [1] 1968541696
+#&gt; 
+#&gt; $inactive
+#&gt; [1] 5831917568
+#&gt; 
+#&gt; $wired
+#&gt; [1] 972406784
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

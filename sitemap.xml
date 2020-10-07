@@ -37,10 +37,19 @@
     <loc>http://ps.r-lib.org/reference/ps_cwd.html</loc>
   </url>
   <url>
+    <loc>http://ps.r-lib.org/reference/ps_disk_partitions.html</loc>
+  </url>
+  <url>
+    <loc>http://ps.r-lib.org/reference/ps_disk_usage.html</loc>
+  </url>
+  <url>
     <loc>http://ps.r-lib.org/reference/ps_environ.html</loc>
   </url>
   <url>
     <loc>http://ps.r-lib.org/reference/ps_exe.html</loc>
+  </url>
+  <url>
+    <loc>http://ps.r-lib.org/reference/ps_get_nice.html</loc>
   </url>
   <url>
     <loc>http://ps.r-lib.org/reference/ps_handle.html</loc>
@@ -97,10 +106,19 @@
     <loc>http://ps.r-lib.org/reference/ps_suspend.html</loc>
   </url>
   <url>
+    <loc>http://ps.r-lib.org/reference/ps_system_memory.html</loc>
+  </url>
+  <url>
+    <loc>http://ps.r-lib.org/reference/ps_system_swap.html</loc>
+  </url>
+  <url>
     <loc>http://ps.r-lib.org/reference/ps_terminal.html</loc>
   </url>
   <url>
     <loc>http://ps.r-lib.org/reference/ps_terminate.html</loc>
+  </url>
+  <url>
+    <loc>http://ps.r-lib.org/reference/ps_tty_size.html</loc>
   </url>
   <url>
     <loc>http://ps.r-lib.org/reference/ps_uids.html</loc>
