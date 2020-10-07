@@ -22,7 +22,7 @@ this typically requires enumerating all processes on the system, so
 it is a costly operation.
 }
 \examples{
-\dontshow{if (ps::ps_is_supported() && ! is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (ps::ps_is_supported() && ! ps:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 p <- ps_parent(ps_handle())
 ps_children(p)
 \dontshow{\}) # examplesIf}

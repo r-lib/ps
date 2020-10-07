@@ -31,7 +31,7 @@ waited-for children have been scheduled in kernel mode.
 Throws a \code{zombie_process()} error for zombie processes.
 }
 \examples{
-\dontshow{if (ps::ps_is_supported() && ! is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (ps::ps_is_supported() && ! ps:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 p <- ps_handle()
 p
 ps_cpu_times(p)

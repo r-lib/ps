@@ -14,7 +14,7 @@ For the errors that are not used on the current platform, \code{value} is
 A data frame with columns: \code{name}, \code{value}, \code{description}.
 }
 \examples{
-\dontshow{if (ps::ps_is_supported() && ! is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (ps::ps_is_supported() && ! ps:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 errno()
 \dontshow{\}) # examplesIf}
 }
