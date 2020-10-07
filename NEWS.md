@@ -1,6 +1,8 @@
 
 # ps development version
 
+* ps is now under the MIT license.
+
 * Process functions now default to the calling R process. So e.g. you can
   write simply `ps_connections()` to list all network connections of the
   current process, instead of `ps_connections(ps_handle())`.
