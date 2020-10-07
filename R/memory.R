@@ -28,7 +28,7 @@
 #'
 #' @family memory functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' ps_system_memory()
 
 ps_system_memory <- function() {
@@ -119,7 +119,7 @@ ps__system_memory_linux <- function() {
 #'
 #' @family memory functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' ps_system_swap()
 
 ps_system_swap <- function() {

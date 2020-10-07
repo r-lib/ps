@@ -182,3 +182,11 @@ get_tool <- function(prog) {
 match_names <- function(map, x) {
   names(map)[match(x, map)]
 }
+
+is_cran_check <- function() {
+  if (identical(Sys.getenv("NOT_CRAN"), "true")) {
+    FALSE
+  } else {
+    Sys.getenv("_R_CHECK_PACKAGE_NAME_", "") != ""
+  }
+}

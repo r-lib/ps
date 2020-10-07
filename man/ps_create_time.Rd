@@ -21,7 +21,7 @@ with identical ids within the resolution of the timer is minimal.
 This function works even if the process has already finished.
 }
 \examples{
-\dontshow{if (ps::ps_is_supported()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (ps::ps_is_supported() && ! is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 p <- ps_handle()
 p
 ps_create_time(p)

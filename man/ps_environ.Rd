@@ -33,7 +33,7 @@ enough.
 These functions throw a \code{zombie_process} error for zombie processes.
 }
 \examples{
-\dontshow{if (ps::ps_is_supported()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (ps::ps_is_supported() && ! is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 p <- ps_handle()
 p
 env <- ps_environ(p)

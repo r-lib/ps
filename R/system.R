@@ -84,7 +84,7 @@ ps_users <- function() {
 #' @return Integer scalar.
 #'
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' ps_cpu_count(logical = TRUE)
 #' ps_cpu_count(logical = FALSE)
 

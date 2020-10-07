@@ -17,7 +17,7 @@ If cannot be determined, it returns \code{NA}. It also returns \code{NA} on olde
 Windows systems, e.g. Vista or older and Windows Server 2008 or older.
 }
 \examples{
-\dontshow{if (ps::ps_is_supported()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (ps::ps_is_supported() && ! is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ps_cpu_count(logical = TRUE)
 ps_cpu_count(logical = FALSE)
 \dontshow{\}) # examplesIf}

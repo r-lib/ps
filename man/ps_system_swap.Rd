@@ -23,7 +23,7 @@ Named list. All numbers are in bytes:
 System swap memory statistics
 }
 \examples{
-\dontshow{if (ps::ps_is_supported()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (ps::ps_is_supported() && ! is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ps_system_swap()
 \dontshow{\}) # examplesIf}
 }

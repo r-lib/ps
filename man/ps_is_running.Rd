@@ -19,7 +19,7 @@ It returns \code{FALSE} if the process has already finished.
 It uses the start time of the process to work around pid reuse. I.e.
 }
 \examples{
-\dontshow{if (ps::ps_is_supported()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (ps::ps_is_supported() && ! is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 p <- ps_handle()
 p
 ps_is_running(p)

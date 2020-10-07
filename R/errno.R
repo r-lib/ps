@@ -6,7 +6,7 @@
 #'
 #' A data frame with columns: `name`, `value`, `description`.
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' errno()
 
 errno <- function() {

@@ -19,7 +19,7 @@ A data frame (tibble) with columns \code{device}, \code{mountpoint},
 The output is similar the Unix \code{mount} and \code{df} commands.
 }
 \examples{
-\dontshow{if (ps::ps_is_supported()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (ps::ps_is_supported() && ! is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ps_disk_partitions(all = TRUE)
 ps_disk_partitions()
 \dontshow{\}) # examplesIf}

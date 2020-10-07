@@ -10,7 +10,7 @@
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 
@@ -56,7 +56,7 @@ print.ps_handle <- function(x, ...)  {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 #' ps_pid(p)
@@ -80,7 +80,7 @@ ps_pid <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 #' ps_create_time(p)
@@ -103,7 +103,7 @@ ps_create_time <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 #' ps_is_running(p)
@@ -130,7 +130,7 @@ ps_is_running <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 #' ps_ppid(p)
@@ -162,7 +162,7 @@ ps_parent <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 #' ps_name(p)
@@ -201,7 +201,7 @@ ps_name <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 #' ps_name(p)
@@ -226,7 +226,7 @@ ps_exe <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 #' ps_name(p)
@@ -263,7 +263,7 @@ ps_cmdline <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 #' ps_status(p)
@@ -289,7 +289,7 @@ ps_status <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 #' ps_username(p)
@@ -308,7 +308,7 @@ ps_username <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 #' ps_cwd(p)
@@ -336,7 +336,7 @@ ps_cwd <- function(p = ps_handle()) {
 #'   platforms.
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"]
+#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"] && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 #' ps_uids(p)
@@ -368,7 +368,7 @@ ps_gids <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 #' ps_terminal(p)
@@ -406,7 +406,7 @@ ps_terminal <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 #' env <- ps_environ(p)
@@ -434,7 +434,7 @@ ps_environ_raw <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 #' ps_num_threads(p)
@@ -465,7 +465,7 @@ ps_num_threads <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 #' ps_cpu_times(p)
@@ -513,7 +513,7 @@ ps_cpu_times <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' p
 #' ps_memory_info(p)
@@ -536,7 +536,7 @@ ps_memory_info <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"]
+#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"] && ! is_cran_check()
 #' px <- processx::process$new("sleep", "10")
 #' p <- ps_handle(px$get_pid())
 #' p
@@ -561,7 +561,7 @@ ps_send_signal <- function(p = ps_handle(), sig) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"]
+#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"] && ! is_cran_check()
 #' px <- processx::process$new("sleep", "10")
 #' p <- ps_handle(px$get_pid())
 #' p
@@ -586,7 +586,7 @@ ps_suspend <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"]
+#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"] && ! is_cran_check()
 #' px <- processx::process$new("sleep", "10")
 #' p <- ps_handle(px$get_pid())
 #' p
@@ -611,7 +611,7 @@ ps_resume <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"]
+#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"] && ! is_cran_check()
 #' px <- processx::process$new("sleep", "10")
 #' p <- ps_handle(px$get_pid())
 #' p
@@ -634,7 +634,7 @@ ps_terminate <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"]
+#' @examplesIf ps::ps_is_supported() && ps::ps_os_type()["POSIX"] && ! is_cran_check()
 #' px <- processx::process$new("sleep", "10")
 #' p <- ps_handle(px$get_pid())
 #' p
@@ -659,7 +659,7 @@ ps_kill <- function(p = ps_handle()) {
 #' @family process handle functions
 #' @export
 #' @importFrom utils head tail
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_parent(ps_handle())
 #' ps_children(p)
 
@@ -743,7 +743,7 @@ ps_ppid_map <- function() {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' ps_num_fds(p)
 #' f <- file(tmp <- tempfile(), "w")
@@ -773,7 +773,7 @@ ps_num_fds <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' ps_open_files(p)
 #' f <- file(tmp <- tempfile(), "w")
@@ -819,7 +819,7 @@ ps_open_files <- function(p = ps_handle()) {
 #'
 #' @family process handle functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' p <- ps_handle()
 #' ps_connections(p)
 #' sc <- socketConnection("httpbin.org", port = 80)

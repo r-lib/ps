@@ -11,7 +11,7 @@
 #'
 #' @family disk functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' ps_disk_partitions(all = TRUE)
 #' ps_disk_partitions()
 
@@ -70,7 +70,7 @@ ps__disk_partitions_filter <- function(pt) {
 #'
 #' @family disk functions
 #' @export
-#' @examplesIf ps::ps_is_supported()
+#' @examplesIf ps::ps_is_supported() && ! is_cran_check()
 #' ps_disk_usage()
 
 

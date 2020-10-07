@@ -21,7 +21,7 @@ On on Unix this can change, e.g. via an exec*() system call.
 \code{ps_name()} works on zombie processes.
 }
 \examples{
-\dontshow{if (ps::ps_is_supported()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (ps::ps_is_supported() && ! is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 p <- ps_handle()
 p
 ps_name(p)
