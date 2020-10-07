@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ps</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.3.4.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.4.0.9000</span>
       </span>
     </div>
 
@@ -108,6 +108,20 @@
       <small>Source: <a href='https://github.com/r-lib/ps/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="ps-140" class="section level1">
+<h1 class="page-header" data-toc-text="1.4.0">
+<a href="#ps-140" class="anchor"></a>ps 1.4.0<small> 2020-10-07 </small>
+</h1>
+<ul>
+<li><p>ps is now under the MIT license.</p></li>
+<li><p>Process functions now default to the calling R process. So e.g. you can write simply <code><a href="../reference/ps_connections.html">ps_connections()</a></code> to list all network connections of the current process, instead of <code><a href="../reference/ps_connections.html">ps_connections(ps_handle())</a></code>.</p></li>
+<li><p>New <code><a href="../reference/ps_windows_nice_values.html">ps_get_nice()</a></code> and <code><a href="../reference/ps_windows_nice_values.html">ps_set_nice()</a></code> functions to get and set the priority of a process (<a href='https://github.com/r-lib/ps/issues/89'>#89</a>).</p></li>
+<li><p>New <code><a href="../reference/ps_system_memory.html">ps_system_memory()</a></code> and <code><a href="../reference/ps_system_swap.html">ps_system_swap()</a></code> functions, to return information about system memory and swap usage.</p></li>
+<li><p>New <code><a href="../reference/ps_disk_partitions.html">ps_disk_partitions()</a></code> and <code><a href="../reference/ps_disk_usage.html">ps_disk_usage()</a></code> functions, they return information about file systems, similarly to the <code>mount</code> and <code>df</code> Unix commands.</p></li>
+<li><p>New <code><a href="../reference/ps_tty_size.html">ps_tty_size()</a></code> function to query the size of the terminal.</p></li>
+<li><p>Fixed an issue in <code>CLeanupReporter()</code> that triggered random failures on macOS.</p></li>
+</ul>
+</div>
     <div id="ps-134" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.4">
 <a href="#ps-134" class="anchor"></a>ps 1.3.4<small> 2020-08-11 </small>
