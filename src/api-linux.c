@@ -1142,6 +1142,8 @@ SEXP ps__disk_partitions(SEXP all) {
 error:
   if (file != NULL) endmntent(file);
   ps__throw_error();
+  /* These are never called, but R CMD check and rchk cannot handle this */
+  error("nah");
   return R_NilValue;
 }
 
