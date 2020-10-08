@@ -75,10 +75,10 @@ MACROS="$MACROS PS__VERSION"
 PS__VERSION=546
 
 if [ -n "$WINDOWS" ]; then
-    VER=`$RBIN --vanilla --slave -f inst/tools/winver.R`
+    VER=`"$RBIN" --vanilla --slave -f inst/tools/winver.R`
     MAJOR=`echo $VER | cut -f1 -d.`
     MINOR=`echo $VER | cut -f2 -d.`
-    WINVER=`$RBIN --vanilla --slave -e "cat(sprintf('0x0%s', $MAJOR*100 + $MINOR))"`
+    WINVER=`"$RBIN" --vanilla --slave -e "cat(sprintf('0x0%s', $MAJOR*100 + $MINOR))"`
     MACROS="${MACROS} PS__WINDOWS _WIN32_WINNT _AVAIL_WINVER"
     MACROS="${MACROS} _CRT_SECURE_NO_WARNINGS PSAPI_VERSION"
     PS__WINDOWS=1
@@ -147,7 +147,7 @@ fi
 # Create Makevars file
 # ------------------------------------------------------------------------
 
-$RBIN --vanilla --slave -f inst/tools/error-codes.R
+"$RBIN" --vanilla --slave -f inst/tools/error-codes.R
 
 # OBJECTS (= source files)
 # LIBRARIES -> PKG_LIBS
