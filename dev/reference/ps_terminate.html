@@ -162,9 +162,9 @@
     <pre class="examples"><div class='input'><span class='va'>px</span> <span class='op'>&lt;-</span> <span class='fu'>processx</span><span class='fu'>::</span><span class='va'><a href='http://processx.r-lib.org/reference/process.html'>process</a></span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='st'>"sleep"</span>, <span class='st'>"10"</span><span class='op'>)</span>
 <span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='va'>px</span><span class='op'>$</span><span class='fu'>get_pid</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>p</span>
-</div><div class='output co'>#&gt; &lt;ps::ps_handle&gt; PID=2522, NAME=sleep, AT=2020-10-07 12:00:46</div><div class='input'><span class='fu'>ps_terminate</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; &lt;ps::ps_handle&gt; PID=1642, NAME=sleep, AT=2020-10-08 07:19:48</div><div class='input'><span class='fu'>ps_terminate</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; NULL</div><div class='input'><span class='va'>p</span>
-</div><div class='output co'>#&gt; &lt;ps::ps_handle&gt; PID=2522, NAME=???, AT=2020-10-07 12:00:46</div><div class='input'><span class='fu'><a href='ps_is_running.html'>ps_is_running</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; &lt;ps::ps_handle&gt; PID=1642, NAME=???, AT=2020-10-08 07:19:48</div><div class='input'><span class='fu'><a href='ps_is_running.html'>ps_is_running</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='va'>px</span><span class='op'>$</span><span class='fu'>get_exit_status</span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] -15</div></pre>
   </div>
