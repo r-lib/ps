@@ -123,9 +123,9 @@ SEXP ps__get_open_files(long dwPid, HANDLE hProcess) {
     do {
       // Release any previously allocated buffer
       if (g_pNameBuffer != NULL) {
-	HeapFree(GetProcessHeap(), 0, g_pNameBuffer);
-	g_pNameBuffer = NULL;
-	g_dwSize = 0;
+	      HeapFree(GetProcessHeap(), 0, g_pNameBuffer);
+	      g_pNameBuffer = NULL;
+	      g_dwSize = 0;
       }
 
       // NtQueryObject puts the required buffer size in g_dwLength
@@ -134,10 +134,10 @@ SEXP ps__get_open_files(long dwPid, HANDLE hProcess) {
 
       g_dwSize = g_dwLength;
       if (g_dwSize > 0) {
-	g_pNameBuffer = HeapAlloc(GetProcessHeap(),
-				  HEAP_ZERO_MEMORY,
-				  g_dwSize);
-	if (g_pNameBuffer == NULL) goto loop_cleanup;
+	      g_pNameBuffer = HeapAlloc(GetProcessHeap(),
+			  HEAP_ZERO_MEMORY,
+			  g_dwSize);
+	      if (g_pNameBuffer == NULL) goto loop_cleanup;
       }
 
       dwWait = ps__NtQueryObject();
@@ -154,11 +154,11 @@ SEXP ps__get_open_files(long dwPid, HANDLE hProcess) {
     if (g_pNameBuffer->Length > 0) {
       PROTECT(path = ps__convert_dos_path(g_pNameBuffer->Buffer));
       if (!isNull(path)) {
-	if (++num == len) {
-	  len *= 2;
-	  REPROTECT(retlist = Rf_lengthgets(retlist, len), pidx);
-	}
-	SET_VECTOR_ELT(retlist, num, ps__build_list("Oi", path, NA_INTEGER));
+	      if (++num == len) {
+	        len *= 2;
+	        REPROTECT(retlist = Rf_lengthgets(retlist, len), pidx);
+	      }
+	      SET_VECTOR_ELT(retlist, num, ps__build_list("Oi", path, NA_INTEGER));
       }
       UNPROTECT(1);
     }
