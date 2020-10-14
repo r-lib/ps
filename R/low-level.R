@@ -961,6 +961,7 @@ ps_set_nice <- function(p = ps_handle(), value) {
 #'
 #' @export
 #' @family process handle functions
+#' @family shared library tools
 #' @examplesIf ps::ps_is_supported() && ! ps:::is_cran_check() && ps::ps_os_type()[["WINDOWS"]]
 #' # The loaded DLLs of the current process
 #' ps_shared_libs()

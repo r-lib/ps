@@ -52,5 +52,9 @@ Other process handle functions:
 \code{\link{ps_terminate}()},
 \code{\link{ps_uids}()},
 \code{\link{ps_username}()}
+
+Other shared library tools: 
+\code{\link{ps_shared_lib_users}()}
 }
 \concept{process handle functions}
+\concept{shared library tools}
