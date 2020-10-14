@@ -1,6 +1,9 @@
 
 # ps development version
 
+* New function `ps_shared_libs()` to list the loaded shared libraries
+  of a process, on Windows.
+
 # ps 1.4.0
 
 * ps is now under the MIT license.

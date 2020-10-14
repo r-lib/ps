@@ -950,3 +950,35 @@ ps_set_nice <- function(p = ps_handle(), value) {
   }
   invisible(.Call(psll_set_nice, p, value))
 }
+
+#' List the dynamically loaded libraries of a process
+#'
+#' Note: this function currently only works on Windows.
+#' @param p Process handle.
+#' @return Data frame with one column currently: `path`, the
+#' absolute path to the loaded module or shared library. On Windows
+#' the list includes the executable file itself.
+#'
+#' @export
+#' @family process handle functions
+#' @examplesIf ps::ps_is_supported() && ! ps:::is_cran_check() && ps::ps_os_type()[["WINDOWS"]]
+#' # The loaded DLLs of the current process
+#' ps_shared_libs()
+
+ps_shared_libs <- function(p = ps_handle()) {
+  assert_ps_handle(p)
+  if (!ps_os_type()[["WINDOWS"]]) {
+    stop("`ps_shared_libs()` is currently only supported on Windows")
+  }
+
+  l <- .Call(psll_dlls, p)
+
+  d <- data.frame(
+    stringsAsFactors = FALSE,
+    path = map_chr(l, "[[", 1)
+  )
+
+  requireNamespace("tibble", quietly = TRUE)
+  class(d) <- unique(c("tbl_df", "tbl", class(d)))
+  d
+}

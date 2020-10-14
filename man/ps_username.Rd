@@ -52,6 +52,7 @@ Other process handle functions:
 \code{\link{ps_ppid}()},
 \code{\link{ps_resume}()},
 \code{\link{ps_send_signal}()},
+\code{\link{ps_shared_libs}()},
 \code{\link{ps_status}()},
 \code{\link{ps_suspend}()},
 \code{\link{ps_terminal}()},

@@ -862,6 +862,36 @@ SEXP psll_open_files(SEXP p) {
   return result;
 }
 
+SEXP psll_dlls(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  HANDLE processHandle = NULL;
+  DWORD access = PROCESS_QUERY_INFORMATION | PROCESS_VM_READ;
+  SEXP result;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  processHandle = ps__handle_from_pid_waccess(handle->pid, access);
+  if (processHandle == NULL) {
+    PS__CHECK_HANDLE(handle);
+    ps__set_error_from_windows_error(0);
+    ps__throw_error();
+  }
+
+  PROTECT(result = ps__get_modules(processHandle));
+
+  CloseHandle(processHandle);
+
+  PS__CHECK_HANDLE(handle);
+
+  if (isNull(result)) {
+    ps__set_error_from_windows_error(0);
+    ps__throw_error();
+  }
+
+  UNPROTECT(1);
+  return result;
+}
+
 SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   const char *cinterrupt_path = CHAR(STRING_ELT(interrupt_path, 0));

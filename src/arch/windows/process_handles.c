@@ -239,3 +239,49 @@ ps__NtQueryObjectThread(LPVOID lpvParam) {
     SetEvent(g_hEvtFinish);
   }
 }
+
+SEXP ps__get_modules(HANDLE hProcess) {
+  unsigned int nalloc = 1024;
+  HMODULE *hMods = (HMODULE*) R_alloc(nalloc, sizeof(HMODULE));
+  DWORD cbNeeded;
+  unsigned int i;
+  SEXP result = R_NilValue;
+
+  while (1) {
+    BOOL ret = EnumProcessModules(
+      hProcess,
+      hMods,
+      sizeof(HMODULE) * nalloc,
+      &cbNeeded
+    );
+    unsigned int got = cbNeeded / sizeof(HMODULE);
+    if (ret && got <= nalloc) {
+      result = PROTECT(Rf_allocVector(VECSXP, got));
+      for (i = 0; i < got; i++) {
+        wchar_t szModName[MAX_PATH];
+        ret = GetModuleFileNameExW(hProcess, hMods[i], szModName,
+                                   MAX_PATH);
+        if (!ret) {
+          UNPROTECT(1);
+          return R_NilValue;
+        }
+        SEXP utf8name = PROTECT(ps__utf16_to_charsxp(szModName, -1));
+        SET_VECTOR_ELT(result, i, ScalarString(utf8name));
+        UNPROTECT(1);
+      }
+      break;
+
+    } else if (got > nalloc) {
+      hMods = (HMODULE*) S_realloc((char*) hMods, got + 100, nalloc,
+                                   sizeof(HMODULE));
+      nalloc = got + 100;
+    } else {
+      UNPROTECT(1);
+      return R_NilValue;
+    }
+  }
+
+  UNPROTECT(1);
+  return result;
+}
+
