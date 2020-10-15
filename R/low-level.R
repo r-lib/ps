@@ -739,7 +739,7 @@ ps_descent <- function(p = ps_handle()) {
   current_pid <- ps_pid(p)
   if (windows) current_time <- ps_create_time(p)
 
-  while (current_pid != 1L) {
+  while (TRUE) {
     branch <- c(branch, list(current))
     branch_pids <- c(branch_pids, current_pid)
     parent <- fallback(ps_parent(current), NULL)
@@ -747,7 +747,8 @@ ps_descent <- function(p = ps_handle()) {
     # Might fail on Windows, if the process does not exist
     if (is.null(parent)) break;
 
-    # Windows might have loops
+    # If the parent pid is the same, we stop.
+    # Also, Windows might have loops
     parent_pid <- ps_pid(parent)
     if (parent_pid %in% branch_pids) break;
 
