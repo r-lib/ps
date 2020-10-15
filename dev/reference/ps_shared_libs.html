@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Memory usage information — ps_memory_info • ps</title>
+<title>List the dynamically loaded libraries of a process — ps_shared_libs • ps</title>
 
 
 <!-- jquery -->
@@ -39,18 +39,8 @@
 
 
 
-<meta property="og:title" content="Memory usage information — ps_memory_info" />
-<meta property="og:description" content="A list with information about memory usage. Portable fields:
-rss: &quot;Resident Set Size&quot;, this is the non-swapped physical memory a
-process has used. On UNIX it matches &quot;top&quot;‘s 'RES' column (see doc). On
-Windows this is an alias for wset field and it matches &quot;Memory&quot;
-column of taskmgr.exe.
-vmem: &quot;Virtual Memory Size&quot;, this is the total amount of virtual
-memory used by the process. On UNIX it matches &quot;top&quot;‘s 'VIRT' column
-(see doc). On Windows this is an alias for the pagefile field and
-it matches the &quot;Working set (memory)&quot; column of taskmgr.exe.
-
-" />
+<meta property="og:title" content="List the dynamically loaded libraries of a process — ps_shared_libs" />
+<meta property="og:description" content="Note: this function currently only works on Windows." />
 
 
 <meta name="robots" content="noindex">
@@ -115,26 +105,16 @@ it matches the &quot;Working set (memory)&quot; column of taskmgr.exe.
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Memory usage information</h1>
+    <h1>List the dynamically loaded libraries of a process</h1>
     <small class="dont-index">Source: <a href='https://github.com/r-lib/ps/blob/master/R/low-level.R'><code>R/low-level.R</code></a></small>
-    <div class="hidden name"><code>ps_memory_info.Rd</code></div>
+    <div class="hidden name"><code>ps_shared_libs.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A list with information about memory usage. Portable fields:</p><ul>
-<li><p><code>rss</code>: "Resident Set Size", this is the non-swapped physical memory a
-process has used. On UNIX it matches "top"‘s 'RES' column (see doc). On
-Windows this is an alias for <code>wset</code> field and it matches "Memory"
-column of <code>taskmgr.exe</code>.</p></li>
-<li><p><code>vmem</code>: "Virtual Memory Size", this is the total amount of virtual
-memory used by the process. On UNIX it matches "top"‘s 'VIRT' column
-(see doc). On Windows this is an alias for the <code>pagefile</code> field and
-it matches the "Working set (memory)" column of <code>taskmgr.exe</code>.</p></li>
-</ul>
-
+    <p>Note: this function currently only works on Windows.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ps_memory_info</span><span class='op'>(</span>p <span class='op'>=</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ps_shared_libs</span><span class='op'>(</span>p <span class='op'>=</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -147,28 +127,9 @@ it matches the "Working set (memory)" column of <code>taskmgr.exe</code>.</p></l
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Named real vector.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Non-portable fields:</p><ul>
-<li><p><code>shared</code>: (Linux) memory that could be potentially shared with other
-processes. This matches "top"‘s 'SHR' column (see doc).</p></li>
-<li><p><code>text</code>: (Linux): aka 'TRS' (text resident set) the amount of memory
-devoted to executable code. This matches "top"‘s 'CODE' column (see
-doc).</p></li>
-<li><p><code>data</code>: (Linux): aka 'DRS' (data resident set) the amount of physical
-memory devoted to other than executable code. It matches "top"‘s
-'DATA' column (see doc).</p></li>
-<li><p><code>lib</code>: (Linux): the memory used by shared libraries.</p></li>
-<li><p><code>dirty</code>: (Linux): the number of dirty pages.</p></li>
-<li><p><code>pfaults</code>: (macOS): number of page faults.</p></li>
-<li><p><code>pageins</code>: (macOS): number of actual pageins.</p></li>
-</ul>
-
-<p>For on explanation of Windows fields see the
-<a href='https://docs.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex'>PROCESS_MEMORY_COUNTERS_EX</a>
-structure.</p>
-<p>Throws a <code>zombie_process()</code> error for zombie processes.</p>
+    <p>Data frame with one column currently: <code>path</code>, the
+absolute path to the loaded module or shared library. On Windows
+the list includes the executable file itself.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other process handle functions: 
@@ -184,6 +145,7 @@ structure.</p>
 <code><a href='ps_interrupt.html'>ps_interrupt</a>()</code>,
 <code><a href='ps_is_running.html'>ps_is_running</a>()</code>,
 <code><a href='ps_kill.html'>ps_kill</a>()</code>,
+<code><a href='ps_memory_info.html'>ps_memory_info</a>()</code>,
 <code><a href='ps_name.html'>ps_name</a>()</code>,
 <code><a href='ps_num_fds.html'>ps_num_fds</a>()</code>,
 <code><a href='ps_num_threads.html'>ps_num_threads</a>()</code>,
@@ -192,20 +154,21 @@ structure.</p>
 <code><a href='ps_ppid.html'>ps_ppid</a>()</code>,
 <code><a href='ps_resume.html'>ps_resume</a>()</code>,
 <code><a href='ps_send_signal.html'>ps_send_signal</a>()</code>,
-<code><a href='ps_shared_libs.html'>ps_shared_libs</a>()</code>,
 <code><a href='ps_status.html'>ps_status</a>()</code>,
 <code><a href='ps_suspend.html'>ps_suspend</a>()</code>,
 <code><a href='ps_terminal.html'>ps_terminal</a>()</code>,
 <code><a href='ps_terminate.html'>ps_terminate</a>()</code>,
 <code><a href='ps_uids.html'>ps_uids</a>()</code>,
-<code><a href='ps_username.html'>ps_username</a>()</code></p></div>
+<code><a href='ps_username.html'>ps_username</a>()</code></p>
+<p>Other shared library tools: 
+<code><a href='ps_shared_lib_users.html'>ps_shared_lib_users</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span>
-<span class='va'>p</span>
-</div><div class='output co'>#&gt; &lt;ps::ps_handle&gt; PID=1652, NAME=R, AT=2020-10-15 08:28:53</div><div class='input'><span class='fu'>ps_memory_info</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;        rss        vms    pfaults    pageins 
-#&gt;  129314816 4554936320      67610          9 </div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span> <span class='co'># ps::ps_is_supported() &amp;&amp; !ps:::is_cran_check() &amp;&amp; ps::ps_os_type()[["WINDOWS"]]</span>
+<span class='co'># The loaded DLLs of the current process</span>
+<span class='fu'>ps_shared_libs</span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
