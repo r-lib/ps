@@ -123,9 +123,9 @@ SEXP ps__get_open_files(long dwPid, HANDLE hProcess) {
     do {
       // Release any previously allocated buffer
       if (g_pNameBuffer != NULL) {
-	HeapFree(GetProcessHeap(), 0, g_pNameBuffer);
-	g_pNameBuffer = NULL;
-	g_dwSize = 0;
+	      HeapFree(GetProcessHeap(), 0, g_pNameBuffer);
+	      g_pNameBuffer = NULL;
+	      g_dwSize = 0;
       }
 
       // NtQueryObject puts the required buffer size in g_dwLength
@@ -134,10 +134,10 @@ SEXP ps__get_open_files(long dwPid, HANDLE hProcess) {
 
       g_dwSize = g_dwLength;
       if (g_dwSize > 0) {
-	g_pNameBuffer = HeapAlloc(GetProcessHeap(),
-				  HEAP_ZERO_MEMORY,
-				  g_dwSize);
-	if (g_pNameBuffer == NULL) goto loop_cleanup;
+	      g_pNameBuffer = HeapAlloc(GetProcessHeap(),
+			  HEAP_ZERO_MEMORY,
+			  g_dwSize);
+	      if (g_pNameBuffer == NULL) goto loop_cleanup;
       }
 
       dwWait = ps__NtQueryObject();
@@ -154,11 +154,11 @@ SEXP ps__get_open_files(long dwPid, HANDLE hProcess) {
     if (g_pNameBuffer->Length > 0) {
       PROTECT(path = ps__convert_dos_path(g_pNameBuffer->Buffer));
       if (!isNull(path)) {
-	if (++num == len) {
-	  len *= 2;
-	  REPROTECT(retlist = Rf_lengthgets(retlist, len), pidx);
-	}
-	SET_VECTOR_ELT(retlist, num, ps__build_list("Oi", path, NA_INTEGER));
+	      if (++num == len) {
+	        len *= 2;
+	        REPROTECT(retlist = Rf_lengthgets(retlist, len), pidx);
+	      }
+	      SET_VECTOR_ELT(retlist, num, ps__build_list("Oi", path, NA_INTEGER));
       }
       UNPROTECT(1);
     }
@@ -239,3 +239,49 @@ ps__NtQueryObjectThread(LPVOID lpvParam) {
     SetEvent(g_hEvtFinish);
   }
 }
+
+SEXP ps__get_modules(HANDLE hProcess) {
+  unsigned int nalloc = 1024;
+  HMODULE *hMods = (HMODULE*) R_alloc(nalloc, sizeof(HMODULE));
+  DWORD cbNeeded;
+  unsigned int i;
+  SEXP result = R_NilValue;
+
+  while (1) {
+    BOOL ret = EnumProcessModules(
+      hProcess,
+      hMods,
+      sizeof(HMODULE) * nalloc,
+      &cbNeeded
+    );
+    unsigned int got = cbNeeded / sizeof(HMODULE);
+    if (ret && got <= nalloc) {
+      result = PROTECT(Rf_allocVector(VECSXP, got));
+      for (i = 0; i < got; i++) {
+        wchar_t szModName[MAX_PATH];
+        ret = GetModuleFileNameExW(hProcess, hMods[i], szModName,
+                                   MAX_PATH);
+        if (!ret) {
+          UNPROTECT(1);
+          return R_NilValue;
+        }
+        SEXP utf8name = PROTECT(ps__utf16_to_charsxp(szModName, -1));
+        SET_VECTOR_ELT(result, i, ScalarString(utf8name));
+        UNPROTECT(1);
+      }
+      break;
+
+    } else if (got > nalloc) {
+      hMods = (HMODULE*) S_realloc((char*) hMods, got + 100, nalloc,
+                                   sizeof(HMODULE));
+      nalloc = got + 100;
+    } else {
+      UNPROTECT(1);
+      return R_NilValue;
+    }
+  }
+
+  UNPROTECT(1);
+  return result;
+}
+

@@ -38,6 +38,7 @@ SEXP psp__stat_st_rdev(SEXP x) { return ps__dummy("psp__stat_st_rdev"); }
 #ifdef PS__POSIX
 #ifndef PS__WINDOWS
 SEXP psw__realpath(SEXP x) { return ps__dummy("psw__realpath"); }
+SEXP psll_dlls(SEXP x) { return ps__dummy("psll_dlls"); }
 #endif
 #endif
 
