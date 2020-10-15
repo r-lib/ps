@@ -180,6 +180,7 @@ ps_tty_size <- function() {
 #' @param filter Character vector or `NULL`. If not NULL, then it is
 #' a vector of glob expressions, used to filter the process names.
 #' @return A data frame (tibble) with columns:
+#' * `dll`: the file name of the dll file, without the path,
 #' * `path`: path to the shared library,
 #' * `pid`: process ID of the process,
 #' * `name`: name of the process,
@@ -246,6 +247,7 @@ ps_shared_lib_users <- function(paths, user = ps_username(),
 
   d <- data.frame(
     stringsAsFactors = FALSE,
+    dll = basename(unlist(match)),
     path = unlist(match),
     pid = rep(match_pids, match_len),
     name = rep(match_name, match_len),
