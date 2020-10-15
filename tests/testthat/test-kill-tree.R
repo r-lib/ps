@@ -34,7 +34,8 @@ test_that("kill_tree",  {
   on.exit(lapply(p, function(x) x$kill()), add = TRUE)
 
   timeout <- Sys.time() + 5
-  while (length(dir(tmp)) < 5 && Sys.time() < timeout) Sys.sleep(0.1)
+  while (sum(file_size(dir(tmp, full.names = TRUE)) > 0) < 5 &&
+         Sys.time() < timeout) Sys.sleep(0.1)
 
   expect_true(Sys.time() < timeout)
 
@@ -50,8 +51,9 @@ test_that("kill_tree",  {
   now <- Sys.time()
   timeout <- now + 5
   while (any(map_lgl(p, function(pp) pp$is_alive())) &&
-         Sys.time() < timeout) Sys.sleep(0.05)
+         Sys.time() < timeout) Sys.sleep(0.1)
 
+  expect_true(Sys.time() < timeout)
   lapply(p, function(pp) expect_false(pp$is_alive()))
 })
 
