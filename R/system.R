@@ -250,7 +250,7 @@ ps_shared_lib_users <- function(paths, user = ps_username(),
     pid = rep(match_pids, match_len),
     name = rep(match_name, match_len),
     username = rep(match_username, match_len),
-    ps_handle = I(match_processes)
+    ps_handle = I(rep(match_processes, match_len))
   )
 
   # The ones without name probably finished already.
