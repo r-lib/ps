@@ -63,6 +63,7 @@ Other process handle functions:
 \code{\link{ps_cpu_times}()},
 \code{\link{ps_create_time}()},
 \code{\link{ps_cwd}()},
+\code{\link{ps_descent}()},
 \code{\link{ps_environ}()},
 \code{\link{ps_exe}()},
 \code{\link{ps_handle}()},

@@ -713,6 +713,58 @@ ps_children <- function(p = ps_handle(), recursive = FALSE) {
   ret
 }
 
+#' Query the ancestry of a process
+#'
+#' Query the parent processes recursively, up to the first process.
+#' (On some platforms, like Windows, the process tree is not a tree
+#' and may contain loops, in which case `ps_descent()` only goes up
+#' until the first repetition.)
+#'
+#' @param p Process handle.
+#' @return A list of process handles, starting with `p`, each one
+#' is the parent process of the previous one.
+#'
+#' @family process handle functions
+#' @export
+#' @examplesIf ps::ps_is_supported() && ! ps:::is_cran_check()
+#' ps_descent()
+
+ps_descent <- function(p = ps_handle()) {
+  assert_ps_handle(p)
+  windows <- ps_os_type()[["WINDOWS"]]
+
+  branch <- list()
+  branch_pids <- integer()
+  current <- p
+  current_pid <- ps_pid(p)
+  if (windows) current_time <- ps_create_time(p)
+
+  while (current_pid != 1L) {
+    branch <- c(branch, list(current))
+    branch_pids <- c(branch_pids, current_pid)
+    parent <- fallback(ps_parent(current), NULL)
+
+    # Might fail on Windows, if the process does not exist
+    if (is.null(parent)) break;
+
+    # Windows might have loops
+    parent_pid <- ps_pid(parent)
+    if (parent_pid %in% branch_pids) break;
+
+    # Need to check for pid reuse on Windows
+    if (windows) {
+      parent_time <- ps_create_time(parent)
+      if (current_time <= parent_time) break
+      current_time <- parent_time
+    }
+
+    current <- parent
+    current_pid <- parent_pid
+  }
+
+  branch
+}
+
 ps_ppid_map <- function() {
   pids <- ps_pids()
 

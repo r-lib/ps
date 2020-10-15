@@ -7,6 +7,8 @@
 * New function `ps_shared_lib_users()` to list all processes that
   loaded a certain shared library, on Windows.
 
+* New function `ps_descent()` to query the ancestry of a process.
+
 # ps 1.4.0
 
 * ps is now under the MIT license.
