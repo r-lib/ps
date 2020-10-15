@@ -22,6 +22,7 @@ reference:
   - ps_cpu_times
   - ps_create_time
   - ps_cwd
+  - ps_descent
   - ps_environ
   - ps_exe
   - ps_handle
