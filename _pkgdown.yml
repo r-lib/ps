@@ -31,6 +31,7 @@ reference:
   - ps_num_threads
   - ps_pid
   - ps_ppid
+  - ps_shared_libs
   - ps_status
   - ps_terminal
   - ps_uids
@@ -66,6 +67,7 @@ reference:
   - ps_tty_size
   - ps_disk_partitions
   - ps_disk_usage
+  - ps_shared_lib_users
   - ps_system_memory
   - ps_system_swap
 
