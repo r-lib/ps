@@ -43,6 +43,7 @@ SEXP psll_connections(SEXP p);
 SEXP psll_get_nice(SEXP p);
 SEXP psll_set_nice(SEXP p, SEXP value);
 SEXP psll_dlls(SEXP p);
+SEXP psll_switch_to(SEXP plist);
 
 /* System API */
 
