@@ -19,7 +19,7 @@ A named list:
 \itemize{
 \item \code{proc}: a process handle. This is the handle that ps tried to
 alert. It might that same as \code{p} or an ancestor, if
-\code{ansectors = TRUE} was specified. This is \code{NULL} if ps did
+\code{ancestors = TRUE} was specified. This is \code{NULL} if ps did
 not find any process with an associated Window to alert.
 \item \code{success}: whether the Windows API call returned success.
 If this is \code{TRUE} that typically means that the alerted

@@ -15,7 +15,7 @@
 #' @return A named list:
 #' * `proc`: a process handle. This is the handle that ps tried to
 #'   alert. It might that same as `p` or an ancestor, if
-#'   `ansectors = TRUE` was specified. This is `NULL` if ps did
+#'   `ancestors = TRUE` was specified. This is `NULL` if ps did
 #'   not find any process with an associated Window to alert.
 #' * `success`: whether the Windows API call returned success.
 #'   If this is `TRUE` that typically means that the alerted
