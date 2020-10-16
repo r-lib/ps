@@ -1394,5 +1394,67 @@ error:
   if (hProcess) CloseHandle(hProcess);
   ps__throw_error();
   return R_NilValue;
+}
 
+struct psll_windows_data {
+  int *pids;
+  int num_pids;
+  HWND handle;
+  SEXP result;
+};
+
+BOOL CALLBACK psll_switch_to_proc1(
+    _In_ HWND   hwnd,
+    _In_ LPARAM lParam) {
+  struct psll_windows_data *data = (struct psll_windows_data*) lParam;
+
+  DWORD processId;
+  DWORD ret = GetWindowThreadProcessId(hwnd, &processId);
+  if (!ret) return TRUE;
+
+  int i;
+  for (i = 0; i < data->num_pids; i++) {
+    if (data->pids[i] == processId) {
+      data->handle = hwnd;
+      data->num_pids = i;
+      INTEGER(data->result)[0] = processId;
+      if (i == 0) return FALSE; else return TRUE;
+    }
+  }
+
+  return TRUE;
+}
+
+BOOL CALLBACK psll_switch_to_proc2(
+    _In_ HWND   hwnd,
+    _In_ LPARAM lParam) {
+  struct psll_windows_data *data = (struct psll_windows_data*) lParam;
+
+  if (hwnd == data->handle) {
+    BOOL ret = SetForegroundWindow(hwnd);
+    if (!ret) {
+      INTEGER(data->result)[0] = -INTEGER(data->result)[0];
+    }
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+SEXP psll_switch_to(SEXP pids) {
+  struct psll_windows_data data;
+  data.pids = INTEGER(pids);
+  data.num_pids = LENGTH(pids);
+  data.handle = NULL;
+  data.result = PROTECT(allocVector(INTSXP, 1));
+  INTEGER(data.result)[0] = 0;
+
+  EnumWindows(psll_switch_to_proc1, (LPARAM) &data);
+
+  if (data.handle != NULL) {
+    EnumWindows(psll_switch_to_proc2, (LPARAM) &data);
+  }
+
+  UNPROTECT(1);
+  return data.result;
 }
