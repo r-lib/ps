@@ -39,6 +39,11 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
 
+      - name: Put R on the path
+        run: |
+          ln -s /Library/Frameworks/R.framework/Versions/Current/Resources/bin/R /usr/local/bin/ || true
+          ln -s /Library/Frameworks/R.framework/Versions/Current/Resources/bin/Rscript /usr/local/bin/ || true
+
       - uses: r-lib/actions/setup-pandoc@master
 
       - name: Query dependencies
