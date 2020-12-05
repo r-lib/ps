@@ -38,7 +38,6 @@ SEXP psp__stat_st_rdev(SEXP x) { return ps__dummy("psp__stat_st_rdev"); }
 #ifdef PS__POSIX
 #ifndef PS__WINDOWS
 SEXP psw__realpath(SEXP x) { return ps__dummy("psw__realpath"); }
-SEXP psll_dlls(SEXP x) { return ps__dummy("psll_dlls"); }
 #endif
 #endif
 
@@ -103,6 +102,7 @@ SEXP psp__zombie() { return ps__dummy("psp__zombie"); }
 SEXP psp__waitpid(SEXP x) { return ps__dummy("psp__waitpid"); }
 
 SEXP psw__realpath(SEXP x) { return ps__dummy("psw__realpath"); }
+SEXP psll_dlls(SEXP x) { return ps__dummy("psll_dlls"); }
 
 SEXP ps__inet_ntop(SEXP x, SEXP y) { return ps__dummy("ps__inet_ntop"); }
 #endif
