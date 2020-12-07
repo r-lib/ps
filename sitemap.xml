@@ -37,6 +37,9 @@
     <loc>http://ps.r-lib.org/reference/ps_cwd.html</loc>
   </url>
   <url>
+    <loc>http://ps.r-lib.org/reference/ps_descent.html</loc>
+  </url>
+  <url>
     <loc>http://ps.r-lib.org/reference/ps_disk_partitions.html</loc>
   </url>
   <url>
@@ -98,6 +101,12 @@
   </url>
   <url>
     <loc>http://ps.r-lib.org/reference/ps_send_signal.html</loc>
+  </url>
+  <url>
+    <loc>http://ps.r-lib.org/reference/ps_shared_lib_users.html</loc>
+  </url>
+  <url>
+    <loc>http://ps.r-lib.org/reference/ps_shared_libs.html</loc>
   </url>
   <url>
     <loc>http://ps.r-lib.org/reference/ps_status.html</loc>

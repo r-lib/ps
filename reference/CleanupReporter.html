@@ -74,7 +74,7 @@ place, see the proc_unit argument below." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ps</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -182,7 +182,7 @@ idiomatic <code>testthat.R</code> file, that calls <code>test_check()</code> dur
 
     
 
-<p>This is how to use this reporter in <code>testthat.R</code>:</p><pre><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://testthat.r-lib.org'>testthat</a></span><span class='op'>)</span>
+<p>This is how to use this reporter in <code>testthat.R</code>:</p><pre><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://testthat.r-lib.org'>testthat</a></span><span class='op'>)</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>mypackage</span><span class='op'>)</span>
 
 <span class='kw'>if</span>  <span class='op'>(</span><span class='fu'>ps</span><span class='fu'>::</span><span class='fu'><a href='ps_os_type.html'>ps_is_supported</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
@@ -193,7 +193,7 @@ idiomatic <code>testthat.R</code> file, that calls <code>test_check()</code> dur
   <span class='va'>reporter</span> <span class='op'>&lt;-</span> <span class='st'>"progress"</span>
 <span class='op'>}</span>
 
-<span class='fu'><a href='https://testthat.r-lib.org/reference/test_dir.html'>test_check</a></span><span class='op'>(</span><span class='st'>"mypackage"</span>, reporter <span class='op'>=</span> <span class='va'>reporter</span><span class='op'>)</span>
+<span class='fu'><a href='https://testthat.r-lib.org/reference/test_package.html'>test_check</a></span><span class='op'>(</span><span class='st'>"mypackage"</span>, reporter <span class='op'>=</span> <span class='va'>reporter</span><span class='op'>)</span>
 </pre>
 
 

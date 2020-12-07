@@ -73,7 +73,7 @@ names: real, effective and saved." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ps</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -149,6 +149,7 @@ platforms.</p>
 <code><a href='ps_cpu_times.html'>ps_cpu_times</a>()</code>,
 <code><a href='ps_create_time.html'>ps_create_time</a>()</code>,
 <code><a href='ps_cwd.html'>ps_cwd</a>()</code>,
+<code><a href='ps_descent.html'>ps_descent</a>()</code>,
 <code><a href='ps_environ.html'>ps_environ</a>()</code>,
 <code><a href='ps_exe.html'>ps_exe</a>()</code>,
 <code><a href='ps_handle.html'>ps_handle</a>()</code>,
@@ -164,6 +165,7 @@ platforms.</p>
 <code><a href='ps_ppid.html'>ps_ppid</a>()</code>,
 <code><a href='ps_resume.html'>ps_resume</a>()</code>,
 <code><a href='ps_send_signal.html'>ps_send_signal</a>()</code>,
+<code><a href='ps_shared_libs.html'>ps_shared_libs</a>()</code>,
 <code><a href='ps_status.html'>ps_status</a>()</code>,
 <code><a href='ps_suspend.html'>ps_suspend</a>()</code>,
 <code><a href='ps_terminal.html'>ps_terminal</a>()</code>,
@@ -173,7 +175,7 @@ platforms.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span>
 <span class='va'>p</span>
-</div><div class='output co'>#&gt; &lt;ps::ps_handle&gt; PID=2281, NAME=R, AT=2020-10-07 12:02:59</div><div class='input'><span class='fu'>ps_uids</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; &lt;ps::ps_handle&gt; PID=1985, NAME=R, AT=2020-12-07 16:16:49</div><div class='input'><span class='fu'>ps_uids</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;      real effective     saved 
 #&gt;       501       501       501 </div><div class='input'><span class='fu'>ps_gids</span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;      real effective     saved 
