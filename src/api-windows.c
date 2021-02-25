@@ -1396,3 +1396,9 @@ error:
   return R_NilValue;
 
 }
+
+
+SEXP ps__loadavg() {
+  /* TODO */
+  return R_NilValue;
+}
