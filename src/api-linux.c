@@ -14,6 +14,7 @@
 #include <dirent.h>
 #include <utmp.h>
 #include <mntent.h>
+#include <sys/sysinfo.h>
 
 #include <Rinternals.h>
 
@@ -1148,8 +1149,30 @@ error:
 }
 
 SEXP ps__loadavg() {
-  /* TODO */
-  return R_NilValue;
+  /* Try /proc first, if fails we try sysinfo() */
+  struct sysinfo info;
+  char *buf;
+  int ret = ps__read_file("/proc/loadavg", &buf, 128);
+  if (ret == -1) goto sysinfo;
+
+  SEXP avg = PROTECT(allocVector(REALSXP, 3));
+  if (sscanf(buf, "%lf %lf %lf", REAL(avg), REAL(avg) + 1, REAL(avg) + 2) == 3) {
+    UNPROTECT(1);
+    return avg;
+  }
+
+ sysinfo:
+  if (sysinfo(&info) < 0) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  REAL(avg)[0] = (double) info.loads[0] / 65536.0;
+  REAL(avg)[1] = (double) info.loads[1] / 65536.0;
+  REAL(avg)[2] = (double) info.loads[2] / 65536.0;
+
+  UNPROTECT(1);
+  return avg;
 }
 
 SEXP ps__system_memory() {
