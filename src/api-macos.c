@@ -1027,3 +1027,24 @@ SEXP ps__system_swap() {
     "sout",  (double) vm.pageouts * pagesize
   );
 }
+
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
+
+SEXP ps__loadavg() {
+  struct loadavg info;
+  size_t size = sizeof(info);
+  int which[] = {CTL_VM, VM_LOADAVG};
+
+  if (sysctl(which, ARRAY_SIZE(which), &info, &size, NULL, 0) < 0) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  SEXP ret = PROTECT(allocVector(REALSXP, 3));
+  REAL(ret)[0] = (double) info.ldavg[0] / info.fscale;
+  REAL(ret)[1] = (double) info.ldavg[1] / info.fscale;
+  REAL(ret)[2] = (double) info.ldavg[2] / info.fscale;
+
+  UNPROTECT(1);
+  return ret;
+}

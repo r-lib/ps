@@ -102,5 +102,6 @@ SEXP ps__get_open_files(long pid, HANDLE processHandle);
 DWORD ps__NtQueryObject(void);
 DWORD WINAPI ps__NtQueryObjectThread(LPVOID lpvParam);
 SEXP ps__get_modules(HANDLE hProcess);
+SEXP ps__get_loadavg(double avg[3]);
 
 #endif // __PROCESS_HANDLES_H__

@@ -1396,3 +1396,11 @@ error:
   return R_NilValue;
 
 }
+
+
+SEXP ps__loadavg() {
+  SEXP ret = PROTECT(allocVector(REALSXP, 3));
+  ps__get_loadavg(REAL(ret));
+  UNPROTECT(1);
+  return ret;
+}
