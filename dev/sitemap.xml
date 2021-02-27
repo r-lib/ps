@@ -70,6 +70,9 @@
     <loc>http://ps.r-lib.org/reference/ps_kill_tree.html</loc>
   </url>
   <url>
+    <loc>http://ps.r-lib.org/reference/ps_loadavg.html</loc>
+  </url>
+  <url>
     <loc>http://ps.r-lib.org/reference/ps_memory_info.html</loc>
   </url>
   <url>

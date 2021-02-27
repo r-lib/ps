@@ -6,7 +6,17 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>List the dynamically loaded libraries of a process — ps_shared_libs • ps</title>
+<title>Return the average system load over the last 1, 5 and 15 minutes as a
+tuple. The “load” represents the processes which are in a runnable
+state, either using the CPU or waiting to use the CPU (e.g. waiting for
+disk I/O). On Windows this is emulated by using a Windows API that
+spawns a thread which keeps running in background and updates results
+every 5 seconds, mimicking the UNIX behavior. Thus, on Windows, the
+first time this is called and for the next 5 seconds it will return a
+meaningless (0.0, 0.0, 0.0) vector. The numbers returned only make sense
+if related to the number of CPU cores installed on the system. So, for
+instance, a value of 3.14 on a system with 10 logical CPUs means that
+the system load was 31.4% percent over the last N minutes. — ps_loadavg • ps</title>
 
 
 <!-- jquery -->
@@ -39,8 +49,28 @@
 
 
 
-<meta property="og:title" content="List the dynamically loaded libraries of a process — ps_shared_libs" />
-<meta property="og:description" content="Note: this function currently only works on Windows." />
+<meta property="og:title" content="Return the average system load over the last 1, 5 and 15 minutes as a
+tuple. The “load” represents the processes which are in a runnable
+state, either using the CPU or waiting to use the CPU (e.g. waiting for
+disk I/O). On Windows this is emulated by using a Windows API that
+spawns a thread which keeps running in background and updates results
+every 5 seconds, mimicking the UNIX behavior. Thus, on Windows, the
+first time this is called and for the next 5 seconds it will return a
+meaningless (0.0, 0.0, 0.0) vector. The numbers returned only make sense
+if related to the number of CPU cores installed on the system. So, for
+instance, a value of 3.14 on a system with 10 logical CPUs means that
+the system load was 31.4% percent over the last N minutes. — ps_loadavg" />
+<meta property="og:description" content="Return the average system load over the last 1, 5 and 15 minutes as a
+tuple. The “load” represents the processes which are in a runnable
+state, either using the CPU or waiting to use the CPU (e.g. waiting for
+disk I/O). On Windows this is emulated by using a Windows API that
+spawns a thread which keeps running in background and updates results
+every 5 seconds, mimicking the UNIX behavior. Thus, on Windows, the
+first time this is called and for the next 5 seconds it will return a
+meaningless (0.0, 0.0, 0.0) vector. The numbers returned only make sense
+if related to the number of CPU cores installed on the system. So, for
+instance, a value of 3.14 on a system with 10 logical CPUs means that
+the system load was 31.4% percent over the last N minutes." />
 
 
 <meta name="robots" content="noindex">
@@ -113,71 +143,45 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>List the dynamically loaded libraries of a process</h1>
-    <small class="dont-index">Source: <a href='https://github.com/r-lib/ps/blob/master/R/low-level.R'><code>R/low-level.R</code></a></small>
-    <div class="hidden name"><code>ps_shared_libs.Rd</code></div>
+    <h1>Return the average system load over the last 1, 5 and 15 minutes as a
+tuple. The “load” represents the processes which are in a runnable
+state, either using the CPU or waiting to use the CPU (e.g. waiting for
+disk I/O). On Windows this is emulated by using a Windows API that
+spawns a thread which keeps running in background and updates results
+every 5 seconds, mimicking the UNIX behavior. Thus, on Windows, the
+first time this is called and for the next 5 seconds it will return a
+meaningless (0.0, 0.0, 0.0) vector. The numbers returned only make sense
+if related to the number of CPU cores installed on the system. So, for
+instance, a value of 3.14 on a system with 10 logical CPUs means that
+the system load was 31.4% percent over the last N minutes.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/ps/blob/master/R/system.R'><code>R/system.R</code></a></small>
+    <div class="hidden name"><code>ps_loadavg.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Note: this function currently only works on Windows.</p>
+    <p>Return the average system load over the last 1, 5 and 15 minutes as a
+tuple. The “load” represents the processes which are in a runnable
+state, either using the CPU or waiting to use the CPU (e.g. waiting for
+disk I/O). On Windows this is emulated by using a Windows API that
+spawns a thread which keeps running in background and updates results
+every 5 seconds, mimicking the UNIX behavior. Thus, on Windows, the
+first time this is called and for the next 5 seconds it will return a
+meaningless (0.0, 0.0, 0.0) vector. The numbers returned only make sense
+if related to the number of CPU cores installed on the system. So, for
+instance, a value of 3.14 on a system with 10 logical CPUs means that
+the system load was 31.4% percent over the last N minutes.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ps_shared_libs</span><span class='op'>(</span>p <span class='op'>=</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ps_loadavg</span><span class='op'>(</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>p</th>
-      <td><p>Process handle.</p></td>
-    </tr>
-    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Data frame with one column currently: <code>path</code>, the
-absolute path to the loaded module or shared library. On Windows
-the list includes the executable file itself.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>Other process handle functions: 
-<code><a href='ps_children.html'>ps_children</a>()</code>,
-<code><a href='ps_cmdline.html'>ps_cmdline</a>()</code>,
-<code><a href='ps_connections.html'>ps_connections</a>()</code>,
-<code><a href='ps_cpu_times.html'>ps_cpu_times</a>()</code>,
-<code><a href='ps_create_time.html'>ps_create_time</a>()</code>,
-<code><a href='ps_cwd.html'>ps_cwd</a>()</code>,
-<code><a href='ps_descent.html'>ps_descent</a>()</code>,
-<code><a href='ps_environ.html'>ps_environ</a>()</code>,
-<code><a href='ps_exe.html'>ps_exe</a>()</code>,
-<code><a href='ps_handle.html'>ps_handle</a>()</code>,
-<code><a href='ps_interrupt.html'>ps_interrupt</a>()</code>,
-<code><a href='ps_is_running.html'>ps_is_running</a>()</code>,
-<code><a href='ps_kill.html'>ps_kill</a>()</code>,
-<code><a href='ps_memory_info.html'>ps_memory_info</a>()</code>,
-<code><a href='ps_name.html'>ps_name</a>()</code>,
-<code><a href='ps_num_fds.html'>ps_num_fds</a>()</code>,
-<code><a href='ps_num_threads.html'>ps_num_threads</a>()</code>,
-<code><a href='ps_open_files.html'>ps_open_files</a>()</code>,
-<code><a href='ps_pid.html'>ps_pid</a>()</code>,
-<code><a href='ps_ppid.html'>ps_ppid</a>()</code>,
-<code><a href='ps_resume.html'>ps_resume</a>()</code>,
-<code><a href='ps_send_signal.html'>ps_send_signal</a>()</code>,
-<code><a href='ps_status.html'>ps_status</a>()</code>,
-<code><a href='ps_suspend.html'>ps_suspend</a>()</code>,
-<code><a href='ps_terminal.html'>ps_terminal</a>()</code>,
-<code><a href='ps_terminate.html'>ps_terminate</a>()</code>,
-<code><a href='ps_uids.html'>ps_uids</a>()</code>,
-<code><a href='ps_username.html'>ps_username</a>()</code></p>
-<p>Other shared library tools: 
-<code><a href='ps_shared_lib_users.html'>ps_shared_lib_users</a>()</code></p></div>
+    <p>Numeric vector of length 3.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span> <span class='co'># ps::ps_is_supported() &amp;&amp; !ps:::is_cran_check() &amp;&amp; ps::ps_os_type()[["WINDOWS"]]</span>
-<span class='co'># The loaded DLLs of the current process</span>
-<span class='fu'>ps_shared_libs</span><span class='op'>(</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>ps_loadavg</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 2.939941 3.236328 2.204590</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

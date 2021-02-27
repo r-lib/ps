@@ -21,6 +21,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -49,7 +51,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/r-lib/ps/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -72,8 +74,8 @@
 <p>List, Query, Manipulate System Processes</p>
 </blockquote>
 <!-- badges: start -->
-<p><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="lifecycle"></a> <a href="https://github.com/r-lib/ps/actions"><img src="https://github.com/r-lib/ps/workflows/R-CMD-check/badge.svg" alt="R build status"></a> <a href="https://cran.r-project.org/package=ps"><img src="https://www.r-pkg.org/badges/version/ps" alt="CRAN status"></a> <a href="https://www.r-pkg.org/pkg/ps"><img src="https://cranlogs.r-pkg.org/badges/ps" alt="CRAN RStudio mirror downloads"></a> <a href="https://codecov.io/github/r-lib/ps?branch=master"><img src="https://codecov.io/gh/r-lib/ps/branch/master/graph/badge.svg" alt="Coverage status"></a> <!-- badges: end --></p>
-<p>ps implements an API to query and manipulate system processes. Most of its code is based on the <a href="https://github.com/giampaolo/psutil">psutil</a> Python package.</p>
+<p><a href="https://www.tidyverse.org/lifecycle/#maturing" class="external-link"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="lifecycle"></a> <a href="https://github.com/r-lib/ps/actions" class="external-link"><img src="https://github.com/r-lib/ps/workflows/R-CMD-check/badge.svg" alt="R build status"></a> <a href="https://cran.r-project.org/package=ps" class="external-link"><img src="https://www.r-pkg.org/badges/version/ps" alt="CRAN status"></a> <a href="https://www.r-pkg.org/pkg/ps" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/ps" alt="CRAN RStudio mirror downloads"></a> <a href="https://codecov.io/github/r-lib/ps?branch=master" class="external-link"><img src="https://codecov.io/gh/r-lib/ps/branch/master/graph/badge.svg" alt="Coverage status"></a> <!-- badges: end --></p>
+<p>ps implements an API to query and manipulate system processes. Most of its code is based on the <a href="https://github.com/giampaolo/psutil" class="external-link">psutil</a> Python package.</p>
 <ul>
 <li><a href="#installation">Installation</a></li>
 <li><a href="#supported-platforms">Supported platforms</a></li>
@@ -104,9 +106,9 @@
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the released version of ps from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
+<p>You can install the released version of ps from <a href="https://CRAN.R-project.org" class="external-link">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"ps"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ps"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="supported-platforms" class="section level2">
 <h2 class="hasAnchor">
@@ -118,7 +120,7 @@
 <a href="#listing-all-processes" class="anchor"></a>Listing all processes</h2>
 <p><code><a href="reference/ps_pids.html">ps_pids()</a></code> returns all process ids on the system. This can be useful to iterate over all processes.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-lib/ps#readme">ps</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-lib/ps#readme" class="external-link">ps</a></span><span class="op">)</span>
 <span class="fu"><a href="reference/ps_pids.html">ps_pids</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co">##  [1]  0  1 51 52 55 56 57 59 62 63 64 65 70 74 76 77 82 83 85 87</span></span></code></pre></div>
 <p><code><a href="reference/ps.html">ps()</a></code> returns a data frame (tibble if you have the tibble package available), with data about each process. It contains a handle to each process, in the <code>ps_handle</code> column, you can use these to perform more queries on the processes.</p>
@@ -211,7 +213,7 @@
 <div class="sourceCode" id="cb35"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a><span class="co">## [1] "/dev/ttys003"</span></span></code></pre></div>
 <p><code><a href="reference/ps_environ.html">ps_environ(p)</a></code> returns the environment variables of the process. <code><a href="reference/ps_environ.html">ps_environ_raw(p)</a></code> does the same, in a different form. Typically they reflect the environment variables at the start of the process.</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/ps_environ.html">ps_environ</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"TERM"</span>, <span class="st">"USER"</span>, <span class="st">"SHELL"</span>, <span class="st">"R_HOME"</span><span class="op">)</span><span class="op">]</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="reference/ps_environ.html">ps_environ</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TERM"</span>, <span class="st">"USER"</span>, <span class="st">"SHELL"</span>, <span class="st">"R_HOME"</span><span class="op">)</span><span class="op">]</span></code></pre></div>
 <div class="sourceCode" id="cb37"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a><span class="co">## TERM                          xterm-256color</span></span>
 <span id="cb37-2"><a href="#cb37-2"></a><span class="co">## USER                          gaborcsardi</span></span>
 <span id="cb37-3"><a href="#cb37-3"></a><span class="co">## SHELL                         /bin/zsh</span></span>
@@ -220,7 +222,7 @@
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/ps_num_threads.html">ps_num_threads</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb39"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a><span class="co">## [1] 4</span></span></code></pre></div>
-<p><code><a href="reference/ps_cpu_times.html">ps_cpu_times(p)</a></code> returns the CPU times of the process, similarly to <code><a href="https://rdrr.io/r/base/proc.time.html">proc.time()</a></code>.</p>
+<p><code><a href="reference/ps_cpu_times.html">ps_cpu_times(p)</a></code> returns the CPU times of the process, similarly to <code><a href="https://rdrr.io/r/base/proc.time.html" class="external-link">proc.time()</a></code>.</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/ps_cpu_times.html">ps_cpu_times</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb41"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a><span class="co">##            user          system    childen_user children_system </span></span>
@@ -243,12 +245,12 @@
 <code class="sourceCode R"><span class="fu"><a href="reference/ps_num_fds.html">ps_num_fds</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb47"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a><span class="co">## [1] 3</span></span></code></pre></div>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html">file</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"w"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"w"</span><span class="op">)</span>
 <span class="fu"><a href="reference/ps_num_fds.html">ps_num_fds</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb49"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1"></a><span class="co">## [1] 4</span></span></code></pre></div>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/connections.html">close</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/unlink.html">unlink</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></code></pre></div>
 <p><code><a href="reference/ps_open_files.html">ps_open_files(p)</a></code> lists all open files:</p>
 <div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/ps_open_files.html">ps_open_files</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></code></pre></div>
@@ -259,7 +261,7 @@
 <span id="cb52-5"><a href="#cb52-5"></a><span class="co">## 2     1 /dev/ttys003</span></span>
 <span id="cb52-6"><a href="#cb52-6"></a><span class="co">## 3     2 /dev/ttys003</span></span></code></pre></div>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html">file</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"w"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"w"</span><span class="op">)</span>
 <span class="fu"><a href="reference/ps_open_files.html">ps_open_files</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb54"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1"></a><span class="co">## # A tibble: 4 x 2</span></span>
 <span id="cb54-2"><a href="#cb54-2"></a><span class="co">##      fd path                                                                                 </span></span>
@@ -269,8 +271,8 @@
 <span id="cb54-6"><a href="#cb54-6"></a><span class="co">## 3     2 /dev/ttys003                                                                         </span></span>
 <span id="cb54-7"><a href="#cb54-7"></a><span class="co">## 4     3 /private/var/folders/59/0gkmw1yj2w7bf2dfc3jznv5w0000gn/T/RtmpxkerNt/file16b892817efc1</span></span></code></pre></div>
 <div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/connections.html">close</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/unlink.html">unlink</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span>
 <span class="fu"><a href="reference/ps_open_files.html">ps_open_files</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb56"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a><span class="co">## # A tibble: 3 x 2</span></span>
 <span id="cb56-2"><a href="#cb56-2"></a><span class="co">##      fd path        </span></span>
@@ -294,7 +296,7 @@
 <h2 class="hasAnchor">
 <a href="#finished-and-zombie-processes" class="anchor"></a>Finished and zombie processes</h2>
 <p>ps handles finished and Zombie processes as much as possible.</p>
-<p>The essential <code><a href="reference/ps_pid.html">ps_pid()</a></code>, <code><a href="reference/ps_create_time.html">ps_create_time()</a></code>, <code><a href="reference/ps_is_running.html">ps_is_running()</a></code> functions and the <code><a href="https://rdrr.io/r/base/format.html">format()</a></code> and <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> methods work for all processes, including finished and zombie processes. Other functions fail with an error of class <code>"no_such_process"</code> for finished processes.</p>
+<p>The essential <code><a href="reference/ps_pid.html">ps_pid()</a></code>, <code><a href="reference/ps_create_time.html">ps_create_time()</a></code>, <code><a href="reference/ps_is_running.html">ps_is_running()</a></code> functions and the <code><a href="https://rdrr.io/r/base/format.html" class="external-link">format()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> methods work for all processes, including finished and zombie processes. Other functions fail with an error of class <code>"no_such_process"</code> for finished processes.</p>
 <p>The <code><a href="reference/ps_ppid.html">ps_ppid()</a></code>, <code><a href="reference/ps_ppid.html">ps_parent()</a></code>, <code><a href="reference/ps_children.html">ps_children()</a></code>, <code><a href="reference/ps_name.html">ps_name()</a></code>, <code><a href="reference/ps_status.html">ps_status()</a></code>, <code><a href="reference/ps_username.html">ps_username()</a></code>, <code><a href="reference/ps_uids.html">ps_uids()</a></code>, <code><a href="reference/ps_uids.html">ps_gids()</a></code>, <code><a href="reference/ps_terminal.html">ps_terminal()</a></code>, <code><a href="reference/ps_children.html">ps_children()</a></code> and the signal sending functions work properly for zombie processes. Other functions fail with <code>"zombie_process"</code> error.</p>
 </div>
 <div id="pid-reuse" class="section level2">
@@ -308,16 +310,16 @@
 <div id="recipes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#recipes" class="anchor"></a>Recipes</h2>
-<p>In the spirit of <a href="http://psutil.readthedocs.io/en/latest/#recipes">psutil recipes</a>.</p>
+<p>In the spirit of <a href="http://psutil.readthedocs.io/en/latest/#recipes" class="external-link">psutil recipes</a>.</p>
 <div id="find-process-by-name" class="section level3">
 <h3 class="hasAnchor">
 <a href="#find-process-by-name" class="anchor"></a>Find process by name</h3>
 <p>Using <code><a href="reference/ps.html">ps()</a></code> and dplyr:</p>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">dplyr</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">dplyr</span><span class="op">)</span>
 <span class="va">find_procs_by_name</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="op">!</span><span class="op">!</span><span class="va">name</span><span class="op">)</span>  <span class="op">%&gt;%</span>
+    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="op">!</span><span class="op">!</span><span class="va">name</span><span class="op">)</span>  <span class="op">%&gt;%</span>
     <span class="fu">pull</span><span class="op">(</span><span class="va">ps_handle</span><span class="op">)</span>
 <span class="op">}</span>
 
@@ -333,15 +335,15 @@
 <p>Without creating the full table of processes:</p>
 <div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">find_procs_by_name</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">procs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="reference/ps_pids.html">ps_pids</a></span><span class="op">(</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">{</span>
-    <span class="kw"><a href="https://rdrr.io/r/base/conditions.html">tryCatch</a></span><span class="op">(</span><span class="op">{</span>
+  <span class="va">procs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="reference/ps_pids.html">ps_pids</a></span><span class="op">(</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">{</span>
+    <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="op">{</span>
       <span class="va">h</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span>
       <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="reference/ps_name.html">ps_name</a></span><span class="op">(</span><span class="va">h</span><span class="op">)</span> <span class="op">==</span> <span class="va">name</span><span class="op">)</span> <span class="va">h</span> <span class="kw">else</span> <span class="cn">NULL</span> <span class="op">}</span>,
       no_such_process <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="cn">NULL</span>,
       access_denied <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="cn">NULL</span>
     <span class="op">)</span>
   <span class="op">}</span><span class="op">)</span>
-  <span class="va">procs</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">vapply</a></span><span class="op">(</span><span class="va">procs</span>, <span class="va">is.null</span>, <span class="fu"><a href="https://rdrr.io/r/base/logical.html">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>
+  <span class="va">procs</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">procs</span>, <span class="va">is.null</span>, <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>
   <span class="op">}</span>
 
 <span class="fu">find_procs_by_name</span><span class="op">(</span><span class="st">"R"</span><span class="op">)</span></code></pre></div>
@@ -359,19 +361,19 @@
 <a href="#wait-for-a-process-to-finish" class="anchor"></a>Wait for a process to finish</h3>
 <p>On POSIX, there is no good way to wait for non-child processes to finish, so we need to write a sleep-wait loop to do it. (On Windows, and BSD systems, including macOS, there are better solutions.)</p>
 <div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">as_secs</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">x</span>, units <span class="op">=</span> <span class="st">"secs"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">as_secs</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">x</span>, units <span class="op">=</span> <span class="st">"secs"</span><span class="op">)</span>
 
 <span class="va">wait_for_process</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">proc</span>, <span class="va">timeout</span> <span class="op">=</span> <span class="cn">Inf</span>, <span class="va">sleep</span> <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">sleep</span> <span class="op">&lt;-</span> <span class="fu">as_secs</span><span class="op">(</span><span class="va">sleep</span><span class="op">)</span>
-  <span class="va">deadline</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="va">timeout</span>
-  <span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="reference/ps_is_running.html">ps_is_running</a></span><span class="op">(</span><span class="va">proc</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">(</span><span class="va">timeout</span> <span class="op">==</span> <span class="cn">Inf</span> <span class="op">||</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&lt;</span> <span class="va">deadline</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">to</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="fu">as_secs</span><span class="op">(</span><span class="va">deadline</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, <span class="va">sleep</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html">Sys.sleep</a></span><span class="op">(</span><span class="va">to</span><span class="op">)</span>
+  <span class="va">deadline</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="va">timeout</span>
+  <span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="reference/ps_is_running.html">ps_is_running</a></span><span class="op">(</span><span class="va">proc</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">(</span><span class="va">timeout</span> <span class="op">==</span> <span class="cn">Inf</span> <span class="op">||</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&lt;</span> <span class="va">deadline</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">to</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fu">as_secs</span><span class="op">(</span><span class="va">deadline</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, <span class="va">sleep</span><span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="va">to</span><span class="op">)</span>
   <span class="op">}</span>
   <span class="op">!</span> <span class="fu"><a href="reference/ps_is_running.html">ps_is_running</a></span><span class="op">(</span><span class="va">proc</span><span class="op">)</span>
 <span class="op">}</span>
 
-<span class="va">px</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"2"</span><span class="op">)</span>
+<span class="va">px</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"2"</span><span class="op">)</span>
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="va">px</span><span class="op">$</span><span class="fu">get_pid</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="fu">wait_for_process</span><span class="op">(</span><span class="va">p</span>, <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb62"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1"></a><span class="co">## [1] FALSE</span></span></code></pre></div>
@@ -385,24 +387,24 @@
 <p>This is similar, but we need to wait on all processes in a loop.</p>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">wait_for_processes</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">procs</span>, <span class="va">timeout</span> <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">gone</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="va">gone</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
   <span class="va">alive</span> <span class="op">&lt;-</span> <span class="va">procs</span>
-  <span class="va">deadline</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="va">timeout</span>
+  <span class="va">deadline</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="va">timeout</span>
 
   <span class="va">check_gone</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">proc</span>, <span class="va">timeout</span><span class="op">)</span> <span class="op">{</span>
     <span class="va">proc_gone</span> <span class="op">&lt;-</span> <span class="fu">wait_for_process</span><span class="op">(</span><span class="va">proc</span>, timeout <span class="op">=</span> <span class="va">timeout</span><span class="op">)</span>
     <span class="kw">if</span> <span class="op">(</span><span class="va">proc_gone</span><span class="op">)</span> <span class="op">{</span>
-      <span class="va">gone</span> <span class="op">&lt;&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">gone</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">proc</span><span class="op">)</span><span class="op">)</span>
-      <span class="va">alive</span> <span class="op">&lt;&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span><span class="op">(</span><span class="va">alive</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">proc</span><span class="op">)</span><span class="op">)</span>
+      <span class="va">gone</span> <span class="op">&lt;&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">gone</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">proc</span><span class="op">)</span><span class="op">)</span>
+      <span class="va">alive</span> <span class="op">&lt;&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">alive</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">proc</span><span class="op">)</span><span class="op">)</span>
     <span class="op">}</span>
   <span class="op">}</span>
 
-  <span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">alive</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">alive</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
     <span class="kw">if</span> <span class="op">(</span><span class="va">timeout</span> <span class="op">&lt;=</span> <span class="fl">0</span><span class="op">)</span> <span class="kw">break</span>
     <span class="kw">for</span> <span class="op">(</span><span class="va">proc</span> <span class="kw">in</span> <span class="va">alive</span><span class="op">)</span> <span class="op">{</span>
-      <span class="va">max_timeout</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">alive</span><span class="op">)</span>
+      <span class="va">max_timeout</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">alive</span><span class="op">)</span>
       <span class="kw">if</span> <span class="op">(</span><span class="va">timeout</span> <span class="op">!=</span> <span class="cn">Inf</span><span class="op">)</span> <span class="op">{</span>
-        <span class="va">timeout</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="fu">as_secs</span><span class="op">(</span><span class="va">deadline</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, <span class="va">max_timeout</span><span class="op">)</span>
+        <span class="va">timeout</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fu">as_secs</span><span class="op">(</span><span class="va">deadline</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, <span class="va">max_timeout</span><span class="op">)</span>
         <span class="kw">if</span> <span class="op">(</span><span class="va">timeout</span> <span class="op">&lt;=</span> <span class="fl">0</span><span class="op">)</span> <span class="kw">break</span>
         <span class="fu">check_gone</span><span class="op">(</span><span class="va">proc</span>, <span class="va">timeout</span><span class="op">)</span>
       <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
@@ -410,20 +412,20 @@
       <span class="op">}</span>
     <span class="op">}</span>
   <span class="op">}</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>gone <span class="op">=</span> <span class="va">gone</span>, alive <span class="op">=</span> <span class="va">alive</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>gone <span class="op">=</span> <span class="va">gone</span>, alive <span class="op">=</span> <span class="va">alive</span><span class="op">)</span>
 <span class="op">}</span>
 
-<span class="va">px1</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"10"</span><span class="op">)</span>
-<span class="va">px2</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"10"</span><span class="op">)</span>
-<span class="va">px3</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"1"</span><span class="op">)</span>
-<span class="va">px4</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"1"</span><span class="op">)</span>
+<span class="va">px1</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"10"</span><span class="op">)</span>
+<span class="va">px2</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"10"</span><span class="op">)</span>
+<span class="va">px3</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"1"</span><span class="op">)</span>
+<span class="va">px4</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"1"</span><span class="op">)</span>
 
 <span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="va">px1</span><span class="op">$</span><span class="fu">get_pid</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="va">px2</span><span class="op">$</span><span class="fu">get_pid</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="va">px3</span><span class="op">$</span><span class="fu">get_pid</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="va">px4</span><span class="op">$</span><span class="fu">get_pid</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
-<span class="fu">wait_for_processes</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span><span class="op">)</span>, timeout <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<span class="fu">wait_for_processes</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span><span class="op">)</span>, timeout <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb66"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1"></a><span class="co">## $gone</span></span>
 <span id="cb66-2"><a href="#cb66-2"></a><span class="co">## $gone[[1]]</span></span>
 <span id="cb66-3"><a href="#cb66-3"></a><span class="co">## &lt;ps::ps_handle&gt; PID=98990, NAME=???, AT=2018-07-24 09:45:30</span></span>
@@ -446,18 +448,18 @@
 <div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">kill_proc_tree</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pid</span>, <span class="va">sig</span> <span class="op">=</span> <span class="fu"><a href="reference/signals.html">signals</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">SIGTERM</span>,
                            <span class="va">include_parent</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">{</span>
-  <span class="kw">if</span> <span class="op">(</span><span class="va">pid</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getpid.html">Sys.getpid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="va">include_parent</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span><span class="op">(</span><span class="st">"I refuse to kill myself"</span><span class="op">)</span>
+  <span class="kw">if</span> <span class="op">(</span><span class="va">pid</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getpid.html" class="external-link">Sys.getpid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="va">include_parent</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"I refuse to kill myself"</span><span class="op">)</span>
   <span class="va">parent</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="va">pid</span><span class="op">)</span>
   <span class="va">children</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ps_children.html">ps_children</a></span><span class="op">(</span><span class="va">parent</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  <span class="kw">if</span> <span class="op">(</span><span class="va">include_parent</span><span class="op">)</span> <span class="va">children</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">children</span>, <span class="va">parent</span><span class="op">)</span>
+  <span class="kw">if</span> <span class="op">(</span><span class="va">include_parent</span><span class="op">)</span> <span class="va">children</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">children</span>, <span class="va">parent</span><span class="op">)</span>
   <span class="kw">for</span> <span class="op">(</span><span class="va">p</span> <span class="kw">in</span> <span class="va">children</span><span class="op">)</span> <span class="fu"><a href="reference/ps_send_signal.html">ps_send_signal</a></span><span class="op">(</span><span class="va">p</span>, <span class="va">sig</span><span class="op">)</span>
   <span class="fu">wait_for_processes</span><span class="op">(</span><span class="va">children</span>, timeout <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>
 <span class="op">}</span>
 
-<span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"10"</span><span class="op">)</span>
-<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"10"</span><span class="op">)</span>
-<span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"10"</span><span class="op">)</span>
-<span class="fu">kill_proc_tree</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getpid.html">Sys.getpid</a></span><span class="op">(</span><span class="op">)</span>, include_parent <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"10"</span><span class="op">)</span>
+<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"10"</span><span class="op">)</span>
+<span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"10"</span><span class="op">)</span>
+<span class="fu">kill_proc_tree</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getpid.html" class="external-link">Sys.getpid</a></span><span class="op">(</span><span class="op">)</span>, include_parent <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb68"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1"></a><span class="co">## $gone</span></span>
 <span id="cb68-2"><a href="#cb68-2"></a><span class="co">## $gone[[1]]</span></span>
 <span id="cb68-3"><a href="#cb68-3"></a><span class="co">## &lt;ps::ps_handle&gt; PID=98987, NAME=???, AT=2018-07-24 09:45:30</span></span>
@@ -485,20 +487,20 @@
   <span class="va">procs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ps_children.html">ps_children</a></span><span class="op">(</span><span class="fu"><a href="reference/ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
   <span class="co">## SIGTERM</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">procs</span>, <span class="va">ps_terminate</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">procs</span>, <span class="va">ps_terminate</span><span class="op">)</span>
 
   <span class="va">ga</span> <span class="op">&lt;-</span> <span class="fu">wait_for_processes</span><span class="op">(</span><span class="va">procs</span>, timeout <span class="op">=</span> <span class="va">timeout</span><span class="op">)</span>
 
   <span class="co">## SIGKILL to the survivers</span>
-  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">ga</span><span class="op">$</span><span class="va">alive</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">ga</span><span class="op">$</span><span class="va">alive</span>, <span class="va">ps_kill</span><span class="op">)</span>
+  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">ga</span><span class="op">$</span><span class="va">alive</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">ga</span><span class="op">$</span><span class="va">alive</span>, <span class="va">ps_kill</span><span class="op">)</span>
 
   <span class="va">ga2</span> <span class="op">&lt;-</span> <span class="fu">wait_for_processes</span><span class="op">(</span><span class="va">ga</span><span class="op">$</span><span class="va">alive</span>, timeout <span class="op">=</span> <span class="va">timeout</span><span class="op">)</span>
 
   <span class="co">## Some might still survive</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>gone <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">ga</span><span class="op">$</span><span class="va">gone</span>, <span class="va">ga2</span><span class="op">$</span><span class="va">gone</span><span class="op">)</span>, alive <span class="op">=</span> <span class="va">ga2</span><span class="op">$</span><span class="va">alive</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>gone <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">ga</span><span class="op">$</span><span class="va">gone</span>, <span class="va">ga2</span><span class="op">$</span><span class="va">gone</span><span class="op">)</span>, alive <span class="op">=</span> <span class="va">ga2</span><span class="op">$</span><span class="va">alive</span><span class="op">)</span>
 <span class="op">}</span>
 
-<span class="va">pxs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"3"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">pxs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"3"</span><span class="op">)</span><span class="op">)</span>
 <span class="fu">reap_children</span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb70"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1"></a><span class="co">## $gone</span></span>
 <span id="cb70-2"><a href="#cb70-2"></a><span class="co">## $gone[[1]]</span></span>
@@ -520,7 +522,7 @@
 <p>Process name ending with “sh”:</p>
 <div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">"sh$"</span>, <span class="va">name</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"sh$"</span>, <span class="va">name</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb72"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1"></a><span class="co">## # A tibble: 21 x 11</span></span>
 <span id="cb72-2"><a href="#cb72-2"></a><span class="co">##      pid  ppid name  username  status     user  system    rss    vms created             ps_handle </span></span>
 <span id="cb72-3"><a href="#cb72-3"></a><span class="co">##    &lt;int&gt; &lt;int&gt; &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dttm&gt;              &lt;I(list)&gt; </span></span>
@@ -538,7 +540,7 @@
 <p>Processes owned by user:</p>
 <div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">username</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.info.html">Sys.info</a></span><span class="op">(</span><span class="op">)</span><span class="op">[[</span><span class="st">"user"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">username</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.info.html" class="external-link">Sys.info</a></span><span class="op">(</span><span class="op">)</span><span class="op">[[</span><span class="st">"user"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">select</span><span class="op">(</span><span class="va">pid</span>, <span class="va">name</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb74"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1"></a><span class="co">## # A tibble: 258 x 2</span></span>
 <span id="cb74-2"><a href="#cb74-2"></a><span class="co">##      pid name                </span></span>
@@ -557,7 +559,7 @@
 <p>Processes consuming more than 100MB of memory:</p>
 <div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">rss</span> <span class="op">&gt;</span> <span class="fl">100</span> <span class="op">*</span> <span class="fl">1024</span> <span class="op">*</span> <span class="fl">1024</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">rss</span> <span class="op">&gt;</span> <span class="fl">100</span> <span class="op">*</span> <span class="fl">1024</span> <span class="op">*</span> <span class="fl">1024</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb76"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1"></a><span class="co">## # A tibble: 16 x 11</span></span>
 <span id="cb76-2"><a href="#cb76-2"></a><span class="co">##      pid  ppid name    username  status    user  system    rss    vms created             ps_handle</span></span>
 <span id="cb76-3"><a href="#cb76-3"></a><span class="co">##    &lt;int&gt; &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dttm&gt;              &lt;I(list)&gt;</span></span>
@@ -606,7 +608,7 @@
 <div id="contributions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#contributions" class="anchor"></a>Contributions</h2>
-<p>Please note that this project is released with a <a href="https://github.com/r-lib/ps/blob/master/.github/CODE_OF_CONDUCT.md">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
+<p>Please note that this project is released with a <a href="https://github.com/r-lib/ps/blob/master/.github/CODE_OF_CONDUCT.md" class="external-link">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
 </div>
 <div id="license" class="section level2">
 <h2 class="hasAnchor">
@@ -618,7 +620,7 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=ps">https://​cloud.r-project.org/​package=ps</a>
 </li>
@@ -628,43 +630,50 @@
 </li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>
 <a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
 </li>
 </ul>
 </div>
+
 <div class="community">
-<h2>Community</h2>
+<h2 data-toc-skip>Community</h2>
 <ul class="list-unstyled">
 <li><a href="CONTRIBUTING.html">Contributing guide</a></li>
 <li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
 </ul>
 </div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Jay Loden <br><small class="roles"> Author </small>  </li>
 <li>Dave Daeschler <br><small class="roles"> Author </small>  </li>
 <li>Giampaolo Rodola' <br><small class="roles"> Author </small>  </li>
 <li>
 <a href="https://github.com/gaborcsardi">Gábor Csárdi</a> <br><small class="roles"> Author, maintainer </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="authors.html">More on authors...</a></li>
 </ul>
 </div>
+
+
 
   </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Jay Loden, Dave Daeschler, Giampaolo Rodola', <a href="https://github.com/gaborcsardi">Gábor Csárdi</a>.</p>
+  <p></p>
+<p>Developed by Jay Loden, Dave Daeschler, Giampaolo Rodola’, <a href="https://github.com/gaborcsardi" class="external-link">Gábor Csárdi</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>
@@ -672,6 +681,8 @@
 
   
 
+
+  
 
   </body>
 </html>
