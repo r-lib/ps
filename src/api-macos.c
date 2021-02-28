@@ -1048,3 +1048,31 @@ SEXP ps__loadavg(SEXP counter_name) {
   UNPROTECT(1);
   return ret;
 }
+
+SEXP ps__system_cpu_times() {
+  mach_msg_type_number_t count = HOST_CPU_LOAD_INFO_COUNT;
+  kern_return_t error;
+  host_cpu_load_info_data_t r_load;
+
+  mach_port_t host_port = mach_host_self();
+  error = host_statistics(host_port, HOST_CPU_LOAD_INFO,
+                          (host_info_t)&r_load, &count);
+
+  if (error != KERN_SUCCESS) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  mach_port_deallocate(mach_task_self(), host_port);
+
+  const char *nms[] = { "user", "nice", "system", "idle", "" };
+  SEXP ret = PROTECT(Rf_mkNamed(REALSXP, nms));
+
+  REAL(ret)[0] = (double) r_load.cpu_ticks[CPU_STATE_USER]   / CLK_TCK;
+  REAL(ret)[1] = (double) r_load.cpu_ticks[CPU_STATE_NICE]   / CLK_TCK;
+  REAL(ret)[2] = (double) r_load.cpu_ticks[CPU_STATE_SYSTEM] / CLK_TCK;
+  REAL(ret)[3] = (double) r_load.cpu_ticks[CPU_STATE_IDLE]   / CLK_TCK;
+
+  UNPROTECT(1);
+  return ret;
+}

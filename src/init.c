@@ -15,6 +15,7 @@ static const R_CallMethodDef callMethods[]  = {
   { "ps__boot_time",          (DL_FUNC) ps__boot_time,          0 },
   { "ps__cpu_count_logical",  (DL_FUNC) ps__cpu_count_logical,  0 },
   { "ps__cpu_count_physical", (DL_FUNC) ps__cpu_count_physical, 0 },
+  { "ps__system_cpu_times",   (DL_FUNC) ps__system_cpu_times,   0 },
   { "ps__users",              (DL_FUNC) ps__users,              0 },
   { "ps__loadavg",            (DL_FUNC) ps__loadavg,            1 },
   { "ps__tty_size",           (DL_FUNC) ps__tty_size,           0 },

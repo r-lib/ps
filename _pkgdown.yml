@@ -70,6 +70,7 @@ reference:
   - ps_disk_usage
   - ps_loadavg
   - ps_shared_lib_users
+  - ps_system_cpu_times
   - ps_system_memory
   - ps_system_swap
 

@@ -51,6 +51,7 @@ SEXP ps__pids();
 SEXP ps__boot_time();
 SEXP ps__cpu_count_logical();
 SEXP ps__cpu_count_physical();
+SEXP ps__system_cpu_times();
 SEXP ps__users();
 SEXP ps__tty_size();
 SEXP ps__disk_partitions(SEXP all);
