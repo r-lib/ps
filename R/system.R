@@ -311,6 +311,8 @@ find_loadavg_counter <- function() {
     pc <- readRegistry(key)
     idx <- seq(2, length(pc$Counter), by = 2)
     cnt <- structure(pc$Counter[idx], names = pc$Counter[idx - 1])
-    paste0("\\", cnt["2"], "\\", cnt["44"])
+    nm <- paste0("\\", cnt["2"], "\\", cnt["44"])
+    Encoding(nm) <- ""
+    enc2utf8(nm)
   }, error = function(e) "\\System\\Processor Queue Length")
 }
