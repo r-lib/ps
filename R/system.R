@@ -308,7 +308,7 @@ find_loadavg_counter <- function() {
     "CurrentLanguage"
   )
   tryCatch({
-    pc <- readRegistry(key)
+    pc <- utils::readRegistry(key)
     idx <- seq(2, length(pc$Counter), by = 2)
     cnt <- structure(pc$Counter[idx], names = pc$Counter[idx - 1])
     nm <- paste0("\\", cnt["2"], "\\", cnt["44"])
