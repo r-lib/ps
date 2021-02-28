@@ -1,5 +1,5 @@
 
-# ps development version
+# ps 1.6.0
 
 * New function `ps_system_cpu_times()` to calculate system CPU times.
 
