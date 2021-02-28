@@ -285,7 +285,7 @@ short_username <- function(x) {
 #' the system load was 31.4% percent over the last N minutes.
 #'
 #' @return Numeric vector of length 3.
-#' 
+#'
 #' @export
 #' @examplesIf ps::ps_is_supported() && ! ps:::is_cran_check()
 #' ps_loadavg()
@@ -315,4 +315,44 @@ find_loadavg_counter <- function() {
     Encoding(nm) <- ""
     enc2utf8(nm)
   }, error = function(e) "\\System\\Processor Queue Length")
+}
+
+#' System CPU times.
+#'
+#' Every attribute represents the seconds the CPU has spent in the given
+#' mode. The attributes availability varies depending on the platform:
+#' * `user`: time spent by normal processes executing in user mode;
+#'   on Linux this also includes guest time.
+#' * `system`: time spent by processes executing in kernel mode.
+#' * `idle`: time spent doing nothing.
+#'
+#' Platform-specific fields:
+#'
+#' * `nice` (UNIX): time spent by niced (prioritized) processes executing
+#'   in user mode; on Linux this also includes guest_nice time.
+#' * `iowait` (Linux): time spent waiting for I/O to complete. This is not
+#'   accounted in idle time counter.
+#' * `irq` (Linux): time spent for servicing hardware interrupts.
+#' * `softirq` (Linux): time spent for servicing software interrupts.
+#' * `steal` (Linux 2.6.11+): time spent by other operating systems
+#'   running in a virtualized environment.
+#' * `guest` (Linux 2.6.24+): time spent running a virtual CPU for guest
+#'   operating systems under the control of the Linux kernel.
+#' * `guest_nice` (Linux 3.2.0+): time spent running a niced guest
+#'   (virtual CPU for guest operating systems under the control of the
+#'   Linux kernel).
+#' * `interrupt` (Windows): time spent for servicing hardware interrupts
+#'   ( similar to “irq” on UNIX).
+#' * `dpc` (Windows): time spent servicing deferred procedure calls
+#'   (DPCs); DPCs are interrupts that run at a lower priority than
+#'   standard interrupts.
+#'
+#' @return Named list
+#'
+#' @export
+#' @examplesIf ps::ps_is_supported()
+#' ps_cpu_times()
+
+ps_cpu_times <- function() {
+  .Call(ps__cpu_times)
 }

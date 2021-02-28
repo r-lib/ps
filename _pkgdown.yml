@@ -65,6 +65,7 @@ reference:
   - ps_boot_time
   - ps_os_type
   - ps_cpu_count
+  - ps_cpu_times
   - ps_tty_size
   - ps_disk_partitions
   - ps_disk_usage

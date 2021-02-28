@@ -1404,3 +1404,8 @@ SEXP ps__loadavg(SEXP counter_name) {
   UNPROTECT(1);
   return ret;
 }
+
+SEXP ps__cpu_times() {
+  // TODO
+  return R_NilValue;
+}

@@ -1185,3 +1185,8 @@ SEXP ps__system_swap() {
   // TODO
   return R_NilValue;
 }
+
+SEXP ps__cpu_times() {
+  // TODO
+  return R_NilValue;
+}

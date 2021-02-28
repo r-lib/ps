@@ -56,6 +56,7 @@ SEXP ps__pids() { return ps__dummy("ps_pids"); }
 SEXP ps__boot_time() { return ps__dummy("ps_boot_time"); }
 SEXP ps__cpu_count_logical()  { return ps__dummy("ps_cpu_count"); }
 SEXP ps__cpu_count_physical() { return ps__dummy("ps_cpu_count"); }
+SEXP ps__cpu_time() { return ps__dummy("ps_cpu_times"); }
 SEXP ps__users() { ps__dummy("ps_users"); }
 SEXP ps__loadavg(SEXP x) { return ps__dummy("ps_loadavg"); }
 SEXP ps__tty_size() { ps__dummy("ps_tty_size"); }
