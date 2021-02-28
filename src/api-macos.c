@@ -1065,10 +1065,14 @@ SEXP ps__system_cpu_times() {
 
   mach_port_deallocate(mach_task_self(), host_port);
 
-  return ps__build_named_list(
-    "dddd",
-    "user",   (double) r_load.cpu_ticks[CPU_STATE_USER]   / CLK_TCK,
-    "nice",   (double) r_load.cpu_ticks[CPU_STATE_NICE]   / CLK_TCK,
-    "system", (double) r_load.cpu_ticks[CPU_STATE_SYSTEM] / CLK_TCK,
-    "idle",   (double) r_load.cpu_ticks[CPU_STATE_IDLE]   / CLK_TCK);
+  const char *nms[] = { "user", "nice", "system", "idle", "" };
+  SEXP ret = PROTECT(Rf_mkNamed(REALSXP, nms));
+
+  REAL(ret)[0] = (double) r_load.cpu_ticks[CPU_STATE_USER]   / CLK_TCK;
+  REAL(ret)[1] = (double) r_load.cpu_ticks[CPU_STATE_NICE]   / CLK_TCK;
+  REAL(ret)[2] = (double) r_load.cpu_ticks[CPU_STATE_SYSTEM] / CLK_TCK;
+  REAL(ret)[3] = (double) r_load.cpu_ticks[CPU_STATE_IDLE]   / CLK_TCK;
+
+  UNPROTECT(1);
+  return ret;
 }

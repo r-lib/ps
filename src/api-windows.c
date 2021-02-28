@@ -1429,10 +1429,13 @@ SEXP ps__system_cpu_times() {
   // kernel time.
   system = (kernel - idle);
 
-  return ps__build_named_list(
-    "ddd",
-    "user", user,
-    "system", system,
-    "idle", idle
-  );
+  const char *nms[] = { "user", "system", "idle", "" };
+  SEXP ret = PROTECT(Rd_mkNamed(REALSXP, nms));
+
+  REAL(ret)[0] = (double) user;
+  REAL(ret)[1] = (double) system;
+  REAL(ret)[2] = (double) idle;
+
+  UNPROTECT(1);
+  return ret;
 }
