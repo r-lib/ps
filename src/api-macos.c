@@ -1058,12 +1058,12 @@ SEXP ps__system_cpu_times() {
   error = host_statistics(host_port, HOST_CPU_LOAD_INFO,
                           (host_info_t)&r_load, &count);
 
+  mach_port_deallocate(mach_task_self(), host_port);
+
   if (error != KERN_SUCCESS) {
     ps__set_error_from_errno();
     ps__throw_error();
   }
-
-  mach_port_deallocate(mach_task_self(), host_port);
 
   const char *nms[] = { "user", "nice", "system", "idle", "" };
   SEXP ret = PROTECT(Rf_mkNamed(REALSXP, nms));
