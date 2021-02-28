@@ -341,23 +341,18 @@ find_loadavg_counter <- function() {
 #' * `guest_nice` (Linux 3.2.0+): time spent running a niced guest
 #'   (virtual CPU for guest operating systems under the control of the
 #'   Linux kernel).
-#' * `interrupt` (Windows): time spent for servicing hardware interrupts
-#'   ( similar to “irq” on UNIX).
-#' * `dpc` (Windows): time spent servicing deferred procedure calls
-#'   (DPCs); DPCs are interrupts that run at a lower priority than
-#'   standard interrupts.
 #'
 #' @return Named list
 #'
 #' @export
 #' @examplesIf ps::ps_is_supported()
-#' ps_cpu_times()
+#' ps_system_cpu_times()
 
-ps_cpu_times <- function() {
+ps_system_cpu_times <- function() {
   os <- ps_os_name()
   if (os == "LINUX") {
-    ps__cpu_times_linux()
+    ps__system_cpu_times_linux()
   } else {
-    .Call(ps__cpu_times)
+    .Call(ps__system_cpu_times)
   }
 }

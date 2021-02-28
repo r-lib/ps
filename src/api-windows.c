@@ -1405,7 +1405,34 @@ SEXP ps__loadavg(SEXP counter_name) {
   return ret;
 }
 
-SEXP ps__cpu_times() {
-  // TODO
-  return R_NilValue;
+#define LO_T 1e-7
+#define HI_T 429.4967296
+
+SEXP ps__system_cpu_times() {
+  double idle, kernel, user, system;
+  FILETIME idle_time, kernel_time, user_time;
+
+  if (!GetSystemTimes(&idle_time, &kernel_time, &user_time)) {
+    ps__set_error_from_windows_error(0);
+    ps__throw_error();
+  }
+
+  idle = (double)((HI_T * idle_time.dwHighDateTime) +
+		  (LO_T * idle_time.dwLowDateTime));
+  user = (double)((HI_T * user_time.dwHighDateTime) +
+		  (LO_T * user_time.dwLowDateTime));
+  kernel = (double)((HI_T * kernel_time.dwHighDateTime) +
+		    (LO_T * kernel_time.dwLowDateTime));
+
+  // Kernel time includes idle time.
+  // We return only busy kernel time subtracting idle time from
+  // kernel time.
+  system = (kernel - idle);
+
+  return ps__build_named_list(
+    "ddd",
+    "user", user,
+    "system", system,
+    "idle", idle
+  );
 }

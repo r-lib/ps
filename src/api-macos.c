@@ -1049,7 +1049,7 @@ SEXP ps__loadavg(SEXP counter_name) {
   return ret;
 }
 
-SEXP ps__cpu_times() {
+SEXP ps__system_cpu_times() {
   mach_msg_type_number_t count = HOST_CPU_LOAD_INFO_COUNT;
   kern_return_t error;
   host_cpu_load_info_data_t r_load;

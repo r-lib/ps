@@ -1186,7 +1186,7 @@ SEXP ps__system_swap() {
   return R_NilValue;
 }
 
-SEXP ps__cpu_times() {
+SEXP ps__system_cpu_times() {
   // This is implemented in R on Linux
   ps__throw_error();
   return R_NilValue;
