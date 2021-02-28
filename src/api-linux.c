@@ -1187,6 +1187,7 @@ SEXP ps__system_swap() {
 }
 
 SEXP ps__cpu_times() {
-  // TODO
+  // This is implemented in R on Linux
+  ps__throw_error();
   return R_NilValue;
 }
