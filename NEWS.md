@@ -1,7 +1,7 @@
 
 # ps development version
 
-* New function `ps_cpu_times()` to calculate system CPU times.
+* New function `ps_system_cpu_times()` to calculate system CPU times.
 
 * New function `ps_loadavg()` to show the Unix style load average.
 
