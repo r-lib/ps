@@ -118,6 +118,9 @@
     <loc>http://ps.r-lib.org/reference/ps_suspend.html</loc>
   </url>
   <url>
+    <loc>http://ps.r-lib.org/reference/ps_system_cpu_times.html</loc>
+  </url>
+  <url>
     <loc>http://ps.r-lib.org/reference/ps_system_memory.html</loc>
   </url>
   <url>
