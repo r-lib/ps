@@ -1430,7 +1430,7 @@ SEXP ps__system_cpu_times() {
   system = (kernel - idle);
 
   const char *nms[] = { "user", "system", "idle", "" };
-  SEXP ret = PROTECT(Rd_mkNamed(REALSXP, nms));
+  SEXP ret = PROTECT(Rf_mkNamed(REALSXP, nms));
 
   REAL(ret)[0] = (double) user;
   REAL(ret)[1] = (double) system;
