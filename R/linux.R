@@ -184,7 +184,7 @@ ps_cpu_count_physical_linux <- function() {
 
 ps__cpu_times_linux <- function() {
   stat <- readLines("/proc/stat", n = 1)
-  tms <- as.double(strsplit(stat, "\\s+")[[1]][-1])
+  tms <- as.list(as.double(strsplit(stat, "\\s+")[[1]][-1]))
   nms <- c(
     "user", "nice", "system", "idle", "iowait", "irq", "softirq", "steal",
     "guest", "guest_nice"
