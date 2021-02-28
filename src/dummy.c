@@ -56,12 +56,12 @@ SEXP ps__pids() { return ps__dummy("ps_pids"); }
 SEXP ps__boot_time() { return ps__dummy("ps_boot_time"); }
 SEXP ps__cpu_count_logical()  { return ps__dummy("ps_cpu_count"); }
 SEXP ps__cpu_count_physical() { return ps__dummy("ps_cpu_count"); }
-SEXP ps__cpu_time() { return ps__dummy("ps_cpu_times"); }
 SEXP ps__users() { ps__dummy("ps_users"); }
 SEXP ps__loadavg(SEXP x) { return ps__dummy("ps_loadavg"); }
 SEXP ps__tty_size() { ps__dummy("ps_tty_size"); }
 SEXP ps__disk_partitions(SEXP x) { ps__dummy("ps_disk_partitions"); }
 SEXP ps__disk_usage() { ps__dummy("ps_disk_usage"); }
+SEXP ps__system_cpu_times() { return ps__dummy("ps_system_cpu_times"); }
 SEXP ps__system_memory() { ps__dummy("ps_system_memory"); }
 SEXP ps__system_swap() { ps__dummy("ps_system_swap"); }
 
