@@ -53,8 +53,8 @@ VOID CALLBACK LoadAvgCallback(PVOID hCounter, BOOLEAN timedOut) {
 }
 
 
-void ps__init_loadavg_counter() {
-  WCHAR *szCounterPath = L"\\System\\Processor Queue Length";
+void ps__init_loadavg_counter(SEXP counter_name) {
+  WCHAR *szCounterPath = NULL;
   PDH_STATUS s;
   BOOL ret;
   HQUERY hQuery;
@@ -62,12 +62,14 @@ void ps__init_loadavg_counter() {
   HANDLE event;
   HANDLE waitHandle;
 
+  ps__utf8_to_utf16(CHAR(STRING_ELT(counter_name, 0)), &szCounterPath);
+
   if ((PdhOpenQueryW(NULL, 0, &hQuery)) != ERROR_SUCCESS) {
     ps__set_error_from_windows_error(0);
     ps__throw_error();
   }
 
-  s = PdhAddEnglishCounterW(hQuery, szCounterPath, 0, &hCounter);
+  s = PdhAddCounterW(hQuery, szCounterPath, 0, &hCounter);
   if (s != ERROR_SUCCESS) {
     ps__set_error_from_windows_error(0);
     ps__throw_error();
@@ -110,8 +112,8 @@ void ps__init_loadavg_counter() {
  * mechanism that records load values.
  */
 
-void ps__get_loadavg(double avg[3]) {
-  if (!load_avg_inited) ps__init_loadavg_counter();
+void ps__get_loadavg(double avg[3], SEXP counter_name) {
+  if (!load_avg_inited) ps__init_loadavg_counter(counter_name);
   avg[0] = load_avg_1m;
   avg[1] = load_avg_5m;
   avg[2] = load_avg_15m;

@@ -1398,9 +1398,9 @@ error:
 }
 
 
-SEXP ps__loadavg() {
+SEXP ps__loadavg(SEXP counter_name) {
   SEXP ret = PROTECT(allocVector(REALSXP, 3));
-  ps__get_loadavg(REAL(ret));
+  ps__get_loadavg(REAL(ret), counter_name);
   UNPROTECT(1);
   return ret;
 }

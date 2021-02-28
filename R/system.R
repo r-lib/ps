@@ -291,5 +291,26 @@ short_username <- function(x) {
 #' ps_loadavg()
 
 ps_loadavg <- function() {
-  .Call(ps__loadavg)
+  if (is.null(ps_env$counter_name)) {
+    if (ps_os_type()[["WINDOWS"]]) {
+      ps_env$counter_name <- find_loadavg_counter()
+    } else {
+      ps_env$counter_name <- ""
+    }
+  }
+
+  .Call(ps__loadavg, ps_env$counter_name)
+}
+
+find_loadavg_counter <- function() {
+  key <- paste0(
+    "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Perflib\\",
+    "CurrentLanguage"
+  )
+  tryCatch({
+    pc <- readRegistry(key)
+    idx <- seq(2, length(pc$Counter), by = 2)
+    cnt <- structure(pc$Counter[idx], names = pc$Counter[idx - 1])
+    paste0("\\", cnt["2"], "\\", cnt["44"])
+  }, error = function(e) "\\System\\Processor Queue Length")
 }

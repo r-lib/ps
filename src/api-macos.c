@@ -1030,7 +1030,7 @@ SEXP ps__system_swap() {
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
 
-SEXP ps__loadavg() {
+SEXP ps__loadavg(SEXP counter_name) {
   struct loadavg info;
   size_t size = sizeof(info);
   int which[] = {CTL_VM, VM_LOADAVG};

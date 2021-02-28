@@ -1148,7 +1148,7 @@ error:
   return R_NilValue;
 }
 
-SEXP ps__loadavg() {
+SEXP ps__loadavg(SEXP counter_name) {
   /* Try /proc first, if fails we try sysinfo() */
   struct sysinfo info;
   char *buf;
