@@ -1,6 +1,8 @@
 
 # development version
 
+* ps now compiles on platforms that enable OpenMP (#109).
+
 # ps 1.6.0
 
 * New function `ps_system_cpu_times()` to calculate system CPU times.
