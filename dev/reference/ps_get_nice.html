@@ -60,6 +60,7 @@ values on Windows." />
 
 
 
+
   
 
   
@@ -121,16 +122,16 @@ values on Windows." />
     </div>
 
     <div class="ref-description">
-    <p><code>ps_get_nice()</code> returns the current priority, <code>ps_set_nice()</code> sets a
-new priority, <code>ps_windows_nice_values()</code> list the possible priority
+    <p><code><a href='ps_get_nice.html'>ps_get_nice()</a></code> returns the current priority, <code><a href='ps_get_nice.html'>ps_set_nice()</a></code> sets a
+new priority, <code><a href='ps_get_nice.html'>ps_windows_nice_values()</a></code> list the possible priority
 values on Windows.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ps_windows_nice_values</span><span class='op'>(</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'><a href='ps_get_nice.html'>ps_windows_nice_values</a></span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='fu'>ps_get_nice</span><span class='op'>(</span>p <span class='op'>=</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='ps_get_nice.html'>ps_get_nice</a></span><span class='op'>(</span>p <span class='op'>=</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='fu'>ps_set_nice</span><span class='op'>(</span>p <span class='op'>=</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>value</span><span class='op'>)</span></pre>
+<span class='fu'><a href='ps_get_nice.html'>ps_set_nice</a></span><span class='op'>(</span>p <span class='op'>=</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>value</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -142,24 +143,24 @@ values on Windows.</p>
     <tr>
       <th>value</th>
       <td><p>On Windows it must be a string, one of the values of
-<code>ps_windows_nice_values()</code>. On Unix it is a priority value that is
+<code><a href='ps_get_nice.html'>ps_windows_nice_values()</a></code>. On Unix it is a priority value that is
 smaller than or equal to 20.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>ps_windows_nice_values()</code> return a character vector of possible
+    <p><code><a href='ps_get_nice.html'>ps_windows_nice_values()</a></code> return a character vector of possible
 priority values on Windows.</p>
-<p><code>ps_get_nice()</code> returns a string from
-<code>ps_windows_nice_values()</code> on Windows. On Unix it returns an integer
+<p><code><a href='ps_get_nice.html'>ps_get_nice()</a></code> returns a string from
+<code><a href='ps_get_nice.html'>ps_windows_nice_values()</a></code> on Windows. On Unix it returns an integer
 smaller than or equal to 20.</p>
-<p><code>ps_set_nice()</code> return <code>NULL</code> invisibly.</p>
+<p><code><a href='ps_get_nice.html'>ps_set_nice()</a></code> return <code>NULL</code> invisibly.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Priority values are different on Windows and Unix.</p>
 <p>On Unix, priority is an integer, which is maximum 20. 20 is the lowest
-priority.</p><h3 class='hasAnchor' id='rules-'><a class='anchor' href='#rules-'></a>Rules:</h3>
+priority.</p><h3 class='hasAnchor' id='rules-'><a class='anchor' aria-hidden='true' href='#rules-'></a>Rules:</h3>
 
 <ul>
 <li><p>On Windows you can only set the priority of the processes the current
@@ -189,7 +190,7 @@ The superuser can set the priority of any process.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9000.</p></p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>

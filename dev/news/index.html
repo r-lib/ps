@@ -57,6 +57,7 @@
 
 
 
+
   
 
   
@@ -118,7 +119,7 @@
 
     <div id="ps-160" class="section level1">
 <h1 class="page-header" data-toc-text="1.6.0">
-<a href="#ps-160" class="anchor"></a>ps 1.6.0<small> 2021-02-28 </small>
+<a href="#ps-160" class="anchor" aria-hidden="true"></a>ps 1.6.0<small> 2021-02-28 </small>
 </h1>
 <ul>
 <li><p>New function <code><a href="../reference/ps_system_cpu_times.html">ps_system_cpu_times()</a></code> to calculate system CPU times.</p></li>
@@ -127,7 +128,7 @@
 </div>
     <div id="ps-150" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.0">
-<a href="#ps-150" class="anchor"></a>ps 1.5.0<small> 2020-12-05 </small>
+<a href="#ps-150" class="anchor" aria-hidden="true"></a>ps 1.5.0<small> 2020-12-05 </small>
 </h1>
 <ul>
 <li><p>New function <code><a href="../reference/ps_shared_libs.html">ps_shared_libs()</a></code> to list the loaded shared libraries of a process, on Windows.</p></li>
@@ -137,12 +138,12 @@
 </div>
     <div id="ps-140" class="section level1">
 <h1 class="page-header" data-toc-text="1.4.0">
-<a href="#ps-140" class="anchor"></a>ps 1.4.0<small> 2020-10-07 </small>
+<a href="#ps-140" class="anchor" aria-hidden="true"></a>ps 1.4.0<small> 2020-10-07 </small>
 </h1>
 <ul>
 <li><p>ps is now under the MIT license.</p></li>
-<li><p>Process functions now default to the calling R process. So e.g. you can write simply <code><a href="../reference/ps_connections.html">ps_connections()</a></code> to list all network connections of the current process, instead of <code><a href="../reference/ps_connections.html">ps_connections(ps_handle())</a></code>.</p></li>
-<li><p>New <code><a href="../reference/ps_windows_nice_values.html">ps_get_nice()</a></code> and <code><a href="../reference/ps_windows_nice_values.html">ps_set_nice()</a></code> functions to get and set the priority of a process (<a href='https://github.com/r-lib/ps/issues/89'>#89</a>).</p></li>
+<li><p>Process functions now default to the calling R process. So e.g. you can write simply <code><a href="../reference/ps_connections.html">ps_connections()</a></code> to list all network connections of the current process, instead of <code>ps_connections(ps_handle())</code>.</p></li>
+<li><p>New <code><a href="../reference/ps_get_nice.html">ps_get_nice()</a></code> and <code><a href="../reference/ps_get_nice.html">ps_set_nice()</a></code> functions to get and set the priority of a process (<a href='https://github.com/r-lib/ps/issues/89'>#89</a>).</p></li>
 <li><p>New <code><a href="../reference/ps_system_memory.html">ps_system_memory()</a></code> and <code><a href="../reference/ps_system_swap.html">ps_system_swap()</a></code> functions, to return information about system memory and swap usage.</p></li>
 <li><p>New <code><a href="../reference/ps_disk_partitions.html">ps_disk_partitions()</a></code> and <code><a href="../reference/ps_disk_usage.html">ps_disk_usage()</a></code> functions, they return information about file systems, similarly to the <code>mount</code> and <code>df</code> Unix commands.</p></li>
 <li><p>New <code><a href="../reference/ps_tty_size.html">ps_tty_size()</a></code> function to query the size of the terminal.</p></li>
@@ -151,7 +152,7 @@
 </div>
     <div id="ps-134" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.4">
-<a href="#ps-134" class="anchor"></a>ps 1.3.4<small> 2020-08-11 </small>
+<a href="#ps-134" class="anchor" aria-hidden="true"></a>ps 1.3.4<small> 2020-08-11 </small>
 </h1>
 <ul>
 <li>
@@ -160,7 +161,7 @@
 </div>
     <div id="ps-133" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.3">
-<a href="#ps-133" class="anchor"></a>ps 1.3.3<small> 2020-05-08 </small>
+<a href="#ps-133" class="anchor" aria-hidden="true"></a>ps 1.3.3<small> 2020-05-08 </small>
 </h1>
 <ul>
 <li><p>New function <code><a href="../reference/errno.html">errno()</a></code> returns a table of <code>errno.h</code> error codes and their description.</p></li>
@@ -169,7 +170,7 @@
 </div>
     <div id="ps-132" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.2">
-<a href="#ps-132" class="anchor"></a>ps 1.3.2<small> 2020-02-13 </small>
+<a href="#ps-132" class="anchor" aria-hidden="true"></a>ps 1.3.2<small> 2020-02-13 </small>
 </h1>
 <ul>
 <li>ps now compiles again on unsupported platforms like Solaris.</li>
@@ -177,7 +178,7 @@
 </div>
     <div id="ps-131" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.1">
-<a href="#ps-131" class="anchor"></a>ps 1.3.1<small> 2020-02-12 </small>
+<a href="#ps-131" class="anchor" aria-hidden="true"></a>ps 1.3.1<small> 2020-02-12 </small>
 </h1>
 <ul>
 <li>Fixed an installation problem on some Windows versions, where the output of <code>cmd /c ver</code> looks different (<a href='https://github.com/r-lib/ps/issues/69'>#69</a>).</li>
@@ -185,7 +186,7 @@
 </div>
     <div id="ps-130" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.0">
-<a href="#ps-130" class="anchor"></a>ps 1.3.0<small> 2018-12-21 </small>
+<a href="#ps-130" class="anchor" aria-hidden="true"></a>ps 1.3.0<small> 2018-12-21 </small>
 </h1>
 <ul>
 <li>New <code><a href="../reference/ps_cpu_count.html">ps_cpu_count()</a></code> function returns the number of logical or physical processors.</li>
@@ -193,7 +194,7 @@
 </div>
     <div id="ps-121" class="section level1">
 <h1 class="page-header" data-toc-text="1.2.1">
-<a href="#ps-121" class="anchor"></a>ps 1.2.1<small> 2018-11-06 </small>
+<a href="#ps-121" class="anchor" aria-hidden="true"></a>ps 1.2.1<small> 2018-11-06 </small>
 </h1>
 <ul>
 <li>Fix a crash on Linux, that happened at load time (<a href='https://github.com/r-lib/ps/issues/50'>#50</a>).</li>
@@ -201,7 +202,7 @@
 </div>
     <div id="ps-120" class="section level1">
 <h1 class="page-header" data-toc-text="1.2.0">
-<a href="#ps-120" class="anchor"></a>ps 1.2.0<small> 2018-10-16 </small>
+<a href="#ps-120" class="anchor" aria-hidden="true"></a>ps 1.2.0<small> 2018-10-16 </small>
 </h1>
 <ul>
 <li><p>New <code><a href="../reference/ps_connections.html">ps_connections()</a></code> to list network connections. The <code><a href="../reference/CleanupReporter.html">CleanupReporter()</a></code> testthat reporter can check for leftover open network connections in test cases.</p></li>
@@ -214,20 +215,20 @@
 </div>
     <div id="ps-110" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.0">
-<a href="#ps-110" class="anchor"></a>ps 1.1.0<small> 2018-08-10 </small>
+<a href="#ps-110" class="anchor" aria-hidden="true"></a>ps 1.1.0<small> 2018-08-10 </small>
 </h1>
 <ul>
 <li><p>New <code><a href="../reference/ps_num_fds.html">ps_num_fds()</a></code> returns the number of open files/handles.</p></li>
 <li><p>New <code><a href="../reference/ps_open_files.html">ps_open_files()</a></code> lists all open files of a process.</p></li>
 <li><p>New <code><a href="../reference/ps_interrupt.html">ps_interrupt()</a></code> interrupts a process. It sends a <code>SIGINT</code> signal on POSIX systems, and it can send CTRL+C or CTRL+BREAK events on Windows.</p></li>
 <li><p>New <code><a href="../reference/ps_users.html">ps_users()</a></code> lists users connected to the system.</p></li>
-<li><p>New <code><a href="../reference/ps_mark_tree.html">ps_mark_tree()</a></code>, <code><a href="../reference/ps_mark_tree.html">ps_find_tree()</a></code>, <code><a href="../reference/ps_mark_tree.html">ps_kill_tree()</a></code>, <code><a href="../reference/ps_mark_tree.html">with_process_cleanup()</a></code>: functions to mark and clean up child processes.</p></li>
+<li><p>New <code><a href="../reference/ps_kill_tree.html">ps_mark_tree()</a></code>, <code><a href="../reference/ps_kill_tree.html">ps_find_tree()</a></code>, <code><a href="../reference/ps_kill_tree.html">ps_kill_tree()</a></code>, <code><a href="../reference/ps_kill_tree.html">with_process_cleanup()</a></code>: functions to mark and clean up child processes.</p></li>
 <li><p>New <code>CleanupReporter</code>, to be used with testthat: it checks for leftover child processes and open files in <code><a href="https://testthat.r-lib.org/reference/test_that.html" class="external-link">test_that()</a></code> blocks.</p></li>
 </ul>
 </div>
     <div id="ps-100" class="section level1">
 <h1 class="page-header" data-toc-text="1.0.0">
-<a href="#ps-100" class="anchor"></a>ps 1.0.0<small> 2018-07-22 </small>
+<a href="#ps-100" class="anchor" aria-hidden="true"></a>ps 1.0.0<small> 2018-07-22 </small>
 </h1>
 <p>First released version.</p>
 </div>
@@ -248,7 +249,7 @@
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9000.</p></p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>

@@ -59,6 +59,9 @@ signals() for the list of signals on the current platform." />
 
 
 
+<!-- dependencies from examples -->
+
+
   
 
   
@@ -179,11 +182,11 @@ to avoid signalling the wrong process, because of pid reuse.</p>
     <pre class="examples"><div class='input'><span class='va'>px</span> <span class='op'>&lt;-</span> <span class='fu'>processx</span><span class='fu'>::</span><span class='va'><a href='http://processx.r-lib.org/reference/process.html'>process</a></span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span><span class='st'>"sleep"</span>, <span class='st'>"10"</span><span class='op'>)</span>
 <span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ps_handle.html'>ps_handle</a></span><span class='op'>(</span><span class='va'>px</span><span class='op'>$</span><span class='fu'>get_pid</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>p</span>
-</div><div class='output co'>#&gt; &lt;ps::ps_handle&gt; PID=2517, NAME=sleep, AT=2021-02-28 22:58:22</div><div class='input'><span class='fu'>ps_send_signal</span><span class='op'>(</span><span class='va'>p</span>, <span class='fu'><a href='signals.html'>signals</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='va'>SIGINT</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; NULL</div><div class='input'><span class='va'>p</span>
-</div><div class='output co'>#&gt; &lt;ps::ps_handle&gt; PID=2517, NAME=???, AT=2021-02-28 22:58:22</div><div class='input'><span class='fu'><a href='ps_is_running.html'>ps_is_running</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='va'>px</span><span class='op'>$</span><span class='fu'>get_exit_status</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] -2</div></pre>
+</div><div class='co'>#&gt; &lt;ps::ps_handle&gt; PID=2932, NAME=sleep, AT=2021-04-30 12:07:53</div><div class='input'><span class='fu'>ps_send_signal</span><span class='op'>(</span><span class='va'>p</span>, <span class='fu'><a href='signals.html'>signals</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='va'>SIGINT</span><span class='op'>)</span>
+</div><div class='co'>#&gt; NULL</div><div class='input'><span class='va'>p</span>
+</div><div class='co'>#&gt; &lt;ps::ps_handle&gt; PID=2932, NAME=???, AT=2021-04-30 12:07:53</div><div class='input'><span class='fu'><a href='ps_is_running.html'>ps_is_running</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span>
+</div><div class='co'>#&gt; [1] FALSE</div><div class='input'><span class='va'>px</span><span class='op'>$</span><span class='fu'>get_exit_status</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='co'>#&gt; [1] -2</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -199,7 +202,7 @@ to avoid signalling the wrong process, because of pid reuse.</p>
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9000.</p></p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
