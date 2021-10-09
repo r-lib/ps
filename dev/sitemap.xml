@@ -1,13 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://ps.r-lib.org/CODE_OF_CONDUCT.html</loc>
+  </url>
+  <url>
+    <loc>http://ps.r-lib.org/CONTRIBUTING.html</loc>
+  </url>
+  <url>
+    <loc>http://ps.r-lib.org/ISSUE_TEMPLATE.html</loc>
+  </url>
+  <url>
+    <loc>http://ps.r-lib.org/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>http://ps.r-lib.org/SUPPORT.html</loc>
+  </url>
+  <url>
+    <loc>http://ps.r-lib.org/authors.html</loc>
+  </url>
+  <url>
+    <loc>http://ps.r-lib.org/header.html</loc>
+  </url>
+  <url>
     <loc>http://ps.r-lib.org/index.html</loc>
+  </url>
+  <url>
+    <loc>http://ps.r-lib.org/news/index.html</loc>
   </url>
   <url>
     <loc>http://ps.r-lib.org/reference/CleanupReporter.html</loc>
   </url>
   <url>
     <loc>http://ps.r-lib.org/reference/errno.html</loc>
+  </url>
+  <url>
+    <loc>http://ps.r-lib.org/reference/index.html</loc>
   </url>
   <url>
     <loc>http://ps.r-lib.org/reference/ps.html</loc>
