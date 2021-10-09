@@ -273,7 +273,9 @@ short_username <- function(x) {
 # Docs from psutil, thanks!
 
 #' Return the average system load over the last 1, 5 and 15 minutes as a
-#' tuple. The “load” represents the processes which are in a runnable
+#' tuple.
+#'
+#' The “load” represents the processes which are in a runnable
 #' state, either using the CPU or waiting to use the CPU (e.g. waiting for
 #' disk I/O). On Windows this is emulated by using a Windows API that
 #' spawns a thread which keeps running in background and updates results
