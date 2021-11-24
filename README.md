@@ -8,7 +8,7 @@
 [![R build status](https://github.com/r-lib/ps/workflows/R-CMD-check/badge.svg)](https://github.com/r-lib/ps/actions)
 [![CRAN status](https://www.r-pkg.org/badges/version/ps)](https://cran.r-project.org/package=ps)
 [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/ps)](https://www.r-pkg.org/pkg/ps)
-[![Coverage status](https://codecov.io/gh/r-lib/ps/branch/master/graph/badge.svg)](https://codecov.io/github/r-lib/ps?branch=master)
+[![Coverage status](https://codecov.io/gh/r-lib/ps/branch/main/graph/badge.svg)](https://codecov.io/github/r-lib/ps?branch=main)
 <!-- badges: end -->
 
 ps implements an API to query and manipulate system processes. Most of its
@@ -739,7 +739,7 @@ ps() %>%
 ## Contributions
 
 Please note that this project is released with a [Contributor Code of
-Conduct](https://github.com/r-lib/ps/blob/master/.github/CODE_OF_CONDUCT.md).
+Conduct](https://github.com/r-lib/ps/blob/main/.github/CODE_OF_CONDUCT.md).
 By participating in this project you agree to abide by its terms.
 
 ## License
