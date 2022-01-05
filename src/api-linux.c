@@ -776,14 +776,22 @@ SEXP psll_memory_info(SEXP p) {
 
   PS__CHECK_HANDLE(handle);
 
-  PROTECT(result = allocVector(INTSXP, 7));
-  INTEGER(result)[0] = rss;
-  INTEGER(result)[1] = vms;
-  INTEGER(result)[2] = shared;
-  INTEGER(result)[3] = text;
-  INTEGER(result)[4] = lib;
-  INTEGER(result)[5] = data;
-  INTEGER(result)[6] = dirty;
+#ifdef _SC_PAGESIZE
+    // recommended POSIX
+    int page_size = sysconf(_SC_PAGESIZE);
+#elif _SC_PAGE_SIZE
+    // alias
+    int page_size = sysconf(_SC_PAGE_SIZE);
+#endif
+
+  PROTECT(result = allocVector(REALSXP, 7));
+  REAL(result)[0] = rss * page_size;
+  REAL(result)[1] = vms * page_size;
+  REAL(result)[2] = shared * page_size;
+  REAL(result)[3] = text * page_size;
+  REAL(result)[4] = lib * page_size;
+  REAL(result)[5] = data * page_size;
+  REAL(result)[6] = dirty * page_size;
   PROTECT(names = ps__build_string("rss", "vms", "shared", "text", "lib",
 				   "data", "dirty", NULL));
   setAttrib(result, R_NamesSymbol, names);
