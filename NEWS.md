@@ -3,6 +3,8 @@
 
 * ps now compiles on platforms that enable OpenMP (#109).
 
+* `ps_memory_info()` now reports memory in bytes instead of pages on Linux (#115)
+
 # ps 1.6.0
 
 * New function `ps_system_cpu_times()` to calculate system CPU times.

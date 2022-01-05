@@ -480,25 +480,25 @@ ps_cpu_times <- function(p = ps_handle()) {
 #'
 #' A list with information about memory usage. Portable fields:
 #' * `rss`: "Resident Set Size", this is the non-swapped physical memory a
-#'   process has used. On UNIX it matches "top"‘s 'RES' column (see doc). On
+#'   process has used (bytes). On UNIX it matches "top"‘s 'RES' column (see doc). On
 #'   Windows this is an alias for `wset` field and it matches "Memory"
 #'   column of `taskmgr.exe`.
 #' * `vmem`: "Virtual Memory Size", this is the total amount of virtual
-#'   memory used by the process. On UNIX it matches "top"‘s 'VIRT' column
+#'   memory used by the process (bytes). On UNIX it matches "top"‘s 'VIRT' column
 #'   (see doc). On Windows this is an alias for the `pagefile` field and
 #'   it matches the "Working set (memory)" column of `taskmgr.exe`.
 #'
 #' Non-portable fields:
 #' * `shared`: (Linux) memory that could be potentially shared with other
-#'   processes. This matches "top"‘s 'SHR' column (see doc).
+#'   processes (bytes). This matches "top"‘s 'SHR' column (see doc).
 #' * `text`: (Linux): aka 'TRS' (text resident set) the amount of memory
-#'   devoted to executable code. This matches "top"‘s 'CODE' column (see
+#'   devoted to executable code (bytes). This matches "top"‘s 'CODE' column (see
 #'   doc).
 #' * `data`: (Linux): aka 'DRS' (data resident set) the amount of physical
-#'   memory devoted to other than executable code. It matches "top"‘s
+#'   memory devoted to other than executable code (bytes). It matches "top"‘s
 #'   'DATA' column (see doc).
-#' * `lib`: (Linux): the memory used by shared libraries.
-#' * `dirty`: (Linux): the number of dirty pages.
+#' * `lib`: (Linux): the memory used by shared libraries (bytes).
+#' * `dirty`: (Linux): the amount of memory in dirty pages (bytes).
 #' * `pfaults`: (macOS): number of page faults.
 #' * `pageins`: (macOS): number of actual pageins.
 #'

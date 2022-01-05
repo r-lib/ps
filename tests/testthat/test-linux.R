@@ -40,7 +40,8 @@ test_that("memory_info", {
   mem <- ps_memory_info(ps)
   mem2 <- scan(sprintf("/proc/%d/statm", ps_pid(ps)), what = integer(),
                quiet = TRUE)
+  page_size <- system2("getconf", "PAGESIZE", stdout = TRUE)
 
-  expect_equal(mem[["rss"]], mem2[[1]])
-  expect_equal(mem[["vms"]], mem2[[2]])
+  expect_equal(mem[["rss"]], mem2[[1]] * page_size)
+  expect_equal(mem[["vms"]], mem2[[2]] * page_size)
 })
