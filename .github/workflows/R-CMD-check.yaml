@@ -36,7 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: r-lib/actions/setup-r@main
+      - uses: r-lib/actions/setup-r@master
         with:
           r-version: ${{ matrix.config.r }}
 
@@ -45,7 +45,7 @@ jobs:
           ln -s /Library/Frameworks/R.framework/Versions/Current/Resources/bin/R /usr/local/bin/ || true
           ln -s /Library/Frameworks/R.framework/Versions/Current/Resources/bin/Rscript /usr/local/bin/ || true
 
-      - uses: r-lib/actions/setup-pandoc@main
+      - uses: r-lib/actions/setup-pandoc@master
 
       - name: Query dependencies
         run: |
@@ -97,7 +97,7 @@ jobs:
 
       - name: Upload check results
         if: failure()
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@master
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
