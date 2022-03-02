@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @aliases ps-package
 "_PACKAGE"
 
 ## usethis namespace: start

@@ -2,8 +2,8 @@
 % Please edit documentation in R/ps-package.R
 \docType{package}
 \name{ps-package}
-\alias{ps}
 \alias{ps-package}
+\alias{_PACKAGE}
 \title{ps: List, Query, Manipulate System Processes}
 \description{
 List, query and manipulate all system processes, on 'Windows', 'Linux' and 'macOS'.
@@ -12,6 +12,7 @@ List, query and manipulate all system processes, on 'Windows', 'Linux' and 'macO
 Useful links:
 \itemize{
   \item \url{https://github.com/r-lib/ps#readme}
+  \item \url{https://ps.r-lib.org/}
   \item Report bugs at \url{https://github.com/r-lib/ps/issues}
 }
 
@@ -28,7 +29,7 @@ Authors:
 
 Other contributors:
 \itemize{
-  \item RStudio [copyright holder]
+  \item RStudio [copyright holder, funder]
 }
 
 }
