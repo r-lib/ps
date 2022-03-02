@@ -1,18 +1,18 @@
 Package: ps
-Version: 1.6.0.9000
 Title: List, Query, Manipulate System Processes
-Description: List, query and manipulate all system processes, on 'Windows',
-    'Linux' and 'macOS'.
+Version: 1.6.0.9000
 Authors@R: c(
     person("Jay", "Loden", role = "aut"),
     person("Dave", "Daeschler", role = "aut"),
     person("Giampaolo", "Rodola'", role = "aut"),
-    person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", c("aut", "cre")),
-    person("RStudio", role = "cph"))
+    person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
+    person("RStudio", role = "cph")
+  )
+Description: List, query and manipulate all system processes, on
+    'Windows', 'Linux' and 'macOS'.
 License: MIT + file LICENSE
 URL: https://github.com/r-lib/ps#readme
 BugReports: https://github.com/r-lib/ps/issues
-Encoding: UTF-8
 Depends:
     R (>= 3.1)
 Imports:
@@ -27,6 +27,7 @@ Suggests:
     rlang,
     testthat,
     tibble
-RoxygenNote: 7.1.2
-Roxygen: list(markdown = TRUE)
 Biarch: true
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
