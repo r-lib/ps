@@ -6,7 +6,7 @@ Authors@R: c(
     person("Dave", "Daeschler", role = "aut"),
     person("Giampaolo", "Rodola'", role = "aut"),
     person("Gábor", "Csárdi", , "csardi.gabor@gmail.com", role = c("aut", "cre")),
-    person("RStudio", role = "cph")
+    person("RStudio", role = c("cph", "fnd"))
   )
 Description: List, query and manipulate all system processes, on
     'Windows', 'Linux' and 'macOS'.
