@@ -1,8 +1,6 @@
 
 if (!ps_os_type()[["MACOS"]]) return()
 
-context("macos")
-
 test_that("status", {
   ## Argument check
   expect_error(ps_status(123), class = "invalid_argument")
@@ -36,8 +34,8 @@ test_that("cpu_times", {
   ps2_user <- parse_time(parse_ps(c("-o", "utime", "-p", ps_pid(ps))))
   ps2_total <- parse_time(parse_ps(c("-o", "time", "-p", ps_pid(ps))))
 
-  expect_true(abs(round(ct[["user"]], 2) - ps2_user) < 0.1)
-  expect_true(abs(round(ct[["system"]], 2) - (ps2_total - ps2_user)) < 0.1)
+  expect_true(abs(round(ct[["user"]], 2) - ps2_user) < 0.2)
+  expect_true(abs(round(ct[["system"]], 2) - (ps2_total - ps2_user)) < 0.2)
 })
 
 test_that("memory_info", {

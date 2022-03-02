@@ -1,6 +1,4 @@
 
-context("common")
-
 test_that("create self process", {
   expect_error(ps_handle("foobar"), class = "invalid_argument")
   expect_error(ps_handle(time = 123), class = "invalid_argument")

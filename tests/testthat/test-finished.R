@@ -1,6 +1,4 @@
 
-context("process finished")
-
 test_that("process already finished", {
   skip_on_cran()
   px <- processx::process$new(px(), c("sleep", "5"))

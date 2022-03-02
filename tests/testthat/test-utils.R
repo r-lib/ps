@@ -1,6 +1,4 @@
 
-context("utils")
-
 test_that("errno", {
   err <- errno()
   expect_true(is.data.frame(err))

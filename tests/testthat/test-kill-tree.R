@@ -1,6 +1,4 @@
 
-context("kill-tree")
-
 test_that("ps_mark_tree", {
   id <- ps_mark_tree()
   on.exit(Sys.unsetenv(id), add = TRUE)

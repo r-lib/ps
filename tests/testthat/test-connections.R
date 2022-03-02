@@ -1,6 +1,4 @@
 
-context("connections")
-
 test_that("empty set", {
   px <- processx::process$new(
     px(), c("sleep", "5"),

@@ -1,8 +1,6 @@
 
 if (!ps_os_type()[["WINDOWS"]]) return()
 
-context("windows")
-
 test_that("uids, gids", {
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)

@@ -1,6 +1,4 @@
 
-context("winver")
-
 test_that("winver_ver", {
   cases <- list(
     list(c("", "Microsoft Windows [Version 6.3.9600]"), "6.3.9600"),

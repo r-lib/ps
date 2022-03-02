@@ -1,8 +1,6 @@
 
 if (!ps_os_type()[["POSIX"]]) return()
 
-context("posix")
-
 test_that("is_running", {
   ## Zombie is running
   zpid <- zombie()

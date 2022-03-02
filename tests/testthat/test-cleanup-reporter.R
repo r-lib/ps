@@ -1,6 +1,4 @@
 
-context("cleanup testthat reporter")
-
 test_that("unit: test, mode: cleanup-fail", {
 
   out <- list()

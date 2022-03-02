@@ -1,6 +1,4 @@
 
-context("pid reuse")
-
 test_that("pid reuse", {
   ## This is simulated, because it is quite some work to force a pid
   ## reuse on some systems. So we create a handle with the pid of a
