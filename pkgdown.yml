@@ -1,9 +1,9 @@
-pandoc: 2.7.3
-pkgdown: 1.6.1.9000
-pkgdown_sha: 6094ac3dd80a1f3f1d4e2f47d0ed4716d51362b0
+pandoc: 2.14.2
+pkgdown: 2.0.2
+pkgdown_sha: ~
 articles: {}
-last_built: 2020-12-07T16:16Z
+last_built: 2022-03-02T14:46Z
 urls:
-  reference: http://ps.r-lib.org/reference
-  article: http://ps.r-lib.org/articles
+  reference: https://ps.r-lib.org/reference
+  article: https://ps.r-lib.org/articles
 
