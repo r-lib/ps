@@ -1,8 +1,6 @@
 
 if (!ps_os_type()[["POSIX"]]) return()
 
-context("posix-zombie")
-
 test_that("zombie api", {
   zpid <- zombie()
   on.exit(waitpid(zpid), add = TRUE)

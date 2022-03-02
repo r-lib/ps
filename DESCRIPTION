@@ -25,9 +25,10 @@ Suggests:
     processx (>= 3.1.0),
     R6,
     rlang,
-    testthat,
+    testthat (>= 3.0.0),
     tibble
 Biarch: true
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
+Config/testthat/edition: 3

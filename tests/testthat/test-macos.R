@@ -1,8 +1,6 @@
 
 if (!ps_os_type()[["MACOS"]]) return()
 
-context("macos")
-
 test_that("status", {
   ## Argument check
   expect_error(ps_status(123), class = "invalid_argument")
