@@ -1,8 +1,6 @@
-url: http://ps.r-lib.org
-
-authors:
-  "Gábor Csárdi":
-    href: https://github.com/gaborcsardi
+url: https://ps.r-lib.org/
+template:
+  bootstrap: 5
 
 destination: docs
 
