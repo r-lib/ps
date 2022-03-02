@@ -27,6 +27,7 @@ Suggests:
     rlang,
     testthat,
     tibble
-RoxygenNote: 7.1.1.9001
-Roxygen: { library(roxygenlabs); list(markdown = TRUE) }
+RoxygenNote: 7.1.2
+Roxygen: list(markdown = TRUE)
 Biarch: true
+Config/Needs/website: tidyverse/tidytemplate
