@@ -1,6 +1,7 @@
 url: https://ps.r-lib.org/
 template:
   bootstrap: 5
+  template: tidytemplate
 
 destination: docs
 
