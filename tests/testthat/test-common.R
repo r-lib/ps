@@ -163,12 +163,15 @@ test_that("environ, environ_raw", {
   skip_if_no_processx()
 
   rnd <- basename(tempfile())
+  rnd2 <- basename(tempfile())
+  withr::local_envvar("FOO2" = rnd2)
   p1 <- processx::process$new(px(), c("sleep", "10"), env = c(FOO = rnd))
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
   expect_true(ps_is_running(ps))
 
   expect_equal(ps_environ(ps)[["FOO"]], rnd)
+  expect_equal(ps_environ(ps)[["FOO2"]], rnd2)
   expect_true(paste0("FOO=", rnd) %in% ps_environ_raw(ps))
 })
 
