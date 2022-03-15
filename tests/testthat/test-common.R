@@ -165,13 +165,22 @@ test_that("environ, environ_raw", {
   rnd <- basename(tempfile())
   rnd2 <- basename(tempfile())
   withr::local_envvar("FOO2" = rnd2)
-  p1 <- processx::process$new(px(), c("sleep", "10"), env = c(FOO = rnd))
+  p1 <- callr::r_bg(
+    function() Sys.sleep(10),
+    env = c(callr::rcmd_safe_env(), FOO = rnd)
+  )
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
   expect_true(ps_is_running(ps))
 
-  expect_equal(ps_environ(ps)[["FOO"]], rnd)
-  expect_equal(ps_environ(ps)[["FOO2"]], rnd2)
+  # Might need to wait a bit on macOS Big Sur????
+  deadline <- Sys.time() + as.difftime(2, units = "secs")
+  while (Sys.time() < deadline && length(env <- ps_environ(ps)) == 0) {
+    Sys.sleep(0.05)
+  }
+
+  expect_equal(env[["FOO"]], rnd)
+  expect_equal(env[["FOO2"]], rnd2)
   expect_true(paste0("FOO=", rnd) %in% ps_environ_raw(ps))
 })
 
