@@ -152,12 +152,14 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
       do_proc_cleanup = function(test, quote = "'") {
         Sys.unsetenv(private$tree_id)
         deadline <- Sys.time() + private$proc_timeout / 1000
+        ret <- NULL
         if (private$proc_fail) {
           while (length(ret <- ps::ps_find_tree(private$tree_id)) &&
                  Sys.time() < deadline) Sys.sleep(0.05)
         }
         if (private$proc_cleanup) {
-          ret <- ps::ps_kill_tree(private$tree_id)
+          ret <- ret %||% ps::ps_find_tree(private$tree_id)
+          lapply(ret, ps::ps_kill)
         }
         if (private$proc_fail)  {
           testthat::with_reporter(self, start_end_reporter = FALSE, {

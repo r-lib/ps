@@ -27,17 +27,22 @@ test_that("unit: test, multiple processes", {
   out <- list()
   on.exit(if (!is.null(out$p1)) out$p1$kill(), add = TRUE)
   on.exit(if (!is.null(out$p2)) out$p2$kill(), add = TRUE)
-  expect_failure(
-    with_reporter(
-      CleanupReporter(testthat::SilentReporter)$new(proc_unit = "test"), {
-        test_that("foobar", {
-          out$p1 <<- processx::process$new(px(), c("sleep", "5"))
-          out$p2 <<- processx::process$new(px(), c("sleep", "5"))
-          out$running <<- out$p1$is_alive() && out$p2$is_alive()
-        })
+  exps <- list()
+  with_reporter(
+    CleanupReporter(testthat::SilentReporter)$new(proc_unit = "test", proc_cleanup = TRUE),
+    withCallingHandlers(
+      test_that("foobar", {
+        out$p1 <<- processx::process$new(px(), c("sleep", "5"))
+        out$p2 <<- processx::process$new(px(), c("sleep", "5"))
+        out$running <<- out$p1$is_alive() && out$p2$is_alive()
+      }),
+      expectation = function(e) {
+        exps <<- c(exps, list(e))
+        if (!is.null(findRestart("continue_test"))) {
+          invokeRestart("continue_test")
+        }
       }
-    ),
-    "px.*px"
+    )
   )
 
   expect_true(out$running)
