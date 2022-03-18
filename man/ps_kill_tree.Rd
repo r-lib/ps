@@ -13,7 +13,7 @@ with_process_cleanup(expr)
 
 ps_find_tree(marker)
 
-ps_kill_tree(marker, sig = signals()$SIGKILL)
+ps_kill_tree(marker, sig = signals()$SIGKILL, pids = NULL)
 }
 \arguments{
 \item{expr}{R expression to evaluate in the new context.}
@@ -23,6 +23,8 @@ use to find the marked processes.}
 
 \item{sig}{The signal to send to the marked processes on Unix. On
 Windows this argument is ignored currently.}
+
+\item{pids}{Integer vector, only check these processes.}
 }
 \value{
 \code{ps_mark_tree()} returns the name of the environment variable,

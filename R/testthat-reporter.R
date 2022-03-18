@@ -151,19 +151,33 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
 
       do_proc_cleanup = function(test, quote = "'") {
         Sys.unsetenv(private$tree_id)
+        if (!private$proc_fail && !private$proc_cleanup) return()
         deadline <- Sys.time() + private$proc_timeout / 1000
-        ret <- NULL
-        if (private$proc_fail) {
-          while (length(ret <- ps::ps_find_tree(private$tree_id)) &&
-                 Sys.time() < deadline) Sys.sleep(0.05)
+        procs <- ps::ps_find_tree(private$tree_id)
+        nms <- vapply(procs, FUN.VALUE = character(1), function(x) {
+          tryCatch(ps::ps_name(x), error = function(e) "???")
+        })
+        names(procs) <- nms
+
+        # Give some time for the processes to
+        while (length(procs) > 0 && Sys.time() < deadline) {
+          running <- vapply(procs, ps::ps_is_running, logical(1))
+          procs <- procs[running]
+          Sys.sleep(0.05)
         }
+        if (length(procs) == 0) return()
+
+        pids <- vapply(procs, ps::ps_pid, integer(1))
+
+        # Clean up, if requested
         if (private$proc_cleanup) {
-          ret <- ret %||% ps::ps_find_tree(private$tree_id)
-          lapply(ret, ps::ps_kill)
+          ps::ps_kill_tree(private$tree_id, pids = pids)
         }
+
+        # Fail, if requested
         if (private$proc_fail)  {
           testthat::with_reporter(self, start_end_reporter = FALSE, {
-            self$expect_cleanup(test, ret, quote)
+            self$expect_cleanup(test, pids, quote)
           })
         }
       },

@@ -45,6 +45,12 @@ test_that("unit: test, multiple processes", {
     )
   )
 
+  exps <- exps[vapply(exps, "inherits", logical(1), "expectation_failure")]
+  expect_match(
+    conditionMessage(exps[[1]]),
+    "did not clean up processes:.*px.*"
+  )
+
   expect_true(out$running)
   expect_false(out$p1$is_alive())
   expect_false(out$p2$is_alive())

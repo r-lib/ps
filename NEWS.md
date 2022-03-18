@@ -5,6 +5,12 @@
 
 * `ps_memory_info()` now reports memory in bytes instead of pages on Linux (#115)
 
+* `CleanupReporter` has a simpler implementation now, which potentially
+  solves crashes on newer macOS versions.
+
+* `ps_kill_tree()` has a new `pids` argument to only look at certain
+  processes.
+
 # ps 1.6.0
 
 * New function `ps_system_cpu_times()` to calculate system CPU times.

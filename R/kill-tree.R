@@ -132,17 +132,18 @@ ps_find_tree <- function(marker) {
 #' use to find the marked processes.
 #' @param sig The signal to send to the marked processes on Unix. On
 #' Windows this argument is ignored currently.
+#' @param pids Integer vector, only check these processes.
 #'
 #' @rdname ps_kill_tree
 #' @export
 
-ps_kill_tree <- function(marker, sig = signals()$SIGKILL) {
+ps_kill_tree <- function(marker, sig = signals()$SIGKILL, pids = NULL) {
 
   assert_string(marker)
 
   after <- as.numeric(strsplit(marker, "_", fixed = TRUE)[[1]][2])
 
-  pids <- setdiff(ps_pids(), Sys.getpid())
+  pids <- pids %||% setdiff(ps_pids(), Sys.getpid())
 
   ret <- lapply(pids, function(p) {
     tryCatch(
