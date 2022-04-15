@@ -767,7 +767,7 @@ SEXP psll_memory_info(SEXP p) {
 
   *(buf + ret - 1) = '\0';
 
-  ret = sscanf(buf, "%lu %lu %lu %lu %lu %lu %lu", &rss, &vms, &shared,
+  ret = sscanf(buf, "%lu %lu %lu %lu %lu %lu %lu", &vms, &rss, &shared,
 	       &text, &lib, &data, &dirty);
   if (ret != 7) {
     ps__set_error_from_errno();

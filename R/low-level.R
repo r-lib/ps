@@ -523,6 +523,35 @@ ps_memory_info <- function(p = ps_handle()) {
   .Call(psll_memory_info, p)
 }
 
+#' @export
+
+ps_memory_full_info <- function(p = ps_handle()) {
+  assert_ps_handle(p)
+  type <- ps_os_type()
+  if (type[["LINUX"]]) {
+    match <- function(re) {
+      mt <- gregexpr(re, smaps, perl = TRUE)[[1]]
+      st <- substring(
+        smaps,
+        attr(mt, "capture.start"),
+        attr(mt, "capture.start") + attr(mt, "capture.length") - 1
+      )
+      sum(as.integer(st), na.rm = TRUE) * 1024
+    }
+
+    info <- ps_memory_info(p)
+    smaps <- .Call(ps__memory_maps, p)
+    info[["uss"]] <- match("\nPrivate.*:\\s+(\\d+)")
+    info[["pss"]] <- match("\nPss:\\s+(\\d+)")
+    info[["swap"]] <- match("\nSwap:\\s+(\\d+)")
+
+    info
+
+  } else {
+    stop("Not implemented yet on this platform")
+  }
+}
+
 #' Send signal to a process
 #'
 #' Send a signal to the process. Not implemented on Windows. See
