@@ -31,6 +31,7 @@ SEXP psll_environ(SEXP p);
 SEXP psll_num_threads(SEXP p);
 SEXP psll_cpu_times(SEXP p);
 SEXP psll_memory_info(SEXP p);
+SEXP psll_memory_uss(SEXP p);
 SEXP psll_send_signal(SEXP p, SEXP sig);
 SEXP psll_suspend(SEXP p);
 SEXP psll_resume(SEXP p);

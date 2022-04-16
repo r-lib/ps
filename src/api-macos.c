@@ -16,6 +16,7 @@
 
 #include <mach/mach.h>
 #include <mach/mach_vm.h>
+#include <mach/shared_region.h>
 
 #include "ps-internal.h"
 #include "arch/macos/process_info.h"
@@ -813,6 +814,124 @@ SEXP psll_connections(SEXP p) {
   if (fds_pointer) free(fds_pointer);
   ps__check_for_zombie(handle, 1);
   return R_NilValue;
+}
+
+/*
+ * Indicates if the given virtual address on the given architecture is in the
+ * shared VM region.
+ */
+static bool ps_in_shared_region(mach_vm_address_t addr, cpu_type_t type) {
+  mach_vm_address_t base;
+  mach_vm_address_t size;
+
+  switch (type) {
+  case CPU_TYPE_ARM:
+    base = SHARED_REGION_BASE_ARM;
+    size = SHARED_REGION_SIZE_ARM;
+    break;
+  case CPU_TYPE_I386:
+    base = SHARED_REGION_BASE_I386;
+    size = SHARED_REGION_SIZE_I386;
+    break;
+  case CPU_TYPE_X86_64:
+    base = SHARED_REGION_BASE_X86_64;
+    size = SHARED_REGION_SIZE_X86_64;
+    break;
+  default:
+    return false;
+  }
+
+  return base <= addr && addr < (base + size);
+}
+
+/*
+ * Returns the USS (unique set size) of the process. Reference:
+ * https://dxr.mozilla.org/mozilla-central/source/xpcom/base/
+ *     nsMemoryReporterManager.cpp
+ */
+
+SEXP psll_memory_uss(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  long pid;
+  size_t len;
+  cpu_type_t cpu_type;
+  size_t private_pages = 0;
+  mach_vm_size_t size = 0;
+  mach_msg_type_number_t info_count = VM_REGION_TOP_INFO_COUNT;
+  kern_return_t kr;
+  long pagesize = getpagesize();
+  mach_vm_address_t addr = MACH_VM_MIN_ADDRESS;
+  mach_port_t task = MACH_PORT_NULL;
+  vm_region_top_info_data_t info;
+  mach_port_t object_name;
+
+  if (!handle) error("Process pointer cleaned up already");
+  pid = handle->pid;
+
+  kern_return_t err = KERN_SUCCESS;
+  err = task_for_pid(mach_task_self(), pid, &task);
+  if (err != KERN_SUCCESS) {
+    ps__check_for_zombie(handle, 1);
+    PS__CHECK_HANDLE(handle);
+    ps__set_error("Access denied for task_for_pid() for %d", (int) pid);
+    ps__throw_error();
+  }
+
+  len = sizeof(cpu_type);
+  if (sysctlbyname("sysctl.proc_cputype", &cpu_type, &len, NULL, 0) != 0) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  // Roughly based on libtop_update_vm_regions in
+  // http://www.opensource.apple.com/source/top/top-100.1.2/libtop.c
+  for (addr = 0; ; addr += size) {
+    kr = mach_vm_region(
+      task, &addr, &size, VM_REGION_TOP_INFO, (vm_region_info_t)&info,
+      &info_count, &object_name);
+
+    if (kr == KERN_INVALID_ADDRESS) {
+      // Done iterating VM regions.
+      break;
+
+    } else if (kr != KERN_SUCCESS) {
+      ps__set_error(
+        "mach_vm_region(VM_REGION_TOP_INFO) syscall failed for %d",
+        (int) pid
+      );
+      ps__throw_error();
+    }
+
+    if (ps_in_shared_region(addr, cpu_type) &&
+        info.share_mode != SM_PRIVATE) {
+      continue;
+    }
+
+    switch (info.share_mode) {
+#ifdef SM_LARGE_PAGE
+    case SM_LARGE_PAGE:
+      // NB: Large pages are not shareable and always resident.
+#endif
+    case SM_PRIVATE:
+      private_pages += info.private_pages_resident;
+      private_pages += info.shared_pages_resident;
+      break;
+    case SM_COW:
+      private_pages += info.private_pages_resident;
+      if (info.ref_count == 1) {
+        // Treat copy-on-write pages as private if they only
+        // have one reference.
+        private_pages += info.shared_pages_resident;
+      }
+      break;
+    case SM_SHARED:
+    default:
+      break;
+    }
+  }
+
+  mach_port_deallocate(mach_task_self(), task);
+  return Rf_ScalarInteger(private_pages * pagesize);
 }
 
 SEXP ps__users() {

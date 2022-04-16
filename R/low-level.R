@@ -544,7 +544,11 @@ ps_memory_full_info <- function(p = ps_handle()) {
     info[["uss"]] <- match("\nPrivate.*:\\s+(\\d+)")
     info[["pss"]] <- match("\nPss:\\s+(\\d+)")
     info[["swap"]] <- match("\nSwap:\\s+(\\d+)")
+    info
 
+  } else if (type[["MACOS"]]) {
+    info <- ps_memory_info(p)
+    info[["uss"]] <- .Call(psll_memory_uss, p)
     info
 
   } else {
