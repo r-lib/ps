@@ -573,8 +573,10 @@ ps_memory_full_info <- function(p = ps_handle()) {
     info[["uss"]] <- .Call(psll_memory_uss, p)
     info
 
-  } else {
-    stop("Not implemented yet on this platform")
+  } else if (type[["WINDOWS"]]) {
+    info <- ps_memory_info(p)
+    info[["uss"]] <- .Call(psll_memory_uss, p)
+    info
   }
 }
 
