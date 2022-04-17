@@ -1083,6 +1083,37 @@ SEXP psll_connections(SEXP p) {
   return result;
 }
 
+SEXP ps__memory_maps(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  char path[512];
+  int ret;
+  char *buf;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  ret = snprintf(path, sizeof(path), "/proc/%i/smaps", handle->pid);
+  if (ret >= sizeof(path)) {
+    ps__set_error("Cannot read proc, path buffer too small");
+    ps__throw_error();
+  } else if (ret < 0) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  ret = ps__read_file(path, &buf, /* buffer= */ 2048);
+  if (ret == -1) {
+    ps__wrap_linux_error(handle);
+    ps__throw_error();
+  }
+
+  ps__check_for_zombie(handle, 0);
+
+  SEXP result = PROTECT(allocVector(STRSXP, 1));
+  SET_STRING_ELT(result, 0, Rf_mkCharLenCE(buf, ret, CE_UTF8));
+  UNPROTECT(1);
+  return result;
+}
+
 SEXP ps__users() {
   struct utmp *ut;
   SEXP result;
