@@ -310,6 +310,7 @@ test_that("interrupt", {
 
 test_that("cpu affinity", {
   skip_on_cran()
+  skip_on_covr()
   skip_on_os("mac")
 
   orig <- ps::ps_get_cpu_affinity()
