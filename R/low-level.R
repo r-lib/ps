@@ -1093,3 +1093,31 @@ ps_shared_libs <- function(p = ps_handle()) {
   class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
 }
+
+#' @export
+
+ps_get_cpu_affinity <- function(p = ps_handle()) {
+  assert_ps_handle(p)
+  type <- ps_os_type()
+  if (!type[["LINUX"]] && !type[["WINDOWS"]]) {
+    stop("`ps_cpu_affinity()` is only supported on Windows and Linux")
+  }
+
+  .Call(psll_get_cpu_aff, p)
+}
+
+#' @export
+
+ps_set_cpu_affinity <- function(p = ps_handle(), affinity) {
+  assert_ps_handle(p)
+  type <- ps_os_type()
+  if (!type[["LINUX"]] && !type[["WINDOWS"]]) {
+    stop("`ps_cpu_affinity()` is only supported on Windows and Linux")
+  }
+
+  # check affinity values
+  cnt <- ps_cpu_count()
+  stopifnot(is.integer(affinity), all(affinity < cnt))
+
+  invisible(.Call(psll_set_cpu_aff, p, affinity))
+}

@@ -44,6 +44,8 @@ SEXP psll_connections(SEXP p);
 SEXP psll_get_nice(SEXP p);
 SEXP psll_set_nice(SEXP p, SEXP value);
 SEXP psll_dlls(SEXP p);
+SEXP psll_get_cpu_aff(SEXP p);
+SEXP psll_set_cpu_aff(SEXP p, SEXP affinity);
 
 /* System API */
 
