@@ -1104,6 +1104,8 @@ ps_shared_libs <- function(p = ps_handle()) {
 #' set of CPUs only (on Linux cmdline, the `taskset` command is typically
 #' used).
 #'
+#' These functions are only supported on Linux and Windows. They error on macOS.
+#'
 #' @param p Process handle.
 #' @param affinity Integer vector of CPU numbers to restrict a process to.
 #' CPU numbers start with zero, and they have to be smaller than the

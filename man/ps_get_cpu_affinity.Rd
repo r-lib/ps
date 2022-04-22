@@ -31,6 +31,8 @@ a process. \code{ps_set_cpu_affinity()} sets the CPU affinity of a process.
 CPU affinity consists in telling the OS to run a process on a limited
 set of CPUs only (on Linux cmdline, the \code{taskset} command is typically
 used).
+
+These functions are only supported on Linux and Windows. They error on macOS.
 }
 \examples{
 \dontshow{if (ps::ps_is_supported() && ! ps:::is_cran_check() && ! ps::ps_os_type()[["MACOS"]]) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
