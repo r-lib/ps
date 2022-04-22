@@ -788,6 +788,35 @@ SEXP ps__define_socket_types() {
   return env;
 }
 
+NTSTATUS (NTAPI *_NtQueryVirtualMemory) (
+  HANDLE ProcessHandle,
+  PVOID BaseAddress,
+  int MemoryInformationClass,
+  PVOID MemoryInformation,
+  SIZE_T MemoryInformationLength,
+  PSIZE_T ReturnLength
+);
+
+// A wrapper around LoadLibrary and GetProcAddress.
+PVOID ps__get_proc_address_from_lib(LPCSTR libname, LPCSTR procname) {
+  HMODULE mod;
+  FARPROC addr;
+
+  mod = LoadLibraryA(libname);
+  if (mod  == NULL) {
+    ps__set_error_from_windows_error(0);
+    ps__throw_error();
+  }
+
+  if ((addr = GetProcAddress(mod, procname)) == NULL) {
+    ps__set_error_from_windows_error(0);
+    FreeLibrary(mod);
+    ps__throw_error();
+  }
+
+  return addr;
+}
+
 SEXP ps__init(SEXP psenv, SEXP constenv) {
 
   /* Connection statuses */
@@ -802,6 +831,12 @@ SEXP ps__init(SEXP psenv, SEXP constenv) {
 
   /* errno values */
   defineVar(install("errno"), ps__define_errno(), constenv);
+
+  /* load libs */
+  NtQueryVirtualMemory = ps__get_proc_address_from_lib(
+    "ntdll",
+    "NtQueryVirtualMemory"
+  );
 
   return R_NilValue;
 }

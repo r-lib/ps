@@ -296,7 +296,7 @@ typedef NTSTATUS (NTAPI *_NtSetInformationProcess)(
     DWORD ProcessInformationLength
 );
 
-NTSTATUS (NTAPI *_NtQueryVirtualMemory) (
+extern NTSTATUS (NTAPI *_NtQueryVirtualMemory) (
   HANDLE ProcessHandle,
   PVOID BaseAddress,
   int MemoryInformationClass,

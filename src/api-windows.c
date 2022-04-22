@@ -983,14 +983,19 @@ static int ps_get_proc_wset_information(SEXP p, HANDLE hProcess,
     ps__no_memory("get wset information");
     ps__throw_error();
   }
-  
-  while ((status = NtQueryVirtualMemory(
-    hProcess,
-    NULL,
-    MemoryWorkingSetInformation,
-    buffer,
-    bufferSize,
-    NULL)) == STATUS_INFO_LENGTH_MISMATCH) {
+
+  while (1) {
+    status = NtQueryVirtualMemory(
+      hProcess,
+      NULL,
+      MemoryWorkingSetInformation,
+      buffer,
+      bufferSize,
+      NULL
+    );
+    if (status != STATUS_INFO_LENGTH_MISMATCH) {
+      break;
+    }
 
     FREE(buffer);
     bufferSize *= 2;
@@ -1009,7 +1014,7 @@ static int ps_get_proc_wset_information(SEXP p, HANDLE hProcess,
   if (!NT_SUCCESS(status)) {
     if (status == STATUS_ACCESS_DENIED) {
       ps__access_denied("NtQueryVirtualMemory -> STATUS_ACCESS_DENIED");
-    } else if (psll_is_running(handle) == 0) {
+    } else if (!LOGICAL(ps__is_running(handle))[0]) {
       ps__no_such_process(pid, "NtQueryVirtualMemory");
     } else {
       ps__set_error_from_windows_error(0);
@@ -1071,8 +1076,11 @@ SEXP psll_memory_uss(SEXP p) {
 
   HeapFree(GetProcessHeap(), 0, wsInfo);
   CloseHandle(hProcess);
-  
-  return Rf_ScalarInteger(wsCounters.NumberOfPrivatePages);
+
+  SYSTEM_INFO sysinfo;
+  GetNativeSystemInfo(&sysinfo);
+
+  return Rf_ScalarInteger(wsCounters.NumberOfPrivatePages * sysinfo.dwPageSize);
 }
 
 SEXP ps__users() {
