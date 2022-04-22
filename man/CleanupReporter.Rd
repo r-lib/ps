@@ -67,7 +67,9 @@ idiomatic \code{testthat.R} file, that calls \code{test_check()} during
 }
 \section{Examples}{
 
-This is how to use this reporter in \code{testthat.R}:\preformatted{library(testthat)
+This is how to use this reporter in \code{testthat.R}:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{library(testthat)
 library(mypackage)
 
 if  (ps::ps_is_supported()) \{
@@ -79,6 +81,6 @@ if  (ps::ps_is_supported()) \{
 \}
 
 test_check("mypackage", reporter = reporter)
-}
+}\if{html}{\out{</div>}}
 }
 
