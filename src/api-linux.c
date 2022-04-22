@@ -15,6 +15,7 @@
 #include <utmp.h>
 #include <mntent.h>
 #include <sys/sysinfo.h>
+#include <sched.h>
 
 #include <Rinternals.h>
 
@@ -1112,6 +1113,100 @@ SEXP ps__memory_maps(SEXP p) {
   SET_STRING_ELT(result, 0, Rf_mkCharLenCE(buf, ret, CE_UTF8));
   UNPROTECT(1);
   return result;
+}
+
+static const int NCPUS_START = sizeof(unsigned long) * CHAR_BIT;
+
+SEXP psll_get_cpu_aff(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  int cpu, ncpus, count, cpucount_s;
+  pid_t pid;
+  size_t setsize;
+  cpu_set_t *mask = NULL;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  PS__CHECK_HANDLE(handle);
+
+  ncpus = NCPUS_START;
+  while (1) {
+    setsize = CPU_ALLOC_SIZE(ncpus);
+    mask = CPU_ALLOC(ncpus);
+    if (mask == NULL) {
+      ps__no_memory("");
+      goto error;
+    }
+    if (sched_getaffinity(pid, setsize, mask) == 0) {
+      break;
+    }
+    CPU_FREE(mask);
+    mask = NULL;
+    if (errno != EINVAL) {
+      ps__set_error_from_errno();
+      goto error;
+    }
+    if (ncpus > INT_MAX / 2) {
+      ps__set_error("could not allocate a large enough CPU set");
+      goto error;
+    }
+    ncpus = ncpus * 2;
+  }
+
+  cpucount_s = CPU_COUNT_S(setsize, mask);
+
+  /* This is unsafe, in that in case of an R exception, CPU_FREE will
+     not be called. But it is also very hard to fix without cleancall. */
+  PROTECT_INDEX pidx;
+  SEXP result;
+  PROTECT_WITH_INDEX(result = allocVector(INTSXP, cpucount_s), &pidx);
+  int pp = 0;
+
+  for (cpu = 0, count = cpucount_s; count; cpu++) {
+    if (CPU_ISSET_S(cpu, setsize, mask)) {
+      INTEGER(result)[pp++] = cpu;
+      --count;
+    }
+  }
+  CPU_FREE(mask);
+
+  REPROTECT(result = Rf_lengthgets(result, pp), pidx);
+  UNPROTECT(1);
+  return result;
+
+error:
+  if (mask) CPU_FREE(mask);
+  ps__throw_error();
+  return R_NilValue;
+}
+
+SEXP psll_set_cpu_aff(SEXP p, SEXP affinity) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  cpu_set_t cpu_set;
+  pid_t pid;
+  int i, seq_len = LENGTH(affinity);
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  pid = handle->pid;
+
+  CPU_ZERO(&cpu_set);
+  for (i = 0; i < seq_len; i++) {
+    int value = INTEGER(affinity)[i];
+    CPU_SET(value, &cpu_set);
+  }
+
+  PS__CHECK_HANDLE(handle);
+
+  if (sched_setaffinity(pid, sizeof(cpu_set), &cpu_set)) {
+    ps__set_error_from_errno();
+    goto error;
+  }
+
+  return R_NilValue;
+
+error:
+  ps__throw_error();
+  return R_NilValue;
 }
 
 SEXP ps__users() {

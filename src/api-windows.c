@@ -968,7 +968,7 @@ SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path) {
 
 static int ps_get_proc_wset_information(SEXP p, HANDLE hProcess,
 					PMEMORY_WORKING_SET_INFORMATION *wSetInfo) {
-  
+
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   if (!handle) error("Process pointer cleaned up already");
 
@@ -976,7 +976,7 @@ static int ps_get_proc_wset_information(SEXP p, HANDLE hProcess,
   NTSTATUS status;
   PVOID buffer;
   SIZE_T bufferSize;
-  
+
   bufferSize = 0x8000;
   buffer = MALLOC_ZERO(bufferSize);
   if (! buffer) {
@@ -1022,7 +1022,7 @@ static int ps_get_proc_wset_information(SEXP p, HANDLE hProcess,
     HeapFree(GetProcessHeap(), 0, buffer);
     ps__throw_error();
   }
-  
+
   *wSetInfo = (PMEMORY_WORKING_SET_INFORMATION) buffer;
   return 0;
 }
@@ -1047,7 +1047,7 @@ SEXP psll_memory_uss(SEXP p) {
   if (! hProcess) {
     ps__throw_error();
   }
-  
+
   if (ps_get_proc_wset_information(p, hProcess, &wsInfo) != 0) {
     CloseHandle(hProcess);
     return NULL;
@@ -1065,7 +1065,7 @@ SEXP psll_memory_uss(SEXP p) {
       if (wsInfo->WorkingSetInfo[i].Shared)
       wsCounters.NumberOfShareablePages++;
     */
-    
+
     // This is what we do: count shared pages that only one process
     // is using as private (USS).
     if (!wsInfo->WorkingSetInfo[i].Shared ||
@@ -1514,6 +1514,95 @@ error:
 
 }
 
+
+SEXP psll_get_cpu_aff(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  HANDLE hProcess = NULL;
+  DWORD access = PROCESS_QUERY_LIMITED_INFORMATION;
+  DWORD_PTR proc_mask;
+  DWORD_PTR system_mask;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  hProcess = ps__handle_from_pid_waccess(handle->pid, access);
+  if (!hProcess) {
+    PS__CHECK_HANDLE(handle);
+    ps__set_error_from_windows_error(0);
+    goto error;
+  }
+
+  BOOL ret = GetProcessAffinityMask(hProcess, &proc_mask, &system_mask);
+  if (!ret) {
+    ps__set_error_from_windows_error(0);
+    goto error;
+  }
+
+  CloseHandle(hProcess);
+
+  unsigned long long n = (unsigned long long) proc_mask;
+  int count = 0, w = 0;
+  while (n) {
+    count += n & 1;
+    n >>= 1;
+  }
+  SEXP result = PROTECT(Rf_allocVector(INTSXP, count));
+  n = (unsigned long long) proc_mask;
+  count = 0;
+  while (n) {
+    if (n & 1) {
+      INTEGER(result)[count++] = w;
+    }
+    n >>= 1;
+    w++;
+  }
+
+  UNPROTECT(1);
+  return result;
+
+error:
+  if (hProcess) CloseHandle(hProcess);
+  ps__throw_error();
+  return R_NilValue;
+}
+
+SEXP psll_set_cpu_aff(SEXP p, SEXP affinity) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  HANDLE hProcess = NULL;
+  DWORD access = PROCESS_QUERY_INFORMATION | PROCESS_SET_INFORMATION;
+  DWORD_PTR mask = 0;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  hProcess = ps__handle_from_pid_waccess(handle->pid, access);
+  if (!hProcess) {
+    PS__CHECK_HANDLE(handle);
+    ps__set_error_from_windows_error(0);
+    goto error;
+  }
+
+  int *caff = INTEGER(affinity);
+  int i, len = LENGTH(affinity);
+  for (i = 0; i < len; i++) {
+    int m = 1 << caff[i];
+    mask |= m;
+  }
+
+  BOOL ret = SetProcessAffinityMask(hProcess, mask);
+  if (!ret) {
+    PS__CHECK_HANDLE(handle);
+    ps__set_error_from_windows_error(0);
+    goto error;
+  }
+
+  CloseHandle(hProcess);
+
+  return R_NilValue;
+
+error:
+  if (hProcess) CloseHandle(hProcess);
+  ps__throw_error();
+  return R_NilValue;
+}
 
 SEXP ps__loadavg(SEXP counter_name) {
   SEXP ret = PROTECT(allocVector(REALSXP, 3));

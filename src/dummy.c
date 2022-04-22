@@ -25,6 +25,16 @@ SEXP psll_memory_uss(SEXP p) { return ps__dummy("psll_memory_uss"); }
 #endif
 #endif
 
+/* Not implemented on macOS */
+#ifdef  PS__MACOS
+#ifndef PS__LINUX
+#ifndef PS__WINDOWS
+SEXP psll_get_cpu_aff(SEXP p) { return ps__dummy("psll_get_cpu_aff"); }
+SEXP psll_set_cpu_aff(SEXP p) { return ps__dummy("psll_set_cpu_aff"); }
+#endif
+#endif
+#endif
+
 /* Not implemented on Windows */
 #ifdef PS__WINDOWS
 #ifndef PS__POSIX

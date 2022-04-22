@@ -1093,3 +1093,66 @@ ps_shared_libs <- function(p = ps_handle()) {
   class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
 }
+
+#' Query or set CPU affinity
+#'
+#' `ps_get_cpu_affinity()` queries the
+#' [CPU affinity](https://www.linuxjournal.com/article/6799?page=0,0) of
+#' a process. `ps_set_cpu_affinity()` sets the CPU affinity of a process.
+#'
+#' CPU affinity consists in telling the OS to run a process on a limited
+#' set of CPUs only (on Linux cmdline, the `taskset` command is typically
+#' used).
+#'
+#' These functions are only supported on Linux and Windows. They error on macOS.
+#'
+#' @param p Process handle.
+#' @param affinity Integer vector of CPU numbers to restrict a process to.
+#' CPU numbers start with zero, and they have to be smaller than the
+#' number of (logical) CPUs, see [ps_cpu_count()].
+#'
+#' @return `ps_get_cpu_affinity()` returns an integer vector of CPU
+#' numbers, starting with zero.
+#'
+#' `ps_set_cpu_affinity()` returns `NULL`, invisibly.
+#'
+#' @export
+#' @examplesIf ps::ps_is_supported() && ! ps:::is_cran_check() && ! ps::ps_os_type()[["MACOS"]]
+#' # current
+#' orig <- ps_get_cpu_affinity()
+#' orig
+#'
+#' # restrict
+#' ps_set_cpu_affinity(affinity = 0:0)
+#' ps_get_cpu_affinity()
+#'
+#' # restore
+#' ps_set_cpu_affinity(affinity = orig)
+#' ps_get_cpu_affinity()
+
+ps_get_cpu_affinity <- function(p = ps_handle()) {
+  assert_ps_handle(p)
+  type <- ps_os_type()
+  if (!type[["LINUX"]] && !type[["WINDOWS"]]) {
+    stop("`ps_cpu_affinity()` is only supported on Windows and Linux")
+  }
+
+  .Call(psll_get_cpu_aff, p)
+}
+
+#' @export
+#' @rdname ps_get_cpu_affinity
+
+ps_set_cpu_affinity <- function(p = ps_handle(), affinity) {
+  assert_ps_handle(p)
+  type <- ps_os_type()
+  if (!type[["LINUX"]] && !type[["WINDOWS"]]) {
+    stop("`ps_cpu_affinity()` is only supported on Windows and Linux")
+  }
+
+  # check affinity values
+  cnt <- ps_cpu_count()
+  stopifnot(is.integer(affinity), all(affinity < cnt))
+
+  invisible(.Call(psll_set_cpu_aff, p, affinity))
+}

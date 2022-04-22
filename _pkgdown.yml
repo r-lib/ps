@@ -30,6 +30,7 @@ reference:
   - ps_handle
   - ps_is_running
   - ps_memory_info
+  - ps_memory_full_info
   - ps_name
   - ps_num_threads
   - ps_pid
@@ -54,6 +55,8 @@ reference:
   - ps_send_signal
   - ps_suspend
   - ps_terminate
+  - ps_get_cpu_affinity
+  - ps_set_cpu_affinity
   - ps_get_nice
   - ps_set_nice
   - ps_windows_nice_values
