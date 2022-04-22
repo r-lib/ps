@@ -110,14 +110,14 @@ main R thread.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">ps_num_fds</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 20</span>
 <span class="r-in"><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"w"</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">ps_num_fds</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 21</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">ps_num_fds</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 20</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
