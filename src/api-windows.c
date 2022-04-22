@@ -966,6 +966,123 @@ SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path) {
   return R_NilValue;
 }
 
+static int ps_get_proc_wset_information(SEXP p, HANDLE hProcess,
+					PMEMORY_WORKING_SET_INFORMATION *wSetInfo) {
+  
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  if (!handle) error("Process pointer cleaned up already");
+
+  DWORD pid = handle->pid;
+  NTSTATUS status;
+  PVOID buffer;
+  SIZE_T bufferSize;
+  
+  bufferSize = 0x8000;
+  buffer = MALLOC_ZERO(bufferSize);
+  if (! buffer) {
+    ps__no_memory("get wset information");
+    ps__throw_error();
+  }
+
+  while (1) {
+    status = NtQueryVirtualMemory(
+      hProcess,
+      NULL,
+      MemoryWorkingSetInformation,
+      buffer,
+      bufferSize,
+      NULL
+    );
+    if (status != STATUS_INFO_LENGTH_MISMATCH) {
+      break;
+    }
+
+    FREE(buffer);
+    bufferSize *= 2;
+    // Fail if we're resizing the buffer to something very large.
+    if (bufferSize > 256 * 1024 * 1024) {
+      ps__set_error("NtQueryVirtualMemory bufsize is too large");
+      ps__throw_error();
+    }
+    buffer = MALLOC_ZERO(bufferSize);
+    if (! buffer) {
+      ps__no_memory("NtQueryVirtualMemory");
+      ps__throw_error();
+    }
+  }
+
+  if (!NT_SUCCESS(status)) {
+    if (status == STATUS_ACCESS_DENIED) {
+      ps__access_denied("NtQueryVirtualMemory -> STATUS_ACCESS_DENIED");
+    } else if (!LOGICAL(ps__is_running(handle))[0]) {
+      ps__no_such_process(pid, "NtQueryVirtualMemory");
+    } else {
+      ps__set_error_from_windows_error(0);
+    }
+    HeapFree(GetProcessHeap(), 0, buffer);
+    ps__throw_error();
+  }
+  
+  *wSetInfo = (PMEMORY_WORKING_SET_INFORMATION) buffer;
+  return 0;
+}
+
+/*
+ * Returns the USS of the process.
+ * Reference:
+ * https://dxr.mozilla.org/mozilla-central/source/xpcom/base/
+ *     nsMemoryReporterManager.cpp
+ */
+
+SEXP psll_memory_uss(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  if (!handle) error("Process pointer cleaned up already");
+
+  DWORD pid = handle->pid;
+  HANDLE hProcess = ps__handle_from_pid(pid);
+  PS__PROCESS_WS_COUNTERS wsCounters;
+  PMEMORY_WORKING_SET_INFORMATION wsInfo;
+  ULONG_PTR i;
+
+  if (! hProcess) {
+    ps__throw_error();
+  }
+  
+  if (ps_get_proc_wset_information(p, hProcess, &wsInfo) != 0) {
+    CloseHandle(hProcess);
+    return NULL;
+  }
+  memset(&wsCounters, 0, sizeof(PS__PROCESS_WS_COUNTERS));
+
+  for (i = 0; i < wsInfo->NumberOfEntries; i++) {
+    // This is what ProcessHacker does.
+    /*
+      wsCounters.NumberOfPages++;
+      if (wsInfo->WorkingSetInfo[i].ShareCount > 1)
+      wsCounters.NumberOfSharedPages++;
+      if (wsInfo->WorkingSetInfo[i].ShareCount == 0)
+      wsCounters.NumberOfPrivatePages++;
+      if (wsInfo->WorkingSetInfo[i].Shared)
+      wsCounters.NumberOfShareablePages++;
+    */
+    
+    // This is what we do: count shared pages that only one process
+    // is using as private (USS).
+    if (!wsInfo->WorkingSetInfo[i].Shared ||
+	wsInfo->WorkingSetInfo[i].ShareCount <= 1) {
+      wsCounters.NumberOfPrivatePages++;
+    }
+  }
+
+  HeapFree(GetProcessHeap(), 0, wsInfo);
+  CloseHandle(hProcess);
+
+  SYSTEM_INFO sysinfo;
+  GetNativeSystemInfo(&sysinfo);
+
+  return Rf_ScalarInteger(wsCounters.NumberOfPrivatePages * sysinfo.dwPageSize);
+}
+
 SEXP ps__users() {
   HANDLE hServer = WTS_CURRENT_SERVER_HANDLE;
   WCHAR *buffer_user = NULL;

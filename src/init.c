@@ -45,6 +45,7 @@ static const R_CallMethodDef callMethods[]  = {
   { "psll_num_threads",  (DL_FUNC) psll_num_threads , 1 },
   { "psll_cpu_times",    (DL_FUNC) psll_cpu_times,    1 },
   { "psll_memory_info",  (DL_FUNC) psll_memory_info , 1 },
+  { "psll_memory_uss",   (DL_FUNC) psll_memory_uss,   1 },
   { "psll_send_signal",  (DL_FUNC) psll_send_signal , 2 },
   { "psll_suspend",      (DL_FUNC) psll_suspend,      1 },
   { "psll_resume",       (DL_FUNC) psll_resume,       1 },
@@ -63,6 +64,7 @@ static const R_CallMethodDef callMethods[]  = {
   { "ps__kill_if_env",   (DL_FUNC) ps__kill_if_env,   4 },
   { "ps__find_if_env",   (DL_FUNC) ps__find_if_env,   3 },
   { "ps__inet_ntop",     (DL_FUNC) ps__inet_ntop,     2 },
+  { "ps__memory_maps",   (DL_FUNC) ps__memory_maps,   1 },
 
   { "psp__pid_exists",   (DL_FUNC) psp__pid_exists,   1 },
   { "psp__stat_st_rdev", (DL_FUNC) psp__stat_st_rdev, 1 },

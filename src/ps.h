@@ -31,6 +31,7 @@ SEXP psll_environ(SEXP p);
 SEXP psll_num_threads(SEXP p);
 SEXP psll_cpu_times(SEXP p);
 SEXP psll_memory_info(SEXP p);
+SEXP psll_memory_uss(SEXP p);
 SEXP psll_send_signal(SEXP p, SEXP sig);
 SEXP psll_suspend(SEXP p);
 SEXP psll_resume(SEXP p);
@@ -66,6 +67,7 @@ SEXP ps__init(SEXP psenv, SEXP constenv);
 SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig);
 SEXP ps__find_if_env(SEXP marker, SEXP after, SEXP pid);
 SEXP ps__inet_ntop(SEXP raw, SEXP fam);
+SEXP ps__memory_maps(SEXP p);
 
 SEXP psp__zombie();
 SEXP psp__waitpid(SEXP pid);
@@ -73,4 +75,5 @@ SEXP psp__pid_exists(SEXP r_pid);
 SEXP psp__stat_st_rdev(SEXP files);
 
 SEXP psw__realpath(SEXP path);
+
 #endif

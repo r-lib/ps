@@ -478,7 +478,11 @@ ps_cpu_times <- function(p = ps_handle()) {
 
 #' Memory usage information
 #'
-#' A list with information about memory usage. Portable fields:
+#' @details
+#'
+#' `ps_memory_info()` returns information about memory usage.
+#'
+#' It returns a named list. Portable fields:
 #' * `rss`: "Resident Set Size", this is the non-swapped physical memory a
 #'   process has used (bytes). On UNIX it matches "top"‘s 'RES' column (see doc). On
 #'   Windows this is an alias for `wset` field and it matches "Memory"
@@ -502,11 +506,27 @@ ps_cpu_times <- function(p = ps_handle()) {
 #' * `pfaults`: (macOS): number of page faults.
 #' * `pageins`: (macOS): number of actual pageins.
 #'
-#' For on explanation of Windows fields see the
+#' For the explanation of Windows fields see the
 #' [PROCESS_MEMORY_COUNTERS_EX](https://docs.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex)
 #' structure.
 #'
-#' Throws a `zombie_process()` error for zombie processes.
+#' `ps_memory_full_info()` returns all fields as `ps_memory_info()`, plus
+#' additional information, but typically takes slightly longer to run, and
+#' might not have access to some processes that `ps_memory_info()` can
+#' query:
+#'
+#' * `uss`: Unique Set Size, this is the memory which is unique to a
+#'   process and which would be freed if the process was terminated right
+#'   now.
+#' * `pss` (Linux only): Proportional Set Size, is the amount of memory
+#'   shared with other processes, accounted in a way that the amount is
+#'   divided evenly between the processes that share it. I.e. if a process
+#'   has 10 MBs all to itself and 10 MBs shared with another process its
+#'   PSS will be 15 MBs.
+#' * `swap` (Linux only): amount of memory that has been swapped out to
+#'   disk.
+#'
+#' They both throw a `zombie_process()` error for zombie processes.
 #'
 #' @param p Process handle.
 #' @return Named real vector.
@@ -517,10 +537,47 @@ ps_cpu_times <- function(p = ps_handle()) {
 #' p <- ps_handle()
 #' p
 #' ps_memory_info(p)
+#' ps_memory_full_info(p)
 
 ps_memory_info <- function(p = ps_handle()) {
   assert_ps_handle(p)
   .Call(psll_memory_info, p)
+}
+
+#' @export
+#' @rdname ps_memory_info
+
+ps_memory_full_info <- function(p = ps_handle()) {
+  assert_ps_handle(p)
+  type <- ps_os_type()
+  if (type[["LINUX"]]) {
+    match <- function(re) {
+      mt <- gregexpr(re, smaps, perl = TRUE)[[1]]
+      st <- substring(
+        smaps,
+        attr(mt, "capture.start"),
+        attr(mt, "capture.start") + attr(mt, "capture.length") - 1
+      )
+      sum(as.integer(st), na.rm = TRUE) * 1024
+    }
+
+    info <- ps_memory_info(p)
+    smaps <- .Call(ps__memory_maps, p)
+    info[["uss"]] <- match("\nPrivate.*:\\s+(\\d+)")
+    info[["pss"]] <- match("\nPss:\\s+(\\d+)")
+    info[["swap"]] <- match("\nSwap:\\s+(\\d+)")
+    info
+
+  } else if (type[["MACOS"]]) {
+    info <- ps_memory_info(p)
+    info[["uss"]] <- .Call(psll_memory_uss, p)
+    info
+
+  } else if (type[["WINDOWS"]]) {
+    info <- ps_memory_info(p)
+    info[["uss"]] <- .Call(psll_memory_uss, p)
+    info
+  }
 }
 
 #' Send signal to a process
