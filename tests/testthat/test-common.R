@@ -307,3 +307,18 @@ test_that("interrupt", {
   expect_false(ps_is_running(ps))
   if (ps_os_type()[["POSIX"]]) expect_equal(px$get_exit_status(), -2)
 })
+
+test_that("cpu affinity", {
+  skip_on_cran()
+  skip_on_os("mac")
+
+  orig <- ps::ps_get_cpu_affinity()
+  expect_true(length(orig) <= ps::ps_cpu_count())
+
+  do <- function() {
+    ps::ps_set_cpu_affinity(affinity = 0:0)
+    ps::ps_get_cpu_affinity()
+  }
+
+  expect_equal(callr::r(do), 0:0)
+})
