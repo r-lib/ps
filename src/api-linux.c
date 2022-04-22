@@ -1140,6 +1140,7 @@ SEXP psll_get_cpu_aff(SEXP p) {
       break;
     }
     CPU_FREE(mask);
+    mask = NULL;
     if (errno != EINVAL) {
       ps__set_error_from_errno();
       goto error;
