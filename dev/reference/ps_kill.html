@@ -12,7 +12,7 @@ whether PID has been reused. On Windows it uses TerminateProcess()."><meta name=
     
     <a class="navbar-brand me-2" href="../index.html">ps</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.6.0.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.7.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,11 +100,11 @@ whether PID has been reused. On Windows it uses <code>TerminateProcess()</code>.
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">px</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"10"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="va">px</span><span class="op">$</span><span class="fu">get_pid</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">p</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=11208, NAME=sleep, AT=2022-04-22 13:32:37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=11212, NAME=sleep, AT=2022-04-23 19:02:51</span>
 <span class="r-in"><span class="fu">ps_kill</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-in"><span class="va">p</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=11208, NAME=???, AT=2022-04-22 13:32:37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=11212, NAME=???, AT=2022-04-23 19:02:51</span>
 <span class="r-in"><span class="fu"><a href="ps_is_running.html">ps_is_running</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-in"><span class="va">px</span><span class="op">$</span><span class="fu">get_exit_status</span><span class="op">(</span><span class="op">)</span></span>
