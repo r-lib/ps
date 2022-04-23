@@ -6,6 +6,8 @@
 * New functions `ps_get_cpu_affinity()` and `ps_set_cpu_affinity()` to query
   and set CPU affinity (#123).
 
+* `ps_memory_info()` now does not mix up `rss` and `vms` on Linux.
+
 * `ps_memory_info()` now reports memory in bytes instead of pages on Linux (#115)
 
 # ps 1.6.0
