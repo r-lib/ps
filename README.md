@@ -61,7 +61,7 @@ library(ps)
 ps_pids()[1:20]
 ```
 
-    ##  [1]   0   1 497 498 500 501 502 505 506 508 509 512 514 515 516 518 522 523 524 525
+    ##  [1]   0   1 370 371 372 497 498 500 501 502 504 506 508 509 512 517 521 523 524 528
 
 `ps()` returns a data frame (tibble if you have the tibble package
 available), with data about each process. It contains a handle to each
@@ -72,20 +72,20 @@ queries on the processes.
 ps()
 ```
 
-    ## # A tibble: 520 × 11
+    ## # A tibble: 523 × 11
     ##      pid  ppid name    username status    user  system    rss     vms created             ps_handle 
     ##  * <int> <int> <chr>   <chr>    <chr>    <dbl>   <dbl>  <dbl>   <dbl> <dttm>              <I<list>> 
-    ##  1 56528 68177 R       gaborcs… runni… 0.00993 1.54e-3 1.42e8 4.19e11 2022-03-02 13:30:10 <ps_handl>
-    ##  2 56305 68005 R       gaborcs… runni… 0.0153  1.90e-3 1.39e8 4.19e11 2022-03-02 13:28:54 <ps_handl>
-    ##  3 54044  9722 Google… gaborcs… runni… 0.00121 5.00e-4 4.15e7 4.61e11 2022-03-02 13:16:37 <ps_handl>
-    ##  4 54028  9722 Google… gaborcs… runni… 0.00557 1.30e-3 8.59e7 4.61e11 2022-03-02 13:15:06 <ps_handl>
-    ##  5 54027  9722 Google… gaborcs… runni… 0.00585 1.37e-3 8.35e7 4.61e11 2022-03-02 13:15:05 <ps_handl>
-    ##  6 54026  9722 Google… gaborcs… runni… 0.0294  4.42e-3 1.27e8 4.61e11 2022-03-02 13:15:04 <ps_handl>
-    ##  7 54025  9722 Google… gaborcs… runni… 0.00587 1.82e-3 7.81e7 4.61e11 2022-03-02 13:15:04 <ps_handl>
-    ##  8 54024  9722 Google… gaborcs… runni… 0.0271  1.18e-2 8.72e7 4.61e11 2022-03-02 13:15:04 <ps_handl>
-    ##  9 54023  9722 Google… gaborcs… runni… 0.00818 1.76e-3 9.21e7 4.61e11 2022-03-02 13:15:04 <ps_handl>
-    ## 10 54022  9722 Google… gaborcs… runni… 0.00794 1.84e-3 9.35e7 4.61e11 2022-03-02 13:15:04 <ps_handl>
-    ## # … with 510 more rows
+    ##  1 32549     1 MRT     gaborcs… runni… 2.16e-4 3.24e-4 5.59e6 4.18e11 2022-04-23 14:53:35 <ps_handl>
+    ##  2 32537 28512 R       gaborcs… runni… 1.04e-2 1.47e-3 1.53e8 4.19e11 2022-04-23 14:53:34 <ps_handl>
+    ##  3 32494     1 mdwork… gaborcs… runni… 1.13e-3 3.82e-4 2.09e7 4.18e11 2022-04-23 14:53:33 <ps_handl>
+    ##  4 32487     1 mdwork… gaborcs… runni… 7.54e-4 4.63e-4 1.38e7 4.18e11 2022-04-23 14:53:33 <ps_handl>
+    ##  5 32486     1 mdwork… gaborcs… runni… 1.18e-3 5.54e-4 2.09e7 4.18e11 2022-04-23 14:53:33 <ps_handl>
+    ##  6 32446  3845 Google… gaborcs… runni… 1.14e-3 4.12e-4 5.87e7 4.61e11 2022-04-23 14:53:20 <ps_handl>
+    ##  7 32445  3845 Google… gaborcs… runni… 4.81e-4 1.91e-4 4.05e7 4.57e11 2022-04-23 14:53:17 <ps_handl>
+    ##  8 32442  3845 Google… gaborcs… runni… 6.10e-2 6.27e-3 2.38e8 4.62e11 2022-04-23 14:53:17 <ps_handl>
+    ##  9 32438  3845 Google… gaborcs… runni… 1.61e-3 5.20e-4 8.13e7 4.61e11 2022-04-23 14:52:57 <ps_handl>
+    ## 10 32416     1 mdwork… gaborcs… runni… 1.50e-3 6.43e-4 2.06e7 4.18e11 2022-04-23 14:52:07 <ps_handl>
+    ## # … with 513 more rows
 
 ## Process API
 
@@ -102,7 +102,7 @@ p <- ps_handle()
 p
 ```
 
-    ## <ps::ps_handle> PID=56528, NAME=R, AT=2022-03-02 13:30:10
+    ## <ps::ps_handle> PID=32537, NAME=R, AT=2022-04-23 14:53:34
 
 ### Query functions
 
@@ -112,7 +112,7 @@ p
 ps_pid(p)
 ```
 
-    ## [1] 56528
+    ## [1] 32537
 
 `ps_create_time()` returns the creation time of the process (according
 to the OS).
@@ -121,7 +121,7 @@ to the OS).
 ps_create_time(p)
 ```
 
-    ## [1] "2022-03-02 13:30:10 GMT"
+    ## [1] "2022-04-23 14:53:34 GMT"
 
 The process id and the creation time uniquely identify a process in a
 system. ps uses them to make sure that it reports information about, and
@@ -142,7 +142,7 @@ ps_is_running(p)
 ps_ppid(p)
 ```
 
-    ## [1] 68177
+    ## [1] 28512
 
 `ps_parent(p)` returns a process handle to the parent process of `p`.
 
@@ -150,7 +150,7 @@ ps_ppid(p)
 ps_parent(p)
 ```
 
-    ## <ps::ps_handle> PID=68177, NAME=zsh, AT=2022-03-02 10:44:55
+    ## <ps::ps_handle> PID=28512, NAME=R, AT=2022-04-23 12:33:17
 
 `ps_name(p)` returns the name of the program `p` is running.
 
@@ -175,11 +175,12 @@ ps_exe(p)
 ps_cmdline(p)
 ```
 
-    ## [1] "/Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/bin/exec/R"
-    ## [2] "--no-echo"                                                              
-    ## [3] "--no-restore"                                                           
-    ## [4] "-e"                                                                     
-    ## [5] "rmarkdown::render(\"README.Rmd\")"
+    ## [1] "/Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/bin/exec/R"            
+    ## [2] "--slave"                                                                            
+    ## [3] "--no-save"                                                                          
+    ## [4] "--no-restore"                                                                       
+    ## [5] "-f"                                                                                 
+    ## [6] "/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T//RtmpNW4j0T/callr-scr-6f607ecfcf18"
 
 `ps_status(p)` returns the status of the process. Possible values are OS
 dependent, but typically there is `"running"` and `"stopped"`.
@@ -231,7 +232,7 @@ any. For processes without a terminal, and on Windows it returns
 ps_terminal(p)
 ```
 
-    ## [1] "/dev/ttys012"
+    ## [1] NA
 
 `ps_environ(p)` returns the environment variables of the process.
 `ps_environ_raw(p)` does the same, in a different form. Typically they
@@ -253,7 +254,7 @@ process.
 ps_num_threads(p)
 ```
 
-    ## [1] 4
+    ## [1] 3
 
 `ps_cpu_times(p)` returns the CPU times of the process, similarly to
 `proc.time()`.
@@ -263,7 +264,7 @@ ps_cpu_times(p)
 ```
 
     ##            user          system   children_user children_system 
-    ##     0.011270084     0.001720491              NA              NA
+    ##     0.011758996     0.001636022              NA              NA
 
 `ps_memory_info(p)` returns memory usage information. See the manual for
 details.
@@ -273,7 +274,7 @@ ps_memory_info(p)
 ```
 
     ##          rss          vms      pfaults      pageins 
-    ##    148455424 418888728576         9869           70
+    ##    161431552 419165847552        10659           70
 
 `ps_children(p)` lists all child processes (potentially recursively) of
 the current process.
@@ -283,13 +284,7 @@ ps_children(ps_parent(p))
 ```
 
     ## [[1]]
-    ## <ps::ps_handle> PID=56528, NAME=R, AT=2022-03-02 13:30:10
-    ## 
-    ## [[2]]
-    ## <ps::ps_handle> PID=68198, NAME=zsh, AT=2022-03-02 10:44:55
-    ## 
-    ## [[3]]
-    ## <ps::ps_handle> PID=68260, NAME=Emacs-arm64-11_2, AT=2022-03-02 10:44:59
+    ## <ps::ps_handle> PID=32537, NAME=R, AT=2022-04-23 14:53:34
 
 `ps_num_fds(p)` returns the number of open file descriptors (handles on
 Windows):
@@ -318,27 +313,23 @@ unlink(tmp)
 ps_open_files(p)
 ```
 
-    ## # A tibble: 4 × 2
-    ##      fd path                                                                       
-    ##   <int> <chr>                                                                      
-    ## 1     0 /dev/ttys012                                                               
-    ## 2     1 /dev/ttys012                                                               
-    ## 3     2 /dev/ttys012                                                               
-    ## 4     3 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/Rscriptdcd0.BKgQZ2
+    ## # A tibble: 2 × 2
+    ##      fd path                                                                                      
+    ##   <int> <chr>                                                                                     
+    ## 1     0 /dev/null                                                                                 
+    ## 2     3 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpNW4j0T/callr-scr-6f607ecfcf18
 
 ``` r
 f <- file(tmp <- tempfile(), "w")
 ps_open_files(p)
 ```
 
-    ## # A tibble: 5 × 2
-    ##      fd path                                                                                
-    ##   <int> <chr>                                                                               
-    ## 1     0 /dev/ttys012                                                                        
-    ## 2     1 /dev/ttys012                                                                        
-    ## 3     2 /dev/ttys012                                                                        
-    ## 4     3 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/Rscriptdcd0.BKgQZ2         
-    ## 5     4 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpsC7fip/filedcd0299de121
+    ## # A tibble: 3 × 2
+    ##      fd path                                                                                      
+    ##   <int> <chr>                                                                                     
+    ## 1     0 /dev/null                                                                                 
+    ## 2     3 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpNW4j0T/callr-scr-6f607ecfcf18
+    ## 3     4 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpEihKx2/file7f194ed30fc9
 
 ``` r
 close(f)
@@ -346,13 +337,11 @@ unlink(tmp)
 ps_open_files(p)
 ```
 
-    ## # A tibble: 4 × 2
-    ##      fd path                                                                       
-    ##   <int> <chr>                                                                      
-    ## 1     0 /dev/ttys012                                                               
-    ## 2     1 /dev/ttys012                                                               
-    ## 3     2 /dev/ttys012                                                               
-    ## 4     3 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/Rscriptdcd0.BKgQZ2
+    ## # A tibble: 2 × 2
+    ##      fd path                                                                                      
+    ##   <int> <chr>                                                                                     
+    ## 1     0 /dev/null                                                                                 
+    ## 2     3 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpNW4j0T/callr-scr-6f607ecfcf18
 
 ### Process manipulation
 
@@ -428,16 +417,13 @@ find_procs_by_name("R")
 ```
 
     ## [[1]]
-    ## <ps::ps_handle> PID=56528, NAME=R, AT=2022-03-02 13:30:10
+    ## <ps::ps_handle> PID=32537, NAME=R, AT=2022-04-23 14:53:34
     ## 
     ## [[2]]
-    ## <ps::ps_handle> PID=56305, NAME=R, AT=2022-03-02 13:28:54
+    ## <ps::ps_handle> PID=28512, NAME=R, AT=2022-04-23 12:33:17
     ## 
     ## [[3]]
-    ## <ps::ps_handle> PID=68671, NAME=R, AT=2022-03-02 10:47:28
-    ## 
-    ## [[4]]
-    ## <ps::ps_handle> PID=63850, NAME=R, AT=2022-03-02 10:00:27
+    ## <ps::ps_handle> PID=9278, NAME=R, AT=2022-04-19 09:56:57
 
 Without creating the full table of processes:
 
@@ -458,16 +444,13 @@ find_procs_by_name("R")
 ```
 
     ## [[1]]
-    ## <ps::ps_handle> PID=56305, NAME=R, AT=2022-03-02 13:28:54
+    ## <ps::ps_handle> PID=9278, NAME=R, AT=2022-04-19 09:56:57
     ## 
     ## [[2]]
-    ## <ps::ps_handle> PID=56528, NAME=R, AT=2022-03-02 13:30:10
+    ## <ps::ps_handle> PID=28512, NAME=R, AT=2022-04-23 12:33:17
     ## 
     ## [[3]]
-    ## <ps::ps_handle> PID=63850, NAME=R, AT=2022-03-02 10:00:27
-    ## 
-    ## [[4]]
-    ## <ps::ps_handle> PID=68671, NAME=R, AT=2022-03-02 10:47:28
+    ## <ps::ps_handle> PID=32537, NAME=R, AT=2022-04-23 14:53:34
 
 ### Wait for a process to finish
 
@@ -550,18 +533,18 @@ wait_for_processes(list(p1, p2, p3, p4), timeout = 2)
 
     ## $gone
     ## $gone[[1]]
-    ## <ps::ps_handle> PID=56547, NAME=???, AT=2022-03-02 13:30:13
+    ## <ps::ps_handle> PID=32556, NAME=???, AT=2022-04-23 14:53:37
     ## 
     ## $gone[[2]]
-    ## <ps::ps_handle> PID=56546, NAME=???, AT=2022-03-02 13:30:13
+    ## <ps::ps_handle> PID=32555, NAME=???, AT=2022-04-23 14:53:37
     ## 
     ## 
     ## $alive
     ## $alive[[1]]
-    ## <ps::ps_handle> PID=56544, NAME=sleep, AT=2022-03-02 13:30:13
+    ## <ps::ps_handle> PID=32553, NAME=sleep, AT=2022-04-23 14:53:37
     ## 
     ## $alive[[2]]
-    ## <ps::ps_handle> PID=56545, NAME=sleep, AT=2022-03-02 13:30:13
+    ## <ps::ps_handle> PID=32554, NAME=sleep, AT=2022-04-23 14:53:37
 
 ### Kill process tree
 
@@ -587,19 +570,19 @@ kill_proc_tree(Sys.getpid(), include_parent = FALSE)
 
     ## $gone
     ## $gone[[1]]
-    ## <ps::ps_handle> PID=56544, NAME=???, AT=2022-03-02 13:30:13
+    ## <ps::ps_handle> PID=32553, NAME=???, AT=2022-04-23 14:53:37
     ## 
     ## $gone[[2]]
-    ## <ps::ps_handle> PID=56545, NAME=???, AT=2022-03-02 13:30:13
+    ## <ps::ps_handle> PID=32554, NAME=???, AT=2022-04-23 14:53:37
     ## 
     ## $gone[[3]]
-    ## <ps::ps_handle> PID=56548, NAME=???, AT=2022-03-02 13:30:15
+    ## <ps::ps_handle> PID=32561, NAME=???, AT=2022-04-23 14:53:39
     ## 
     ## $gone[[4]]
-    ## <ps::ps_handle> PID=56549, NAME=???, AT=2022-03-02 13:30:15
+    ## <ps::ps_handle> PID=32562, NAME=???, AT=2022-04-23 14:53:39
     ## 
     ## $gone[[5]]
-    ## <ps::ps_handle> PID=56550, NAME=???, AT=2022-03-02 13:30:15
+    ## <ps::ps_handle> PID=32563, NAME=???, AT=2022-04-23 14:53:39
     ## 
     ## 
     ## $alive
@@ -636,13 +619,13 @@ reap_children()
 
     ## $gone
     ## $gone[[1]]
-    ## <ps::ps_handle> PID=56551, NAME=???, AT=2022-03-02 13:30:15
+    ## <ps::ps_handle> PID=32564, NAME=???, AT=2022-04-23 14:53:39
     ## 
     ## $gone[[2]]
-    ## <ps::ps_handle> PID=56552, NAME=???, AT=2022-03-02 13:30:15
+    ## <ps::ps_handle> PID=32565, NAME=???, AT=2022-04-23 14:53:39
     ## 
     ## $gone[[3]]
-    ## <ps::ps_handle> PID=56553, NAME=???, AT=2022-03-02 13:30:15
+    ## <ps::ps_handle> PID=32566, NAME=???, AT=2022-04-23 14:53:39
     ## 
     ## 
     ## $alive
@@ -657,30 +640,20 @@ ps() %>%
   filter(grepl("sh$", name))
 ```
 
-    ## # A tibble: 20 × 11
-    ##      pid  ppid name        username    status     user   system     rss      vms created            
-    ##    <int> <int> <chr>       <chr>       <chr>     <dbl>    <dbl>   <dbl>    <dbl> <dttm>             
-    ##  1 68613 68592 zsh         gaborcsardi runni…  3.00e-5  1.43e-4  1.02e6  4.19e11 2022-03-02 10:47:28
-    ##  2 68592 68591 zsh         gaborcsardi runni…  9.50e-4  7.54e-4  1.87e6  4.19e11 2022-03-02 10:47:28
-    ##  3 68198 68177 zsh         gaborcsardi runni…  1.18e-3  4.90e-3  2.82e6  4.19e11 2022-03-02 10:44:55
-    ##  4 68177 68176 zsh         gaborcsardi runni…  1.34e-2  1.03e-2  9.83e6  4.19e11 2022-03-02 10:44:55
-    ##  5 68026 68005 zsh         gaborcsardi runni…  9.37e-4  3.98e-3  2.79e6  4.19e11 2022-03-02 10:44:20
-    ##  6 68005 68004 zsh         gaborcsardi runni…  9.82e-3  7.35e-3  9.99e6  4.19e11 2022-03-02 10:44:20
-    ##  7 63792 63771 zsh         gaborcsardi runni…  3.07e-5  1.48e-4  1.02e6  4.19e11 2022-03-02 10:00:27
-    ##  8 63771 63770 zsh         gaborcsardi runni…  9.31e-4  9.37e-4  1.87e6  4.19e11 2022-03-02 10:00:26
-    ##  9 54905 54884 zsh         gaborcsardi runni…  1.44e-3  6.15e-3  1.02e6  4.19e11 2022-03-02 09:27:48
-    ## 10 54884 54883 zsh         gaborcsardi runni…  1.37e-2  1.23e-2  1.98e6  4.19e11 2022-03-02 09:27:48
-    ## 11 54148 54127 zsh         gaborcsardi runni…  2.17e-3  9.13e-3  1.02e6  4.19e11 2022-03-02 09:24:05
-    ## 12 54127 54126 zsh         gaborcsardi runni…  2.09e-2  1.93e-2  1.98e6  4.19e11 2022-03-02 09:24:05
-    ## 13 52553 51524 ssh         gaborcsardi runni…  1.19e-3  1.42e-3  1.41e6  4.18e11 2022-03-02 07:55:53
-    ## 14 51545 51524 zsh         gaborcsardi runni…  3.20e-5  1.74e-4  1.02e6  4.19e11 2022-03-01 22:43:44
-    ## 15 51524 51523 zsh         gaborcsardi runni…  1.41e-3  1.43e-3  1.88e6  4.19e11 2022-03-01 22:43:44
-    ## 16 49995     1 ReportCrash root        runni… NA       NA       NA      NA       2022-03-01 20:15:37
-    ## 17 11004 10988 zsh         gaborcsardi runni…  4.50e-5  2.61e-4  9.99e5  4.19e11 2022-03-01 09:09:01
-    ## 18 10988 10987 zsh         gaborcsardi runni…  1.06e-3  9.49e-4  1.75e6  4.19e11 2022-03-01 09:09:01
-    ## 19  9643     1 Plash       gaborcsardi runni…  7.92e-2  7.12e-2  4.10e7  4.20e11 2022-03-01 08:20:56
-    ## 20  2026     1 ReportCrash gaborcsardi runni…  2.89e-2  2.61e-2  1.18e7  4.18e11 2022-03-01 07:36:57
-    ## # … with 1 more variable: ps_handle <I<list>>
+    ## # A tibble: 21 × 11
+    ##      pid  ppid name  username   status    user  system    rss     vms created             ps_handle 
+    ##    <int> <int> <chr> <chr>      <chr>    <dbl>   <dbl>  <dbl>   <dbl> <dttm>              <I<list>> 
+    ##  1 31628 31296 zsh   gaborcsar… runni… 3.11e-5 1.59e-4 3.34e6 4.19e11 2022-04-23 14:46:16 <ps_handl>
+    ##  2 31296 31295 zsh   gaborcsar… runni… 2.21e-3 1.03e-3 1.17e7 4.19e11 2022-04-23 14:46:15 <ps_handl>
+    ##  3 31176 30844 zsh   gaborcsar… runni… 1.87e-4 8.07e-4 3.46e6 4.19e11 2022-04-23 14:45:56 <ps_handl>
+    ##  4 30844 30843 zsh   gaborcsar… runni… 3.14e-3 2.03e-3 1.26e7 4.19e11 2022-04-23 14:45:55 <ps_handl>
+    ##  5 28331 27999 zsh   gaborcsar… runni… 9.40e-5 4.45e-4 1.79e6 4.19e11 2022-04-23 12:32:09 <ps_handl>
+    ##  6 27999 27998 zsh   gaborcsar… runni… 2.91e-3 1.83e-3 8.00e6 4.19e11 2022-04-23 12:32:09 <ps_handl>
+    ##  7 27624 27292 zsh   gaborcsar… runni… 2.76e-5 1.55e-4 1.03e6 4.19e11 2022-04-23 12:09:06 <ps_handl>
+    ##  8 27292 27291 zsh   gaborcsar… runni… 2.38e-3 1.38e-3 1.87e6 4.19e11 2022-04-23 12:09:05 <ps_handl>
+    ##  9 20941 20609 zsh   gaborcsar… runni… 1.82e-5 1.03e-4 3.44e5 4.19e11 2022-04-22 14:30:13 <ps_handl>
+    ## 10 20609 20608 zsh   gaborcsar… runni… 2.26e-3 1.37e-3 7.54e5 4.19e11 2022-04-22 14:30:12 <ps_handl>
+    ## # … with 11 more rows
 
 Processes owned by user:
 
@@ -690,20 +663,20 @@ ps() %>%
   select(pid, name)
 ```
 
-    ## # A tibble: 334 × 2
+    ## # A tibble: 309 × 2
     ##      pid name                           
     ##    <int> <chr>                          
-    ##  1 56528 R                              
-    ##  2 56305 R                              
-    ##  3 54044 Google Chrome Helper (Renderer)
-    ##  4 54028 Google Chrome Helper (Renderer)
-    ##  5 54027 Google Chrome Helper (Renderer)
-    ##  6 54026 Google Chrome Helper (Renderer)
-    ##  7 54025 Google Chrome Helper (Renderer)
-    ##  8 54024 Google Chrome Helper (Renderer)
-    ##  9 54023 Google Chrome Helper (Renderer)
-    ## 10 54022 Google Chrome Helper (Renderer)
-    ## # … with 324 more rows
+    ##  1 32567 Google Chrome Helper (Renderer)
+    ##  2 32558 Google Chrome Helper (Renderer)
+    ##  3 32537 R                              
+    ##  4 32494 mdworker_shared                
+    ##  5 32487 mdworker_shared                
+    ##  6 32486 mdworker_shared                
+    ##  7 32445 Google Chrome Helper           
+    ##  8 32442 Google Chrome Helper (Renderer)
+    ##  9 32438 Google Chrome Helper (Renderer)
+    ## 10 32416 mdworker_shared                
+    ## # … with 299 more rows
 
 Processes consuming more than 100MB of memory:
 
@@ -712,20 +685,26 @@ ps() %>%
   filter(rss > 100 * 1024 * 1024)
 ```
 
-    ## # A tibble: 24 × 11
-    ##      pid  ppid name     username status   user  system    rss     vms created             ps_handle 
-    ##    <int> <int> <chr>    <chr>    <chr>   <dbl>   <dbl>  <dbl>   <dbl> <dttm>              <I<list>> 
-    ##  1 56528 68177 R        gaborcs… runni… 0.0194 0.00651 1.69e8 4.19e11 2022-03-02 13:30:10 <ps_handl>
-    ##  2 56305 68005 R        gaborcs… runni… 0.0153 0.00191 1.39e8 4.19e11 2022-03-02 13:28:54 <ps_handl>
-    ##  3 54026  9722 Google … gaborcs… runni… 0.0294 0.00442 1.27e8 4.61e11 2022-03-02 13:15:04 <ps_handl>
-    ##  4 54021  9722 Google … gaborcs… runni… 0.0788 0.0114  2.24e8 4.62e11 2022-03-02 13:15:03 <ps_handl>
-    ##  5 54018  9722 Google … gaborcs… runni… 0.120  0.0192  1.46e8 4.61e11 2022-03-02 13:14:53 <ps_handl>
-    ##  6 54017  9722 Google … gaborcs… runni… 0.0496 0.0133  1.34e8 4.61e11 2022-03-02 13:14:53 <ps_handl>
-    ##  7 54014  9722 Google … gaborcs… runni… 0.0147 0.00493 1.13e8 4.61e11 2022-03-02 13:14:52 <ps_handl>
-    ##  8 50899     1 Amazon … gaborcs… runni… 0.404  0.0849  2.41e8 3.67e10 2022-03-02 13:04:19 <ps_handl>
-    ##  9 18649  9722 Google … gaborcs… runni… 0.0719 0.00914 1.57e8 4.61e11 2022-03-02 11:56:06 <ps_handl>
-    ## 10 68671 68592 R        gaborcs… runni… 0.755  0.0170  2.15e8 4.19e11 2022-03-02 10:47:28 <ps_handl>
-    ## # … with 14 more rows
+    ## # A tibble: 17 × 11
+    ##      pid  ppid name    username status    user  system    rss     vms created             ps_handle 
+    ##    <int> <int> <chr>   <chr>    <chr>    <dbl>   <dbl>  <dbl>   <dbl> <dttm>              <I<list>> 
+    ##  1 32558  3845 Google… gaborcs… runni… 8.41e-3 1.35e-3 1.91e8 4.66e11 2022-04-23 14:53:39 <ps_handl>
+    ##  2 32537 28512 R       gaborcs… runni… 1.95e-2 6.44e-3 1.81e8 4.20e11 2022-04-23 14:53:34 <ps_handl>
+    ##  3 32442  3845 Google… gaborcs… runni… 6.14e-2 6.36e-3 2.38e8 4.62e11 2022-04-23 14:53:17 <ps_handl>
+    ##  4 29432     1 Amazon… gaborcs… runni… 2.87e-1 5.92e-2 2.31e8 3.67e10 2022-04-23 14:38:33 <ps_handl>
+    ##  5 28512 27999 R       gaborcs… runni… 4.73e-2 8.86e-3 2.78e8 4.19e11 2022-04-23 12:33:17 <ps_handl>
+    ##  6 28456  3845 Google… gaborcs… runni… 6.22e-2 1.02e-2 1.69e8 4.62e11 2022-04-23 12:32:21 <ps_handl>
+    ##  7 25580  3845 Google… gaborcs… runni… 1.47e-1 2.85e-2 1.12e8 4.66e11 2022-04-23 11:19:18 <ps_handl>
+    ##  8 25386  3845 Google… gaborcs… runni… 7.38e-1 1.00e-1 2.75e8 4.66e11 2022-04-23 11:05:43 <ps_handl>
+    ##  9  8796  3845 Google… gaborcs… runni… 2.87e+0 6.11e-1 2.26e8 4.66e11 2022-04-22 10:56:48 <ps_handl>
+    ## 10  3915  3845 Google… gaborcs… runni… 1.18e+1 1.38e+0 5.21e8 4.66e11 2022-04-22 07:40:30 <ps_handl>
+    ## 11  3904  3845 Google… gaborcs… runni… 1.49e+0 4.16e-1 2.08e8 4.61e11 2022-04-22 07:40:27 <ps_handl>
+    ## 12  3876  3845 Google… gaborcs… runni… 1.75e+0 4.14e-1 1.15e8 4.72e11 2022-04-22 07:40:24 <ps_handl>
+    ## 13  3865  3845 Google… gaborcs… runni… 5.77e-1 1.49e-1 1.77e8 4.66e11 2022-04-22 07:40:21 <ps_handl>
+    ## 14  3859  3845 Google… gaborcs… runni… 3.32e+1 1.94e+1 2.35e8 4.54e11 2022-04-22 07:40:21 <ps_handl>
+    ## 15  3845     1 Google… gaborcs… runni… 2.71e+1 9.36e+0 5.18e8 4.53e11 2022-04-22 07:40:20 <ps_handl>
+    ## 16 97901 94806 Emacs-… gaborcs… runni… 7.64e+0 1.12e+0 1.16e8 4.20e11 2022-04-19 08:35:44 <ps_handl>
+    ## 17 14121     1 iTerm2  gaborcs… runni… 2.04e+2 3.82e+1 5.47e8 4.21e11 2022-04-03 23:28:13 <ps_handl>
 
 Top 3 memory consuming processes:
 
@@ -738,9 +717,9 @@ ps() %>%
     ## # A tibble: 3 × 11
     ##     pid  ppid name        username status  user system    rss     vms created             ps_handle 
     ##   <int> <int> <chr>       <chr>    <chr>  <dbl>  <dbl>  <dbl>   <dbl> <dttm>              <I<list>> 
-    ## 1 10052     1 iTerm2      gaborcs… runni…  27.2   5.80 7.11e8 4.21e11 2022-03-01 08:39:42 <ps_handl>
-    ## 2  9774  9722 Google Chr… gaborcs… runni…  20.6   2.10 6.54e8 4.70e11 2022-03-01 08:21:36 <ps_handl>
-    ## 3 12106 12105 QEMULaunch… gaborcs… runni…  39.6 102.   4.17e8 4.28e11 2022-03-01 10:01:40 <ps_handl>
+    ## 1 14121     1 iTerm2      gaborcs… runni… 204.   38.2  5.47e8 4.21e11 2022-04-03 23:28:13 <ps_handl>
+    ## 2  3915  3845 Google Chr… gaborcs… runni…  11.8   1.38 5.21e8 4.66e11 2022-04-22 07:40:30 <ps_handl>
+    ## 3  3845     1 Google Chr… gaborcs… runni…  27.1   9.36 4.85e8 4.53e11 2022-04-22 07:40:20 <ps_handl>
 
 Top 3 processes which consumed the most CPU time:
 
@@ -753,11 +732,11 @@ ps() %>%
 ```
 
     ## # A tibble: 3 × 3
-    ##     pid name                       cpu_time
-    ##   <int> <chr>                         <dbl>
-    ## 1 12106 QEMULauncher                  141. 
-    ## 2  9732 Google Chrome Helper (GPU)    114. 
-    ## 3 12103 UTM                            85.5
+    ##     pid name                 cpu_time
+    ##   <int> <chr>                   <dbl>
+    ## 1 14121 iTerm2                  242. 
+    ## 2 10419 keybase                 102. 
+    ## 3 10367 Keybase Helper (GPU)     62.3
 
 ## Code of Conduct
 
