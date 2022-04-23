@@ -40,6 +40,9 @@
     <loc>https://ps.r-lib.org/reference/index.html</loc>
   </url>
   <url>
+    <loc>https://ps.r-lib.org/reference/ps-package.html</loc>
+  </url>
+  <url>
     <loc>https://ps.r-lib.org/reference/ps.html</loc>
   </url>
   <url>
@@ -80,6 +83,9 @@
   </url>
   <url>
     <loc>https://ps.r-lib.org/reference/ps_exe.html</loc>
+  </url>
+  <url>
+    <loc>https://ps.r-lib.org/reference/ps_get_cpu_affinity.html</loc>
   </url>
   <url>
     <loc>https://ps.r-lib.org/reference/ps_get_nice.html</loc>
