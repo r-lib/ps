@@ -1,5 +1,4 @@
-
-# development version
+# ps 1.7.0
 
 * ps now compiles on platforms that enable OpenMP (#109).
 
