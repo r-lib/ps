@@ -107,10 +107,14 @@ SEXP psll_interrupt(SEXP x, SEXP y, SEXP z) { return ps__dummy("ps_interrupt"); 
 SEXP psll_connections(SEXP x) { return ps__dummy("ps_connections"); }
 SEXP psll_get_nice(SEXP x) { return ps__dummy("ps_get_nice"); }
 SEXP psll_set_nice(SEXP x, SEXP y) { return ps__dummy("ps_set_nice"); }
+SEXP psll_memory_uss(SEXP p) { return ps__dummy("psll_memory_uss"); }
+SEXP psll_get_cpu_aff(SEXP p) { return ps__dummy("psll_get_cpu_aff"); }
+SEXP psll_set_cpu_aff(SEXP p) { return ps__dummy("psll_set_cpu_aff"); }
 
 SEXP ps__init(SEXP x, SEXP y) { return R_NilValue; /* this needs to run to load package */ }
 SEXP ps__kill_if_env(SEXP x, SEXP y, SEXP z, SEXP a) { return ps__dummy("ps__kill_if_env"); }
 SEXP ps__find_if_env(SEXP x, SEXP y, SEXP z) { return ps__dummy("ps__find_if_env"); }
+SEXP ps__memory_maps(SEXP p) { return ps__dummy("ps__memory_maps"); }
 
 SEXP psp__pid_exists(SEXP x) { return ps__dummy("psp__pid_exists"); }
 SEXP psp__stat_st_rdev(SEXP x) { return ps__dummy("psp__stat_st_rdev"); }
