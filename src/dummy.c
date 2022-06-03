@@ -16,7 +16,7 @@ SEXP ps__dummy(const char *what) {
 }
 
 /* Not implemented on Linux, only on Windows and macOS */
-#ifdef  PS__LINUX
+#if  defined(PS__LINUX) || defined(PS__FREEBSD)
 #ifndef PS__MACOS
 #ifndef PS__WINDOWS
 SEXP ps__pids()          { return ps__dummy("ps_pids"); }
