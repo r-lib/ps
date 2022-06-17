@@ -49,6 +49,7 @@ ps <- function(user = NULL, after = NULL) {
     selected <- !is.na(us) & us == user
     processes <- processes[selected]
     us <- us[selected]
+    ct <- ct[selected]
   }
 
   us <- us %||% map_chr(processes, function(p)
