@@ -230,6 +230,7 @@ test_that("kill", {
 
 test_that("children", {
   ## Argument check
+  skip_on_cran()
   expect_error(ps_children(123), class = "invalid_argument")
 
   skip_if_no_processx()
