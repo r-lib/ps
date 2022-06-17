@@ -1,5 +1,10 @@
 # ps (development version)
 
+* ps now returns data frames instead of tibbles. While data frames and
+  tibbles are very similar, they are not completely compatible. To convert
+  the output of ps to tibbles call the `tibble::as_tibble()` function
+  on them.
+
 # ps 1.7.0
 
 * ps now compiles on platforms that enable OpenMP (#109).

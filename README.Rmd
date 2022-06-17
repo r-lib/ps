@@ -10,6 +10,7 @@ output:
 ```{r echo = FALSE}
 options(width = 100)
 suppressWarnings(suppressPackageStartupMessages(suppressMessages(library(dplyr))))
+suppressWarnings(suppressMessages(library(pillar)))
 ```
 
 ## Installation
@@ -19,6 +20,11 @@ You can install the released version of ps from
 
 ``` r
 install.packages("ps")
+```
+
+```{r}
+library(ps)
+library(pillar) # nicer printing of data frames
 ```
 
 ## Supported platforms
@@ -33,14 +39,12 @@ all of its functions fail with an error of class `"not_implemented"`.
 iterate over all processes.
 
 ```{r}
-library(ps)
 ps_pids()[1:20]
 ```
 
-`ps()` returns a data frame (tibble if you have the tibble package
-available), with data about each process. It contains a handle to each
-process, in the `ps_handle` column, you can use these to perform more
-queries on the processes.
+`ps()` returns a data frame, with data about each process. It contains a
+handle to each process, in the `ps_handle` column, you can use these to
+perform more queries on the processes.
 
 ```{r}
 ps()

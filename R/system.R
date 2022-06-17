@@ -51,7 +51,7 @@ ps_boot_time <- function() {
 
 #' List users connected to the system
 #'
-#' @return A data frame (tibble) with columns
+#' @return A data frame with columns
 #'  `username`, `tty`, `hostname`, `start_time`, `pid`. `tty` and `pid`
 #'  are `NA` on Windows. `pid` is the process id of the login process.
 #'  For local users the `hostname` column is the empty string.
@@ -61,8 +61,7 @@ ps_boot_time <- function() {
 ps_users <- function() {
   l <- not_null(.Call(ps__users))
 
-  d <- data.frame(
-    stringsAsFactors = FALSE,
+  d <- data_frame(
     username = vapply(l, "[[", character(1), 1),
     tty = vapply(l, "[[", character(1), 2),
     hostname = vapply(l, "[[", character(1), 3),
@@ -70,8 +69,6 @@ ps_users <- function() {
     pid = vapply(l, "[[", integer(1),  5)
   )
 
-  requireNamespace("tibble", quietly = TRUE)
-  class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
 }
 
@@ -179,7 +176,7 @@ ps_tty_size <- function() {
 #' current user.
 #' @param filter Character vector or `NULL`. If not NULL, then it is
 #' a vector of glob expressions, used to filter the process names.
-#' @return A data frame (tibble) with columns:
+#' @return A data frame with columns:
 #' * `dll`: the file name of the dll file, without the path,
 #' * `path`: path to the shared library,
 #' * `pid`: process ID of the process,
@@ -245,7 +242,7 @@ ps_shared_lib_users <- function(paths, user = ps_username(),
   match_len <- match_len[match_len > 0]
   match_pids <- map_int(match_processes, ps_pid)
 
-  d <- data.frame(
+  d <- data_frame(
     stringsAsFactors = FALSE,
     dll = basename(unlist(match)),
     path = unlist(match),
@@ -258,8 +255,6 @@ ps_shared_lib_users <- function(paths, user = ps_username(),
   # The ones without name probably finished already.
   d <- d[!is.na(d$name), , drop = FALSE]
 
-  requireNamespace("tibble", quietly = TRUE)
-  class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
 }
 

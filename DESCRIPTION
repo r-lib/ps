@@ -22,15 +22,15 @@ Suggests:
     callr,
     covr,
     curl,
+    pillar,
     pingr,
     processx (>= 3.1.0),
     R6,
     rlang,
     testthat (>= 3.0.0),
-    tibble
 Biarch: true
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2.9000
+RoxygenNote: 7.2.0
 Config/testthat/edition: 3
 Config/Needs/website: tidyverse/tidytemplate

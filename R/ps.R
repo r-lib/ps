@@ -7,7 +7,7 @@ NULL
 #' @param user Username, to filter the results to matching processes.
 #' @param after Start time (`POSIXt`), to filter the results to processes
 #'   that started after this.
-#' @return Data frame (tibble), see columns below.
+#' @return Data frame, see columns below.
 #'
 #' Columns:
 #' * `pid`: Process ID.
@@ -66,8 +66,7 @@ ps <- function(user = NULL, after = NULL) {
   rss <- map_dbl(mem, function(x) x[["rss"]] %||% NA_real_)
   vms <- map_dbl(mem, function(x) x[["vms"]] %||% NA_real_)
 
-  pss <- data.frame(
-    stringsAsFactors = FALSE,
+  pss <- data_frame(
     pid = pd,
     ppid = pp,
     name = nm,
@@ -83,7 +82,5 @@ ps <- function(user = NULL, after = NULL) {
 
   pss <- pss[order(-as.numeric(pss$created)), ]
 
-  requireNamespace("tibble", quietly = TRUE)
-  class(pss) <- unique(c("tbl_df", "tbl", class(pss)))
   pss
 }

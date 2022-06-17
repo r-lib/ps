@@ -10,10 +10,9 @@ ps_open_files(p = ps_handle())
 \item{p}{Process handle.}
 }
 \value{
-Data frame, or tibble if the \emph{tibble} package is available,
-with columns: \code{fd} and \code{path}. \code{fd} is numeric file descriptor on
-POSIX systems, \code{NA} on Windows. \code{path} is an absolute path to the
-file.
+Data frame with columns: \code{fd} and \code{path}. \code{fd} is numeric
+file descriptor on POSIX systems, \code{NA} on Windows. \code{path} is an
+absolute path to the file.
 }
 \description{
 Note that in some IDEs, e.g. RStudio or R.app on macOS, the IDE itself

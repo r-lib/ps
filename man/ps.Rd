@@ -13,7 +13,7 @@ ps(user = NULL, after = NULL)
 that started after this.}
 }
 \value{
-Data frame (tibble), see columns below.
+Data frame, see columns below.
 
 Columns:
 \itemize{

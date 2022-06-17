@@ -224,7 +224,7 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
           new <- ps_connections(ps_handle())[, 1:6]
           ## This is a connection that is used internally on macOS,
           ## for DNS resolution. We'll just ignore it. Looks like this:
-          ## # A tibble: 2 x 6
+          ## # A data frame: 2 x 6
           ##    fd family  type        laddr lport raddr
           ## <int> <chr>   <chr>       <chr> <int> <chr>
           ##     7 AF_UNIX SOCK_STREAM <NA>     NA /var/run/mDNSResponder

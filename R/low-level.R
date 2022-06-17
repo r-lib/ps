@@ -834,7 +834,7 @@ ps_ppid_map <- function() {
 
   ok <- !is.na(ppids)
 
-  data.frame(
+  data_frame(
     pid = pids[ok],
     ppid = ppids[ok]
   )
@@ -876,10 +876,9 @@ ps_num_fds <- function(p = ps_handle()) {
 #' For a zombie process it throws a `zombie_process` error.
 #'
 #' @param p Process handle.
-#' @return Data frame, or tibble if the _tibble_ package is available,
-#'    with columns: `fd` and `path`. `fd` is numeric file descriptor on
-#'    POSIX systems, `NA` on Windows. `path` is an absolute path to the
-#'    file.
+#' @return Data frame with columns: `fd` and `path`. `fd` is numeric
+#'    file descriptor on POSIX systems, `NA` on Windows. `path` is an
+#'    absolute path to the file.
 #'
 #' @family process handle functions
 #' @export
@@ -897,13 +896,10 @@ ps_open_files <- function(p = ps_handle()) {
 
   l <- not_null(.Call(psll_open_files, p))
 
-  d <- data.frame(
-    stringsAsFactors = FALSE,
+  d <- data_frame(
     fd = vapply(l, "[[", integer(1), 2),
     path = vapply(l, "[[", character(1), 1))
 
-  requireNamespace("tibble", quietly = TRUE)
-  class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
 }
 
@@ -912,8 +908,7 @@ ps_open_files <- function(p = ps_handle()) {
 #' For a zombie process it throws a `zombie_process` error.
 #'
 #' @param p Process handle.
-#' @return Data frame, or tibble if the _tibble_ package is available,
-#'    with columns:
+#' @return Data frame, with columns:
 #'    * `fd`: integer file descriptor on POSIX systems, `NA` on Windows.
 #'    * `family`: Address family, string, typically `AF_UNIX`, `AF_INET` or
 #'       `AF_INET6`.
@@ -943,8 +938,7 @@ ps_connections <- function(p = ps_handle()) {
 
   l <- not_null(.Call(psll_connections, p))
 
-  d <- data.frame(
-    stringsAsFactors = FALSE,
+  d <- data_frame(
     fd = vapply(l, "[[", integer(1), 1),
     family = match_names(ps_env$constants$address_families,
                        vapply(l, "[[", integer(1), 2)),
@@ -963,8 +957,6 @@ ps_connections <- function(p = ps_handle()) {
   d$lport[d$lport == 0] <- NA_integer_
   d$rport[d$rport == 0] <- NA_integer_
 
-  requireNamespace("tibble", quietly = TRUE)
-  class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
 }
 
@@ -1084,13 +1076,10 @@ ps_shared_libs <- function(p = ps_handle()) {
 
   l <- .Call(psll_dlls, p)
 
-  d <- data.frame(
-    stringsAsFactors = FALSE,
+  d <- data_frame(
     path = map_chr(l, "[[", 1)
   )
 
-  requireNamespace("tibble", quietly = TRUE)
-  class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
 }
 

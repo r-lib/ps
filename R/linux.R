@@ -3,7 +3,7 @@
 
 psl_connections <- function(p) {
   sock_raw <- not_null(.Call("psll_connections", p))
-  sock <- data.frame(
+  sock <- data_frame(
     fd = as.integer(vapply(sock_raw, "[[", character(1), 1)),
     id = vapply(sock_raw, "[[", character(1), 2)
   )
@@ -53,8 +53,7 @@ psl_connections <- function(p) {
     net$V4 <- str_tail(paste0('0', as.character(net$V4)), 2)
   }
 
-  d <- data.frame(
-    stringsAsFactors = FALSE,
+  d <- data_frame(
     fd = integer(),
     family = character(),
     type = character(),
@@ -66,8 +65,7 @@ psl_connections <- function(p) {
   )
 
   if (length(unix) &&  nrow(unix)) {
-    d <- data.frame(
-      stringsAsFactors = FALSE,
+    d <- data_frame(
       fd = sockx$fd[match(unix$V7, sockx$id)],
       family = "AF_UNIX",
       type = match_names(ps_env$constants$socket_types, unix$V5),
@@ -85,8 +83,7 @@ psl_connections <- function(p) {
     raddr <- mapply(psl__decode_address, net$V3, net$family,
                     SIMPLIFY = FALSE, USE.NAMES = FALSE)
 
-    net_d <- data.frame(
-      stringsAsFactors = FALSE,
+    net_d <- data_frame(
       fd = sockx$fd[match(net$V10, sockx$id)],
       family = net$family,
       type = net$type,
@@ -99,8 +96,6 @@ psl_connections <- function(p) {
     d <- rbind(d, net_d)
   }
 
-  requireNamespace("tibble", quietly = TRUE)
-  class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
 }
 

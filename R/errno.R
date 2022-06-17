@@ -12,9 +12,7 @@
 errno <- function() {
   err <- as.list(ps_env$constants$errno)
   err <- err[order(names(err))]
-  data.frame(
-    stringsAsFactors = FALSE,
-    row.names = NULL,
+  data_frame(
     name = names(err),
     value = vapply(err, "[[", integer(1), 1),
     description = vapply(err, "[[", character(1), 2)

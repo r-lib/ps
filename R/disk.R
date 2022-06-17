@@ -6,7 +6,7 @@
 #' @param all Whether to list virtual devices as well. If `FALSE`, on
 #' Linux it will still list `overlay` and `grpcfuse` file systems, to
 #' provide some useful information in Docker containers.
-#' @return A data frame (tibble) with columns `device`, `mountpoint`,
+#' @return A data frame with columns `device`, `mountpoint`,
 #' `fstype` and `options`.
 #'
 #' @family disk functions
@@ -19,7 +19,7 @@ ps_disk_partitions <- function(all = FALSE) {
   assert_flag(all)
   l <- not_null(.Call(ps__disk_partitions, all))
 
-  d <- data.frame(
+  d <- data_frame(
     stringsAsFactors = FALSE,
     device = vapply(l, "[[", character(1), 1),
     mountpoint = vapply(l, "[[", character(1), 2),
@@ -29,8 +29,6 @@ ps_disk_partitions <- function(all = FALSE) {
 
   if (!all) d <- ps__disk_partitions_filter(d)
 
-  requireNamespace("tibble", quietly = TRUE)
-  class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
 }
 
@@ -91,8 +89,7 @@ ps__disk_usage_format_windows <- function(paths, l) {
   freeuser <- vapply(l, "[[", double(1), 3)
   used <- total - free
 
-  d <- data.frame(
-    stringsAsFactors = FALSE,
+  d <- data_frame(
     mountpoint = paths,
     total = total,
     used = used,
@@ -100,8 +97,6 @@ ps__disk_usage_format_windows <- function(paths, l) {
     capacity = used / total
   )
 
-  requireNamespace("tibble", quietly = TRUE)
-  class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
 }
 
@@ -116,7 +111,7 @@ ps__disk_usage_format_posix <- function(paths, l) {
     list(total = total, used = used, free = avail, percent = usage_percent)
   })
 
-  d <- data.frame(
+  d <- data_frame(
     stringsAsFactors = FALSE,
     mountpoint = paths,
     total = vapply(l2, "[[", double(1), "total"),
@@ -125,7 +120,5 @@ ps__disk_usage_format_posix <- function(paths, l) {
     capacity = vapply(l2, "[[", double(1), "percent")
   )
 
-  requireNamespace("tibble", quietly = TRUE)
-  class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
 }

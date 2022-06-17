@@ -7,7 +7,7 @@
 ps_users()
 }
 \value{
-A data frame (tibble) with columns
+A data frame with columns
 \code{username}, \code{tty}, \code{hostname}, \code{start_time}, \code{pid}. \code{tty} and \code{pid}
 are \code{NA} on Windows. \code{pid} is the process id of the login process.
 For local users the \code{hostname} column is the empty string.
