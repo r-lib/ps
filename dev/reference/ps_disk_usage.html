@@ -59,10 +59,13 @@
     <dl><dt>paths</dt>
 <dd><p>The mounted file systems to list. By default all file
 systems returned by <code><a href="ps_disk_partitions.html">ps_disk_partitions()</a></code> is listed.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data frame with columns <code>mountpoint</code>, <code>total</code>, <code>used</code>,
+    
+
+<p>A data frame with columns <code>mountpoint</code>, <code>total</code>, <code>used</code>,
 <code>available</code> and <code>capacity</code>.</p>
     </div>
     <div class="section level2">
@@ -80,16 +83,7 @@ available to the calling user.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">ps_disk_usage</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 7 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   mountpoint              total        used   available capacity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> /                 <span style="text-decoration: underline;">89</span>311<span style="text-decoration: underline;">358</span>976 <span style="text-decoration: underline;">56</span>570<span style="text-decoration: underline;">970</span>112 <span style="text-decoration: underline;">32</span>757<span style="text-decoration: underline;">166</span>080   0.633 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> /snap/core20/1405    65<span style="text-decoration: underline;">011</span>712    65<span style="text-decoration: underline;">011</span>712           0   1     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> /snap/snapd/15177    45<span style="text-decoration: underline;">875</span>200    45<span style="text-decoration: underline;">875</span>200           0   1     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> /snap/snapd/15534    46<span style="text-decoration: underline;">923</span>776    46<span style="text-decoration: underline;">923</span>776           0   1     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> /snap/lxd/22753      71<span style="text-decoration: underline;">172</span>096    71<span style="text-decoration: underline;">172</span>096           0   1     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> /boot/efi           109<span style="text-decoration: underline;">422</span>592     5<span style="text-decoration: underline;">448</span>704   103<span style="text-decoration: underline;">973</span>888   0.049<span style="text-decoration: underline;">8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span> /mnt              <span style="text-decoration: underline;">14</span>727<span style="text-decoration: underline;">258</span>112  <span style="text-decoration: underline;">5</span>105<span style="text-decoration: underline;">233</span>920 <span style="text-decoration: underline;">10</span>390<span style="text-decoration: underline;">315</span>008   0.329 </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in data_frame(stringsAsFactors = FALSE, device = vapply(l, "[[",     character(1), 1), mountpoint = vapply(l, "[[", character(1),     2), fstype = vapply(l, "[[", character(1), 3), options = vapply(l,     "[[", character(1), 4)):</span> could not find function "data_frame"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -103,7 +97,7 @@ available to the calling user.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
   </div></footer></body></html>
