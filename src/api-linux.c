@@ -1287,9 +1287,9 @@ SEXP ps__loadavg(SEXP counter_name) {
   struct sysinfo info;
   char *buf;
   int ret = ps__read_file("/proc/loadavg", &buf, 128);
+  SEXP avg = PROTECT(allocVector(REALSXP, 3));
   if (ret == -1) goto sysinfo;
 
-  SEXP avg = PROTECT(allocVector(REALSXP, 3));
   if (sscanf(buf, "%lf %lf %lf", REAL(avg), REAL(avg) + 1, REAL(avg) + 2) == 3) {
     UNPROTECT(1);
     return avg;
