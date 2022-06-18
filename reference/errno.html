@@ -12,7 +12,7 @@ NA_integer_."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/lib
     
     <a class="navbar-brand me-2" href="../index.html">ps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.7.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,320 +65,20 @@ NA_integer_."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/lib
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">errno</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                name value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1             E2BIG     7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2            EACCES    13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        EADDRINUSE    98</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     EADDRNOTAVAIL    99</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5              EADV    68</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6      EAFNOSUPPORT    97</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7            EAGAIN    11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8          EALREADY   114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9             EAUTH    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10      EBACKGROUND    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11         EBADARCH    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12            EBADE    52</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13         EBADEXEC    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14            EBADF     9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15           EBADFD    77</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16        EBADMACHO    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17          EBADMSG    74</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18            EBADR    53</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19          EBADRPC    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20          EBADRQC    56</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21          EBADSLT    57</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22           EBFONT    59</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23            EBUSY    16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24        ECANCELED   125</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25           ECHILD    10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26           ECHRNG    44</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27            ECOMM    70</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28     ECONNABORTED   103</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29     ECONNREFUSED   111</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30       ECONNRESET   104</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31               ED    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32          EDEADLK    35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33        EDEADLOCK    35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34     EDESTADDRREQ    89</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35          EDEVERR    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36            EDIED    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37             EDOM    33</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38          EDOTDOT    73</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39           EDQUOT   122</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40           EEXIST    17</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41           EFAULT    14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42            EFBIG    27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43           EFTYPE    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44      EGRATUITOUS    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45        EGREGIOUS    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46        EHOSTDOWN   112</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47     EHOSTUNREACH   113</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 48        EHWPOISON   133</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49            EIDRM    43</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50            EIEIO    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 51           EILSEQ    84</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 52      EINPROGRESS   115</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 53            EINTR     4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 54           EINVAL    22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 55              EIO     5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 56          EISCONN   106</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 57           EISDIR    21</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 58           EISNAM   120</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 59      EKEYEXPIRED   127</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 60     EKEYREJECTED   129</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 61      EKEYREVOKED   128</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 62           EL2HLT    51</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 63         EL2NSYNC    45</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 64           EL3HLT    46</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 65           EL3RST    47</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 66          ELIBACC    79</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 67          ELIBBAD    80</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 68         ELIBEXEC    83</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 69          ELIBMAX    82</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 70          ELIBSCN    81</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 71           ELNRNG    48</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 72            ELOOP    40</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 73      EMEDIUMTYPE   124</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 74           EMFILE    24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 75           EMLINK    31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 76         EMSGSIZE    90</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 77        EMULTIHOP    72</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 78     ENAMETOOLONG    36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 79          ENAVAIL   119</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 80        ENEEDAUTH    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81         ENETDOWN   100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 82        ENETRESET   102</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 83      ENETUNREACH   101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 84           ENFILE    23</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 85           ENOANO    55</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 86          ENOATTR    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 87          ENOBUFS   105</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 88           ENOCSI    50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 89          ENODATA    61</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 90           ENODEV    19</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 91           ENOENT     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 92          ENOEXEC     8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 93           ENOKEY   126</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 94           ENOLCK    37</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 95          ENOLINK    67</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 96        ENOMEDIUM   123</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 97           ENOMEM    12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 98           ENOMSG    42</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 99           ENONET    64</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 100          ENOPKG    65</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 101     ENOPROTOOPT    92</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 102          ENOSPC    28</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 103           ENOSR    63</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 104          ENOSTR    60</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 105          ENOSYS    38</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 106         ENOTBLK    15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 107        ENOTCONN   107</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 108         ENOTDIR    20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 109       ENOTEMPTY    39</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 110         ENOTNAM   118</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 111 ENOTRECOVERABLE   131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 112        ENOTSOCK    88</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 113         ENOTSUP    95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 114          ENOTTY    25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 115        ENOTUNIQ    76</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 116           ENXIO     6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 117      EOPNOTSUPP    95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 118       EOVERFLOW    75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 119      EOWNERDEAD   130</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 120           EPERM     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 121    EPFNOSUPPORT    96</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 122           EPIPE    32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 123        EPROCLIM    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 124    EPROCUNAVAIL    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 125   EPROGMISMATCH    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 126    EPROGUNAVAIL    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 127          EPROTO    71</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 128 EPROTONOSUPPORT    93</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 129      EPROTOTYPE    91</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 130         EPWROFF    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 131          ERANGE    34</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 132         EREMCHG    78</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 133         EREMOTE    66</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 134       EREMOTEIO   121</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 135        ERESTART    85</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 136         ERFKILL   132</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 137           EROFS    30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 138    ERPCMISMATCH    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 139      ESHLIBVERS    NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 140       ESHUTDOWN   108</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 141 ESOCKTNOSUPPORT    94</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 142          ESPIPE    29</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 143           ESRCH     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 144          ESRMNT    69</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 145          ESTALE   116</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 146        ESTRPIPE    86</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 147           ETIME    62</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 148       ETIMEDOUT   110</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 149    ETOOMANYREFS   109</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 150         ETXTBSY    26</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 151         EUCLEAN   117</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 152         EUNATCH    49</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 153          EUSERS    87</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 154     EWOULDBLOCK    11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 155           EXDEV    18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 156          EXFULL    54</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                             description</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                    Arg list too long.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                    Permission denied.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                               Address already in use.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4                      Cannot assign requested address.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                      Advertise error.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6      Address family not supported by protocol family.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7                     Resource temporarily unavailable.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8                        Operation already in progress.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9                                 Authentication error.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10           Caller not in the foreground process group</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11                          Bad CPU type in executable.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12                                    Invalid exchange.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13                  Bad executable (or shared library).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14                                 Bad file descriptor.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15                        File descriptor in bad state.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16                               Malformed Mach-o file.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17                                         Bad message.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18                          Invalid request descriptor.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19                                   RPC struct is bad.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20                                Invalid request code.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21                                        Invalid slot.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22                                Bad font file format.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23                                       Resource busy.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24                                  Operation canceled.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25                                  No child processes.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26                         Channel number out of range.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27                         Communication error on send.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28                    Software caused connection abort.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29                                  Connection refused.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30                            Connection reset by peer.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31   The experienced user will know what is wrong.#else</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32                           Resource deadlock avoided.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33                         File locking deadlock error.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34                        Destination address required.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35                                        Device error.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36                                      Translator died</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37                    Numerical argument out of domain.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38                                   RFS specific error</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39                                 Disc quota exceeded.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40                                         File exists.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41                                         Bad address.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42                                      File too large.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43                   Inappropriate file type or format.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44                      This error code has no purpose.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45                                      You did *what*?</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46                                        Host is down.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47                                    No route to host.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 48                      Memory page has hardware error.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49                                  Identifier removed.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50  Go home and have a glass of warm, dairy-fresh milk.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 51                               Illegal byte sequence.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 52                           Operation now in progress.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 53                           Interrupted function call.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 54                                    Invalid argument.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 55                                  Input/output error.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 56                         Socket is already connected.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 57                                      Is a directory.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 58                                Is a named type file.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 59                                     Key has expired.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 60                         Key was rejected by service.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 61                                Key has been revoked.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 62                                      Level 2 halted.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 63                            Level 2 not synchronized.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 64                                      Level 3 halted.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 65                                       Level 3 reset.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 66              Can not access a needed shared library.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 67                Accessing a corrupted shared library.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 68               Cannot exec a shared library directly.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 69     Attempting to link in too many shared libraries.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 70                     .lib section in a.out corrupted.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 71                            Link number out of range.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 72                   Too many levels of symbolic links.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 73                                   Wrong medium type.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 74                                 Too many open files.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 75                                      Too many links.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 76                                    Message too long.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 77                                  Multihop attempted.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 78                                  File name too long.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 79                       No XENIX semaphores available.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 80                                  Need authenticator.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81                                     Network is down.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 82                 Network dropped connection on reset.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 83                              Network is unreachable.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 84                       Too many open files in system.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 85                                            No anode.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 86                                 Attribute not found.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 87                           No buffer space available.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 88                          No CSI structure available.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 89                                No message available.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 90                   Operation not supported by device.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 91                           No such file or directory.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 92                                   Exec format error.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 93                          Required key not available.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 94                                  No locks available.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 95                               Link has been severed.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 96                                     No medium found.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 97                              Cannot allocate memory.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 98                          No message of desired type.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 99                       Machine is not on the network.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 100                              Package not installed.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 101                             Protocol not available.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 102                                Device out of space.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 103                           Out of streams resources.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 104                                       Not a STREAM.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 105                           Function not implemented.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 106                                 Not a block device.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 107                            Socket is not connected.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 108                                    Not a directory.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 109                                Directory not empty.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 110                        Not a XENIX named type file.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 111                              State not recoverable.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 112                     Socket operation on non-socket.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 113                                      Not supported.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 114                     Inappropriate ioctl for device.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 115                         Name not unique on network.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 116                          No such device or address.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 117                  Operation not supported on socket.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 118          Value too large to be stored in data type.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 119                                         Owner died.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 120                            Operation not permitted.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 121                      Protocol family not supported.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 122                                        Broken pipe.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 123                                 Too many processes.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 124                          Bad procedure for program.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 125                              Program version wrong.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 126                                RPC prog. not avail.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 127                                     Protocol error.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 128                             Protocol not supported.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 129                     Protocol wrong type for socket.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 130                                Device power is off.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 131                      Numerical result out of range.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 132                             Remote address changed.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 133                         File is already NFS-mounted</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 134                                   Remote I/O error.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 135        Interrupted system call should be restarted.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 136              Operation not possible due to RF-kill.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 137                              Read-only file system.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 138                                  RPC version wrong.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 139                    Shared library version mismatch.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 140                  Cannot send after socket shutdown.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 141                          Socket type not supported.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 142                                       Illegal seek.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 143                                    No such process.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 144                                      Srmount error.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 145                              Stale NFS file handle.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 146                                 Streams pipe error.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 147                             STREAM ioctl() timeout.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 148                                Operation timed out.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 149                 Too many references: cannot splice.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 150                                     Text file busy.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 151                           Structure needs cleaning.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 152                       Protocol driver not attached.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 153                                     Too many users.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 154                   Resource temporarily unavailable.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 155                                      Improper link.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 156                                      Exchange full.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 156 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    name          value description                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> E2BIG             7 Arg list too long.                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> EACCES           13 Permission denied.                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> EADDRINUSE       98 Address already in use.                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> EADDRNOTAVAIL    99 Cannot assign requested address.                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> EADV             68 Advertise error.                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> EAFNOSUPPORT     97 Address family not supported by protocol family.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> EAGAIN           11 Resource temporarily unavailable.               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> EALREADY        114 Operation already in progress.                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> EAUTH            <span style="color: #BB0000;">NA</span> Authentication error.                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> EBACKGROUND      <span style="color: #BB0000;">NA</span> Caller not in the foreground process group      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 146 more rows</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -392,7 +92,7 @@ NA_integer_."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/lib
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
   </div></footer></body></html>

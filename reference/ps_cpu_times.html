@@ -30,7 +30,7 @@ waited-for children have been scheduled in kernel mode.
     
     <a class="navbar-brand me-2" href="../index.html">ps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.7.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,10 +85,13 @@ waited-for children have been scheduled in kernel mode.</p></li>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>p</dt>
 <dd><p>Process handle.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Named real vector or length four: <code>user</code>, <code>system</code>,
+    
+
+<p>Named real vector or length four: <code>user</code>, <code>system</code>,
 <code>children_user</code>,  <code>children_system</code>. The last two are <code>NA</code> on
 non-Linux systems.</p>
     </div>
@@ -133,13 +136,13 @@ non-Linux systems.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">p</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=10143, NAME=R, AT=2022-04-23 19:00:00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=10076, NAME=R, AT=2022-06-18 08:48:43</span>
 <span class="r-in"><span class="fu">ps_cpu_times</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            user          system   children_user children_system </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            6.53            0.26            0.99            0.48 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            6.21            0.24            0.98            0.50 </span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/proc.time.html" class="external-link">proc.time</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   7.530   0.749  11.099 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   7.202   0.752  10.581 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -153,7 +156,7 @@ non-Linux systems.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
   </div></footer></body></html>

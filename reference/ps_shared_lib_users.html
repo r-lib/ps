@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">ps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.7.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,17 +61,24 @@
 look up. They must be absolute paths. They don't need to exist.
 Forward slashes are converted to backward slashes on Windows, and
 the output will always have backward slashes in the paths.</p></dd>
+
+
 <dt>user</dt>
 <dd><p>Character scalar or <code>NULL</code>. If not <code>NULL</code>, then only
 the processes of this user are considered. It defaults to the
 current user.</p></dd>
+
+
 <dt>filter</dt>
 <dd><p>Character vector or <code>NULL</code>. If not NULL, then it is
 a vector of glob expressions, used to filter the process names.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data frame (tibble) with columns:</p><ul><li><p><code>dll</code>: the file name of the dll file, without the path,</p></li>
+    
+
+<p>A data frame with columns:</p><ul><li><p><code>dll</code>: the file name of the dll file, without the path,</p></li>
 <li><p><code>path</code>: path to the shared library,</p></li>
 <li><p><code>pid</code>: process ID of the process,</p></li>
 <li><p><code>name</code>: name of the process,</p></li>
@@ -133,7 +140,7 @@ last one is for RStudio.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
   </div></footer></body></html>

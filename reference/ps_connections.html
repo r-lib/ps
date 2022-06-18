@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">ps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.7.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,11 +58,13 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>p</dt>
 <dd><p>Process handle.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Data frame, or tibble if the <em>tibble</em> package is available,
-with columns:</p><ul><li><p><code>fd</code>: integer file descriptor on POSIX systems, <code>NA</code> on Windows.</p></li>
+    
+
+<p>Data frame, with columns:</p><ul><li><p><code>fd</code>: integer file descriptor on POSIX systems, <code>NA</code> on Windows.</p></li>
 <li><p><code>family</code>: Address family, string, typically <code>AF_UNIX</code>, <code>AF_INET</code> or
 <code>AF_INET6</code>.</p></li>
 <li><p><code>type</code>: Socket type, string, typically <code>SOCK_STREAM</code> (TCP) or
@@ -112,41 +114,41 @@ for UNIX sockets.</p></li>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">ps_connections</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 7 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 7 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      fd family  type        laddr                  lport raddr rport state</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     8 AF_UNIX SOCK_STREAM /tmp/dotnet-diagnosti…    <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    11 AF_UNIX SOCK_STREAM <span style="color: #BB0000;">NA</span>                        <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    12 AF_UNIX SOCK_STREAM <span style="color: #BB0000;">NA</span>                        <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    15 AF_INET SOCK_STREAM 10.1.1.61              <span style="text-decoration: underline;">46</span>922 172.…   443 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    14 AF_INET SOCK_STREAM 10.1.1.61              <span style="text-decoration: underline;">36</span>314 142.…   443 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>    13 AF_INET SOCK_STREAM 10.1.1.61              <span style="text-decoration: underline;">43</span>800 108.…   443 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span>    16 AF_INET SOCK_STREAM 10.1.1.61              <span style="text-decoration: underline;">55</span>680 108.…    80 CONN…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    12 AF_UNIX SOCK_STREAM <span style="color: #BB0000;">NA</span>                        <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    11 AF_UNIX SOCK_STREAM <span style="color: #BB0000;">NA</span>                        <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    14 AF_INET SOCK_STREAM 10.1.1.187             <span style="text-decoration: underline;">45</span>698 142.…   443 CONN…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    15 AF_INET SOCK_STREAM 10.1.1.187             <span style="text-decoration: underline;">44</span>026 142.…   443 CONN…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>    13 AF_INET SOCK_STREAM 10.1.1.187             <span style="text-decoration: underline;">49</span>670 13.2…   443 CONN…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span>    16 AF_INET SOCK_STREAM 10.1.1.187             <span style="text-decoration: underline;">54</span>202 13.2…    80 CONN…</span>
 <span class="r-in"><span class="va">sc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">socketConnection</a></span><span class="op">(</span><span class="st">"httpbin.org"</span>, port <span class="op">=</span> <span class="fl">80</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">ps_connections</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 8 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 8 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      fd family  type        laddr                  lport raddr rport state</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     8 AF_UNIX SOCK_STREAM /tmp/dotnet-diagnosti…    <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    11 AF_UNIX SOCK_STREAM <span style="color: #BB0000;">NA</span>                        <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    12 AF_UNIX SOCK_STREAM <span style="color: #BB0000;">NA</span>                        <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    15 AF_INET SOCK_STREAM 10.1.1.61              <span style="text-decoration: underline;">46</span>922 172.…   443 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    14 AF_INET SOCK_STREAM 10.1.1.61              <span style="text-decoration: underline;">36</span>314 142.…   443 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>    17 AF_INET SOCK_STREAM 10.1.1.61              <span style="text-decoration: underline;">46</span>824 35.1…    80 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span>    13 AF_INET SOCK_STREAM 10.1.1.61              <span style="text-decoration: underline;">43</span>800 108.…   443 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">8</span>    16 AF_INET SOCK_STREAM 10.1.1.61              <span style="text-decoration: underline;">55</span>680 108.…    80 CONN…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    12 AF_UNIX SOCK_STREAM <span style="color: #BB0000;">NA</span>                        <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    11 AF_UNIX SOCK_STREAM <span style="color: #BB0000;">NA</span>                        <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    14 AF_INET SOCK_STREAM 10.1.1.187             <span style="text-decoration: underline;">45</span>698 142.…   443 CONN…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    15 AF_INET SOCK_STREAM 10.1.1.187             <span style="text-decoration: underline;">44</span>026 142.…   443 CONN…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>    13 AF_INET SOCK_STREAM 10.1.1.187             <span style="text-decoration: underline;">49</span>670 13.2…   443 CONN…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span>    17 AF_INET SOCK_STREAM 10.1.1.187             <span style="text-decoration: underline;">54</span>078 34.2…    80 CONN…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">8</span>    16 AF_INET SOCK_STREAM 10.1.1.187             <span style="text-decoration: underline;">54</span>202 13.2…    80 CONN…</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">sc</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">ps_connections</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 7 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 7 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      fd family  type        laddr                  lport raddr rport state</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     8 AF_UNIX SOCK_STREAM /tmp/dotnet-diagnosti…    <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    11 AF_UNIX SOCK_STREAM <span style="color: #BB0000;">NA</span>                        <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    12 AF_UNIX SOCK_STREAM <span style="color: #BB0000;">NA</span>                        <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    15 AF_INET SOCK_STREAM 10.1.1.61              <span style="text-decoration: underline;">46</span>922 172.…   443 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    14 AF_INET SOCK_STREAM 10.1.1.61              <span style="text-decoration: underline;">36</span>314 142.…   443 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>    13 AF_INET SOCK_STREAM 10.1.1.61              <span style="text-decoration: underline;">43</span>800 108.…   443 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span>    16 AF_INET SOCK_STREAM 10.1.1.61              <span style="text-decoration: underline;">55</span>680 108.…    80 CONN…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    12 AF_UNIX SOCK_STREAM <span style="color: #BB0000;">NA</span>                        <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    11 AF_UNIX SOCK_STREAM <span style="color: #BB0000;">NA</span>                        <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    14 AF_INET SOCK_STREAM 10.1.1.187             <span style="text-decoration: underline;">45</span>698 142.…   443 CONN…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    15 AF_INET SOCK_STREAM 10.1.1.187             <span style="text-decoration: underline;">44</span>026 142.…   443 CONN…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>    13 AF_INET SOCK_STREAM 10.1.1.187             <span style="text-decoration: underline;">49</span>670 13.2…   443 CONN…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span>    16 AF_INET SOCK_STREAM 10.1.1.187             <span style="text-decoration: underline;">54</span>202 13.2…    80 CONN…</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -160,7 +162,7 @@ for UNIX sockets.</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
   </div></footer></body></html>
