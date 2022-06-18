@@ -1,4 +1,5 @@
-# ps (development version)
+
+# ps 1.7.1
 
 * ps now returns data frames instead of tibbles. While data frames and
   tibbles are very similar, they are not completely compatible. To convert
