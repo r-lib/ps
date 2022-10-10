@@ -254,7 +254,7 @@ void ps__check_for_zombie(ps_handle_t *handle, int err) {
   if (err) ps__throw_error();
 }
 
-int psll_linux_get_boot_time() {
+int psll_linux_get_boot_time(void) {
   int ret;
   char *buf;
   char *needle = "\nbtime ";
@@ -801,7 +801,7 @@ SEXP psll_memory_info(SEXP p) {
   return result;
 }
 
-SEXP ps__boot_time() {
+SEXP ps__boot_time(void) {
   if (psll_linux_boot_time == 0) {
     if (psll_linux_get_boot_time()) {
       ps__set_error_from_errno();
@@ -811,7 +811,7 @@ SEXP ps__boot_time() {
   return ScalarReal(psll_linux_boot_time);
 }
 
-SEXP ps__cpu_count_logical() {
+SEXP ps__cpu_count_logical(void) {
   int n = sysconf(_SC_NPROCESSORS_ONLN);
   if (n >= 1) return ScalarInteger(n);
   return(ScalarInteger(NA_INTEGER));
@@ -819,7 +819,7 @@ SEXP ps__cpu_count_logical() {
 
 /* This is not used, because it is much easier to parse this file from R */
 
-SEXP ps__cpu_count_physical() {
+SEXP ps__cpu_count_physical(void) {
   return R_NilValue;
 }
 
@@ -1209,7 +1209,7 @@ error:
   return R_NilValue;
 }
 
-SEXP ps__users() {
+SEXP ps__users(void) {
   struct utmp *ut;
   SEXP result;
   PROTECT_INDEX pidx;
@@ -1309,18 +1309,18 @@ SEXP ps__loadavg(SEXP counter_name) {
   return avg;
 }
 
-SEXP ps__system_memory() {
+SEXP ps__system_memory(void) {
   // This is implemented in R on Linux
   ps__throw_error();
   return R_NilValue;
 }
 
-SEXP ps__system_swap() {
+SEXP ps__system_swap(void) {
   // TODO
   return R_NilValue;
 }
 
-SEXP ps__system_cpu_times() {
+SEXP ps__system_cpu_times(void) {
   // This is implemented in R on Linux
   ps__throw_error();
   return R_NilValue;

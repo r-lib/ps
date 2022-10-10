@@ -11,7 +11,7 @@
 #include <errno.h>
 #include <stdlib.h>
 
-void usage() {
+void usage(void) {
   fprintf(stderr, "Usage: px [command arg] [command arg] ...\n\n");
   fprintf(stderr, "Commands:\n");
   fprintf(stderr, "  sleep  <seconds>           -- "

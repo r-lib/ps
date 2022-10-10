@@ -7,7 +7,7 @@
 #include <Rinternals.h>
 
 void *ps__not_implemented(const char *what);
-SEXP ps__throw_error();
+SEXP ps__throw_error(void);
 
 SEXP ps__dummy(const char *what) {
   ps__not_implemented(what);
@@ -19,7 +19,7 @@ SEXP ps__dummy(const char *what) {
 #ifdef  PS__LINUX
 #ifndef PS__MACOS
 #ifndef PS__WINDOWS
-SEXP ps__pids()          { return ps__dummy("ps_pids"); }
+SEXP ps__pids(void)          { return ps__dummy("ps_pids"); }
 SEXP psll_memory_uss(SEXP p) { return ps__dummy("psll_memory_uss"); }
 #endif
 #endif
@@ -39,7 +39,7 @@ SEXP psll_set_cpu_aff(SEXP p) { return ps__dummy("psll_set_cpu_aff"); }
 #ifdef PS__WINDOWS
 #ifndef PS__POSIX
 SEXP psp__pid_exists(SEXP x) { return ps__dummy("psp__pid_exists"); }
-SEXP psp__zombie() { return ps__dummy("psp__zombie"); }
+SEXP psp__zombie(void) { return ps__dummy("psp__zombie"); }
 SEXP psp__waitpid(SEXP x) { return ps__dummy("psp__waitpid"); }
 SEXP psp__stat_st_rdev(SEXP x) { return ps__dummy("psp__stat_st_rdev"); }
 #endif
@@ -65,18 +65,18 @@ SEXP ps__memory_maps(SEXP p) { return ps__dummy("ps__memory_maps"); }
 #ifndef PS__MACOS
 #ifndef PS__LINUX
 #ifndef PS__WINDOWS
-SEXP ps__pids() { return ps__dummy("ps_pids"); }
-SEXP ps__boot_time() { return ps__dummy("ps_boot_time"); }
-SEXP ps__cpu_count_logical()  { return ps__dummy("ps_cpu_count"); }
-SEXP ps__cpu_count_physical() { return ps__dummy("ps_cpu_count"); }
-SEXP ps__users() { return ps__dummy("ps_users"); }
+SEXP ps__pids(void) { return ps__dummy("ps_pids"); }
+SEXP ps__boot_time(void) { return ps__dummy("ps_boot_time"); }
+SEXP ps__cpu_count_logical(void)  { return ps__dummy("ps_cpu_count"); }
+SEXP ps__cpu_count_physical(void) { return ps__dummy("ps_cpu_count"); }
+SEXP ps__users(void) { return ps__dummy("ps_users"); }
 SEXP ps__loadavg(SEXP x) { return ps__dummy("ps_loadavg"); }
-SEXP ps__tty_size() { return ps__dummy("ps_tty_size"); }
+SEXP ps__tty_size(void) { return ps__dummy("ps_tty_size"); }
 SEXP ps__disk_partitions(SEXP x) { return ps__dummy("ps_disk_partitions"); }
-SEXP ps__disk_usage() { return ps__dummy("ps_disk_usage"); }
-SEXP ps__system_cpu_times() { return ps__dummy("ps_system_cpu_times"); }
-SEXP ps__system_memory() { return ps__dummy("ps_system_memory"); }
-SEXP ps__system_swap() { return ps__dummy("ps_system_swap"); }
+SEXP ps__disk_usage(void) { return ps__dummy("ps_disk_usage"); }
+SEXP ps__system_cpu_times(void) { return ps__dummy("ps_system_cpu_times"); }
+SEXP ps__system_memory(void) { return ps__dummy("ps_system_memory"); }
+SEXP ps__system_swap(void) { return ps__dummy("ps_system_swap"); }
 
 SEXP psll_handle(SEXP x, SEXP y) { return ps__dummy("ps_handle"); }
 SEXP psll_format(SEXP x) { return ps__dummy("ps_format"); }
@@ -95,7 +95,7 @@ SEXP psll_terminal(SEXP x) { return ps__dummy("ps_terminal"); }
 SEXP psll_environ(SEXP x) { return ps__dummy("ps_environ"); }
 SEXP psll_num_threads(SEXP x) { return ps__dummy("ps_num_threads"); }
 SEXP psll_cpu_times(SEXP x) { return ps__dummy("ps_cpu_times"); }
-SEXP psll_memory_info() { return ps__dummy("ps_memory_info"); }
+SEXP psll_memory_info(void) { return ps__dummy("ps_memory_info"); }
 SEXP psll_send_signal(SEXP x, SEXP y) { return ps__dummy("ps_send_signal"); }
 SEXP psll_suspend(SEXP x) { return ps__dummy("ps_suspend"); }
 SEXP psll_resume(SEXP x) { return ps__dummy("ps_resume"); }
@@ -118,7 +118,7 @@ SEXP ps__memory_maps(SEXP p) { return ps__dummy("ps__memory_maps"); }
 
 SEXP psp__pid_exists(SEXP x) { return ps__dummy("psp__pid_exists"); }
 SEXP psp__stat_st_rdev(SEXP x) { return ps__dummy("psp__stat_st_rdev"); }
-SEXP psp__zombie() { return ps__dummy("psp__zombie"); }
+SEXP psp__zombie(void) { return ps__dummy("psp__zombie"); }
 SEXP psp__waitpid(SEXP x) { return ps__dummy("psp__waitpid"); }
 
 SEXP psw__realpath(SEXP x) { return ps__dummy("psw__realpath"); }

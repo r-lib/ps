@@ -62,10 +62,10 @@ typedef struct {
 SEXP psll__is_running(ps_handle_t *handle);
 
 SEXP ps__get_pw_uid(SEXP r_uid);
-SEXP ps__define_signals();
-SEXP ps__define_errno();
-SEXP ps__define_socket_address_families();
-SEXP ps__define_socket_types();
+SEXP ps__define_signals(void);
+SEXP ps__define_errno(void);
+SEXP ps__define_socket_address_families(void);
+SEXP ps__define_socket_types(void);
 
 /* Errors */
 
@@ -79,8 +79,8 @@ void ps__protect_free_finalizer(SEXP ptr);
   } while (0)
 
 void *ps__set_error(const char *msg, ...);
-void *ps__set_error_from_errno();
-SEXP ps__throw_error();
+void *ps__set_error_from_errno(void);
+SEXP ps__throw_error(void);
 
 void *ps__access_denied(const char *msg);
 void *ps__no_such_process(long pid, const char *name);

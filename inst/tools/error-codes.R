@@ -5,7 +5,7 @@ code <- '
 
 #include <errno.h>
 
-SEXP ps__define_errno() {
+SEXP ps__define_errno(void) {
 
   SEXP env = PROTECT(Rf_allocSExp(ENVSXP));
 

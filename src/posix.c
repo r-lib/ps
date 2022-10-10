@@ -178,7 +178,7 @@ SEXP psp__stat_st_rdev(SEXP files) {
   return result;
 }
 
-pid_t ps__zombie() {
+pid_t ps__zombie(void) {
   pid_t child_pid;
 
   child_pid = fork();
@@ -188,7 +188,7 @@ pid_t ps__zombie() {
   return child_pid;
 }
 
-SEXP psp__zombie() {
+SEXP psp__zombie(void) {
   return ScalarInteger((int) ps__zombie());
 }
 
@@ -222,7 +222,7 @@ SEXP psp__waitpid(SEXP r_pid) {
   pid_t pid = INTEGER(r_pid)[0];
   return ScalarInteger(ps__waitpid(pid));
 }
-SEXP ps__define_signals() {
+SEXP ps__define_signals(void) {
 
   SEXP signalenv = PROTECT(Rf_allocSExp(ENVSXP));
 
@@ -357,7 +357,7 @@ SEXP ps__define_signals() {
 }
 
 
-SEXP ps__define_socket_address_families() {
+SEXP ps__define_socket_address_families(void) {
   SEXP afenv = PROTECT(Rf_allocSExp(ENVSXP));
 
 #define PS_ADD_AF(af)						\
@@ -507,7 +507,7 @@ SEXP ps__define_socket_address_families() {
   return afenv;
 }
 
-SEXP ps__define_socket_types() {
+SEXP ps__define_socket_types(void) {
   SEXP env = PROTECT(Rf_allocSExp(ENVSXP));
 
 #define PS_ADD_SOCKET_TYPE(type)					\

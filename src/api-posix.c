@@ -95,7 +95,7 @@ SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path) {
   return res;
 }
 
-SEXP ps__tty_size() {
+SEXP ps__tty_size(void) {
   struct winsize w;
   int err = ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
   if (err == -1) {

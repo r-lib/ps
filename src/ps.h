@@ -49,18 +49,18 @@ SEXP psll_set_cpu_aff(SEXP p, SEXP affinity);
 
 /* System API */
 
-SEXP ps__os_type();
-SEXP ps__pids();
-SEXP ps__boot_time();
-SEXP ps__cpu_count_logical();
-SEXP ps__cpu_count_physical();
-SEXP ps__system_cpu_times();
-SEXP ps__users();
-SEXP ps__tty_size();
+SEXP ps__os_type(void);
+SEXP ps__pids(void);
+SEXP ps__boot_time(void);
+SEXP ps__cpu_count_logical(void);
+SEXP ps__cpu_count_physical(void);
+SEXP ps__system_cpu_times(void);
+SEXP ps__users(void);
+SEXP ps__tty_size(void);
 SEXP ps__disk_partitions(SEXP all);
 SEXP ps__disk_usage(SEXP paths);
-SEXP ps__system_memory();
-SEXP ps__system_swap();
+SEXP ps__system_memory(void);
+SEXP ps__system_swap(void);
 SEXP ps__loadavg(SEXP counter_name);
 
 /* Generic utils used from R */
@@ -71,7 +71,7 @@ SEXP ps__find_if_env(SEXP marker, SEXP after, SEXP pid);
 SEXP ps__inet_ntop(SEXP raw, SEXP fam);
 SEXP ps__memory_maps(SEXP p);
 
-SEXP psp__zombie();
+SEXP psp__zombie(void);
 SEXP psp__waitpid(SEXP pid);
 SEXP psp__pid_exists(SEXP r_pid);
 SEXP psp__stat_st_rdev(SEXP files);

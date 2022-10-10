@@ -18,7 +18,7 @@ int PS__TESTING = 0;
  * env var. This dual method exists because updating os.environ on
  * Windows has no effect. Called on unit tests setup.
  */
-void ps__set_testing() {
+void ps__set_testing(void) {
   PS__TESTING = 1;
 }
 

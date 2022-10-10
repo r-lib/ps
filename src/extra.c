@@ -87,7 +87,7 @@ void *ps__no_memory(const char *msg) {
 			    msg && strlen(msg) ? msg : "Out of memory");
 }
 
-void *ps__set_error_from_errno() {
+void *ps__set_error_from_errno(void) {
   if (errno) {
     return ps__set_error_impl("os_error", errno, NA_INTEGER, "%s",
 			      strerror(errno));
@@ -105,7 +105,7 @@ void *ps__set_error_from_windows_error(long err) {
 }
 #endif
 
-SEXP ps__throw_error() {
+SEXP ps__throw_error(void) {
   SEXP stopfun, call, out;
 
   Rf_setAttrib(ps__last_error, R_ClassSymbol, VECTOR_ELT(ps__last_error, 1));
