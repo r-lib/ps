@@ -1,6 +1,8 @@
 
 # ps development version
 
+* `ps_system_memory()$percent` now returns a number scaled between 0 and 100 on Windows, rather than between 0 and 1 (#131, @francisbarton).
+
 # ps 1.7.1
 
 * ps now returns data frames instead of tibbles. While data frames and
@@ -57,7 +59,7 @@
 
 * New `ps_tty_size()` function to query the size of the terminal.
 
-* Fixed an issue in `CLeanupReporter()` that triggered random failures
+* Fixed an issue in `CleanupReporter()` that triggered random failures
   on macOS.
 
 # ps 1.3.4

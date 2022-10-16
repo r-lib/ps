@@ -11,7 +11,7 @@ CleanupReporter(reporter = testthat::ProgressReporter)
 class.}
 }
 \value{
-New reporter class  that behaves exactly like \code{reporter},
+New reporter class that behaves exactly like \code{reporter},
 but it checks for, and optionally cleans up child processes, at the
 specified granularity.
 }
