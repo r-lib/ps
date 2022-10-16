@@ -48,7 +48,7 @@ globalVariables("private")
 #'
 #' @param reporter A testthat reporter to wrap into a new `CleanupReporter`
 #'   class.
-#' @return New reporter class  that behaves exactly like `reporter`,
+#' @return New reporter class that behaves exactly like `reporter`,
 #'   but it checks for, and optionally cleans up child processes, at the
 #'   specified granularity.
 #'
