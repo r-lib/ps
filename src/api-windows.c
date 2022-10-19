@@ -951,7 +951,7 @@ SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path) {
     /* lpProcessInformation = */ &info);
 
   if (!iret) {
-    ps__set_error_from_errno(0);
+    ps__set_error_from_errno();
     goto error;
   }
 
@@ -1269,7 +1269,7 @@ SEXP ps__disk_partitions(SEXP rall) {
   num_bytes = GetLogicalDriveStrings(254, drive_letter);
 
   if (num_bytes == 0) {
-    ps__set_error_from_errno(0);
+    ps__set_error_from_errno();
     goto error;
   }
 
