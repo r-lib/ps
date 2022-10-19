@@ -50,7 +50,7 @@ ps_system_memory <- function() {
     l <- .Call(ps__system_memory)[c("total", "avail")]
     l$free <- l$avail
     l$used <- l$total - l$avail
-    l$percent <- (l$total - l$avail) / l$total
+    l$percent <- (l$total - l$avail) * 100 / l$total
     l[c("total", "avail", "percent", "used", "free")]
 
   } else {
@@ -137,7 +137,7 @@ ps_system_swap <- function() {
     total <- l[[3]]
     free <- l[[4]]
     used <- total - free
-    percent = used / total
+    percent <- used / total
     list(total = total, used = used, free = free,
          percent = percent, sin = NA_real_, sout = NA_real_)
 

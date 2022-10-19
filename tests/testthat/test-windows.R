@@ -27,3 +27,10 @@ test_that("terminal", {
 ## TODO: username
 ## TODO: cpu_times
 ## TODO: memory_info
+
+test_that("total and available mem", {
+  l <- .Call(ps__system_memory)[c("total", "avail")]
+  expect_that(is.numeric(l$total))
+  expect_that(is.numeric(l$avail))
+  expect_lte(l$avail, l$total)
+})
