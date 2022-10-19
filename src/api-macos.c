@@ -771,7 +771,7 @@ SEXP psll_connections(SEXP p) {
 
 	// check for inet_ntop failures
 	if (errno != 0) {
-	  ps__set_error_from_errno(0);
+	  ps__set_error_from_errno();
 	  goto error;
 	}
 

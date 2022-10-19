@@ -26,7 +26,7 @@ static int ps__create_time_raw(DWORD pid, FILETIME *ftCreate) {
       // NoSuchProcess here
       ps__no_such_process(pid, 0);
     } else {
-      ps__set_error_from_windows_error(0);
+      ps__set_error_from_windows_error();
     }
     goto error;
   }
@@ -607,7 +607,7 @@ unsigned int ps__get_num_cpus(int fail_on_err) {
   if (_GetActiveProcessorCount != NULL) {
     ncpus = _GetActiveProcessorCount(ALL_PROCESSOR_GROUPS);
     if ((ncpus == 0) && (fail_on_err == 1)) {
-      ps__set_error_from_windows_error(0);
+      ps__set_error_from_windows_error();
     }
   } else {
     ps__debug("GetActiveProcessorCount() not available; "
