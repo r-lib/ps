@@ -26,7 +26,7 @@ static int ps__create_time_raw(DWORD pid, FILETIME *ftCreate) {
       // NoSuchProcess here
       ps__no_such_process(pid, 0);
     } else {
-      ps__set_error_from_windows_error();
+      ps__set_error_from_windows_error(0);
     }
     goto error;
   }
@@ -607,7 +607,7 @@ unsigned int ps__get_num_cpus(int fail_on_err) {
   if (_GetActiveProcessorCount != NULL) {
     ncpus = _GetActiveProcessorCount(ALL_PROCESSOR_GROUPS);
     if ((ncpus == 0) && (fail_on_err == 1)) {
-      ps__set_error_from_windows_error();
+      ps__set_error_from_windows_error(0);
     }
   } else {
     ps__debug("GetActiveProcessorCount() not available; "
@@ -951,7 +951,7 @@ SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path) {
     /* lpProcessInformation = */ &info);
 
   if (!iret) {
-    ps__set_error_from_errno(0);
+    ps__set_error_from_errno();
     goto error;
   }
 
@@ -1269,7 +1269,7 @@ SEXP ps__disk_partitions(SEXP rall) {
   num_bytes = GetLogicalDriveStrings(254, drive_letter);
 
   if (num_bytes == 0) {
-    ps__set_error_from_errno(0);
+    ps__set_error_from_errno();
     goto error;
   }
 
