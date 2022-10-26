@@ -50,7 +50,7 @@ memory devoted to other than executable code (bytes). It matches "top"‘s
 }
 
 For the explanation of Windows fields see the
-\href{https://docs.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex}{PROCESS_MEMORY_COUNTERS_EX}
+\href{https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex}{PROCESS_MEMORY_COUNTERS_EX}
 structure.
 
 \code{ps_memory_full_info()} returns all fields as \code{ps_memory_info()}, plus

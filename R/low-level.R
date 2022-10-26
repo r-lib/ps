@@ -507,7 +507,7 @@ ps_cpu_times <- function(p = ps_handle()) {
 #' * `pageins`: (macOS): number of actual pageins.
 #'
 #' For the explanation of Windows fields see the
-#' [PROCESS_MEMORY_COUNTERS_EX](https://docs.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex)
+#' [PROCESS_MEMORY_COUNTERS_EX](https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex)
 #' structure.
 #'
 #' `ps_memory_full_info()` returns all fields as `ps_memory_info()`, plus
