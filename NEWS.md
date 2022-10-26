@@ -1,5 +1,4 @@
-
-# ps development version
+# ps 1.7.2
 
 * `ps_system_memory()$percent` now returns a number scaled between 0 and 100
   on Windows, rather than between 0 and 1 (#131, @francisbarton).
