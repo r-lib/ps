@@ -30,7 +30,7 @@ test_that("terminal", {
 
 test_that("total and available mem", {
   l <- .Call(ps__system_memory)[c("total", "avail")]
-  expect_that(is.numeric(l$total))
-  expect_that(is.numeric(l$avail))
+  expect_true(is.numeric(l$total))
+  expect_true(is.numeric(l$avail))
   expect_lte(l$avail, l$total)
 })
