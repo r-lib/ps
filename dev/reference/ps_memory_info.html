@@ -92,7 +92,7 @@ memory devoted to other than executable code (bytes). It matches "top"‘s
 <li><p><code>pfaults</code>: (macOS): number of page faults.</p></li>
 <li><p><code>pageins</code>: (macOS): number of actual pageins.</p></li>
 </ul><p>For the explanation of Windows fields see the
-<a href="https://docs.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex" class="external-link">PROCESS_MEMORY_COUNTERS_EX</a>
+<a href="https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex" class="external-link">PROCESS_MEMORY_COUNTERS_EX</a>
 structure.</p>
 <p><code>ps_memory_full_info()</code> returns all fields as <code>ps_memory_info()</code>, plus
 additional information, but typically takes slightly longer to run, and
@@ -146,15 +146,15 @@ disk.</p></li>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">p</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=11544, NAME=R, AT=2022-10-19 08:24:47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=13207, NAME=R, AT=2022-10-26 16:42:10</span>
 <span class="r-in"><span><span class="fu">ps_memory_info</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       rss       vms    shared      text       lib      data     dirty </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 254124032 493113344  31125504      4096         0 329461760         0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 254431232 493277184  31281152      4096         0 329609216         0 </span>
 <span class="r-in"><span><span class="fu">ps_memory_full_info</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       rss       vms    shared      text       lib      data     dirty </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 254124032 493113344  31125504      4096         0 329461760         0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 254431232 493277184  31281152      4096         0 329609216         0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       uss       pss      swap </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 234934272 237793280         0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 235233280 238140416         0 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
