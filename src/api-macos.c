@@ -21,6 +21,8 @@
 #include "ps-internal.h"
 #include "arch/macos/process_info.h"
 
+#include <stdbool.h>
+
 #define PS__TV2DOUBLE(t) ((t).tv_sec + (t).tv_usec / 1000000.0)
 
 #define PS__CHECK_KINFO(kp, handle)				      \
