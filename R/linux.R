@@ -2,7 +2,7 @@
 #' @importFrom utils read.table
 
 psl_connections <- function(p) {
-  sock_raw <- not_null(.Call("psll_connections", p))
+  sock_raw <- not_null(.Call(psll_connections, p))
   sock <- data_frame(
     fd = as.integer(vapply(sock_raw, "[[", character(1), 1)),
     id = vapply(sock_raw, "[[", character(1), 2)
