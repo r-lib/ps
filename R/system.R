@@ -243,7 +243,6 @@ ps_shared_lib_users <- function(paths, user = ps_username(),
   match_pids <- map_int(match_processes, ps_pid)
 
   d <- data_frame(
-    stringsAsFactors = FALSE,
     dll = basename(unlist(match)),
     path = unlist(match),
     pid = rep(match_pids, match_len),

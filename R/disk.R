@@ -20,7 +20,6 @@ ps_disk_partitions <- function(all = FALSE) {
   l <- not_null(.Call(ps__disk_partitions, all))
 
   d <- data_frame(
-    stringsAsFactors = FALSE,
     device = vapply(l, "[[", character(1), 1),
     mountpoint = vapply(l, "[[", character(1), 2),
     fstype = vapply(l, "[[", character(1), 3),
@@ -112,7 +111,6 @@ ps__disk_usage_format_posix <- function(paths, l) {
   })
 
   d <- data_frame(
-    stringsAsFactors = FALSE,
     mountpoint = paths,
     total = vapply(l2, "[[", double(1), "total"),
     used = vapply(l2, "[[", double(1), "used"),

@@ -1,5 +1,9 @@
 # ps (development version)
 
+* The output of `ps_disk_usage()`, `ps_disk_partitions()` and
+  `ps_shared_lib_users()` now do not include a spurious `stringsAsFactors`
+  column.
+
 # ps 1.7.2
 
 * `ps_system_memory()$percent` now returns a number scaled between 0 and 100
