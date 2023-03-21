@@ -84,7 +84,7 @@ SEXP ps__pids() {
   return R_NilValue;
 }
 
-SEXP ps__define_tcp_statuses() {
+SEXP ps__define_tcp_statuses(void) {
   SEXP result, names;
 
   PROTECT(result = allocVector(INTSXP, 12));

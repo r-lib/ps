@@ -724,7 +724,7 @@ SEXP psw__realpath(SEXP path) {
   return res;
 }
 
-SEXP ps__define_tcp_statuses() {
+SEXP ps__define_tcp_statuses(void) {
   SEXP result, names;
 
   PROTECT(result = allocVector(INTSXP, 13));
