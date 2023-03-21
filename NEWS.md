@@ -1,4 +1,4 @@
-# ps (development version)
+# ps 1.7.3
 
 * The output of `ps_disk_usage()`, `ps_disk_partitions()` and
   `ps_shared_lib_users()` now do not include a spurious `stringsAsFactors`
