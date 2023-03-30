@@ -839,6 +839,14 @@ static bool ps_in_shared_region(mach_vm_address_t addr, cpu_type_t type) {
     base = SHARED_REGION_BASE_X86_64;
     size = SHARED_REGION_SIZE_X86_64;
     break;
+  case CPU_TYPE_POWERPC:
+    base = SHARED_REGION_BASE_PPC;
+    size = SHARED_REGION_SIZE_PPC;
+    break;
+  case CPU_TYPE_POWERPC64:
+    base = SHARED_REGION_BASE_PPC64;
+    size = SHARED_REGION_SIZE_PPC64;
+    break;
   default:
     return false;
   }
