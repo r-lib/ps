@@ -1128,6 +1128,8 @@ SEXP psll_get_cpu_aff(SEXP p) {
 
   PS__CHECK_HANDLE(handle);
 
+  pid = handle->pid;
+
   ncpus = NCPUS_START;
   while (1) {
     setsize = CPU_ALLOC_SIZE(ncpus);
