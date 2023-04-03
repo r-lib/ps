@@ -30,7 +30,7 @@ waited-for children have been scheduled in kernel mode.
     
     <a class="navbar-brand me-2" href="../index.html">ps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.7.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.7.4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,13 +136,13 @@ non-Linux systems.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">p</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=6833, NAME=R, AT=2023-03-30 12:05:33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=5515, NAME=R, AT=2023-04-03 07:16:36</span>
 <span class="r-in"><span><span class="fu">ps_cpu_times</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            user          system   children_user children_system </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            7.68            0.28            1.38            0.73 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           10.89            0.42            1.79            0.91 </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/proc.time.html" class="external-link">proc.time</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   9.074   1.019  11.931 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  12.689   1.343  17.021 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
