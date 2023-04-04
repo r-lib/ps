@@ -47,7 +47,7 @@
 /*
  * Return an integer vector of all the PIDs running on the system.
  */
-SEXP ps__pids() {
+SEXP ps__pids(void) {
   kinfo_proc *proclist = NULL;
   kinfo_proc *orig_address = NULL;
   size_t num_processes;

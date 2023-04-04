@@ -449,7 +449,7 @@ SEXP psll_memory_info(SEXP p) {
   return result;
 }
 
-SEXP ps__boot_time() {
+SEXP ps__boot_time(void) {
 #define MIB_SIZE 2
   int mib[MIB_SIZE];
   size_t size;
@@ -469,7 +469,7 @@ SEXP ps__boot_time() {
   return ScalarReal(unixtime);
 }
 
-SEXP ps__cpu_count_logical() {
+SEXP ps__cpu_count_logical(void) {
   int num = 0;
   size_t size = sizeof(int);
 
@@ -479,7 +479,7 @@ SEXP ps__cpu_count_logical() {
     return ScalarInteger(num);
 }
 
-SEXP ps__cpu_count_physical() {
+SEXP ps__cpu_count_physical(void) {
   int num = 0;
   size_t size = sizeof(int);
 
@@ -944,7 +944,7 @@ SEXP psll_memory_uss(SEXP p) {
   return Rf_ScalarInteger(private_pages * pagesize);
 }
 
-SEXP ps__users() {
+SEXP ps__users(void) {
   struct utmpx *utx;
   SEXP result;
   PROTECT_INDEX pidx;
@@ -1091,7 +1091,7 @@ int ps__sys_vminfo(vm_statistics_data_t *vmstat) {
   return 0;
 }
 
-SEXP ps__system_memory() {
+SEXP ps__system_memory(void) {
   int mib[2];
   uint64_t total;
   size_t len = sizeof(total);
@@ -1125,7 +1125,7 @@ SEXP ps__system_memory() {
   );
 }
 
-SEXP ps__system_swap() {
+SEXP ps__system_swap(void) {
   int mib[2];
   size_t size;
   struct xsw_usage totals;
@@ -1178,7 +1178,7 @@ SEXP ps__loadavg(SEXP counter_name) {
   return ret;
 }
 
-SEXP ps__system_cpu_times() {
+SEXP ps__system_cpu_times(void) {
   mach_msg_type_number_t count = HOST_CPU_LOAD_INFO_COUNT;
   kern_return_t error;
   host_cpu_load_info_data_t r_load;
