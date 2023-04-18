@@ -63,9 +63,9 @@ test_that("UNIX sockets with path", {
 })
 
 test_that("TCP", {
-  skip_if_offline()
+  skip_on_cran()
   before <- ps_connections(ps_handle())
-  cx <- curl::curl(httpbin_url(), open = "r")
+  cx <- curl::curl(httpbin$url(), open = "r")
   on.exit({ close(cx); rm(cx); gc() }, add = TRUE)
   after <- ps_connections(ps_handle())
   new <- after[! after$lport %in% before$lport, ]
@@ -73,7 +73,7 @@ test_that("TCP", {
   expect_equal(new$type, "SOCK_STREAM")
   expect_true(is_ipv4_address(new$laddr))
   expect_true(is.integer(new$lport))
-  expect_equal(new$rport, 80L)
+  expect_equal(new$rport, httpbin$get_port())
   expect_equal(new$state, "CONN_ESTABLISHED")
 })
 
@@ -111,9 +111,11 @@ test_that("TCP on loopback", {
 })
 
 test_that("UDP", {
-  skip_if_offline()
+  # does not work offline
+  skip_on_cran()
   skip_without_program("socat")
   skip_if_no_processx()
+  if (!pingr::is_online()) skip("Offline")
 
   nc <- processx::process$new(
     "socat", c("-", "UDP4-CONNECT:8.8.8.8:53,pf=ip4"), stdin = "|")
@@ -168,7 +170,6 @@ test_that("UDP on loopback", {
 })
 
 test_that("TCP6", {
-  skip_if_offline()
   skip_without_program("socat")
   skip_if_no_processx()
   skip_without_ipv6()
@@ -227,7 +228,6 @@ test_that("TCP6 on loopback", {
 })
 
 test_that("UDP6", {
-  skip_if_offline()
   skip_without_ipv6()
   skip_without_ipv6_connection()
   skip_without_program("socat")

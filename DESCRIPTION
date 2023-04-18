@@ -28,6 +28,7 @@ Suggests:
     R6,
     rlang,
     testthat (>= 3.0.0),
+    webfakes
 Biarch: true
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

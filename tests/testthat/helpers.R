@@ -76,27 +76,6 @@ skip_without_ipv6_connection <- function() {
   if (!have_ipv6_connection()) skip("Needs working IPv6 connection")
 }
 
-httpbin_url <- function() {
-  "eu.httpbin.org"
-}
-
-is_offline <- (function() {
-  offline <- NULL
-  function() {
-    if (is.null(offline)) {
-      offline <<- tryCatch(
-        is.na(pingr::ping_port(httpbin_url(), port = 443, count = 1L)),
-        error = function(e) TRUE
-      )
-    }
-    offline
-  }
-})()
-
-skip_if_offline <- function() {
-  if (is_offline()) skip("Offline")
-}
-
 wait_for_string <- function(proc, string, timeout) {
   deadline <- Sys.time() + as.difftime(timeout / 1000, units = "secs")
   str <- ""
@@ -126,3 +105,8 @@ cleanup_process <- function(p) {
   tryCatch(p$kill(), error = function(x) x)
   gc()
 }
+
+httpbin <- webfakes::new_app_process(
+  webfakes::httpbin_app(),
+  opts = webfakes::server_opts(num_threads = 6)
+)
