@@ -70,7 +70,7 @@ test_that("TCP", {
   httpbin$url()
 
   before <- ps_connections(ps_handle())
-  cx <- curl::curl(httpbin$url(), open = "r")
+  cx <- curl::curl(httpbin$url("/drip"), open = "r")
   on.exit({ close(cx); rm(cx); gc() }, add = TRUE)
   after <- ps_connections(ps_handle())
   new <- after[! after$lport %in% before$lport, ]
