@@ -64,6 +64,11 @@ test_that("UNIX sockets with path", {
 
 test_that("TCP", {
   skip_on_cran()
+
+  # need to connect now, otherwise the connections needed for webfakes
+  # show up in the list
+  httpbin$url()
+
   before <- ps_connections(ps_handle())
   cx <- curl::curl(httpbin$url(), open = "r")
   on.exit({ close(cx); rm(cx); gc() }, add = TRUE)

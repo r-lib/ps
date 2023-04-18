@@ -354,7 +354,7 @@ test_that("Network cleanup, test, fail", {
         proc_fail = FALSE, rconn_cleanup = FALSE, rconn_fail = FALSE,
         file_fail = FALSE), {
         test_that("foobar", {
-          out$conn <<- curl::curl(httpbin$url(), open = "r")
+          out$conn <<- curl::curl(httpbin$url("/drip"), open = "r")
           out$open <<- isOpen(out$conn)
         })
       }
@@ -377,7 +377,7 @@ test_that("Network cleanup, unit: testsuite", {
         conn_unit = "testsuite", proc_fail = FALSE, rconn_fail = FALSE,
         rconn_cleanup = FALSE, file_fail = FALSE), {
         test_that("foobar", {
-          out$conn <<- curl::curl(httpbin$url(), open = "r")
+          out$conn <<- curl::curl(httpbin$url("/drip"), open = "r")
           out$open <<- isOpen(out$conn)
         })
         test_that("foobar2", {
