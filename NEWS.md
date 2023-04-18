@@ -1,4 +1,4 @@
-# ps (development version)
+# ps 1.7.5
 
 # ps 1.7.4
 
