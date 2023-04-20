@@ -180,7 +180,7 @@ ps_cpu_count_physical_linux <- function() {
 ps__system_cpu_times_linux <- function() {
   tryCatch(
     clock_ticks <- as.numeric(system("getconf CLK_TCK", intern=TRUE)),
-    error = function(e) return(100)
+    error = function(e) return(250)
   )
   stat <- readLines("/proc/stat", n = 1)
   tms <- as.double(strsplit(stat, "\\s+")[[1]][-1]) / clock_ticks
