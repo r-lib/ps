@@ -124,6 +124,17 @@ ps__disk_usage_format_posix <- function(paths, l) {
 
 #' Return system-wide disk I/O counters
 #'
+#' Includes the following fields for all supported platforms:
+#' * `read_count`: number of reads
+#' * `write_count`: number of writes
+#' * `read_bytes`: number of bytes read
+#' * `write_bytes`: number of bytes written
+#' And for only some platforms:
+#' * `read_time`:time spent reading from disk (in milliseconds)
+#' * `write_time`: time spent writing to disk (in milliseconds)
+#' * `busy_time`: time spent doing actual I/Os (in milliseconds)
+#' * `read_merged_count`: number of merged reads (see iostats doc)
+#' * `write_merged_count`: number of merged writes (see iostats doc)
 #'
 #' @param perdisk If `TRUE`, return 1 row for every physical disk on the system, else
 #' return totals.
@@ -131,10 +142,15 @@ ps__disk_usage_format_posix <- function(paths, l) {
 #' @return A data frame of either 1 row of total disk I/O, or 1 row
 #' per disk of I/O stats, with columns `name`, `read_count` `read_merged_count`
 #' `read_bytes`, `read_time`, `write_count`, `write_merged_count`, `write_bytes`
-#' `write_time`, and `busy_time`.
+#' `write_time`, and `busy_time`. `name` will be `NA` if perdisk is `FALSE`.
 #'
+#' @family disk functions
 #' @export
+#' @examplesIf ps:::ps_os_name() == "LINUX" && ! ps:::is_cran_check()
+#' ps_disk_io_counters()
+#' ps_disk_io_counters(perdisk == TRUE)
 ps_disk_io_counters <- function(perdisk = FALSE) {
+  assert_flag(perdisk)
   if (ps_os_name() == "LINUX") {
     return(ps__disk_io_counters_linux(perdisk))
   } else {

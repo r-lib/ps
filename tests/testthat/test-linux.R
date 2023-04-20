@@ -43,3 +43,40 @@ test_that("memory_info", {
   expect_equal(mem[["vms"]], mem2[[1]] * page_size)
   expect_equal(mem[["rss"]], mem2[[2]] * page_size)
 })
+
+test_that("disk_io", {
+  # Validate inputs
+  expect_error(ps_disk_io_counters(123), class = "invalid_argument")
+
+  # Get total and perdisk results
+  result <- ps_disk_io_counters()
+  res_perdisk <- ps_disk_io_counters(perdisk=TRUE)
+
+  # Check structure
+  expect_named(
+    result,
+    c(
+      "read_bytes",
+      "write_bytes",
+      "read_count",
+      "write_count",
+      "read_merged_count",
+      "read_time",
+      "write_merged_count",
+      "write_time",
+      "busy_time",
+      "name"
+    )
+  )
+  expect_type(result, "list")
+  expect_s3_class(result, "data.frame")
+
+  # Non-Perdisk will be lte non-perdisk, due to virtual disks
+  expect_lte(result$read_bytes, sum(res_perdisk$read_bytes))
+
+  # Check doesnt run on windows
+  local_mocked_bindings(
+    ps_os_name = function(x) "WINDOWS"
+  )
+  expect_error(ps_disk_io)
+})
