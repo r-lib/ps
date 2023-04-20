@@ -2,7 +2,7 @@
 % Please edit documentation in R/disk.R
 \name{ps_disk_io_counters}
 \alias{ps_disk_io_counters}
-\title{Return system-wide disk I/O counters}
+\title{System-wide disk I/O counters}
 \usage{
 ps_disk_io_counters(perdisk = FALSE)
 }
@@ -17,14 +17,20 @@ per disk of I/O stats, with columns \code{name}, \code{read_count} \code{read_me
 \code{write_time}, and \code{busy_time}. \code{name} will be \code{NA} if perdisk is \code{FALSE}.
 }
 \description{
+Returns a data.frame of system-wide disk I/O counters.
+}
+\details{
 Includes the following fields for all supported platforms:
 \itemize{
 \item \code{read_count}: number of reads
 \item \code{write_count}: number of writes
 \item \code{read_bytes}: number of bytes read
 \item \code{write_bytes}: number of bytes written
+}
+
 And for only some platforms:
-\item \code{read_time}:time spent reading from disk (in milliseconds)
+\itemize{
+\item \code{read_time}: time spent reading from disk (in milliseconds)
 \item \code{write_time}: time spent writing to disk (in milliseconds)
 \item \code{busy_time}: time spent doing actual I/Os (in milliseconds)
 \item \code{read_merged_count}: number of merged reads (see iostats doc)

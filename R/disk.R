@@ -122,15 +122,18 @@ ps__disk_usage_format_posix <- function(paths, l) {
 }
 
 
-#' Return system-wide disk I/O counters
+#' System-wide disk I/O counters
+#'
+#' Returns a data.frame of system-wide disk I/O counters.
 #'
 #' Includes the following fields for all supported platforms:
 #' * `read_count`: number of reads
 #' * `write_count`: number of writes
 #' * `read_bytes`: number of bytes read
 #' * `write_bytes`: number of bytes written
+#'
 #' And for only some platforms:
-#' * `read_time`:time spent reading from disk (in milliseconds)
+#' * `read_time`: time spent reading from disk (in milliseconds)
 #' * `write_time`: time spent writing to disk (in milliseconds)
 #' * `busy_time`: time spent doing actual I/Os (in milliseconds)
 #' * `read_merged_count`: number of merged reads (see iostats doc)
