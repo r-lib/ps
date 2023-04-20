@@ -189,9 +189,10 @@ ps__system_cpu_times_linux <- function() {
 }
 
 
-#' Internal disk IO counters for Linux, reads lines from diskstats if it exists
-#' or /sys/block as a backup
+
 ps__disk_io_counters_linux <- function(perdisk = FALSE) {
+  # Internal disk IO counters for Linux, reads lines from diskstats if it exists
+  # or /sys/block as a backup
   if (file.exists("/proc/diskstats")) {
     disk_info <- ps__read_procfs()
   } else if (dir.exists("/sys/block")) {
@@ -216,8 +217,8 @@ ps__disk_io_counters_linux <- function(perdisk = FALSE) {
   return(disk_io)
 }
 
-#' Whether a named drive (e.g. 'sda') is a real storage device, or a virtual one
 ps__is_storage_device <- function(name, including_virtual = TRUE) {
+  # Whether a named drive (e.g. 'sda') is a real storage device, or a virtual one
   name <- gsub("/", "!", name, fixed=TRUE)
   if (including_virtual) {
     path <- file.path("/sys/block", name)
@@ -228,8 +229,8 @@ ps__is_storage_device <- function(name, including_virtual = TRUE) {
   return(dir.exists(path))
 }
 
-#' Read total disk IO stats from /proc/diskstats
 ps__read_procfs <- function() {
+  # Read total disk IO stats from /proc/diskstats
   file <- readLines("/proc/diskstats")
   # Get info as list of vectors (could be different lengths)
   lines <- strsplit(trimws(file), "\\s+")
@@ -276,8 +277,9 @@ ps__read_procfs <- function() {
   ))
 }
 
-#' Read disk IO from each device folder in /sys/block
 ps__read_sysfs <- function() {
+  # Read disk IO from each device folder in /sys/block
+
   # Get stat files for each block
   blocks <- list.dirs("/sys/block/", recursive = FALSE)
   all_files <- list.files(blocks, full.names = TRUE)
