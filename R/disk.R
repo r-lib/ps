@@ -120,3 +120,24 @@ ps__disk_usage_format_posix <- function(paths, l) {
 
   d
 }
+
+
+#' Return system-wide disk I/O counters
+#'
+#'
+#' @param perdisk If `TRUE`, return 1 row for every physical disk on the system, else
+#' return totals.
+#'
+#' @return A data frame of either 1 row of total disk I/O, or 1 row
+#' per disk of I/O stats, with columns `name`, `read_count` `read_merged_count`
+#' `read_bytes`, `read_time`, `write_count`, `write_merged_count`, `write_bytes`
+#' `write_time`, and `busy_time`.
+#'
+#' @export
+ps_disk_io_counters <- function(perdisk = FALSE) {
+  if (ps_os_name() == "LINUX") {
+    return(ps__disk_io_counters_linux(perdisk))
+  } else {
+    stop("ps_disk_io_counters is currently only implemented for Linux")
+  }
+}
