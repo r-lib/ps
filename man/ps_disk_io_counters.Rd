@@ -40,7 +40,7 @@ And for only some platforms:
 \examples{
 \dontshow{if (ps:::ps_os_name() == "LINUX" && ! ps:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ps_disk_io_counters()
-ps_disk_io_counters(perdisk == TRUE)
+ps_disk_io_counters(perdisk = TRUE)
 \dontshow{\}) # examplesIf}
 }
 \seealso{
