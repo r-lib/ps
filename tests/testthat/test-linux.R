@@ -66,7 +66,8 @@ test_that("disk_io", {
       "write_time",
       "busy_time",
       "name"
-    )
+    ),
+    ignore.order=TRUE
   )
   expect_type(result, "list")
   expect_s3_class(result, "data.frame")

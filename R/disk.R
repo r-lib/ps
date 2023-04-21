@@ -151,7 +151,7 @@ ps__disk_usage_format_posix <- function(paths, l) {
 #' @export
 #' @examplesIf ps:::ps_os_name() == "LINUX" && ! ps:::is_cran_check()
 #' ps_disk_io_counters()
-#' ps_disk_io_counters(perdisk == TRUE)
+#' ps_disk_io_counters(perdisk = TRUE)
 ps_disk_io_counters <- function(perdisk = FALSE) {
   assert_flag(perdisk)
   if (ps_os_name() == "LINUX") {
