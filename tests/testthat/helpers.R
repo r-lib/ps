@@ -110,3 +110,19 @@ httpbin <- webfakes::new_app_process(
   webfakes::httpbin_app(),
   opts = webfakes::server_opts(num_threads = 6)
 )
+
+poll_until <- function(fn, interrupt = 0.2, timeout = 5) {
+  time <- Sys.time()
+  timeout <- time + timeout
+
+  while (Sys.time() < timeout) {
+    if (fn()) {
+      expect_true(TRUE)
+      return()
+    }
+    Sys.sleep(interrupt)
+  }
+
+  skip_on_cran()
+  stop("timeout")
+}

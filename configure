@@ -61,7 +61,7 @@ MACROS=""
 OBJECTS="init.o api-common.o common.o extra.o dummy.o error-codes.o"
 
 if [ -n "$POSIX" ]; then
-    OBJECTS="${OBJECTS} posix.o api-posix.o";
+    OBJECTS="${OBJECTS} posix.o api-posix.o kill-parallel.o";
     MACROS="${MACROS} PS__POSIX"
     PS__POSIX=1
 fi

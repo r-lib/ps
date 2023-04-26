@@ -5,6 +5,8 @@
 #include "config.h"
 #include "ps.h"
 
+#define r_no_return __attribute__ ((noreturn))
+
 #ifdef PS__MACOS
 
 #include <signal.h>
@@ -82,6 +84,29 @@ void *ps__set_error(const char *msg, ...);
 void *ps__set_error_from_errno(void);
 SEXP ps__throw_error(void);
 
+void ps__set_internal_error(const char *func,
+                            const char *filename,
+                            int line,
+                            const char *msg, ...);
+
+r_no_return
+void ps__throw_internal_error(const char *func,
+                              const char *filename,
+                              int line,
+                              const char *msg, ...);
+
+#define PS__SET_INTERNAL_ERROR(...) \
+  ps__set_internal_error(__func__, __FILE__, __LINE__, __VA_ARGS__)
+
+#define PS__STOP_INTERNAL(...) \
+  ps__throw_internal_error(__func__, __FILE__, __LINE__, __VA_ARGS__)
+
+#define PS__STOP_UNREACHABLE(...) \
+  ps__throw_internal_error(__func__, __FILE__, __LINE__, "Reached the unreachable")
+
+SEXP r_check_for_user_interrupt(SEXP cont);
+void r_unwind(SEXP x);
+
 void *ps__access_denied(const char *msg);
 void *ps__no_such_process(long pid, const char *name);
 void *ps__zombie_process(long pid);
@@ -107,6 +132,10 @@ SEXP ps__utf16_to_rawsxp(const WCHAR* ws, int size);
 SEXP ps__utf16_to_charsxp(const WCHAR* ws, int size);
 SEXP ps__utf16_to_strsxp(const WCHAR* ws, int size);
 int ps__utf8_to_utf16(const char* s, WCHAR** ws_ptr);
+#endif
+
+#ifdef PS__POSIX
+SEXP ps__kill_parallel(SEXP ps, SEXP grace);
 #endif
 
 #endif

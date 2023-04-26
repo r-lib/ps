@@ -196,3 +196,14 @@ is_cran_check <- function() {
     Sys.getenv("_R_CHECK_PACKAGE_NAME_", "") != ""
   }
 }
+
+is_handle_list <- function(x) {
+  is.list(x) && all(vlapply(x, inherits, "ps_handle"))
+}
+is_scalar_numeric <- function(x) {
+  is.double(x) && length(x) == 1 && !is.na(x)
+}
+
+vlapply <- function (X, FUN, ..., USE.NAMES = TRUE) {
+  vapply(X, FUN, FUN.VALUE = logical(1), ..., USE.NAMES = USE.NAMES)
+}

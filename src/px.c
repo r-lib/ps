@@ -91,7 +91,10 @@ int echo_from_fd(int fd1, int fd2, int nbytes) {
   return 0;
 }
 
+static void install_sigterm_handler(void);
+
 int main(int argc, const char **argv) {
+  install_sigterm_handler();
 
   int num, idx, ret, fd, fd2, nbytes;
   double fnum;
@@ -181,3 +184,42 @@ int main(int argc, const char **argv) {
 
   return 0;
 }
+
+#ifdef _WIN32
+static void install_sigterm_handler(void) { }
+#else
+#include <signal.h>
+
+static void sig_sleep(int sig);
+static int sig_sleep_microseconds = 0;
+
+static
+void install_sigterm_handler(void) {
+  const char *var = NULL;
+
+  if ((var = getenv("PX_SIGTERM_SLEEP"))) {
+    sig_sleep_microseconds = atoi(var) * 1000;
+
+    struct sigaction sig = {{ 0 }};
+    sig.sa_flags = SA_RESETHAND;
+    sig.sa_handler = &sig_sleep;
+
+    sigaction(SIGTERM, &sig, NULL);
+    return;
+  }
+
+  if (getenv("PX_SIGTERM_IGNORE")) {
+    signal(SIGTERM, SIG_IGN);
+    return;
+  }
+}
+
+#include <time.h>
+
+static
+void sig_sleep(int sig) {
+  usleep(sig_sleep_microseconds);
+  raise(sig);
+}
+
+#endif
