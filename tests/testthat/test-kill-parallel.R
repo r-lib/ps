@@ -13,6 +13,8 @@ test_that("kill_parallel() doesn't kill sequentially", {
     },
     timeout = 2
   )
+
+  clean_connections()
 })
 
 # Subprocesses are timeout-polled because we don't get SIGCHLD events
@@ -47,6 +49,8 @@ test_that("kill_parallel() works with subsubprocesses", {
     },
     timeout = 2
   )
+
+  clean_connections()
 })
 
 test_that("kill_parallel() kills with grace", {
@@ -66,6 +70,8 @@ test_that("kill_parallel() kills with grace", {
     },
     timeout = 2
   )
+
+  clean_connections()
 })
 
 test_that("ps_parallel_kill() checks create time", {
@@ -79,4 +85,6 @@ test_that("ps_parallel_kill() checks create time", {
 
   ps_kill_parallel(list(real_ps))
   poll_until(function() !ps_is_running(ps))
+
+  clean_connections()
 })

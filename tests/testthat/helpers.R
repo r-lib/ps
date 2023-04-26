@@ -126,3 +126,10 @@ poll_until <- function(fn, interrupt = 0.2, timeout = 5) {
   skip_on_cran()
   stop("timeout")
 }
+
+# Used in tests that create connections cleaned up on GC, such as
+# processx connections
+clean_connections <- function(env = parent.frame()) {
+  rm(list = ls(envir = env), envir = env)
+  gc(verbose = FALSE)
+}
