@@ -214,6 +214,9 @@ SEXP psll_ppid(SEXP p) {
   return ret;
 }
 
+int psll__is_running(ps_handle_t *handle) {
+  return LOGICAL(ps__is_running(handle))[0];
+}
 
 SEXP psll_is_running(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);

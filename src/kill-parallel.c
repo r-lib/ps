@@ -52,10 +52,11 @@ SEXP ps__kill_parallel(SEXP ps, SEXP ffi_grace) {
   ps__nonblock_fcntl(fds[0], 1);
   ps__nonblock_fcntl(fds[1], 1);
 
-  // TODO: Check `create_time`
   for (int i = 0; i < ps_n; ++i) {
     ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(ps, i));
-    kill(handle->pid, SIGTERM);
+    if (psll__is_running(handle)) {
+      kill(handle->pid, SIGTERM);
+    }
   }
 
   struct pollfd fd = {
@@ -98,7 +99,6 @@ SEXP ps__kill_parallel(SEXP ps, SEXP ffi_grace) {
       goto cleanup;
     }
 
-    // TODO: Check `create_time`
     for (int i = 0; i < ps_n; ++i) {
       if (killed[i]) {
         continue;
@@ -106,7 +106,7 @@ SEXP ps__kill_parallel(SEXP ps, SEXP ffi_grace) {
 
       ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(ps, i));
 
-      if (kill(handle->pid, 0) != 0) {
+      if (!psll__is_running(handle)) {
         killed_n += 1;
         killed[i] = 1;
       }
@@ -130,14 +130,16 @@ SEXP ps__kill_parallel(SEXP ps, SEXP ffi_grace) {
 
   // If some processes are still running after the grace period,
   // resort to SIGKILL
-  // TODO: Check `create_time`
   for (int i = 0; i < ps_n; ++i) {
     if (killed[i]) {
       continue;
     }
 
     ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(ps, i));
-    kill(handle->pid, SIGKILL);
+
+    if (psll__is_running(handle)) {
+      kill(handle->pid, SIGKILL);
+    }
   }
 
  cleanup:

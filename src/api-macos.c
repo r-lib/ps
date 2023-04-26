@@ -178,21 +178,23 @@ SEXP psll_ppid(SEXP p) {
   return ScalarInteger(kp.kp_eproc.e_ppid);
 }
 
-
-SEXP psll_is_running(SEXP p) {
-  ps_handle_t *handle = R_ExternalPtrAddr(p);
+int psll__is_running(ps_handle_t *handle) {
   struct kinfo_proc kp;
   double ctime;
 
   if (!handle) error("Process pointer cleaned up already");
 
-  if (handle->gone) return ScalarLogical(0);
-  if (ps__get_kinfo_proc(handle->pid, &kp) == -1) return ScalarLogical(0);
+  if (handle->gone) return 0;
+  if (ps__get_kinfo_proc(handle->pid, &kp) == -1) return 0;
 
   ctime = (double) PS__TV2DOUBLE(kp.kp_proc.p_starttime);
-  return ScalarLogical(ctime == handle->create_time);
+  return ctime == handle->create_time;
 }
 
+SEXP psll_is_running(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  return ScalarLogical(psll__is_running(handle));
+}
 
 SEXP psll_name(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);

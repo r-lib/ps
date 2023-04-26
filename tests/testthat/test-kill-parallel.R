@@ -67,3 +67,16 @@ test_that("kill_parallel() kills with grace", {
     timeout = 2
   )
 })
+
+test_that("ps_parallel_kill() checks create time", {
+  p <- processx::process$new(px(), c("sleep", "60"))
+  real_ps <- ps::ps_handle(p$get_pid())
+  ps <- ps::ps_handle(p$get_pid(), Sys.time() + 1)
+
+  ps_kill_parallel(list(ps))
+  Sys.sleep(0.1)
+  expect_true(ps_is_running(real_ps))
+
+  ps_kill_parallel(list(real_ps))
+  poll_until(function() !ps_is_running(ps))
+})
