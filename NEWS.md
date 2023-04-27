@@ -1,5 +1,14 @@
 # ps (development version)
 
+* `ps::ps_kill_tree()` now kills processes gracefully on Unixes using
+  `ps::ps_kill_parallel()`. The delay between `SIGTERM` and `SIGKILL`
+  can be controlled with the new `grace` argument.
+
+* Following the previous feature, the `sig` argument of
+  `ps_kill_tree()` is deprecated. Please use the new function
+  `ps_signal_tree()` to send specific signals to a process tree,
+  without a grace delay.
+
 * New `ps::ps_kill_parallel()` function. It takes a list of process
   handles and a grace period. On Unixes, graceful termination with
   `SIGTERM` is attempted. A `SIGKILL` is issued when the grace period

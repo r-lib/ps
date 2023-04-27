@@ -1,3 +1,5 @@
+impls <- list(ps::ps_kill_tree, ps::ps_signal_tree)
+for (ps_kill_tree in impls) {
 
 test_that("ps_mark_tree", {
   id <- ps_mark_tree()
@@ -279,3 +281,5 @@ test_that("find_tree, orphaned grandchild", {
   res <- res[names %in% c("px", "px.exe")]
   expect_equal(length(res), N)
 })
+
+}

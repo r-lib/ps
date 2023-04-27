@@ -5,6 +5,7 @@
 \alias{with_process_cleanup}
 \alias{ps_find_tree}
 \alias{ps_kill_tree}
+\alias{ps_signal_tree}
 \title{Mark a process and its (future) child tree}
 \usage{
 ps_mark_tree()
@@ -13,7 +14,9 @@ with_process_cleanup(expr)
 
 ps_find_tree(marker)
 
-ps_kill_tree(marker, sig = signals()$SIGKILL)
+ps_kill_tree(marker, sig = signals()$SIGKILL, grace = 0.2)
+
+ps_signal_tree(marker, sig = signals()$SIGKILL)
 }
 \arguments{
 \item{expr}{R expression to evaluate in the new context.}
@@ -23,6 +26,10 @@ use to find the marked processes.}
 
 \item{sig}{The signal to send to the marked processes on Unix. On
 Windows this argument is ignored currently.}
+
+\item{grace}{On Unixes, delay in seconds between a \code{SIGTERM} and a
+\code{SIGKILL}. This gives a chance to the processes that support it
+to exit gracefully.}
 }
 \value{
 \code{ps_mark_tree()} returns the name of the environment variable,
@@ -49,7 +56,11 @@ process tree.)
 variable and returns them in a list.
 
 \code{ps_kill_tree()} finds the processes that set the supplied environment
-variable, and kills them (or sends them the specified signal on Unix).
+variable, and kills them with a grace period.
+
+\code{ps_signal_tree()} finds the processes that set the supplied environment
+variable, and either kills them on Windows, or sends them the specified
+signal on Unix.
 
 \code{with_process_cleanup()} evaluates an R expression, and cleans up all
 external processes that were started by the R process while evaluating
