@@ -204,6 +204,10 @@ is_scalar_numeric <- function(x) {
   is.double(x) && length(x) == 1 && !is.na(x)
 }
 
+paste_line <- function(...) {
+  paste(c(...), collapse = "\n")
+}
+
 vlapply <- function (X, FUN, ..., USE.NAMES = TRUE) {
   vapply(X, FUN, FUN.VALUE = logical(1), ..., USE.NAMES = USE.NAMES)
 }

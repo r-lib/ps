@@ -12,7 +12,11 @@
 #' variable and returns them in a list.
 #'
 #' `ps_kill_tree()` finds the processes that set the supplied environment
-#' variable, and kills them (or sends them the specified signal on Unix).
+#' variable, and kills them with a grace period.
+#'
+#' `ps_signal_tree()` finds the processes that set the supplied environment
+#' variable, and either kills them on Windows, or sends them the specified
+#' signal on Unix.
 #'
 #' `with_process_cleanup()` evaluates an R expression, and cleans up all
 #' external processes that were started by the R process while evaluating
@@ -132,12 +136,42 @@ ps_find_tree <- function(marker) {
 #' use to find the marked processes.
 #' @param sig The signal to send to the marked processes on Unix. On
 #' Windows this argument is ignored currently.
+#' @param grace On Unixes, delay in seconds between a `SIGTERM` and a
+#'   `SIGKILL`. This gives a chance to the processes that support it
+#'   to exit gracefully.
 #'
 #' @rdname ps_kill_tree
 #' @export
 
-ps_kill_tree <- function(marker, sig = signals()$SIGKILL) {
+ps_kill_tree <- function(marker,
+                         sig = signals()$SIGKILL,
+                         grace = 0.2) {
+  assert_string(marker)
 
+  if (!is.null(sig) && !identical(sig, signals()$SIGKILL)) {
+    warning(paste_line(c(
+      "`sig` is deprecated as of ps 1.8.0.",
+      "Please use `ps_signal_tree()` instead."
+    )))
+  }
+
+  ps <- ps_find_tree(marker)
+
+  this_pid <- Sys.getpid()
+  ps <- Filter(function(p) ps_pid(p) != this_pid, ps)
+
+  pids <- map_int(ps, function(p) ps_pid(p))
+  names <- lapply(ps, function(p) tryCatch(ps_name(p), error = identity))
+
+  ps_kill_parallel(ps, grace = grace)
+
+  gone <- map_lgl(names, function(x) is.character(x))
+  structure(pids[gone], names = unlist(names[gone]))
+}
+
+#' @rdname ps_kill_tree
+#' @export
+ps_signal_tree <- function(marker, sig = signals()$SIGKILL) {
   assert_string(marker)
   # NULL on Windows
   if (.Platform$OS.type != "windows") assert_integer(sig)
