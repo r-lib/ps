@@ -68,6 +68,6 @@ test_that("disk_io", {
   expect_lte(result$read_bytes, sum(res_perdisk$read_bytes))
 
   # Non perdisk returns 1 row
-  expect_equal(nrow(res_perdisk), 1)
+  expect_equal(nrow(result), 1)
 })
 
