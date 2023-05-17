@@ -48,6 +48,7 @@ SEXP psp__stat_st_rdev(SEXP x) { return ps__dummy("psp__stat_st_rdev"); }
 /* Only implemented on windows */
 #ifdef PS__POSIX
 #ifndef PS__WINDOWS
+SEXP ps__disk_io_counters(SEXP rperdisk) { return ps__dummy("ps__get_disk_io_counters"); }
 SEXP psw__realpath(SEXP x) { return ps__dummy("psw__realpath"); }
 SEXP psll_dlls(SEXP x) { return ps__dummy("psll_dlls"); }
 #endif
@@ -73,6 +74,7 @@ SEXP ps__users(void) { return ps__dummy("ps_users"); }
 SEXP ps__loadavg(SEXP x) { return ps__dummy("ps_loadavg"); }
 SEXP ps__tty_size(void) { return ps__dummy("ps_tty_size"); }
 SEXP ps__disk_partitions(SEXP x) { return ps__dummy("ps_disk_partitions"); }
+SEXP ps__disk_io_counters(SEXP rperdisk) { return ps__dummy("ps__get_disk_io_counters"); }
 SEXP ps__disk_usage(void) { return ps__dummy("ps_disk_usage"); }
 SEXP ps__system_cpu_times(void) { return ps__dummy("ps_system_cpu_times"); }
 SEXP ps__system_memory(void) { return ps__dummy("ps_system_memory"); }

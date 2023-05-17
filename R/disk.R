@@ -121,12 +121,11 @@ ps__disk_usage_format_posix <- function(paths, l) {
   d
 }
 
-
 #' System-wide disk I/O counters
 #'
 #' Returns a data.frame of system-wide disk I/O counters.
 #'
-#' Includes the following fields for all supported platforms:
+#' Includes the following non-NA fields for all supported platforms:
 #' * `read_count`: number of reads
 #' * `write_count`: number of writes
 #' * `read_bytes`: number of bytes read
@@ -149,14 +148,43 @@ ps__disk_usage_format_posix <- function(paths, l) {
 #'
 #' @family disk functions
 #' @export
-#' @examplesIf ps:::ps_os_name() == "LINUX" && ! ps:::is_cran_check()
+#' @examplesIf ps:::ps_os_name() %in% c("LINUX", "WINDOWS) && !ps:::is_cran_check()
 #' ps_disk_io_counters()
 #' ps_disk_io_counters(perdisk = TRUE)
 ps_disk_io_counters <- function(perdisk = FALSE) {
   assert_flag(perdisk)
-  if (ps_os_name() == "LINUX") {
-    return(ps__disk_io_counters_linux(perdisk))
+  os <- ps_os_name()
+  if (os == "LINUX") {
+    disk_info <- ps__disk_io_counters_linux(perdisk)
+  } else if (os == "WINDOWS") {
+    disk_info <- ps__disk_io_counters_windows(perdisk)
   } else {
-    stop("ps_disk_io_counters is currently only implemented for Linux")
+    stop("ps_disk_io_counters is currently only implemented for Linux and Windows")
   }
+
+  if (!perdisk) {
+    # Sum all numeric cols, convert to df via list to ensure 1 row
+    total_info <- data.frame(name = NA, as.list(colSums(disk_info[, -1])))
+    return(total_info)
+  } else {
+    return(disk_info)
+  }
+}
+
+ps__disk_io_counters_windows <- function(perdisk) {
+  l <- .Call(ps__disk_io_counters, perdisk)
+  disk_info <- data_frame(
+    name = l[[1]],
+    read_count = l[[2]],
+    read_merged_count = NA,
+    read_bytes = l[[3]],
+    read_time = l[[4]],
+    write_count = l[[5]],
+    write_merged_count = NA,
+    write_bytes = l[[6]],
+    write_time = l[[7]],
+    busy_time = NA
+  )
+
+  return(disk_info[disk_info$name != "",])
 }

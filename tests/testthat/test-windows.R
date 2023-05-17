@@ -34,3 +34,40 @@ test_that("total and available mem", {
   expect_true(is.numeric(l$avail))
   expect_lte(l$avail, l$total)
 })
+
+
+test_that("disk_io", {
+  # Validate inputs
+  expect_error(ps_disk_io_counters(123), class = "invalid_argument")
+
+  # Get total and perdisk results
+  result <- ps_disk_io_counters()
+  res_perdisk <- ps_disk_io_counters(perdisk=TRUE)
+
+  # Check structure
+  expect_named(
+    result,
+    c(
+      "read_bytes",
+      "write_bytes",
+      "read_count",
+      "write_count",
+      "read_merged_count",
+      "read_time",
+      "write_merged_count",
+      "write_time",
+      "busy_time",
+      "name"
+    ),
+    ignore.order=TRUE
+  )
+  expect_type(result, "list")
+  expect_s3_class(result, "data.frame")
+
+  # Non-Perdisk will be lte non-perdisk, due to virtual disks
+  expect_lte(result$read_bytes, sum(res_perdisk$read_bytes))
+
+  # Non perdisk returns 1 row
+  expect_equal(nrow(res_perdisk), 1)
+})
+

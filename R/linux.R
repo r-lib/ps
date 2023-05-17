@@ -204,17 +204,7 @@ ps__disk_io_counters_linux <- function(perdisk = FALSE) {
   # Keep all if perdisk, only keep non-partitions if perdisk=FALSE to get correct sums
   disk_info <- disk_info[perdisk | sapply(disk_info$name, ps__is_storage_device), ]
 
-  if (perdisk) {
-    return(disk_info)
-  } else {
-    # Sum all numeric cols, convert to df via list to ensure 1 row
-    total_info <- data.frame(as.list(colSums(disk_info[, -1])))
-    # Add no name
-    total_info$name <- NA
-    return(total_info)
-  }
-
-  return(disk_io)
+  return(disk_info)
 }
 
 ps__is_storage_device <- function(name, including_virtual = TRUE) {

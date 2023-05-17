@@ -75,9 +75,6 @@ test_that("disk_io", {
   # Non-Perdisk will be lte non-perdisk, due to virtual disks
   expect_lte(result$read_bytes, sum(res_perdisk$read_bytes))
 
-  # Check doesnt run on windows
-  local_mocked_bindings(
-    ps_os_name = function(x) "WINDOWS"
-  )
-  expect_error(ps_disk_io)
+  # Non perdisk returns 1 row
+  expect_equal(nrow(res_perdisk), 1)
 })

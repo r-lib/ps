@@ -1433,6 +1433,118 @@ SEXP ps__system_swap() {
   return R_NilValue;
 }
 
+SEXP ps__disk_io_counters(SEXP rperdisk) {
+    // Based on the implementation from psutil
+    DISK_PERFORMANCE diskPerformance;
+    DWORD dwSize;
+    HANDLE hDevice = NULL;
+    char szDevice[MAX_PATH];
+    char szDeviceDisplay[MAX_PATH];
+    // Currently unused internally
+    int perdisk = LOGICAL(rperdisk)[0];
+    int devNum;
+    int i;
+    DWORD ioctrlSize;
+    BOOL ret;
+
+    SEXP result = PROTECT(allocVector(VECSXP, 7));
+    SEXP device = PROTECT(allocVector(STRSXP, 32));
+    SEXP read_count = PROTECT(allocVector(REALSXP, 32));
+    SEXP read_bytes = PROTECT(allocVector(REALSXP, 32));
+    SEXP read_time = PROTECT(allocVector(REALSXP, 32));
+    SEXP write_count = PROTECT(allocVector(REALSXP, 32));
+    SEXP write_bytes = PROTECT(allocVector(REALSXP, 32));
+    SEXP write_time = PROTECT(allocVector(REALSXP, 32));
+
+    // Apparently there's no way to figure out how many times we have
+    // to iterate in order to find valid drives.
+    // Let's assume 32, which is higher than 26, the number of letters
+    // in the alphabet (from A:\ to Z:\).
+    for (devNum = 0; devNum <= 32; ++devNum) {
+        sprintf_s(szDevice, MAX_PATH, "\\\\.\\PhysicalDrive%d", devNum);
+        hDevice = CreateFile(szDevice, 0, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                             NULL, OPEN_EXISTING, 0, NULL);
+        if (hDevice == INVALID_HANDLE_VALUE)
+            continue;
+
+        // DeviceIoControl() sucks!
+        i = 0;
+        ioctrlSize = sizeof(diskPerformance);
+        while (1) {
+            i += 1;
+            ret = DeviceIoControl(
+                hDevice, IOCTL_DISK_PERFORMANCE, NULL, 0, &diskPerformance,
+                ioctrlSize, &dwSize, NULL);
+            if (ret != 0)
+                break;  // OK!
+            if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
+                // Retry with a bigger buffer (+ limit for retries).
+                if (i <= 1024) {
+                    ioctrlSize *= 2;
+                    continue;
+                }
+            }
+            else if (GetLastError() == ERROR_INVALID_FUNCTION) {
+                // This happens on AppVeyor:
+                // https://ci.appveyor.com/project/giampaolo/psutil/build/
+                //      1364/job/ascpdi271b06jle3
+                // Assume it means we're dealing with some exotic disk
+                // and go on.
+                ps__debug("DeviceIoControl -> ERROR_INVALID_FUNCTION; "
+                             "ignore PhysicalDrive%i", devNum);
+                goto next;
+            }
+            else if (GetLastError() == ERROR_NOT_SUPPORTED) {
+                // Again, let's assume we're dealing with some exotic disk.
+                ps__debug("DeviceIoControl -> ERROR_NOT_SUPPORTED; "
+                             "ignore PhysicalDrive%i", devNum);
+                goto next;
+            }
+            // XXX: it seems we should also catch ERROR_INVALID_PARAMETER:
+            // https://sites.ualberta.ca/dept/aict/uts/software/openbsd/
+            //     ports/4.1/i386/openafs/w-openafs-1.4.14-transarc/
+            //     openafs-1.4.14/src/usd/usd_nt.c
+
+            // XXX: we can also bump into ERROR_MORE_DATA in which case
+            // (quoting doc) we're supposed to retry with a bigger buffer
+            // and specify  a new "starting point", whatever it means.
+            ps__set_error_from_windows_error(0);
+            goto error;
+        }
+
+        sprintf_s(szDeviceDisplay, MAX_PATH, "PhysicalDrive%i", devNum);
+        SET_STRING_ELT(device, i, mkChar(szDeviceDisplay));
+        REAL(read_count)[i] = diskPerformance.ReadCount;
+        REAL(read_bytes)[i] =  diskPerformance.BytesRead.QuadPart;
+        REAL(read_time)[i] = (unsigned long long) (diskPerformance.ReadTime.QuadPart) / 10000000;
+        REAL(write_count)[i] = diskPerformance.WriteCount;
+        REAL(write_bytes)[i] = diskPerformance.BytesWritten.QuadPart;
+        REAL(write_time)[i] = (unsigned long long) (diskPerformance.WriteTime.QuadPart) / 10000000;
+
+next:
+        CloseHandle(hDevice);
+    }
+
+    SET_VECTOR_ELT(result, 0, device);
+    SET_VECTOR_ELT(result, 1, read_count);
+    SET_VECTOR_ELT(result, 2, read_bytes);
+    SET_VECTOR_ELT(result, 3, read_time);
+    SET_VECTOR_ELT(result, 4, write_count);
+    SET_VECTOR_ELT(result, 5, write_bytes);
+    SET_VECTOR_ELT(result, 6, write_time);
+
+    UNPROTECT(8);
+
+    return result;
+
+error:
+    if (hDevice != NULL)
+        CloseHandle(hDevice);
+    ps__throw_error();
+    return R_NilValue;
+}
+
+
 SEXP psll_get_nice(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   HANDLE hProcess = NULL;
