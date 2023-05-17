@@ -1513,13 +1513,13 @@ SEXP ps__disk_io_counters(SEXP rperdisk) {
         }
 
         sprintf_s(szDeviceDisplay, MAX_PATH, "PhysicalDrive%i", devNum);
-        SET_STRING_ELT(device, i, mkChar(szDeviceDisplay));
-        REAL(read_count)[i] = diskPerformance.ReadCount;
-        REAL(read_bytes)[i] =  diskPerformance.BytesRead.QuadPart;
-        REAL(read_time)[i] = (unsigned long long) (diskPerformance.ReadTime.QuadPart) / 10000000;
-        REAL(write_count)[i] = diskPerformance.WriteCount;
-        REAL(write_bytes)[i] = diskPerformance.BytesWritten.QuadPart;
-        REAL(write_time)[i] = (unsigned long long) (diskPerformance.WriteTime.QuadPart) / 10000000;
+        SET_STRING_ELT(device, devNum, mkChar(szDeviceDisplay));
+        REAL(read_count)[devNum] = diskPerformance.ReadCount;
+        REAL(read_bytes)[devNum] =  diskPerformance.BytesRead.QuadPart;
+        REAL(read_time)[devNum] = (unsigned long long) (diskPerformance.ReadTime.QuadPart) / 10000000;
+        REAL(write_count)[devNum] = diskPerformance.WriteCount;
+        REAL(write_bytes)[devNum] = diskPerformance.BytesWritten.QuadPart;
+        REAL(write_time)[devNum] = (unsigned long long) (diskPerformance.WriteTime.QuadPart) / 10000000;
 
 next:
         CloseHandle(hDevice);
