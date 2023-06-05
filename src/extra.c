@@ -54,6 +54,34 @@ void *ps__set_error(const char *msg, ...) {
   return NULL;
 }
 
+void ps__set_internal_error(const char *func,
+                            const char *filename,
+                            int line,
+                            const char *msg, ...) {
+  va_list args;
+  ps__last_error_string[0] = '\0';
+
+  va_start(args, msg);
+  vsnprintf(ps__last_error_string, sizeof(ps__last_error_string), msg, args);
+  va_end (args);
+
+  ps__set_error("%s @%s:%d (%s)", ps__last_error_string, filename, line, func);
+}
+
+void ps__throw_internal_error(const char *func,
+                              const char *filename,
+                              int line,
+                              const char *msg, ...) {
+  va_list args;
+  ps__last_error_string[0] = '\0';
+
+  va_start(args, msg);
+  vsnprintf(ps__last_error_string, sizeof(ps__last_error_string), msg, args);
+  va_end (args);
+
+  error("%s @%s:%d (%s)", ps__last_error_string, filename, line, func);
+}
+
 void *ps__no_such_process(long pid, const char *name) {
   const char *class = "no_such_process";
   return ps__set_error_impl(
@@ -115,6 +143,51 @@ SEXP ps__throw_error(void) {
 
   UNPROTECT(3);
   return out;
+}
+
+// Need to jump out of the `R_UnwindProtect()` context
+#include <setjmp.h>
+
+static
+SEXP check_for_user_interrupt_callback(void *_payload) {
+  R_CheckUserInterrupt();
+  return R_NilValue;
+}
+
+static
+void check_for_user_interrupt_cleanup(void *payload,
+                                      Rboolean jump) {
+  if (jump) {
+    jmp_buf *env = (jmp_buf *) payload;
+    longjmp(*env, 1);
+  }
+}
+
+SEXP r_check_for_user_interrupt(SEXP cont) {
+  jmp_buf env;
+
+  if (setjmp(env)) {
+    return cont;
+  }
+
+  R_UnwindProtect(&check_for_user_interrupt_callback,
+                  NULL,
+                  &check_for_user_interrupt_cleanup,
+                  &env,
+                  cont);
+
+  return NULL;
+}
+
+r_no_return
+void r_unwind(SEXP x) {
+  if (inherits(x, "error")) {
+    SEXP call = PROTECT(lang2(install("stop"), x));
+    eval(call, R_BaseEnv);
+  } else {
+    R_ContinueUnwind(x);
+  }
+  PS__STOP_UNREACHABLE();
 }
 
 void ps__protect_free_finalizer(SEXP ptr) {

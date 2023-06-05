@@ -11,7 +11,7 @@ test_that("process already finished", {
 
   expect_false(px$is_alive())
   if (ps_os_type()[["POSIX"]]) {
-    expect_equal(px$get_exit_status(), -9)
+    expect_true(px$get_exit_status() %in% c(-9, -15))
   }
 
   expect_match(format(p), format_regexp())

@@ -405,17 +405,21 @@ SEXP psll_ppid(SEXP p) {
   return ScalarInteger(stat.ppid);
 }
 
-SEXP psll_is_running(SEXP p) {
-  ps_handle_t *handle = R_ExternalPtrAddr(p);
+int psll__is_running(ps_handle_t *handle) {
   double ctime;
   int ret;
 
   if (!handle) error("Process pointer cleaned up already");
 
   ret = psll_linux_ctime(handle->pid, &ctime);
-  if (ret) return ScalarLogical(0);
+  if (ret) return 0;
 
-  return ScalarLogical(ctime == handle->create_time);
+  return ctime == handle->create_time;
+}
+
+SEXP psll_is_running(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  return ScalarLogical(psll__is_running(handle));
 }
 
 SEXP psll_name(SEXP p) {

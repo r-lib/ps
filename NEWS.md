@@ -1,5 +1,10 @@
 # ps (development version)
 
+* New `ps::ps_kill_parallel()` function. It takes a list of process
+  handles and a grace period. On Unixes, graceful termination with
+  `SIGTERM` is attempted. A `SIGKILL` is issued when the grace period
+  is up.
+
 # ps 1.7.5
 
 No user visible changes.

@@ -28,10 +28,11 @@ Suggests:
     R6,
     rlang,
     testthat (>= 3.0.0),
-    webfakes
+    webfakes,
+    withr
 Biarch: true
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Config/testthat/edition: 3
 Config/Needs/website: tidyverse/tidytemplate

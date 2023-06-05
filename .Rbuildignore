@@ -19,3 +19,4 @@
 ^\.Rproj\.user$
 ^.*\.Rproj$
 ^pkgdown$
+^TAGS$

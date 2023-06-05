@@ -68,6 +68,10 @@ static const R_CallMethodDef callMethods[]  = {
   { "ps__inet_ntop",     (DL_FUNC) ps__inet_ntop,     2 },
   { "ps__memory_maps",   (DL_FUNC) ps__memory_maps,   1 },
 
+#ifdef PS__POSIX
+  { "ps__kill_parallel", (DL_FUNC) ps__kill_parallel, 2 },
+#endif
+
   { "psp__pid_exists",   (DL_FUNC) psp__pid_exists,   1 },
   { "psp__stat_st_rdev", (DL_FUNC) psp__stat_st_rdev, 1 },
   { "psp__zombie",       (DL_FUNC) psp__zombie,       0 },
@@ -77,6 +81,13 @@ static const R_CallMethodDef callMethods[]  = {
 
   { NULL, NULL, 0 }
 };
+
+#ifdef PS__POSIX
+#include <pthread.h>
+
+// Initialised in package init function
+pthread_t ps__main_thread;
+#endif
 
 /*
  * Called on module import on all platforms.
@@ -95,6 +106,10 @@ void R_init_ps(DllInfo *dll) {
 
   R_PreserveObject(ps__last_error);
   UNPROTECT(1);
+
+#ifdef PS__POSIX
+  ps__main_thread = pthread_self();
+#endif
 
   R_registerRoutines(dll, NULL, callMethods, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
