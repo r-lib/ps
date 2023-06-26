@@ -1,5 +1,7 @@
 # ps (development version)
 
+* `ps_system_cpu_times()` now returns CPU times divided by the HZ as reported by CLK_TCK, in-line with other OS's and the per-process version. (#144, @michaelwalshe).
+
 # ps 1.7.5
 
 No user visible changes.
