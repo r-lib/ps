@@ -1,6 +1,6 @@
 # ps (development version)
 
-* New function `ps_disk_io_counters()` to query disk I/O counters implemented on Windows and Linux. (#144, @michaelwalshe).
+* New function `ps_disk_io_counters()` to query disk I/O counters implemented on Windows and Linux. (#145, @michaelwalshe).
 
 # ps 1.7.5
 
