@@ -16,7 +16,7 @@ Character scalar.
 The name of the program, which is typically the name of the executable.
 }
 \details{
-On on Unix this can change, e.g. via an exec*() system call.
+On Unix this can change, e.g. via an exec*() system call.
 
 \code{ps_name()} works on zombie processes.
 }
