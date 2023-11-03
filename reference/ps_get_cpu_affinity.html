@@ -97,7 +97,7 @@ used).</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># current</span></span></span>
 <span class="r-in"><span><span class="va">orig</span> <span class="op">&lt;-</span> <span class="fu">ps_get_cpu_affinity</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">orig</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 1 2 3</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># restrict</span></span></span>
 <span class="r-in"><span><span class="fu">ps_set_cpu_affinity</span><span class="op">(</span>affinity <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">0</span><span class="op">)</span></span></span>
@@ -107,7 +107,7 @@ used).</p>
 <span class="r-in"><span><span class="co"># restore</span></span></span>
 <span class="r-in"><span><span class="fu">ps_set_cpu_affinity</span><span class="op">(</span>affinity <span class="op">=</span> <span class="va">orig</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ps_get_cpu_affinity</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 1 2 3</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
