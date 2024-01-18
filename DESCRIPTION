@@ -11,7 +11,7 @@ Authors@R: c(
 Description: List, query and manipulate all system processes, on
     'Windows', 'Linux' and 'macOS'.
 License: MIT + file LICENSE
-URL: https://github.com/r-lib/ps#readme, https://ps.r-lib.org/
+URL: https://github.com/r-lib/ps, https://ps.r-lib.org/
 BugReports: https://github.com/r-lib/ps/issues
 Depends:
     R (>= 3.4)
