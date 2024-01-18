@@ -11,7 +11,7 @@ List, query and manipulate all system processes, on 'Windows', 'Linux' and 'macO
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/r-lib/ps#readme}
+  \item \url{https://github.com/r-lib/ps}
   \item \url{https://ps.r-lib.org/}
   \item Report bugs at \url{https://github.com/r-lib/ps/issues}
 }
