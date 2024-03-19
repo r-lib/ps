@@ -77,7 +77,7 @@ jobs:
 
     steps:
       - uses: r-hub/rhub2/actions/rhub-checkout@v1
-      - uses: r-hub/rhub2/actions/rhub-setup-r@v1
+      - uses: r-hub/rhub2/actions/rhub-setup-r@main
         with:
           job-config: ${{ matrix.config.job-config }}
           token: ${{ secrets.RHUB_TOKEN }}
