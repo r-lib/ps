@@ -7,6 +7,13 @@
 
 #include "ps-internal.h"
 #include "common.h"
+#include "config.h"
+
+#ifdef PS__MACOS
+#include <mach/mach_time.h>
+extern struct mach_timebase_info PS_MACH_TIMEBASE_INFO;
+#endif
+
 
 static const R_CallMethodDef callMethods[]  = {
   /* System api */
@@ -95,6 +102,10 @@ void R_init_ps(DllInfo *dll) {
 
   R_PreserveObject(ps__last_error);
   UNPROTECT(1);
+
+#ifdef PS__MACOS
+  mach_timebase_info(&PS_MACH_TIMEBASE_INFO);
+#endif
 
   R_registerRoutines(dll, NULL, callMethods, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);

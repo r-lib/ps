@@ -17,11 +17,14 @@
 #include <mach/mach.h>
 #include <mach/mach_vm.h>
 #include <mach/shared_region.h>
+#include <mach/mach_time.h>
 
 #include "ps-internal.h"
 #include "arch/macos/process_info.h"
 
 #include <stdbool.h>
+
+struct mach_timebase_info PS_MACH_TIMEBASE_INFO;
 
 #define PS__TV2DOUBLE(t) ((t).tv_sec + (t).tv_usec / 1000000.0)
 
@@ -400,6 +403,8 @@ SEXP psll_cpu_times(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   struct proc_taskinfo pti;
   SEXP result, names;
+  uint64_t total_user;
+  uint64_t total_system;
 
   if (!handle) error("Process pointer cleaned up already");
 
@@ -410,9 +415,14 @@ SEXP psll_cpu_times(SEXP p) {
 
   PS__CHECK_HANDLE(handle);
 
+  total_user = pti.pti_total_user * PS_MACH_TIMEBASE_INFO.numer;
+  total_user /= PS_MACH_TIMEBASE_INFO.denom;
+  total_system = pti.pti_total_system * PS_MACH_TIMEBASE_INFO.numer;
+  total_system /= PS_MACH_TIMEBASE_INFO.denom;
+
   PROTECT(result = allocVector(REALSXP, 4));
-  REAL(result)[0] = (double) pti.pti_total_user / 1000000000.0;
-  REAL(result)[1] = (double) pti.pti_total_system / 1000000000.0;
+  REAL(result)[0] = (double) total_user / 1000000000.0;
+  REAL(result)[1] = (double) total_system / 1000000000.0;
   REAL(result)[2] = REAL(result)[3] = NA_REAL;
   PROTECT(names = ps__build_string("user", "system", "children_user",
 				   "children_system", NULL));

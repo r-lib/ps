@@ -1,5 +1,7 @@
 # ps (development version)
 
+* `ps_cpu_times()` values are now correct on newer arm64 macOS.
+
 # ps 1.7.6
 
 * `ps_name()` now does not fail in the rare case when `ps_cmdline()` returns an empty vector (#150).
