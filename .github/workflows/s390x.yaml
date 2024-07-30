@@ -4,7 +4,7 @@ on:
 name: s390x.yaml
 
 jobs:
-  test:
+  r-cmd-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
