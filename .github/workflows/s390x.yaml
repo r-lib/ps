@@ -31,7 +31,7 @@ jobs:
         with:
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
           upload-results: never
-          upload-snapshots: never
+          upload-snapshots: false
         env:
           NOT_CRAN: true
 
