@@ -177,13 +177,21 @@ ps_name <- function(p = ps_handle()) {
     ## If it matches the first part of the cmdline we return that
     ## one instead because it's usually more explicative.
     ## Examples are "gnome-keyring-d" vs. "gnome-keyring-daemon".
+
+    ## In addition, under qemu (e.g. in cross-platform Docker), the
+    ## first entry is qemu and the second entry is the file name
     cmdline <- tryCatch(
       ps_cmdline(p),
       error = function(e) NULL
     )
     if (!is.null(cmdline) && length(cmdline) > 0L) {
       exname <- basename(cmdline[1])
-      if (str_starts_with(exname, n)) n <- exname
+      if (str_starts_with(exname, n)) {
+        n <- exname
+      } else if (grepl("qemu", exname) && length(cmdline) >= 2 &&
+                 str_starts_with(exname2 <- basename(cmdline[2]), n)) {
+        n <- exname2
+      }
     }
   }
   n
