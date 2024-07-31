@@ -653,11 +653,21 @@ SEXP psll_terminal(SEXP p) {
   }
   PS__CHECK_STAT(stat, handle);
 
-  if (stat.tty_nr == 0) {
-    return ScalarInteger(NA_INTEGER);
-  } else {
+  if (stat.tty_nr != 0) {
     return ScalarInteger(stat.tty_nr);
   }
+
+  if (handle->pid != getpid()) {
+    return ScalarInteger(NA_INTEGER);
+  }
+
+  // It is us, try ttyname. This is a workaround for qemu, where
+  // /proc/self/stat is messed up
+  char const *tty = ttyname (STDIN_FILENO);
+  if (! tty) {
+    return ScalarInteger(NA_INTEGER);
+  }
+  return mkString(tty);
 }
 
 SEXP psll_environ(SEXP p) {

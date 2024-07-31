@@ -384,7 +384,9 @@ ps_gids <- function(p = ps_handle()) {
 ps_terminal <- function(p = ps_handle()) {
   assert_ps_handle(p)
   ttynr <- .Call(psll_terminal, p)
-  if (is.na(ttynr)) {
+  if (is.character(ttynr)) {
+    ttynr
+  } else if (is.na(ttynr)) {
     NA_character_
   } else {
     tmap <- get_terminal_map()
