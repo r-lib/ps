@@ -198,7 +198,7 @@ ps__disk_usage_format_posix <- function(paths, l) {
 #'   * `NOSYMFOLLOW`: Symbolic links are not followed when resolving paths;
 #'     see `mount(2)``.
 #' @export
-#' @examplesIf ps::ps_is_supported() && ! ps:::is_cran_check()
+#' @examplesIf ps::ps_is_supported() && ! ps:::ps_os_type()[["WINDOWS"]] && ! ps:::is_cran_check()
 #' ps_fs_info(c("/", "~", "."))
 
 ps_fs_info <- function(paths = "/") {
