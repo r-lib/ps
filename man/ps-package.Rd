@@ -3,7 +3,6 @@
 \docType{package}
 \name{ps-package}
 \alias{ps-package}
-\alias{_PACKAGE}
 \title{ps: List, Query, Manipulate System Processes}
 \description{
 List, query and manipulate all system processes, on 'Windows', 'Linux' and 'macOS'.
