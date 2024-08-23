@@ -1,5 +1,8 @@
 # ps (development version)
 
+* New `ps_fs_info()` to query information about the file system of one
+  or more files or directories, on Unix.
+
 # ps 1.7.7
 
 * `ps_cpu_times()` values are now correct on newer arm64 macOS.

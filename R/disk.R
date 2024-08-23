@@ -120,3 +120,108 @@ ps__disk_usage_format_posix <- function(paths, l) {
 
   d
 }
+
+#' File system information for files
+#'
+#' This function currently only works on Unix operating systems.
+#'
+#' @param paths A path or a vector of paths. `ps_fs_info()` returns
+#'   information about the file systems of all paths. `path` may contain
+#'   direcories as well.
+#' @return Data frame with file system information for each
+#'   path in `paths`, one row per path. Common columns for all
+#'   operating systems:
+#'   * `path`: The input paths, i.e. the `paths` argument.
+#'   * `mount_point`: Directory where the file system is mounted.
+#'     On Linux there is a small chance that it was not possible to
+#'     look this up, and it is `NA_character_`.
+#'   * `name`: Device name.
+#'     On Linux there is a small chance that it was not possible to
+#'     look this up, and it is `NA_character_`.
+#'   * `type`: File system type (character).
+#'     On Linux there is a tiny chance that it was not possible to
+#'     look this up, and it is `NA_character_`.
+#'   * `block_size`: File system block size.
+#'   * `transfer_block_size`: Pptimal transfer block size. On Linux it is
+#'     currently always the same as `block_size`.
+#'   * `total_data_blocks`: Total data blocks in file system.
+#'   * `free_blocks`: Free blocks in file system.
+#'   * `id`: File system id. This is a raw vector. On Linux it is
+#'     often all zeros.
+#'   * `owner`: User that mounted the file system. On Linux this is
+#'     currently always `NA_character_`.
+#'   * `type_code`: Type of file system, a numeric code.
+#'   * `mount_flags_code`: Mount flags as a code.
+#'   * `subtype_code`: File system subtype (flavor). On Linux this is
+#'     always `NA`.
+#'
+#'   The rest of the columns are flags, and they are operating system
+#'   dependent.
+#'
+#'   macOS:
+#'
+#'   * `RDONLY`: A read-only filesystem.
+#'   * `SYNCHRONOUS`: File system is written to synchronously.
+#'   * `NOEXEC`: Can't exec from filesystem.
+#'   * `NOSUID`: Setuid bits are not honored on this filesystem.
+#'   * `NODEV`: Don't interpret special files.
+#'   * `UNION`: Union with underlying filesysten.
+#'   * `ASYNC`: File system written to asynchronously.
+#'   * `EXPORTED`: File system is exported.
+#'   * `LOCAL`: File system is stored locally.
+#'   * `QUOTA`: Quotas are enabled on this file system.
+#'   * `ROOTFS`: This file system is the root of the file system.
+#'   * `DOVOLFS`: File system supports volfs.
+#'   * `DONTBROWSE`: File system is not appropriate path to user data.
+#'   * `UNKNOWNPERMISSIONS`:  VFS will ignore ownership information on
+#'     filesystem filesystemtem objects.
+#'   * `AUTOMOUNTED`: File system was mounted by automounter.
+#'   * `JOURNALED`: File system is journaled.
+#'   * `DEFWRITE`: File system should defer writes.
+#'   * `MULTILABEL`: MAC support for individual labels.
+#'   * `CPROTECT`: File system supports per-file encrypted data protection.
+#'
+#'   Linux:
+#'
+#'   * `MANDLOCK`: Mandatory locking is permitted on the filesystem
+#'     (see `fcntl(2)`).
+#'   * `NOATIME`: Do not update access times; see `mount(2)`.
+#'   * `NODEV`: Disallow access to device special files on this filesystem.
+#'   * `NODIRATIME`: Do not update directory access times; see mount(2).
+#'   * `NOEXEC`: Execution of programs is disallowed on this filesystem.
+#'   * `NOSUID`: The set-user-ID and set-group-ID bits are ignored by
+#'      `exec(3)` for executable files on this filesystem
+#'   * `RDONLY`: This filesystem is mounted read-only.
+#'   * `RELATIME`: Update atime relative to mtime/ctime; see `mount(2)`.
+#'   * `SYNCHRONOUS`: Writes are synched to the filesystem immediately
+#'     (see the description of `O_SYNC` in `open(2)``).
+#'   * `NOSYMFOLLOW`: Symbolic links are not followed when resolving paths;
+#'     see `mount(2)``.
+#' @export
+#' @examplesIf ps::ps_is_supported() && ! ps:::is_cran_check()
+#' ps_fs_info(c("/", "~", "."))
+
+ps_fs_info <- function(paths = "/") {
+  if (ps_os_type()[["WINDOWS"]]) {
+    stop("`ps_fs_info()` currently only works on Unix")
+  }
+
+  assert_character(paths)
+  abspaths <- normalizePath(paths, mustWork = TRUE)
+  res <- .Call(ps__fs_info, paths, abspaths)
+  df <- as_data_frame(res)
+
+  # this should not happen in practice, but just in case
+  if (ps_os_type()[["LINUX"]] && any(is.na(df$type))) {
+    miss <- which(is.na(df$type))
+    df$type[miss] <- linux_fs_types$name[match(df$type_code[miss], linux_fs_types$id)]
+  }
+
+  df
+}
+
+linux_fs_types <- utils::read.table(
+  "tools/linux-fs-types.txt",
+  header = TRUE,
+  stringsAsFactors = FALSE
+)
