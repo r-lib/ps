@@ -16,6 +16,8 @@
 #include <mntent.h>
 #include <sys/sysinfo.h>
 #include <sched.h>
+#include <sys/vfs.h>
+#include <libgen.h>
 
 #include <Rinternals.h>
 
@@ -657,11 +659,21 @@ SEXP psll_terminal(SEXP p) {
   }
   PS__CHECK_STAT(stat, handle);
 
-  if (stat.tty_nr == 0) {
-    return ScalarInteger(NA_INTEGER);
-  } else {
+  if (stat.tty_nr != 0) {
     return ScalarInteger(stat.tty_nr);
   }
+
+  if (handle->pid != getpid()) {
+    return ScalarInteger(NA_INTEGER);
+  }
+
+  // It is us, try ttyname. This is a workaround for qemu, where
+  // /proc/self/stat is messed up
+  char const *tty = ttyname (STDIN_FILENO);
+  if (! tty) {
+    return ScalarInteger(NA_INTEGER);
+  }
+  return mkString(tty);
 }
 
 SEXP psll_environ(SEXP p) {
@@ -1105,7 +1117,7 @@ SEXP ps__memory_maps(SEXP p) {
     ps__throw_error();
   }
 
-  ret = ps__read_file(path, &buf, /* buffer= */ 2048);
+  ret = ps__read_file(path, &buf, /* buffer_size= */ 2048);
   if (ret == -1) {
     ps__wrap_linux_error(handle);
     ps__throw_error();
@@ -1286,6 +1298,227 @@ error:
   /* These are never called, but R CMD check and rchk cannot handle this */
   error("nah");
   return R_NilValue;
+}
+
+// These are from include/linux/statfs.h in Linux
+
+#define ST_RDONLY	0x0001	/* mount read-only */
+#define ST_NOSUID	0x0002	/* ignore suid and sgid bits */
+#define ST_NODEV	0x0004	/* disallow access to device special files */
+#define ST_NOEXEC	0x0008	/* disallow program execution */
+#define ST_SYNCHRONOUS	0x0010	/* writes are synced at once */
+#define ST_VALID	0x0020	/* f_flags support is implemented */
+#define ST_MANDLOCK	0x0040	/* allow mandatory locks on an FS */
+/* 0x0080 used for ST_WRITE in glibc */
+/* 0x0100 used for ST_APPEND in glibc */
+/* 0x0200 used for ST_IMMUTABLE in glibc */
+#define ST_NOATIME	0x0400	/* do not update access times */
+#define ST_NODIRATIME	0x0800	/* do not update directory access times */
+#define ST_RELATIME	0x1000	/* update atime relative to mtime/ctime */
+#define ST_NOSYMFOLLOW	0x2000	/* do not follow symlinks */
+
+SEXP ps__fs_info(SEXP path, SEXP abspath) {
+  struct statfs sfs;
+  R_xlen_t i, j, len = Rf_xlength(path);
+  int ret;
+
+  // Need to query all partitions and look up their
+  // fs id, because struct statfs does not contain the
+  // directory or the device of the file systems. So we'll
+  // run statfs for the directory of all partitions as well,
+  // to match the input paths to device names.
+
+  SEXP partitions = PROTECT(ps__disk_partitions(Rf_ScalarLogical(1)));
+  R_xlen_t num_parts = Rf_xlength(partitions);
+  SEXP rfsid = PROTECT(Rf_allocVector(RAWSXP, num_parts * sizeof(fsid_t)));
+  fsid_t *fsid = (fsid_t *) RAW(rfsid);
+  memset(fsid, 0, num_parts * sizeof(fsid_t));
+  for (i = 0; i < num_parts; i++) {
+    if (isNull(VECTOR_ELT(partitions, i))) {
+      num_parts = i;
+      break;
+    }
+    const char *mp = CHAR(STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, i), 1), 0));
+    ret = statfs(mp, &sfs);
+    // Skip the ones that fail, those are zeroed out,
+    // we assume the zeros do not match any real fs id.
+    if (ret == 0) {
+      memcpy(&fsid[i], &sfs.f_fsid, sizeof(fsid_t));
+    }
+  }
+
+  // Some files and partitions do not have a proper fsid, but it is just
+  // all zeros. For these we try to match dirnam() to a mount point
+  // recursively.
+  fsid_t zerofsid;
+  memset(&zerofsid, 0, sizeof(fsid_t));
+
+  const char *nms[] = {
+    "path",
+    "mount_point",
+    "name",
+    "type",
+    "block_size",
+    "transfer_block_size",
+    "total_data_blocks",
+    "free_blocks",
+    "free_blocks_non_superuser",
+    "total_nodes",
+    "free_nodes",
+    "id",
+    "owner",
+    "type_code",
+    "mount_flags_code",
+    "subtype_code",
+
+    "MANDLOCK",
+    "NOATIME",
+    "NODEV",
+    "NODIRATIME",
+    "NOEXEC",
+    "NOSUID",
+    "RDONLY",
+    "RELATIME",
+    "SYNCHRONOUS",
+    "NOSYMFOLLOW",
+    ""
+  };
+
+  SEXP res = PROTECT(Rf_mkNamed(VECSXP, nms));
+  SET_VECTOR_ELT(res, 0, path);
+  SET_VECTOR_ELT(res, 1, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 2, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 3, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 4, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 5, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 6, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 7, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 8, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 9, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 10, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 11, Rf_allocVector(VECSXP, len));
+  SET_VECTOR_ELT(res, 12, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 13, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 14, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 15, Rf_allocVector(REALSXP, len));
+
+  SET_VECTOR_ELT(res, 16, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 17, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 18, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 19, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 20, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 21, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 22, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 23, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 24, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 25, Rf_allocVector(LGLSXP, len));
+
+  for (i = 0; i < len; i++) {
+    ret = statfs(CHAR(STRING_ELT(abspath, i)), &sfs);
+    if (ret != 0) {
+      ps__set_error(
+        "statfs %s: %d %s",
+        CHAR(STRING_ELT(abspath, i)), errno, strerror(errno)
+      );
+      ps__throw_error();
+    }
+
+    SET_STRING_ELT(VECTOR_ELT(res, 1), i, NA_STRING);
+    SET_STRING_ELT(VECTOR_ELT(res, 2), i, NA_STRING);
+    SET_STRING_ELT(VECTOR_ELT(res, 3), i, NA_STRING);
+
+    // match to partition, either with fsid, or matching a parent
+    // directory to a mount point
+    int found_part = 0;
+    if (0 != memcmp(&sfs.f_fsid, &zerofsid, sizeof(fsid_t))) {
+      for (j = 0; j < num_parts; j++) {
+        if (0 == memcmp(&fsid[j], &sfs.f_fsid, sizeof(fsid_t))) {
+          SET_STRING_ELT(
+            VECTOR_ELT(res, 1), i,
+            STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 1), 0));
+          SET_STRING_ELT(
+            VECTOR_ELT(res, 2), i,
+            STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 0), 0));
+          SET_STRING_ELT(
+            VECTOR_ELT(res, 3), i,
+            STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 2), 0));
+          found_part = 1;
+          break;
+        }
+      }
+    }
+    if (!found_part) {
+      char *dn = strdup(CHAR(STRING_ELT(abspath, i)));
+      while (!found_part) {
+        for (j = 0; j < num_parts; j++) {
+          const char *mp = CHAR(STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 1), 0));
+          if (0 == strcmp(dn, mp)) {
+            SET_STRING_ELT(
+              VECTOR_ELT(res, 1), i,
+              STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 1), 0));
+            SET_STRING_ELT(
+              VECTOR_ELT(res, 2), i,
+              STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 0), 0));
+            SET_STRING_ELT(
+              VECTOR_ELT(res, 3), i,
+              STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 2), 0));
+            found_part = 1;
+            break;
+          }
+        }
+        // quit asap, to avoid the dirname() mess
+        if (found_part) {
+          break;
+        }
+        // we didn't even find /??? wow
+        if (0 == strcmp("/", dn)) {
+          break;
+        }
+        // Get parent. dirname() might modify dn and return the
+        // same pointer (!!!). So need to copy both input and output.
+        char *orig = strdup(dn);
+        char *ddn = strdup(dirname(dn));
+        // This might happen if dn has no /. (Should not happen here,
+        // because we use the absolute file name, but just in case.)
+        if (0 == strcmp(orig, ddn)) {
+          free(orig);
+          free(ddn);
+          break;
+        }
+        free(orig);
+        dn = ddn;
+      }
+      free(dn);
+    }
+
+    REAL(VECTOR_ELT(res, 4))[i] = sfs.f_bsize;
+    REAL(VECTOR_ELT(res, 5))[i] = sfs.f_bsize;
+    REAL(VECTOR_ELT(res, 6))[i] = sfs.f_blocks;
+    REAL(VECTOR_ELT(res, 7))[i] = sfs.f_bfree;
+    REAL(VECTOR_ELT(res, 8))[i] = sfs.f_bavail;
+    REAL(VECTOR_ELT(res, 9))[i] = sfs.f_files;
+    REAL(VECTOR_ELT(res, 10))[i] = sfs.f_ffree;
+    SET_VECTOR_ELT(VECTOR_ELT(res, 11), i, Rf_allocVector(RAWSXP, sizeof(fsid_t)));
+    memcpy(RAW(VECTOR_ELT(VECTOR_ELT(res, 11), i)), &sfs.f_fsid, sizeof(fsid_t));
+    REAL(VECTOR_ELT(res, 12))[i] = NA_REAL;
+    REAL(VECTOR_ELT(res, 13))[i] = sfs.f_type;
+    REAL(VECTOR_ELT(res, 14))[i] = sfs.f_flags;
+    REAL(VECTOR_ELT(res, 15))[i] = NA_REAL;
+
+    LOGICAL(VECTOR_ELT(res, 16))[i] = sfs.f_flags & ST_MANDLOCK;
+    LOGICAL(VECTOR_ELT(res, 17))[i] = sfs.f_flags & ST_NOATIME;
+    LOGICAL(VECTOR_ELT(res, 18))[i] = sfs.f_flags & ST_NODEV;
+    LOGICAL(VECTOR_ELT(res, 19))[i] = sfs.f_flags & ST_NODIRATIME;
+    LOGICAL(VECTOR_ELT(res, 20))[i] = sfs.f_flags & ST_NOEXEC;
+    LOGICAL(VECTOR_ELT(res, 21))[i] = sfs.f_flags & ST_NOSUID;
+    LOGICAL(VECTOR_ELT(res, 22))[i] = sfs.f_flags & ST_RDONLY;
+    LOGICAL(VECTOR_ELT(res, 23))[i] = sfs.f_flags & ST_RELATIME;
+    LOGICAL(VECTOR_ELT(res, 24))[i] = sfs.f_flags & ST_SYNCHRONOUS;
+    LOGICAL(VECTOR_ELT(res, 25))[i] = sfs.f_flags & ST_NOSYMFOLLOW;
+  }
+
+  UNPROTECT(3);
+  return res;
 }
 
 SEXP ps__loadavg(SEXP counter_name) {

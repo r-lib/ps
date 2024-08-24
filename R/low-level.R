@@ -153,7 +153,7 @@ ps_parent <- function(p = ps_handle()) {
 #'
 #' The name of the program, which is typically the name of the executable.
 #'
-#' On on Unix this can change, e.g. via an exec*() system call.
+#' On Unix this can change, e.g. via an exec*() system call.
 #'
 #' `ps_name()` works on zombie processes.
 #'
@@ -177,13 +177,21 @@ ps_name <- function(p = ps_handle()) {
     ## If it matches the first part of the cmdline we return that
     ## one instead because it's usually more explicative.
     ## Examples are "gnome-keyring-d" vs. "gnome-keyring-daemon".
+
+    ## In addition, under qemu (e.g. in cross-platform Docker), the
+    ## first entry is qemu and the second entry is the file name
     cmdline <- tryCatch(
       ps_cmdline(p),
       error = function(e) NULL
     )
-    if (!is.null(cmdline)) {
+    if (!is.null(cmdline) && length(cmdline) > 0L) {
       exname <- basename(cmdline[1])
-      if (str_starts_with(exname, n)) n <- exname
+      if (str_starts_with(exname, n)) {
+        n <- exname
+      } else if (grepl("qemu", exname) && length(cmdline) >= 2 &&
+                 str_starts_with(exname2 <- basename(cmdline[2]), n)) {
+        n <- exname2
+      }
     }
   }
   n
@@ -376,7 +384,9 @@ ps_gids <- function(p = ps_handle()) {
 ps_terminal <- function(p = ps_handle()) {
   assert_ps_handle(p)
   ttynr <- .Call(psll_terminal, p)
-  if (is.na(ttynr)) {
+  if (is.character(ttynr)) {
+    ttynr
+  } else if (is.na(ttynr)) {
     NA_character_
   } else {
     tmap <- get_terminal_map()
@@ -482,7 +492,7 @@ ps_cpu_times <- function(p = ps_handle()) {
 #'
 #' `ps_memory_info()` returns information about memory usage.
 #'
-#' It returns a named list. Portable fields:
+#' It returns a named vector. Portable fields:
 #' * `rss`: "Resident Set Size", this is the non-swapped physical memory a
 #'   process has used (bytes). On UNIX it matches "top"‘s 'RES' column (see doc). On
 #'   Windows this is an alias for `wset` field and it matches "Memory"

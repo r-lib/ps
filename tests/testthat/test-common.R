@@ -130,7 +130,11 @@ test_that("exe", {
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
   expect_true(ps_is_running(ps))
-  expect_equal(ps_exe(ps), realpath(px()))
+  exe <- ps_exe(ps)
+  # In qemu the first entry is qemu, the second entry is the exe
+  if (!grepl("qemu", exe)) {
+    expect_equal(ps_exe(ps), realpath(px()))
+  }
 })
 
 test_that("cmdline", {
@@ -141,7 +145,12 @@ test_that("cmdline", {
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
   expect_true(ps_is_running(ps))
-  expect_equal(ps_cmdline(ps), c(px(), "sleep", "10"))
+  cmd <- ps_cmdline(ps)
+  # in qemu, need to drop the first two
+  if (grepl("qemu", cmd[1])) {
+    cmd <- cmd[-(1:2)]
+  }
+  expect_equal(cmd, c(px(), "sleep", "10"))
 })
 
 test_that("cwd", {
@@ -181,7 +190,10 @@ test_that("num_threads", {
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
   expect_true(ps_is_running(ps))
-  expect_equal(ps_num_threads(ps), 1)
+  # This is not reliable in qemu
+  if (!grepl("qemu", ps_exe(ps))) {
+    expect_equal(ps_num_threads(ps), 1)
+  }
   ## TODO: more threads?
 })
 

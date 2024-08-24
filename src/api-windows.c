@@ -1411,6 +1411,11 @@ error:
   return R_NilValue;
 }
 
+SEXP ps__fs_info(SEXP path, SEXP abspath) {
+  // TODO
+  return R_NilValue;
+}
+
 SEXP ps__system_memory() {
   MEMORYSTATUSEX memInfo;
   memInfo.dwLength = sizeof(MEMORYSTATUSEX);

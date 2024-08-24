@@ -5,6 +5,19 @@
   `SIGTERM` is attempted. A `SIGKILL` is issued when the grace period
   is up.
 
+* New `ps_fs_info()` to query information about the file system of one
+  or more files or directories, on Unix.
+
+# ps 1.7.7
+
+* `ps_cpu_times()` values are now correct on newer arm64 macOS.
+
+# ps 1.7.6
+
+* `ps_name()` now does not fail in the rare case when `ps_cmdline()` returns an empty vector (#150).
+
+* `ps_system_cpu_times()` now returns CPU times divided by the HZ as reported by CLK_TCK, in-line with other OS's and the per-process version. (#144, @michaelwalshe).
+
 # ps 1.7.5
 
 No user visible changes.

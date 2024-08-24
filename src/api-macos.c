@@ -10,18 +10,24 @@
 #include <sys/types.h>
 #include <libproc.h>
 #include <errno.h>
+#include <sys/errno.h>
 #include <string.h>
 #include <utmpx.h>
 #include <arpa/inet.h>
+#include <sys/param.h>
+#include <sys/mount.h>
 
 #include <mach/mach.h>
 #include <mach/mach_vm.h>
 #include <mach/shared_region.h>
+#include <mach/mach_time.h>
 
 #include "ps-internal.h"
 #include "arch/macos/process_info.h"
 
 #include <stdbool.h>
+
+struct mach_timebase_info PS_MACH_TIMEBASE_INFO;
 
 #define PS__TV2DOUBLE(t) ((t).tv_sec + (t).tv_usec / 1000000.0)
 
@@ -402,6 +408,8 @@ SEXP psll_cpu_times(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   struct proc_taskinfo pti;
   SEXP result, names;
+  uint64_t total_user;
+  uint64_t total_system;
 
   if (!handle) error("Process pointer cleaned up already");
 
@@ -412,9 +420,14 @@ SEXP psll_cpu_times(SEXP p) {
 
   PS__CHECK_HANDLE(handle);
 
+  total_user = pti.pti_total_user * PS_MACH_TIMEBASE_INFO.numer;
+  total_user /= PS_MACH_TIMEBASE_INFO.denom;
+  total_system = pti.pti_total_system * PS_MACH_TIMEBASE_INFO.numer;
+  total_system /= PS_MACH_TIMEBASE_INFO.denom;
+
   PROTECT(result = allocVector(REALSXP, 4));
-  REAL(result)[0] = (double) pti.pti_total_user / 1000000000.0;
-  REAL(result)[1] = (double) pti.pti_total_system / 1000000000.0;
+  REAL(result)[0] = (double) total_user / 1000000000.0;
+  REAL(result)[1] = (double) total_system / 1000000000.0;
   REAL(result)[2] = REAL(result)[3] = NA_REAL;
   PROTECT(names = ps__build_string("user", "system", "children_user",
 				   "children_system", NULL));
@@ -1074,6 +1087,141 @@ error:
   if (fs != NULL) free(fs);
   ps__throw_error();
   return R_NilValue;
+}
+
+SEXP ps__fs_info(SEXP path, SEXP abspath) {
+  struct statfs sfs;
+  R_xlen_t i, len = Rf_xlength(path);
+
+  const char *nms[] = {
+    "path",
+    "mount_point",
+    "name",
+    "type",
+    "block_size",
+    "transfer_block_size",
+    "total_data_blocks",
+    "free_blocks",
+    "free_blocks_non_superuser",
+    "total_nodes",
+    "free_nodes",
+    "id",
+    "owner",
+    "type_code",
+    "mount_flags_code",
+    "subtype_code",
+
+    "RDONLY",
+    "SYNCHRONOUS",
+    "NOEXEC",
+    "NOSUID",
+    "NODEV",
+    "UNION",
+    "ASYNC",
+    "EXPORTED",
+    "LOCAL",
+    "QUOTA",
+    "ROOTFS",
+    "DOVOLFS",
+    "DONTBROWSE",
+    "UNKNOWNPERMISSIONS",
+    "AUTOMOUNTED",
+    "JOURNALED",
+    "DEFWRITE",
+    "MULTILABEL",
+    "CPROTECT",
+    ""
+  };
+  SEXP res = PROTECT(Rf_mkNamed(VECSXP, nms));
+  SET_VECTOR_ELT(res, 0, path);
+  SET_VECTOR_ELT(res, 1, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 2, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 3, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 4, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 5, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 6, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 7, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 8, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 9, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 10, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 11, Rf_allocVector(VECSXP, len));
+  SET_VECTOR_ELT(res, 12, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 13, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 14, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 15, Rf_allocVector(REALSXP, len));
+
+  SET_VECTOR_ELT(res, 16, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 17, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 18, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 19, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 20, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 21, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 22, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 23, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 24, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 25, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 26, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 27, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 28, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 29, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 30, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 31, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 32, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 33, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 34, Rf_allocVector(LGLSXP, len));
+
+  for (i = 0; i < len; i++) {
+    int ret = statfs(CHAR(STRING_ELT(abspath, i)), &sfs);
+    if (ret != 0) {
+      ps__set_error(
+        "statfs %s: %d %s",
+        CHAR(STRING_ELT(abspath, i)), errno, strerror(errno)
+      );
+      ps__throw_error();
+    }
+    SET_STRING_ELT(VECTOR_ELT(res, 1), i,
+                   Rf_mkCharCE(sfs.f_mntonname, CE_UTF8));
+    SET_STRING_ELT(VECTOR_ELT(res, 2), i,
+                   Rf_mkCharCE(sfs.f_mntfromname, CE_UTF8));
+    SET_STRING_ELT(VECTOR_ELT(res, 3), i,
+                   Rf_mkCharCE(sfs.f_fstypename, CE_UTF8));
+    REAL(VECTOR_ELT(res, 4))[i] = sfs.f_bsize;
+    REAL(VECTOR_ELT(res, 5))[i] = sfs.f_iosize;
+    REAL(VECTOR_ELT(res, 6))[i] = sfs.f_blocks;
+    REAL(VECTOR_ELT(res, 7))[i] = sfs.f_bfree;
+    REAL(VECTOR_ELT(res, 8))[i] = sfs.f_bavail;
+    REAL(VECTOR_ELT(res, 9))[i] = sfs.f_files;
+    REAL(VECTOR_ELT(res, 10))[i] = sfs.f_ffree;
+    SET_VECTOR_ELT(VECTOR_ELT(res, 11), i, Rf_allocVector(RAWSXP, sizeof(fsid_t)));
+    memcpy(RAW(VECTOR_ELT(VECTOR_ELT(res, 11), i)), &sfs.f_fsid, sizeof(fsid_t));
+    REAL(VECTOR_ELT(res, 12))[i] = sfs.f_owner;
+    REAL(VECTOR_ELT(res, 13))[i] = sfs.f_type;
+    REAL(VECTOR_ELT(res, 14))[i] = sfs.f_flags;
+    REAL(VECTOR_ELT(res, 15))[i] = sfs.f_fssubtype;
+
+    LOGICAL(VECTOR_ELT(res, 16))[i] = sfs.f_flags & MNT_RDONLY;
+    LOGICAL(VECTOR_ELT(res, 17))[i] = sfs.f_flags & MNT_SYNCHRONOUS;
+    LOGICAL(VECTOR_ELT(res, 18))[i] = sfs.f_flags & MNT_NOEXEC;
+    LOGICAL(VECTOR_ELT(res, 19))[i] = sfs.f_flags & MNT_NOSUID;
+    LOGICAL(VECTOR_ELT(res, 20))[i] = sfs.f_flags & MNT_NODEV;
+    LOGICAL(VECTOR_ELT(res, 21))[i] = sfs.f_flags & MNT_UNION;
+    LOGICAL(VECTOR_ELT(res, 22))[i] = sfs.f_flags & MNT_ASYNC;
+    LOGICAL(VECTOR_ELT(res, 23))[i] = sfs.f_flags & MNT_EXPORTED;
+    LOGICAL(VECTOR_ELT(res, 24))[i] = sfs.f_flags & MNT_LOCAL;
+    LOGICAL(VECTOR_ELT(res, 25))[i] = sfs.f_flags & MNT_QUOTA;
+    LOGICAL(VECTOR_ELT(res, 26))[i] = sfs.f_flags & MNT_ROOTFS;
+    LOGICAL(VECTOR_ELT(res, 27))[i] = sfs.f_flags & MNT_DOVOLFS;
+    LOGICAL(VECTOR_ELT(res, 28))[i] = sfs.f_flags & MNT_DONTBROWSE;
+    LOGICAL(VECTOR_ELT(res, 29))[i] = sfs.f_flags & MNT_UNKNOWNPERMISSIONS;
+    LOGICAL(VECTOR_ELT(res, 30))[i] = sfs.f_flags & MNT_AUTOMOUNTED;
+    LOGICAL(VECTOR_ELT(res, 31))[i] = sfs.f_flags & MNT_JOURNALED;
+    LOGICAL(VECTOR_ELT(res, 32))[i] = sfs.f_flags & MNT_DEFWRITE;
+    LOGICAL(VECTOR_ELT(res, 33))[i] = sfs.f_flags & MNT_MULTILABEL;
+    LOGICAL(VECTOR_ELT(res, 34))[i] = sfs.f_flags & MNT_CPROTECT;
+  }
+
+  UNPROTECT(1);
+  return res;
 }
 
 int ps__sys_vminfo(vm_statistics_data_t *vmstat) {

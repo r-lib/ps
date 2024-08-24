@@ -42,6 +42,7 @@ test_that("UNIX sockets with path", {
   if (!ps_os_type()[["POSIX"]]) skip("No UNIX sockets")
   skip_without_program("socat")
   skip_if_no_processx()
+  skip_on_cran()
 
   sfile <- tempfile()
   sfile <- file.path(normalizePath(dirname(sfile)), basename(sfile))
