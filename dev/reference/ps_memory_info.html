@@ -59,7 +59,7 @@
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><code>ps_memory_info()</code> returns information about memory usage.</p>
-<p>It returns a named list. Portable fields:</p><ul><li><p><code>rss</code>: "Resident Set Size", this is the non-swapped physical memory a
+<p>It returns a named vector. Portable fields:</p><ul><li><p><code>rss</code>: "Resident Set Size", this is the non-swapped physical memory a
 process has used (bytes). On UNIX it matches "top"‘s 'RES' column (see doc). On
 Windows this is an alias for <code>wset</code> field and it matches "Memory"
 column of <code>taskmgr.exe</code>.</p></li>
@@ -134,15 +134,15 @@ disk.</p></li>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">p</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=6293, NAME=R, AT=2024-08-23 13:29:57.96</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=6139, NAME=R, AT=2024-08-24 08:31:46.7</span>
 <span class="r-in"><span><span class="fu">ps_memory_info</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       rss       vms    shared      text       lib      data     dirty </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248430592 939073536  33947648      4096         0 739336192         0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 248479744 938991616  33816576      4096         0 739254272         0 </span>
 <span class="r-in"><span><span class="fu">ps_memory_full_info</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       rss       vms    shared      text       lib      data     dirty </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 248430592 939073536  33947648      4096         0 739336192         0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 248479744 938991616  33816576      4096         0 739254272         0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       uss       pss      swap </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 229908480 233609216         0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 229937152 233592832         0 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
