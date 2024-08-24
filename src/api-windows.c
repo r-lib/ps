@@ -1409,8 +1409,211 @@ error:
 }
 
 SEXP ps__fs_info(SEXP path, SEXP abspath) {
-  // TODO
-  return R_NilValue;
+  R_xlen_t i, len = Rf_xlength(path);
+
+  const char *nms[] = {
+    "path",                           // 0
+    "mount_point",                    // 1
+    "name",                           // 2
+    "type",                           // 3
+    "block_size",                     // 4
+    "transfer_block_size",            // 5
+    "total_data_blocks",              // 6
+    "free_blocks",                    // 7
+    "free_blocks_non_superuser",      // 8
+    "total_nodes",                    // 9
+    "free_nodes",                     // 10
+    "id",                             // 11
+    "owner",                          // 12
+    "type_code",                      // 13
+    "subtype_code",                   // 14
+
+    "CASE_SENSITIVE_SEARCH",
+    "CASE_PRESERVED_NAMES",
+    "UNICODE_ON_DISK",
+    "PERSISTENT_ACLS",
+    "FILE_COMPRESSION",
+    "VOLUME_QUOTAS",
+    "SUPPORTS_SPARSE_FILES",
+    "SUPPORTS_REPARSE_POINTS",
+    "SUPPORTS_REMOTE_STORAGE",
+    "RETURNS_CLEANUP_RESULT_INFO",
+    "SUPPORTS_POSIX_UNLINK_RENAME",
+    "VOLUME_IS_COMPRESSED",
+    "SUPPORTS_OBJECT_IDS",
+    "SUPPORTS_ENCRYPTION",
+    "NAMED_STREAMS",
+    "READ_ONLY_VOLUME",
+    "SEQUENTIAL_WRITE_ONCE",
+    "SUPPORTS_TRANSACTIONS",
+    "SUPPORTS_HARD_LINKS",
+    "SUPPORTS_EXTENDED_ATTRIBUTES",
+    "SUPPORTS_OPEN_BY_FILE_ID",
+    "SUPPORTS_USN_JOURNAL",
+    "SUPPORTS_INTEGRITY_STREAMS",
+    "SUPPORTS_BLOCK_REFCOUNTING",
+    "SUPPORTS_SPARSE_VDL",
+    "DAX_VOLUME",
+    "SUPPORTS_GHOSTING",
+    ""
+  };
+  SEXP res = PROTECT(Rf_mkNamed(VECSXP, nms));
+
+  SET_VECTOR_ELT(res, 0, path);
+  SET_VECTOR_ELT(res, 1, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 2, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 3, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 4, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 5, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 6, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 7, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 8, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 9, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 10, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 11, Rf_allocVector(VECSXP, len));
+  SET_VECTOR_ELT(res, 12, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 13, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 14, Rf_allocVector(REALSXP, len));
+
+  SET_VECTOR_ELT(res, 15, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 16, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 17, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 18, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 19, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 20, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 21, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 22, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 23, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 24, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 25, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 26, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 27, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 28, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 29, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 30, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 31, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 32, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 33, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 34, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 35, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 36, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 37, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 38, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 39, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 40, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 41, Rf_allocVector(LGLSXP, len));
+
+  for (i = 0; i < len; i++) {
+    const char *cpath = CHAR(STRING_ELT(abspath, i));
+    wchar_t *wpath;
+    int iret = ps__utf8_to_utf16(cpath, &wpath);
+    if (iret) {
+      ps__throw_error();
+    }
+
+    // look up mount point
+    wchar_t volume[MAX_PATH + 1];
+    BOOL ok = GetVolumePathNameW(
+      wpath,
+      volume,
+      sizeof(volume)/sizeof(wchar_t) - 1
+    );
+    if (!ok) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+    SET_STRING_ELT(
+      VECTOR_ELT(res, 1), i,
+      ps__utf16_to_charsxp(volume, -1)
+    );
+
+    // name of the volume
+    wchar_t volname[1024];
+    ok = GetVolumeNameForVolumeMountPointW(
+      volume,
+      volname,
+      sizeof(volname)/sizeof(wchar_t) - 1
+    );
+    if (!ok) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+    SET_STRING_ELT(
+      VECTOR_ELT(res, 2), i,
+      ps__utf16_to_charsxp(volname, -1)
+    );
+
+    DWORD sn, mcl, flags;
+    wchar_t type[MAX_PATH + 1];
+    ok = GetVolumeInformationW(
+      volume, NULL, 0, &sn, &mcl, &flags, type,
+      sizeof(type)/sizeof(wchar_t) - 1);
+    if (!ok) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+    // type
+    SET_STRING_ELT(
+      VECTOR_ELT(res, 3), i,
+      ps__utf16_to_charsxp(type, -1)
+    );
+
+    DWORD spc, bps, freec, totalc;
+    ok = GetDiskFreeSpaceW(volume, &spc, &bps, &freec, &totalc);
+    if (!ok) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+    REAL(VECTOR_ELT(res, 4))[i] = bps;
+    REAL(VECTOR_ELT(res, 5))[i] = bps * spc;
+
+    ULARGE_INTEGER freeuser, total, freeroot;
+    ok = GetDiskFreeSpaceExW(volume, &freeuser, &total, &freeroot);
+    if (!ok) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+    REAL(VECTOR_ELT(res, 6))[i] = total.QuadPart / bps;
+    REAL(VECTOR_ELT(res, 7))[i] = freeroot.QuadPart / bps;
+    REAL(VECTOR_ELT(res, 8))[i] = freeuser.QuadPart / bps;
+    REAL(VECTOR_ELT(res, 9))[i] = NA_REAL;
+    REAL(VECTOR_ELT(res, 10))[i] = NA_REAL;
+    SET_VECTOR_ELT(VECTOR_ELT(res, 11), i, R_NilValue);
+    REAL(VECTOR_ELT(res, 12))[i] = NA_REAL;
+    REAL(VECTOR_ELT(res, 13))[i] = NA_REAL;
+    REAL(VECTOR_ELT(res, 14))[i] = NA_REAL;
+
+    LOGICAL(VECTOR_ELT(res, 15))[i] = flags & FILE_CASE_SENSITIVE_SEARCH;
+    LOGICAL(VECTOR_ELT(res, 16))[i] = flags & FILE_CASE_PRESERVED_NAMES;
+    LOGICAL(VECTOR_ELT(res, 17))[i] = flags & FILE_UNICODE_ON_DISK;
+    LOGICAL(VECTOR_ELT(res, 18))[i] = flags & FILE_PERSISTENT_ACLS;
+    LOGICAL(VECTOR_ELT(res, 19))[i] = flags & FILE_FILE_COMPRESSION;
+    LOGICAL(VECTOR_ELT(res, 20))[i] = flags & FILE_VOLUME_QUOTAS;
+    LOGICAL(VECTOR_ELT(res, 21))[i] = flags & FILE_SUPPORTS_SPARSE_FILES;
+    LOGICAL(VECTOR_ELT(res, 22))[i] = flags & FILE_SUPPORTS_REPARSE_POINTS;
+    LOGICAL(VECTOR_ELT(res, 23))[i] = flags & FILE_SUPPORTS_REMOTE_STORAGE;
+    LOGICAL(VECTOR_ELT(res, 24))[i] = flags & FILE_RETURNS_CLEANUP_RESULT_INFO;
+    LOGICAL(VECTOR_ELT(res, 25))[i] = flags & FILE_SUPPORTS_POSIX_UNLINK_RENAME;
+    LOGICAL(VECTOR_ELT(res, 26))[i] = flags & FILE_VOLUME_IS_COMPRESSED;
+    LOGICAL(VECTOR_ELT(res, 27))[i] = flags & FILE_SUPPORTS_OBJECT_IDS;
+    LOGICAL(VECTOR_ELT(res, 28))[i] = flags & FILE_SUPPORTS_ENCRYPTION;
+    LOGICAL(VECTOR_ELT(res, 29))[i] = flags & FILE_NAMED_STREAMS;
+    LOGICAL(VECTOR_ELT(res, 30))[i] = flags & FILE_READ_ONLY_VOLUME;
+    LOGICAL(VECTOR_ELT(res, 31))[i] = flags & FILE_SEQUENTIAL_WRITE_ONCE;
+    LOGICAL(VECTOR_ELT(res, 32))[i] = flags & FILE_SUPPORTS_TRANSACTIONS;
+    LOGICAL(VECTOR_ELT(res, 33))[i] = flags & FILE_SUPPORTS_HARD_LINKS;
+    LOGICAL(VECTOR_ELT(res, 34))[i] = flags & FILE_SUPPORTS_EXTENDED_ATTRIBUTES;
+    LOGICAL(VECTOR_ELT(res, 35))[i] = flags & FILE_SUPPORTS_OPEN_BY_FILE_ID;
+    LOGICAL(VECTOR_ELT(res, 36))[i] = flags & FILE_SUPPORTS_USN_JOURNAL;
+    LOGICAL(VECTOR_ELT(res, 37))[i] = flags & FILE_SUPPORTS_INTEGRITY_STREAMS;
+    LOGICAL(VECTOR_ELT(res, 38))[i] = flags & FILE_SUPPORTS_BLOCK_REFCOUNTING;
+    LOGICAL(VECTOR_ELT(res, 39))[i] = flags & FILE_SUPPORTS_SPARSE_VDL;
+    LOGICAL(VECTOR_ELT(res, 40))[i] = flags & FILE_DAX_VOLUME;
+    LOGICAL(VECTOR_ELT(res, 41))[i] = flags & FILE_SUPPORTS_GHOSTING;
+  }
+
+  UNPROTECT(1);
+  return res;
 }
 
 SEXP ps__system_memory() {

@@ -123,8 +123,6 @@ ps__disk_usage_format_posix <- function(paths, l) {
 
 #' File system information for files
 #'
-#' This function currently only works on Unix operating systems.
-#'
 #' @param paths A path or a vector of paths. `ps_fs_info()` returns
 #'   information about the file systems of all paths. `path` may contain
 #'   direcories as well.
@@ -134,26 +132,35 @@ ps__disk_usage_format_posix <- function(paths, l) {
 #'   * `path`: The input paths, i.e. the `paths` argument.
 #'   * `mount_point`: Directory where the file system is mounted.
 #'     On Linux there is a small chance that it was not possible to
-#'     look this up, and it is `NA_character_`.
+#'     look this up, and it is `NA_character_`. This is the drive letter
+#'     or the mount directory on Windows, with a trailing `\`.
 #'   * `name`: Device name.
 #'     On Linux there is a small chance that it was not possible to
-#'     look this up, and it is `NA_character_`.
+#'     look this up, and it is `NA_character_`. On Windows this is the
+#'     volume GUID path of the form `\\?\Volume{GUID}\`.
 #'   * `type`: File system type (character).
 #'     On Linux there is a tiny chance that it was not possible to
 #'     look this up, and it is `NA_character_`.
-#'   * `block_size`: File system block size.
+#'   * `block_size`: File system block size. This is the sector size on
+#'     Windows, in bytes.
 #'   * `transfer_block_size`: Pptimal transfer block size. On Linux it is
-#'     currently always the same as `block_size`.
-#'   * `total_data_blocks`: Total data blocks in file system.
-#'   * `free_blocks`: Free blocks in file system.
+#'     currently always the same as `block_size`. This is the cluster size
+#'     on Windows, in bytes.
+#'   * `total_data_blocks`: Total data blocks in file system. On Windows
+#'     this is the number of sectors.
+#'   * `free_blocks`: Free blocks in file system. On Windows this is the
+#'     number of free sectors.
+#'   * `free_blocks_non_superuser`: Free blocks for a non-superuser, which
+#'     might be different on Unix. On Windows this is the number of free
+#'     sectors for the calling user.
 #'   * `id`: File system id. This is a raw vector. On Linux it is
-#'     often all zeros.
-#'   * `owner`: User that mounted the file system. On Linux this is
-#'     currently always `NA_character_`.
-#'   * `type_code`: Type of file system, a numeric code.
-#'   * `mount_flags_code`: Mount flags as a code.
-#'   * `subtype_code`: File system subtype (flavor). On Linux this is
-#'     always `NA`.
+#'     often all zeros. It is always `NULL` on Windows.
+#'   * `owner`: User that mounted the file system. On Linux and Windows
+#'     this is currently always `NA_real_`.
+#'   * `type_code`: Type of file system, a numeric code. On Windows this
+#'     this is `NA_real_`.
+#'   * `subtype_code`: File system subtype (flavor). On Linux and Windows
+#'     this is always `NA_real_`.
 #'
 #'   The rest of the columns are flags, and they are operating system
 #'   dependent.
@@ -197,15 +204,57 @@ ps__disk_usage_format_posix <- function(paths, l) {
 #'     (see the description of `O_SYNC` in `open(2)``).
 #'   * `NOSYMFOLLOW`: Symbolic links are not followed when resolving paths;
 #'     see `mount(2)``.
+#'
+#'   Windows:
+#'
+#'   * `CASE_SENSITIVE_SEARCH`: Supports case-sensitive file names.
+#'   * `CASE_PRESERVED_NAMES`: Supports preserved case of file names when
+#'      it places a name on disk.
+#'   * `UNICODE_ON_DISK`: Supports Unicode in file names as they appear on
+#'      disk.
+#'   * `PERSISTENT_ACLS`: Preserves and enforces access control lists
+#'      (ACL). For example, the NTFS file system preserves and enforces
+#'      ACLs, and the FAT file system does not.
+#'   * `FILE_COMPRESSION`: Supports file-based compression.
+#'   * `VOLUME_QUOTAS`: Supports disk quotas.
+#'   * `SUPPORTS_SPARSE_FILES`: Supports sparse files.
+#'   * `SUPPORTS_REPARSE_POINTS`: Supports reparse points.
+#'   * `SUPPORTS_REMOTE_STORAGE`: Supports remote storage.
+#'   * `RETURNS_CLEANUP_RESULT_INFO`: On a successful cleanup operation,
+#'      the file system returns information that describes additional
+#'      actions taken during cleanup, such as deleting the file. File
+#'      system filters can examine this information in their post-cleanup
+#'      callback.
+#'   * `SUPPORTS_POSIX_UNLINK_RENAME`: Supports POSIX-style delete and
+#'      rename operations.
+#'   * `VOLUME_IS_COMPRESSED`: It is a compressed volume, for example, a
+#'      DoubleSpace volume.
+#'   * `SUPPORTS_OBJECT_IDS`: Supports object identifiers.
+#'   * `SUPPORTS_ENCRYPTION`: Supports the Encrypted File System (EFS).
+#'   * `NAMED_STREAMS`: Supports named streams.
+#'   * `READ_ONLY_VOLUME`: It is read-only.
+#'   * `SEQUENTIAL_WRITE_ONCE`: Supports a single sequential write.
+#'   * `SUPPORTS_TRANSACTIONS`: Supports transactions.
+#'   * `SUPPORTS_HARD_LINKS`: The volume supports hard links.
+#'   * `SUPPORTS_EXTENDED_ATTRIBUTES`: Supports extended attributes.
+#'   * `SUPPORTS_OPEN_BY_FILE_ID`: Supports open by FileID.
+#'   * `SUPPORTS_USN_JOURNAL`: Supports update sequence number (USN)
+#'      journals.
+#'   * `SUPPORTS_INTEGRITY_STREAMS`: Supports integrity streams.
+#'   * `SUPPORTS_BLOCK_REFCOUNTING`: The volume supports sharing logical
+#'      clusters between files on the same volume.
+#'   * `SUPPORTS_SPARSE_VDL`: The file system tracks whether each cluster
+#'      of a file contains valid data (either from explicit file writes or
+#'      automatic zeros) or invalid data (has not yet been written to or
+#'      zeroed).
+#'   * `DAX_VOLUME`: The volume is a direct access (DAX) volume.
+#'   * `SUPPORTS_GHOSTING`: Supports ghosting.
+#'
 #' @export
-#' @examplesIf ps::ps_is_supported() && ! ps:::ps_os_type()[["WINDOWS"]] && ! ps:::is_cran_check()
+#' @examplesIf ps::ps_is_supported() && ! ps:::is_cran_check()
 #' ps_fs_info(c("/", "~", "."))
 
 ps_fs_info <- function(paths = "/") {
-  if (ps_os_type()[["WINDOWS"]]) {
-    stop("`ps_fs_info()` currently only works on Unix")
-  }
-
   assert_character(paths)
   abspaths <- normalizePath(paths, mustWork = TRUE)
   res <- .Call(ps__fs_info, paths, abspaths)

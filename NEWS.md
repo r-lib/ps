@@ -1,7 +1,7 @@
 # ps (development version)
 
 * New `ps_fs_info()` to query information about the file system of one
-  or more files or directories, on Unix.
+  or more files or directories.
 
 # ps 1.7.7
 

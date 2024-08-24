@@ -1364,7 +1364,6 @@ SEXP ps__fs_info(SEXP path, SEXP abspath) {
     "id",
     "owner",
     "type_code",
-    "mount_flags_code",
     "subtype_code",
 
     "MANDLOCK",
@@ -1396,8 +1395,8 @@ SEXP ps__fs_info(SEXP path, SEXP abspath) {
   SET_VECTOR_ELT(res, 12, Rf_allocVector(REALSXP, len));
   SET_VECTOR_ELT(res, 13, Rf_allocVector(REALSXP, len));
   SET_VECTOR_ELT(res, 14, Rf_allocVector(REALSXP, len));
-  SET_VECTOR_ELT(res, 15, Rf_allocVector(REALSXP, len));
 
+  SET_VECTOR_ELT(res, 15, Rf_allocVector(LGLSXP, len));
   SET_VECTOR_ELT(res, 16, Rf_allocVector(LGLSXP, len));
   SET_VECTOR_ELT(res, 17, Rf_allocVector(LGLSXP, len));
   SET_VECTOR_ELT(res, 18, Rf_allocVector(LGLSXP, len));
@@ -1407,7 +1406,6 @@ SEXP ps__fs_info(SEXP path, SEXP abspath) {
   SET_VECTOR_ELT(res, 22, Rf_allocVector(LGLSXP, len));
   SET_VECTOR_ELT(res, 23, Rf_allocVector(LGLSXP, len));
   SET_VECTOR_ELT(res, 24, Rf_allocVector(LGLSXP, len));
-  SET_VECTOR_ELT(res, 25, Rf_allocVector(LGLSXP, len));
 
   for (i = 0; i < len; i++) {
     ret = statfs(CHAR(STRING_ELT(abspath, i)), &sfs);
@@ -1498,19 +1496,18 @@ SEXP ps__fs_info(SEXP path, SEXP abspath) {
     memcpy(RAW(VECTOR_ELT(VECTOR_ELT(res, 11), i)), &sfs.f_fsid, sizeof(fsid_t));
     REAL(VECTOR_ELT(res, 12))[i] = NA_REAL;
     REAL(VECTOR_ELT(res, 13))[i] = sfs.f_type;
-    REAL(VECTOR_ELT(res, 14))[i] = sfs.f_flags;
-    REAL(VECTOR_ELT(res, 15))[i] = NA_REAL;
+    REAL(VECTOR_ELT(res, 14))[i] = NA_REAL;
 
-    LOGICAL(VECTOR_ELT(res, 16))[i] = sfs.f_flags & ST_MANDLOCK;
-    LOGICAL(VECTOR_ELT(res, 17))[i] = sfs.f_flags & ST_NOATIME;
-    LOGICAL(VECTOR_ELT(res, 18))[i] = sfs.f_flags & ST_NODEV;
-    LOGICAL(VECTOR_ELT(res, 19))[i] = sfs.f_flags & ST_NODIRATIME;
-    LOGICAL(VECTOR_ELT(res, 20))[i] = sfs.f_flags & ST_NOEXEC;
-    LOGICAL(VECTOR_ELT(res, 21))[i] = sfs.f_flags & ST_NOSUID;
-    LOGICAL(VECTOR_ELT(res, 22))[i] = sfs.f_flags & ST_RDONLY;
-    LOGICAL(VECTOR_ELT(res, 23))[i] = sfs.f_flags & ST_RELATIME;
-    LOGICAL(VECTOR_ELT(res, 24))[i] = sfs.f_flags & ST_SYNCHRONOUS;
-    LOGICAL(VECTOR_ELT(res, 25))[i] = sfs.f_flags & ST_NOSYMFOLLOW;
+    LOGICAL(VECTOR_ELT(res, 15))[i] = sfs.f_flags & ST_MANDLOCK;
+    LOGICAL(VECTOR_ELT(res, 16))[i] = sfs.f_flags & ST_NOATIME;
+    LOGICAL(VECTOR_ELT(res, 17))[i] = sfs.f_flags & ST_NODEV;
+    LOGICAL(VECTOR_ELT(res, 18))[i] = sfs.f_flags & ST_NODIRATIME;
+    LOGICAL(VECTOR_ELT(res, 19))[i] = sfs.f_flags & ST_NOEXEC;
+    LOGICAL(VECTOR_ELT(res, 20))[i] = sfs.f_flags & ST_NOSUID;
+    LOGICAL(VECTOR_ELT(res, 21))[i] = sfs.f_flags & ST_RDONLY;
+    LOGICAL(VECTOR_ELT(res, 22))[i] = sfs.f_flags & ST_RELATIME;
+    LOGICAL(VECTOR_ELT(res, 23))[i] = sfs.f_flags & ST_SYNCHRONOUS;
+    LOGICAL(VECTOR_ELT(res, 24))[i] = sfs.f_flags & ST_NOSYMFOLLOW;
   }
 
   UNPROTECT(3);

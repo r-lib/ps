@@ -1092,22 +1092,21 @@ SEXP ps__fs_info(SEXP path, SEXP abspath) {
   R_xlen_t i, len = Rf_xlength(path);
 
   const char *nms[] = {
-    "path",
-    "mount_point",
-    "name",
-    "type",
-    "block_size",
-    "transfer_block_size",
-    "total_data_blocks",
-    "free_blocks",
-    "free_blocks_non_superuser",
-    "total_nodes",
-    "free_nodes",
-    "id",
-    "owner",
-    "type_code",
-    "mount_flags_code",
-    "subtype_code",
+    "path",                         // 0
+    "mount_point",                  // 1
+    "name",                         // 2
+    "type",                         // 3
+    "block_size",                   // 4
+    "transfer_block_size",          // 5
+    "total_data_blocks",            // 6
+    "free_blocks",                  // 7
+    "free_blocks_non_superuser",    // 8
+    "total_nodes",                  // 9
+    "free_nodes",                   // 10
+    "id",                           // 11
+    "owner",                        // 12
+    "type_code",                    // 13
+    "subtype_code",                 // 14
 
     "RDONLY",
     "SYNCHRONOUS",
@@ -1146,8 +1145,8 @@ SEXP ps__fs_info(SEXP path, SEXP abspath) {
   SET_VECTOR_ELT(res, 12, Rf_allocVector(REALSXP, len));
   SET_VECTOR_ELT(res, 13, Rf_allocVector(REALSXP, len));
   SET_VECTOR_ELT(res, 14, Rf_allocVector(REALSXP, len));
-  SET_VECTOR_ELT(res, 15, Rf_allocVector(REALSXP, len));
 
+  SET_VECTOR_ELT(res, 15, Rf_allocVector(LGLSXP, len));
   SET_VECTOR_ELT(res, 16, Rf_allocVector(LGLSXP, len));
   SET_VECTOR_ELT(res, 17, Rf_allocVector(LGLSXP, len));
   SET_VECTOR_ELT(res, 18, Rf_allocVector(LGLSXP, len));
@@ -1166,7 +1165,6 @@ SEXP ps__fs_info(SEXP path, SEXP abspath) {
   SET_VECTOR_ELT(res, 31, Rf_allocVector(LGLSXP, len));
   SET_VECTOR_ELT(res, 32, Rf_allocVector(LGLSXP, len));
   SET_VECTOR_ELT(res, 33, Rf_allocVector(LGLSXP, len));
-  SET_VECTOR_ELT(res, 34, Rf_allocVector(LGLSXP, len));
 
   for (i = 0; i < len; i++) {
     int ret = statfs(CHAR(STRING_ELT(abspath, i)), &sfs);
@@ -1194,28 +1192,27 @@ SEXP ps__fs_info(SEXP path, SEXP abspath) {
     memcpy(RAW(VECTOR_ELT(VECTOR_ELT(res, 11), i)), &sfs.f_fsid, sizeof(fsid_t));
     REAL(VECTOR_ELT(res, 12))[i] = sfs.f_owner;
     REAL(VECTOR_ELT(res, 13))[i] = sfs.f_type;
-    REAL(VECTOR_ELT(res, 14))[i] = sfs.f_flags;
-    REAL(VECTOR_ELT(res, 15))[i] = sfs.f_fssubtype;
+    REAL(VECTOR_ELT(res, 14))[i] = sfs.f_fssubtype;
 
-    LOGICAL(VECTOR_ELT(res, 16))[i] = sfs.f_flags & MNT_RDONLY;
-    LOGICAL(VECTOR_ELT(res, 17))[i] = sfs.f_flags & MNT_SYNCHRONOUS;
-    LOGICAL(VECTOR_ELT(res, 18))[i] = sfs.f_flags & MNT_NOEXEC;
-    LOGICAL(VECTOR_ELT(res, 19))[i] = sfs.f_flags & MNT_NOSUID;
-    LOGICAL(VECTOR_ELT(res, 20))[i] = sfs.f_flags & MNT_NODEV;
-    LOGICAL(VECTOR_ELT(res, 21))[i] = sfs.f_flags & MNT_UNION;
-    LOGICAL(VECTOR_ELT(res, 22))[i] = sfs.f_flags & MNT_ASYNC;
-    LOGICAL(VECTOR_ELT(res, 23))[i] = sfs.f_flags & MNT_EXPORTED;
-    LOGICAL(VECTOR_ELT(res, 24))[i] = sfs.f_flags & MNT_LOCAL;
-    LOGICAL(VECTOR_ELT(res, 25))[i] = sfs.f_flags & MNT_QUOTA;
-    LOGICAL(VECTOR_ELT(res, 26))[i] = sfs.f_flags & MNT_ROOTFS;
-    LOGICAL(VECTOR_ELT(res, 27))[i] = sfs.f_flags & MNT_DOVOLFS;
-    LOGICAL(VECTOR_ELT(res, 28))[i] = sfs.f_flags & MNT_DONTBROWSE;
-    LOGICAL(VECTOR_ELT(res, 29))[i] = sfs.f_flags & MNT_UNKNOWNPERMISSIONS;
-    LOGICAL(VECTOR_ELT(res, 30))[i] = sfs.f_flags & MNT_AUTOMOUNTED;
-    LOGICAL(VECTOR_ELT(res, 31))[i] = sfs.f_flags & MNT_JOURNALED;
-    LOGICAL(VECTOR_ELT(res, 32))[i] = sfs.f_flags & MNT_DEFWRITE;
-    LOGICAL(VECTOR_ELT(res, 33))[i] = sfs.f_flags & MNT_MULTILABEL;
-    LOGICAL(VECTOR_ELT(res, 34))[i] = sfs.f_flags & MNT_CPROTECT;
+    LOGICAL(VECTOR_ELT(res, 15))[i] = sfs.f_flags & MNT_RDONLY;
+    LOGICAL(VECTOR_ELT(res, 16))[i] = sfs.f_flags & MNT_SYNCHRONOUS;
+    LOGICAL(VECTOR_ELT(res, 17))[i] = sfs.f_flags & MNT_NOEXEC;
+    LOGICAL(VECTOR_ELT(res, 18))[i] = sfs.f_flags & MNT_NOSUID;
+    LOGICAL(VECTOR_ELT(res, 19))[i] = sfs.f_flags & MNT_NODEV;
+    LOGICAL(VECTOR_ELT(res, 20))[i] = sfs.f_flags & MNT_UNION;
+    LOGICAL(VECTOR_ELT(res, 21))[i] = sfs.f_flags & MNT_ASYNC;
+    LOGICAL(VECTOR_ELT(res, 22))[i] = sfs.f_flags & MNT_EXPORTED;
+    LOGICAL(VECTOR_ELT(res, 23))[i] = sfs.f_flags & MNT_LOCAL;
+    LOGICAL(VECTOR_ELT(res, 24))[i] = sfs.f_flags & MNT_QUOTA;
+    LOGICAL(VECTOR_ELT(res, 25))[i] = sfs.f_flags & MNT_ROOTFS;
+    LOGICAL(VECTOR_ELT(res, 26))[i] = sfs.f_flags & MNT_DOVOLFS;
+    LOGICAL(VECTOR_ELT(res, 27))[i] = sfs.f_flags & MNT_DONTBROWSE;
+    LOGICAL(VECTOR_ELT(res, 28))[i] = sfs.f_flags & MNT_UNKNOWNPERMISSIONS;
+    LOGICAL(VECTOR_ELT(res, 29))[i] = sfs.f_flags & MNT_AUTOMOUNTED;
+    LOGICAL(VECTOR_ELT(res, 30))[i] = sfs.f_flags & MNT_JOURNALED;
+    LOGICAL(VECTOR_ELT(res, 31))[i] = sfs.f_flags & MNT_DEFWRITE;
+    LOGICAL(VECTOR_ELT(res, 32))[i] = sfs.f_flags & MNT_MULTILABEL;
+    LOGICAL(VECTOR_ELT(res, 33))[i] = sfs.f_flags & MNT_CPROTECT;
   }
 
   UNPROTECT(1);
