@@ -1872,3 +1872,8 @@ SEXP ps__system_cpu_times() {
   UNPROTECT(1);
   return ret;
 }
+
+SEXP psll_wait(SEXP pps, SEXP timeout) {
+  // TODO
+  return R_NilValue;
+}

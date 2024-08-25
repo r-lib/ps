@@ -22,8 +22,12 @@
 #include <mach/shared_region.h>
 #include <mach/mach_time.h>
 
+#include <sys/event.h>
+#include <sys/time.h>
+
 #include "ps-internal.h"
 #include "arch/macos/process_info.h"
+#include "cleancall.h"
 
 #include <stdbool.h>
 
@@ -1349,4 +1353,115 @@ SEXP ps__system_cpu_times(void) {
 
   UNPROTECT(1);
   return ret;
+}
+
+struct psll__wait_cleanup_data {
+  int epfd;
+};
+
+static void psll__wait_cleanup(void *data) {
+  struct psll__wait_cleanup_data *cdata =
+    (struct psll__wait_cleanup_data*) data;
+  if (cdata->epfd != -1) {
+    close(cdata->epfd);
+    cdata->epfd = -1;
+  }
+}
+
+SEXP psll_wait(SEXP pps, SEXP timeout) {
+  int ctimeout = INTEGER(timeout)[0], timeleft = ctimeout;
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+
+  struct psll__wait_cleanup_data cdata = { -1 };
+  r_call_on_early_exit(psll__wait_cleanup, &cdata);
+  cdata.epfd = kqueue();
+  if (cdata.epfd == -1) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+
+  int ret;
+  R_xlen_t topoll = 0;
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    if (!LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0]) {
+      // already done
+      LOGICAL(res)[i] = 1;
+    } else {
+      struct kevent ev;
+      EV_SET(
+        &ev,
+        handle->pid,
+        EVFILT_PROC,
+        EV_ADD | EV_ONESHOT,
+        NOTE_EXIT,
+        (intptr_t) NULL,
+        LOGICAL(res) + i
+      );
+      ret = kevent(cdata.epfd, &ev, 1, NULL, 0, NULL);
+      if (ret == -1) {
+        if (errno == ESRCH) {
+          LOGICAL(res)[i] = 1;
+        } else {
+          ps__set_error_from_errno();
+          ps__throw_error();
+        }
+      } else {
+        topoll++;
+        LOGICAL(res)[i] = 0;
+      }
+    }
+  }
+
+  // early exit if nothing to do
+  if (topoll == 0) {
+    psll__wait_cleanup(&cdata);
+    UNPROTECT(1);
+    return res;
+  }
+
+  SEXP revents = PROTECT(Rf_allocVector(RAWSXP, sizeof(struct kevent) * topoll));
+  struct kevent *events = (struct kevent*) RAW(revents);
+
+  // the timeout while we are checking for interrupts
+  struct timespec ts = { 0, 0 };
+  ts.tv_sec = PROCESSX_INTERRUPT_INTERVAL / 1000;
+  ts.tv_nsec = (PROCESSX_INTERRUPT_INTERVAL - ts.tv_sec * 1000) * 1000 * 1000;
+
+  while (topoll > 0 && (ctimeout < 0 || timeleft >= 0)) {
+    // we might need a smaller timeout for the last iteration
+    if (timeleft < PROCESSX_INTERRUPT_INTERVAL) {
+      ts.tv_sec = timeleft / 1000;
+      ts.tv_nsec = (timeleft - ts.tv_sec * 1000) * 1000 * 1000;
+    }
+    do {
+      ret = kevent(cdata.epfd, NULL, 0, events, topoll, &ts);
+    } while (ret == -1 && errno == EINTR);
+
+    if (ret == -1) {
+      ps__set_error_from_errno();
+      ps__throw_error();
+    }
+
+    for (i = 0; i < ret; i++) {
+      int *ptr = (int*) events[i].udata;
+      *ptr = 1;
+      topoll--;
+    }
+
+    if (ctimeout >= 0) timeleft -= PROCESSX_INTERRUPT_INTERVAL;
+
+    // No need to interrupt if we are done. We could do this first in the
+    // loop, but it is better to do some useful work first.
+    if (topoll > 0 && (ctimeout < 0 || timeleft >= 0)) {
+      R_CheckUserInterrupt();
+    }
+  }
+
+  psll__wait_cleanup(&cdata);
+  UNPROTECT(2);
+  return res;
 }

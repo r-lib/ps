@@ -5,6 +5,8 @@
 #include "config.h"
 #include "ps.h"
 
+#define PROCESSX_INTERRUPT_INTERVAL 200
+
 #ifdef PS__MACOS
 
 #include <signal.h>

@@ -1226,8 +1226,6 @@ error:
   return R_NilValue;
 }
 
-#define PROCESSX_INTERRUPT_INTERVAL 200
-
 struct psll__wait_cleanup_data {
   int epfd;
   R_xlen_t num_handles;
@@ -1309,17 +1307,22 @@ SEXP psll_wait(SEXP pps, SEXP timeout) {
   SEXP revents = PROTECT(Rf_allocVector(RAWSXP, sizeof(struct epoll_event) * topoll));
   struct epoll_event *events = (struct epoll_event*) RAW(revents);
 
-  while (topoll > 0 && (ctimeout < 0 || timeleft > PROCESSX_INTERRUPT_INTERVAL)) {
+  // The timeout while we are checking for interrupts.
+  int efftimeout = PROCESSX_INTERRUPT_INTERVAL;
+
+  while (topoll > 0 && (ctimeout < 0 || timeleft >= 0)) {
+    // We might need a smaller timeout for the last iteration.
+    if (timeleft < PROCESSX_INTERRUPT_INTERVAL) {
+      efftimeout = timeleft;
+    }
     do {
-      ret = epoll_wait(cdata.epfd, events, topoll, PROCESSX_INTERRUPT_INTERVAL);
+      ret = epoll_wait(cdata.epfd, events, topoll, efftimeout);
     } while (ret == -1 && errno == EINTR);
 
     if (ret == -1) {
       ps__set_error_from_errno();
       ps__throw_error();
     }
-
-    R_CheckUserInterrupt();
 
     for (i = 0; i < ret; i++) {
       uint64_t id = events[i].data.u64;
@@ -1330,6 +1333,13 @@ SEXP psll_wait(SEXP pps, SEXP timeout) {
     }
 
     if (ctimeout >= 0) timeleft -= PROCESSX_INTERRUPT_INTERVAL;
+
+    // No need to interrupt if we are done. We could do this first in the
+    // loop, but it is better to do some useful work first, before the
+    // boilerplate.
+    if (topoll > 0 && (ctimeout < 0 || timeleft >= 0)) {
+      R_CheckUserInterrupt();
+    }
   }
 
   psll__wait_cleanup(&cdata);
