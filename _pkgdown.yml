@@ -59,6 +59,7 @@ reference:
   - ps_set_cpu_affinity
   - ps_get_nice
   - ps_set_nice
+  - ps_wait
   - ps_windows_nice_values
 
 - title: Users
