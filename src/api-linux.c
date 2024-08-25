@@ -1,7 +1,8 @@
-
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE 1
 #endif
+
+#include "ps-internal.h"
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -20,6 +21,7 @@
 #include <libgen.h>
 #include <sys/syscall.h>
 #include <sys/epoll.h>
+#include <time.h>
 
 #include <Rinternals.h>
 
@@ -322,7 +324,10 @@ SEXP psll_handle(SEXP pid, SEXP time) {
   if (!isNull(time))  {
     ctime = REAL(time)[0];
   } else {
-    if (psll_linux_ctime(cpid, &ctime)) ps__throw_error();
+    if (psll_linux_ctime(cpid, &ctime)) {
+      ps__set_error_from_errno();
+      ps__throw_error();
+    }
   }
 
   handle = malloc(sizeof(ps_handle_t));
@@ -1226,6 +1231,20 @@ error:
   return R_NilValue;
 }
 
+// timeout = 0 special case, no need to poll, just check if running
+SEXP psll_wait0(SEXP pps) {
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    LOGICAL(res)[i] = ! LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0];
+  }
+
+  UNPROTECT(1);
+  return res;
+}
+
 struct psll__wait_cleanup_data {
   int epfd;
   R_xlen_t num_handles;
@@ -1247,8 +1266,35 @@ static void psll__wait_cleanup(void *data) {
   }
 }
 
+// Add time limit to current time.
+// clock_gettime does not fail, as long as the struct timespec
+// pointer is ok. So no need to check the return value.
+static void add_time(struct timespec *due, int ms) {
+  clock_gettime(CLOCK_MONOTONIC, due);
+  due->tv_sec = due->tv_sec + ms / 1000;
+  due->tv_nsec = due->tv_nsec + (ms % 1000) * 1000000;
+  if (due->tv_nsec >= 1000000000) {
+    due->tv_nsec -= 1000000000;
+    due->tv_sec++;
+  }
+}
+
+static inline int time_left(struct timespec *due) {
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  return
+    (due->tv_sec - now.tv_sec) * 1000 +
+    (due->tv_nsec - now.tv_nsec) / 1000 / 1000;
+}
+
 SEXP psll_wait(SEXP pps, SEXP timeout) {
-  int ctimeout = INTEGER(timeout)[0], timeleft = ctimeout;
+  int ctimeout = INTEGER(timeout)[0];
+  // this is much simpler, no need to poll at all
+  if (ctimeout == 0) {
+    return psll_wait0(pps);
+  }
+
+  int forever = ctimeout < 0;
   R_xlen_t i, num_handles = Rf_xlength(pps);
 
   struct psll__wait_cleanup_data cdata = {
@@ -1307,16 +1353,23 @@ SEXP psll_wait(SEXP pps, SEXP timeout) {
   SEXP revents = PROTECT(Rf_allocVector(RAWSXP, sizeof(struct epoll_event) * topoll));
   struct epoll_event *events = (struct epoll_event*) RAW(revents);
 
-  // The timeout while we are checking for interrupts.
-  int efftimeout = PROCESSX_INTERRUPT_INTERVAL;
+  // first timeout is the smaller of PROCESSX_INTERRUPT_INTERVAL & timeout
+  int ts;
+  if (forever || ctimeout > PROCESSX_INTERRUPT_INTERVAL) {
+    ts = PROCESSX_INTERRUPT_INTERVAL;
+  } else {
+    ts = ctimeout;
+  }
 
-  while (topoll > 0 && (ctimeout < 0 || timeleft >= 0)) {
-    // We might need a smaller timeout for the last iteration.
-    if (timeleft < PROCESSX_INTERRUPT_INTERVAL) {
-      efftimeout = timeleft;
-    }
+  // this is the ultimate time limit, unless we poll forever
+  struct timespec due;
+  if (!forever) {
+    add_time(&due, ctimeout);
+  }
+
+  do {
     do {
-      ret = epoll_wait(cdata.epfd, events, topoll, efftimeout);
+      ret = epoll_wait(cdata.epfd, events, topoll, ts);
     } while (ret == -1 && errno == EINTR);
 
     if (ret == -1) {
@@ -1332,15 +1385,25 @@ SEXP psll_wait(SEXP pps, SEXP timeout) {
       topoll--;
     }
 
-    if (ctimeout >= 0) timeleft -= PROCESSX_INTERRUPT_INTERVAL;
-
-    // No need to interrupt if we are done. We could do this first in the
-    // loop, but it is better to do some useful work first, before the
-    // boilerplate.
-    if (topoll > 0 && (ctimeout < 0 || timeleft >= 0)) {
-      R_CheckUserInterrupt();
+    // are we done?
+    if (topoll == 0) {
+      break;
     }
-  }
+
+    // is the time limit over? Do we need to update the poll timeout
+    if (!forever) {
+      int tl = time_left(&due);
+      if (tl < 0) {
+        break;
+      }
+      if (tl < PROCESSX_INTERRUPT_INTERVAL) {
+        ts = tl;
+      }
+    }
+
+    R_CheckUserInterrupt();
+
+  } while (1);
 
   psll__wait_cleanup(&cdata);
   UNPROTECT(3);

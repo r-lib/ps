@@ -1355,6 +1355,20 @@ SEXP ps__system_cpu_times(void) {
   return ret;
 }
 
+// timeout = 0 special case, no need to poll, just check if running
+SEXP psll_wait0(SEXP pps) {
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    LOGICAL(res)[i] = ! LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0];
+  }
+
+  UNPROTECT(1);
+  return res;
+}
+
 struct psll__wait_cleanup_data {
   int epfd;
 };
@@ -1368,10 +1382,36 @@ static void psll__wait_cleanup(void *data) {
   }
 }
 
-SEXP psll_wait(SEXP pps, SEXP timeout) {
-  int ctimeout = INTEGER(timeout)[0], timeleft = ctimeout;
-  R_xlen_t i, num_handles = Rf_xlength(pps);
+// Add time limit to current time.
+// clock_gettime does not fail, as long as the struct timespec
+// pointer is ok. So no need to check the return value.
+static void add_time(struct timespec *due, int ms) {
+  clock_gettime(CLOCK_MONOTONIC, due);
+  due->tv_sec = due->tv_sec + ms / 1000;
+  due->tv_nsec = due->tv_nsec + (ms % 1000) * 1000000;
+  if (due->tv_nsec >= 1000000000) {
+    due->tv_nsec -= 1000000000;
+    due->tv_sec++;
+  }
+}
 
+static inline int time_left(struct timespec *due) {
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  return
+    (due->tv_sec - now.tv_sec) * 1000 +
+    (due->tv_nsec - now.tv_nsec) / 1000 / 1000;
+}
+
+SEXP psll_wait(SEXP pps, SEXP timeout) {
+  int ctimeout = INTEGER(timeout)[0];
+  // this is much simpler, no need to poll at all
+  if (ctimeout == 0) {
+    return psll_wait0(pps);
+  }
+
+  int forever = ctimeout < 0;
+  R_xlen_t i, num_handles = Rf_xlength(pps);
   struct psll__wait_cleanup_data cdata = { -1 };
   r_call_on_early_exit(psll__wait_cleanup, &cdata);
   cdata.epfd = kqueue();
@@ -1426,17 +1466,23 @@ SEXP psll_wait(SEXP pps, SEXP timeout) {
   SEXP revents = PROTECT(Rf_allocVector(RAWSXP, sizeof(struct kevent) * topoll));
   struct kevent *events = (struct kevent*) RAW(revents);
 
-  // the timeout while we are checking for interrupts
+  // first timeout is the smaller of PROCESSX_INTERRUPT_INTERVAL & timeout
   struct timespec ts = { 0, 0 };
-  ts.tv_sec = PROCESSX_INTERRUPT_INTERVAL / 1000;
-  ts.tv_nsec = (PROCESSX_INTERRUPT_INTERVAL - ts.tv_sec * 1000) * 1000 * 1000;
+  if (forever || ctimeout > PROCESSX_INTERRUPT_INTERVAL) {
+    ts.tv_sec = PROCESSX_INTERRUPT_INTERVAL / 1000;
+    ts.tv_nsec = (PROCESSX_INTERRUPT_INTERVAL % 1000) * 1000 * 1000;
+  } else {
+    ts.tv_sec = ctimeout / 1000;
+    ts.tv_nsec = (ctimeout % 1000) * 1000 * 1000;
+  }
 
-  while (topoll > 0 && (ctimeout < 0 || timeleft >= 0)) {
-    // we might need a smaller timeout for the last iteration
-    if (timeleft < PROCESSX_INTERRUPT_INTERVAL) {
-      ts.tv_sec = timeleft / 1000;
-      ts.tv_nsec = (timeleft - ts.tv_sec * 1000) * 1000 * 1000;
-    }
+  // this is the ultimate time limit, unless we poll forever
+  struct timespec due;
+  if (!forever) {
+    add_time(&due, ctimeout);
+  }
+
+  do {
     do {
       ret = kevent(cdata.epfd, NULL, 0, events, topoll, &ts);
     } while (ret == -1 && errno == EINTR);
@@ -1452,14 +1498,26 @@ SEXP psll_wait(SEXP pps, SEXP timeout) {
       topoll--;
     }
 
-    if (ctimeout >= 0) timeleft -= PROCESSX_INTERRUPT_INTERVAL;
-
-    // No need to interrupt if we are done. We could do this first in the
-    // loop, but it is better to do some useful work first.
-    if (topoll > 0 && (ctimeout < 0 || timeleft >= 0)) {
-      R_CheckUserInterrupt();
+    // are we done?
+    if (topoll == 0) {
+      break;
     }
-  }
+
+    // is the time limit over? Do we need to update the poll timeout
+    if (!forever) {
+      int tl = time_left(&due);
+      if (tl < 0) {
+        break;
+      }
+      if (tl < PROCESSX_INTERRUPT_INTERVAL) {
+        ts.tv_sec = tl / 1000;
+        ts.tv_nsec = (tl % 1000) * 1000 * 1000;
+      }
+    }
+
+    R_CheckUserInterrupt();
+
+  } while (1);
 
   psll__wait_cleanup(&cdata);
   UNPROTECT(2);
