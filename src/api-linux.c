@@ -19,7 +19,7 @@
 #include <sys/vfs.h>
 #include <libgen.h>
 #include <sys/syscall.h>
-#include <poll.h>
+#include <sys/epoll.h>
 
 #include <Rinternals.h>
 
@@ -1228,60 +1228,113 @@ error:
 
 #define PROCESSX_INTERRUPT_INTERVAL 200
 
-static void close_fd(void *data) {
-  int *fildes = (int*) data;
-  close(*fildes);
+struct psll__wait_cleanup_data {
+  int epfd;
+  R_xlen_t num_handles;
+  int *pfds;
+};
+
+static void psll__wait_cleanup(void *data) {
+  struct psll__wait_cleanup_data *cdata =
+    (struct psll__wait_cleanup_data*) data;
+  if (cdata->epfd != -1) {
+    close(cdata->epfd);
+    cdata->epfd = -1;
+  }
+  R_xlen_t i;
+  for (i = 0; i < cdata->num_handles; i++) {
+    if (cdata->pfds[i] != -1) {
+      close(cdata->pfds[i]);
+    }
+  }
 }
 
-SEXP psll_wait(SEXP p, SEXP timeout) {
-  ps_handle_t *handle = R_ExternalPtrAddr(p);
+SEXP psll_wait(SEXP pps, SEXP timeout) {
   int ctimeout = INTEGER(timeout)[0], timeleft = ctimeout;
+  R_xlen_t i, num_handles = Rf_xlength(pps);
 
-  if (!handle) error("Process pointer cleaned up already");
-
-  if (!LOGICAL(psll_is_running(p))[0]) {
-    // already done
-    return Rf_ScalarLogical(TRUE);
-  }
-
-  int fd = syscall(SYS_pidfd_open, handle->pid, /* flags= */ 0);
-  if (fd == -1) {
-    if (errno == ESRCH) {
-      // possibly just finished, so this is ok
-      return Rf_ScalarLogical(TRUE);
-    }
+  struct psll__wait_cleanup_data cdata = {
+    /* epfd=        */ -1,
+    /* num_handles= */ num_handles,
+    /* pfds= */        NULL
+  };
+  r_call_on_early_exit(psll__wait_cleanup, &cdata);
+  cdata.epfd = epoll_create(num_handles);
+  if (cdata.epfd == -1) {
     ps__set_error_from_errno();
     ps__throw_error();
   }
-  r_call_on_early_exit(close_fd, &fd);
 
-  struct pollfd pfd;
-  pfd.fd = fd;
-  pfd.events = POLLIN;
-  pfd.revents = 0;
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+  SEXP pfds = PROTECT(Rf_allocVector(INTSXP, num_handles));
+  cdata.pfds = INTEGER(pfds);
+
+  R_xlen_t topoll = 0;
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    if (!LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0]) {
+      // already done
+      LOGICAL(res)[i] = 1;
+      cdata.pfds[i] = -1;
+    } else {
+      cdata.pfds[i] = syscall(SYS_pidfd_open, handle->pid, /* flags= */ 0);
+      if (cdata.pfds[i] == -1) {
+        if (errno == ESRCH) {
+          LOGICAL(res)[i] = 1;
+          cdata.pfds[i] = -1;
+        } else {
+          ps__set_error_from_errno();
+          ps__throw_error();
+        }
+      } else {
+        topoll++;
+        LOGICAL(res)[i] = 0;
+        struct epoll_event ev;
+        ev.events = EPOLLIN;
+        ev.data.u64 = i;
+        epoll_ctl(cdata.epfd, EPOLL_CTL_ADD, cdata.pfds[i], &ev);
+      }
+    }
+  }
+
+  // early exit if nothing to do
+  if (topoll == 0) {
+    psll__wait_cleanup(&cdata);
+    UNPROTECT(2);
+    return res;
+  }
 
   int ret;
-  while (ctimeout < 0 || timeleft > PROCESSX_INTERRUPT_INTERVAL) {
+  SEXP revents = PROTECT(Rf_allocVector(RAWSXP, sizeof(struct epoll_event) * topoll));
+  struct epoll_event *events = (struct epoll_event*) RAW(revents);
+
+  while (topoll > 0 && (ctimeout < 0 || timeleft > PROCESSX_INTERRUPT_INTERVAL)) {
     do {
-      ret = poll(&pfd, 1, PROCESSX_INTERRUPT_INTERVAL);
+      ret = epoll_wait(cdata.epfd, events, topoll, PROCESSX_INTERRUPT_INTERVAL);
     } while (ret == -1 && errno == EINTR);
 
+    if (ret == -1) {
+      ps__set_error_from_errno();
+      ps__throw_error();
+    }
+
     R_CheckUserInterrupt();
+
+    for (i = 0; i < ret; i++) {
+      uint64_t id = events[i].data.u64;
+      LOGICAL(res)[id] = 1;
+      close(cdata.pfds[id]);
+      cdata.pfds[id] = -1;
+      topoll--;
+    }
 
     if (ctimeout >= 0) timeleft -= PROCESSX_INTERRUPT_INTERVAL;
   }
 
-  if (ret == -1) {
-    ps__set_error_from_errno();
-    ps__throw_error();
-  }
-
-  // no more early exit, so close fs here
-  close(fd);
-
-  int event = pfd.revents & (POLLNVAL | POLLIN | POLLHUP | POLLOUT);
-
-  return Rf_ScalarLogical(event != 0);
+  psll__wait_cleanup(&cdata);
+  UNPROTECT(3);
+  return res;
 }
 
 SEXP ps__users(void) {

@@ -1159,7 +1159,8 @@ ps_set_cpu_affinity <- function(p = ps_handle(), affinity) {
 #' @export
 
 ps_wait <- function(p, timeout = -1) {
-  assert_ps_handle(p)
+  if (!is.list(p)) p <- list(p)
+  assert_ps_handle_list(p)
   timeout <- tryCatch(
     suppressWarnings(as.integer(timeout)),
     error = function(e) timeout

@@ -143,6 +143,14 @@ assert_ps_handle <- function(x) {
                             " must be a process handle (ps_handle)"))
 }
 
+assert_ps_handle_list <- function(x) {
+  if (all(map_lgl(x, inherits, "ps_handle"))) return()
+  stop(ps__invalid_argument(
+    match.call()$x,
+    " must be a process handle (ps_handle) or a list of process handles"
+  ))
+}
+
 assert_flag <- function(x) {
   if (is.logical(x) && length(x) == 1 && !is.na(x)) return()
   stop(ps__invalid_argument(match.call()$x,
