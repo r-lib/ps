@@ -18,6 +18,8 @@
 #include <sched.h>
 #include <sys/vfs.h>
 #include <libgen.h>
+#include <sys/syscall.h>
+#include <poll.h>
 
 #include <Rinternals.h>
 
@@ -1221,6 +1223,57 @@ SEXP psll_set_cpu_aff(SEXP p, SEXP affinity) {
 error:
   ps__throw_error();
   return R_NilValue;
+}
+
+#define PROCESSX_INTERRUPT_INTERVAL 200
+
+SEXP psll_wait(SEXP p, SEXP timeout) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  int ctimeout = INTEGER(timeout)[0], timeleft = ctimeout;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  if (!LOGICAL(psll_is_running(p))[0]) {
+    // already done
+    return Rf_ScalarLogical(TRUE);
+  }
+
+  int fd = syscall(SYS_pidfd_open, handle->pid, /* flags= */ 0);
+  if (fd == -1) {
+    if (errno == ESRCH) {
+      // possibly just finished, so this is ok
+      return Rf_ScalarLogical(TRUE);
+    }
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  struct pollfd pfd;
+  pfd.fd = fd;
+  pfd.events = POLLIN;
+  pfd.revents = 0;
+
+  int ret;
+  while (ctimeout < 0 || timeleft > PROCESSX_INTERRUPT_INTERVAL) {
+    do {
+      ret = poll(&pfd, 1, PROCESSX_INTERRUPT_INTERVAL);
+    } while (ret == -1 && errno == EINTR);
+
+    R_CheckUserInterrupt();
+
+    if (ctimeout >= 0) timeleft -= PROCESSX_INTERRUPT_INTERVAL;
+  }
+
+  close(fd);
+
+  if (ret == -1) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  int event = pfd.revents & (POLLNVAL | POLLIN | POLLHUP | POLLOUT);
+
+  return Rf_ScalarLogical(event != 0);
 }
 
 SEXP ps__users(void) {

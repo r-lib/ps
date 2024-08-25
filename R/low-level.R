@@ -1155,3 +1155,15 @@ ps_set_cpu_affinity <- function(p = ps_handle(), affinity) {
 
   invisible(.Call(psll_set_cpu_aff, p, affinity))
 }
+
+#' @export
+
+ps_wait <- function(p, timeout = -1) {
+  assert_ps_handle(p)
+  timeout <- tryCatch(
+    suppressWarnings(as.integer(timeout)),
+    error = function(e) timeout
+  )
+  assert_integer(timeout)
+  .Call(psll_wait, p, timeout)
+}
