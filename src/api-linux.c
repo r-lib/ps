@@ -24,6 +24,7 @@
 #include <Rinternals.h>
 
 #include "common.h"
+#include "cleancall.h"
 
 double psll_linux_boot_time = 0;
 double psll_linux_clock_period = 0;
@@ -1227,6 +1228,11 @@ error:
 
 #define PROCESSX_INTERRUPT_INTERVAL 200
 
+static void close_fd(void *data) {
+  int *fildes = (int*) data;
+  close(*fildes);
+}
+
 SEXP psll_wait(SEXP p, SEXP timeout) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   int ctimeout = INTEGER(timeout)[0], timeleft = ctimeout;
@@ -1247,6 +1253,7 @@ SEXP psll_wait(SEXP p, SEXP timeout) {
     ps__set_error_from_errno();
     ps__throw_error();
   }
+  r_call_on_early_exit(close_fd, &fd);
 
   struct pollfd pfd;
   pfd.fd = fd;
@@ -1264,12 +1271,13 @@ SEXP psll_wait(SEXP p, SEXP timeout) {
     if (ctimeout >= 0) timeleft -= PROCESSX_INTERRUPT_INTERVAL;
   }
 
-  close(fd);
-
   if (ret == -1) {
     ps__set_error_from_errno();
     ps__throw_error();
   }
+
+  // no more early exit, so close fs here
+  close(fd);
 
   int event = pfd.revents & (POLLNVAL | POLLIN | POLLHUP | POLLOUT);
 

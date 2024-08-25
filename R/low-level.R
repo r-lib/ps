@@ -1165,5 +1165,5 @@ ps_wait <- function(p, timeout = -1) {
     error = function(e) timeout
   )
   assert_integer(timeout)
-  .Call(psll_wait, p, timeout)
+  call_with_cleanup(psll_wait, p, timeout)
 }

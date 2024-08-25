@@ -8,6 +8,7 @@
 #include "ps-internal.h"
 #include "common.h"
 #include "config.h"
+#include "cleancall.h"
 
 #ifdef PS__MACOS
 #include <mach/mach_time.h>
@@ -16,6 +17,8 @@ extern struct mach_timebase_info PS_MACH_TIMEBASE_INFO;
 
 
 static const R_CallMethodDef callMethods[]  = {
+  CLEANCALL_METHOD_RECORD,
+
   /* System api */
   { "ps__os_type",            (DL_FUNC) ps__os_type,            0 },
   { "ps__pids",               (DL_FUNC) ps__pids,               0 },
@@ -91,6 +94,8 @@ static const R_CallMethodDef callMethods[]  = {
  * Called on module import on all platforms.
  */
 void R_init_ps(DllInfo *dll) {
+  cleancall_init();
+
   if (getenv("R_PS_DEBUG") != NULL) PS__DEBUG = 1;
   if (getenv("R_PS_TESTING") != NULL) PS__TESTING = 1;
 
