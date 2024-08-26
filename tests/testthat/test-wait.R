@@ -45,7 +45,8 @@ test_that("multiple processes", {
 
 test_that("stress test", {
   skip_on_cran()
-  pp <- lapply(1:100, function(i) {
+  N <- if (ps_os_type()[["WINDOWS"]]) 64 else 100
+  pp <- lapply(1:N, function(i) {
     processx::process$new(px(), c("sleep", "2"))
   })
   on.exit(lapply(pp, function(p) p$kill()), add = TRUE)

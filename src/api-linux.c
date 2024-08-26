@@ -1259,9 +1259,11 @@ static void psll__wait_cleanup(void *data) {
     cdata->epfd = -1;
   }
   R_xlen_t i;
-  for (i = 0; i < cdata->num_handles; i++) {
-    if (cdata->pfds[i] != -1) {
-      close(cdata->pfds[i]);
+  if (cdata->pfds) {
+    for (i = 0; i < cdata->num_handles; i++) {
+      if (cdata->pfds[i] != -1) {
+	close(cdata->pfds[i]);
+      }
     }
   }
 }
