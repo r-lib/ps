@@ -22,8 +22,12 @@
 #include <mach/shared_region.h>
 #include <mach/mach_time.h>
 
+#include <sys/event.h>
+#include <sys/time.h>
+
 #include "ps-internal.h"
 #include "arch/macos/process_info.h"
+#include "cleancall.h"
 
 #include <stdbool.h>
 
@@ -1349,4 +1353,173 @@ SEXP ps__system_cpu_times(void) {
 
   UNPROTECT(1);
   return ret;
+}
+
+// timeout = 0 special case, no need to poll, just check if running
+SEXP psll_wait0(SEXP pps) {
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    LOGICAL(res)[i] = ! LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0];
+  }
+
+  UNPROTECT(1);
+  return res;
+}
+
+struct psll__wait_cleanup_data {
+  int epfd;
+};
+
+static void psll__wait_cleanup(void *data) {
+  struct psll__wait_cleanup_data *cdata =
+    (struct psll__wait_cleanup_data*) data;
+  if (cdata->epfd != -1) {
+    close(cdata->epfd);
+    cdata->epfd = -1;
+  }
+}
+
+// Add time limit to current time.
+// clock_gettime does not fail, as long as the struct timespec
+// pointer is ok. So no need to check the return value.
+static void add_time(struct timespec *due, int ms) {
+  clock_gettime(CLOCK_MONOTONIC, due);
+  due->tv_sec = due->tv_sec + ms / 1000;
+  due->tv_nsec = due->tv_nsec + (ms % 1000) * 1000000;
+  if (due->tv_nsec >= 1000000000) {
+    due->tv_nsec -= 1000000000;
+    due->tv_sec++;
+  }
+}
+
+static inline int time_left(struct timespec *due) {
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  return
+    (due->tv_sec - now.tv_sec) * 1000 +
+    (due->tv_nsec - now.tv_nsec) / 1000 / 1000;
+}
+
+SEXP psll_wait(SEXP pps, SEXP timeout) {
+  int ctimeout = INTEGER(timeout)[0];
+  // this is much simpler, no need to poll at all
+  if (ctimeout == 0) {
+    return psll_wait0(pps);
+  }
+
+  int forever = ctimeout < 0;
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+  struct psll__wait_cleanup_data cdata = { -1 };
+  r_call_on_early_exit(psll__wait_cleanup, &cdata);
+  cdata.epfd = kqueue();
+  if (cdata.epfd == -1) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+
+  int ret;
+  R_xlen_t topoll = 0;
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    if (!LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0]) {
+      // already done
+      LOGICAL(res)[i] = 1;
+    } else {
+      struct kevent ev;
+      EV_SET(
+        &ev,
+        handle->pid,
+        EVFILT_PROC,
+        EV_ADD | EV_ONESHOT,
+        NOTE_EXIT,
+        (intptr_t) NULL,
+        LOGICAL(res) + i
+      );
+      ret = kevent(cdata.epfd, &ev, 1, NULL, 0, NULL);
+      if (ret == -1) {
+        if (errno == ESRCH) {
+          LOGICAL(res)[i] = 1;
+        } else {
+          ps__set_error_from_errno();
+          ps__throw_error();
+        }
+      } else {
+        topoll++;
+        LOGICAL(res)[i] = 0;
+      }
+    }
+  }
+
+  // early exit if nothing to do
+  if (topoll == 0) {
+    psll__wait_cleanup(&cdata);
+    UNPROTECT(1);
+    return res;
+  }
+
+  SEXP revents = PROTECT(Rf_allocVector(RAWSXP, sizeof(struct kevent) * topoll));
+  struct kevent *events = (struct kevent*) RAW(revents);
+
+  // first timeout is the smaller of PROCESSX_INTERRUPT_INTERVAL & timeout
+  struct timespec ts = { 0, 0 };
+  if (forever || ctimeout > PROCESSX_INTERRUPT_INTERVAL) {
+    ts.tv_sec = PROCESSX_INTERRUPT_INTERVAL / 1000;
+    ts.tv_nsec = (PROCESSX_INTERRUPT_INTERVAL % 1000) * 1000 * 1000;
+  } else {
+    ts.tv_sec = ctimeout / 1000;
+    ts.tv_nsec = (ctimeout % 1000) * 1000 * 1000;
+  }
+
+  // this is the ultimate time limit, unless we poll forever
+  struct timespec due;
+  if (!forever) {
+    add_time(&due, ctimeout);
+  }
+
+  do {
+    do {
+      ret = kevent(cdata.epfd, NULL, 0, events, topoll, &ts);
+    } while (ret == -1 && errno == EINTR);
+
+    if (ret == -1) {
+      ps__set_error_from_errno();
+      ps__throw_error();
+    }
+
+    for (i = 0; i < ret; i++) {
+      int *ptr = (int*) events[i].udata;
+      *ptr = 1;
+      topoll--;
+    }
+
+    // are we done?
+    if (topoll == 0) {
+      break;
+    }
+
+    // is the time limit over? Do we need to update the poll timeout
+    if (!forever) {
+      int tl = time_left(&due);
+      if (tl < 0) {
+        break;
+      }
+      if (tl < PROCESSX_INTERRUPT_INTERVAL) {
+        ts.tv_sec = tl / 1000;
+        ts.tv_nsec = (tl % 1000) * 1000 * 1000;
+      }
+    }
+
+    R_CheckUserInterrupt();
+
+  } while (1);
+
+  psll__wait_cleanup(&cdata);
+  UNPROTECT(2);
+  return res;
 }

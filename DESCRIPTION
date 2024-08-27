@@ -27,7 +27,8 @@ Suggests:
     R6,
     rlang,
     testthat (>= 3.0.0),
-    webfakes
+    webfakes,
+    withr
 Biarch: true
 Config/Needs/website: tidyverse/tidytemplate
 Config/testthat/edition: 3

@@ -3,11 +3,13 @@
 #include "windows.h"
 #include "arch/windows/process_info.h"
 #include "arch/windows/process_handles.h"
+#include "cleancall.h"
 
 #include <tlhelp32.h>
 #include <string.h>
 #include <math.h>
 #include <wtsapi32.h>
+#include <time.h>
 
 static void psll_finalizer(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
@@ -1871,4 +1873,184 @@ SEXP ps__system_cpu_times() {
 
   UNPROTECT(1);
   return ret;
+}
+
+// timeout = 0 special case, no need to poll, just check if running
+SEXP psll_wait0(SEXP pps) {
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    LOGICAL(res)[i] = ! LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0];
+  }
+
+  UNPROTECT(1);
+  return res;
+}
+
+struct psll__wait_cleanup_data {
+  R_xlen_t num_handles;
+  HANDLE *pfds;
+};
+
+static void psll__wait_cleanup(void *data) {
+  struct psll__wait_cleanup_data *cdata =
+    (struct psll__wait_cleanup_data*) data;
+  R_xlen_t i;
+  if (cdata->pfds) {
+    for (i = 0; i < cdata->num_handles; i++) {
+      if (cdata->pfds[i] != INVALID_HANDLE_VALUE) {
+	CloseHandle(cdata->pfds[i]);
+      }
+    }
+  }
+}
+
+// Add time limit to current time.
+// clock_gettime does not fail, as long as the struct timespec
+// pointer is ok. So no need to check the return value.
+static void add_time(struct timespec *due, int ms) {
+  clock_gettime(CLOCK_MONOTONIC, due);
+  due->tv_sec = due->tv_sec + ms / 1000;
+  due->tv_nsec = due->tv_nsec + (ms % 1000) * 1000000;
+  if (due->tv_nsec >= 1000000000) {
+    due->tv_nsec -= 1000000000;
+    due->tv_sec++;
+  }
+}
+
+static inline int time_left(struct timespec *due) {
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  return
+    (due->tv_sec - now.tv_sec) * 1000 +
+    (due->tv_nsec - now.tv_nsec) / 1000 / 1000;
+}
+
+SEXP psll_wait(SEXP pps, SEXP timeout) {
+  int ctimeout = INTEGER(timeout)[0];
+  // this is much simpler, no need to poll at all
+  if (ctimeout == 0) {
+    return psll_wait0(pps);
+  }
+
+  int forever = ctimeout < 0;
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+
+  struct psll__wait_cleanup_data cdata = {
+    /* num_handles= */ num_handles,
+    /* pfds= */        NULL
+  };
+  r_call_on_early_exit(psll__wait_cleanup, &cdata);
+
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+  SEXP rhandles = PROTECT(Rf_allocVector(RAWSXP, sizeof(HANDLE) * num_handles));
+  cdata.pfds = (HANDLE*) RAW(rhandles);
+
+  R_xlen_t topoll = 0;
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    if (!LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0]) {
+      // already done
+      LOGICAL(res)[i] = 1;
+      cdata.pfds[i] = INVALID_HANDLE_VALUE;
+    } else {
+      cdata.pfds[i] = OpenProcess(SYNCHRONIZE, FALSE, handle->pid);
+      if (cdata.pfds[i] == NULL) {
+	if (GetLastError() == 87) {
+	  LOGICAL(res)[i] = 1;
+	  cdata.pfds[i] = INVALID_HANDLE_VALUE;
+	} else {
+	  ps__set_error_from_windows_error(0);
+	  ps__throw_error();
+	}
+      } else {
+	cdata.pfds[topoll] = cdata.pfds[i];
+	topoll++;
+	LOGICAL(res)[i] = 0;
+      }
+    }
+  }
+
+  // early exit if nothing to do
+  if (topoll == 0) {
+    psll__wait_cleanup(&cdata);
+    UNPROTECT(2);
+    return res;
+  }
+
+  // first timeout is the smaller of PROCESSX_INTERRUPT_INTERVAL & timeout
+  int ts;
+  if (forever || ctimeout > PROCESSX_INTERRUPT_INTERVAL) {
+    ts = PROCESSX_INTERRUPT_INTERVAL;
+  } else {
+    ts = ctimeout;
+  }
+
+  // this is the ultimate time limit, unless we poll forever
+  struct timespec due;
+  if (!forever) {
+    add_time(&due, ctimeout);
+  }
+
+  // WaitForMultipleObjects can wait on at most 64 processes. If we have
+  // more than that, we poll the first 64, and then if all of them are
+  // done within the timeout, we poll the next 64, etc.
+  int first = 0;
+  topoll = num_handles;
+  DWORD ret;
+  do {
+    topoll = topoll > 64 ? 64 : topoll;
+    ret = WaitForMultipleObjects(topoll, cdata.pfds + first, TRUE, ts);
+    if (ret == WAIT_FAILED) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+
+    // all of them (or 64) are done
+    if (ret != WAIT_TIMEOUT) {
+      for (i = first; i < first + topoll; i++) {
+	LOGICAL(res)[i] = 1;
+      }
+      first += topoll;
+      topoll = num_handles - first;
+      if (topoll == 0) break;
+    }
+
+    // is the time limit over? Do we need to update the poll timeout
+    if (!forever) {
+      int tl = time_left(&due);
+      if (tl < 0) {
+        break;
+      }
+      if (tl < PROCESSX_INTERRUPT_INTERVAL) {
+        ts = tl;
+      }
+    }
+
+    R_CheckUserInterrupt();
+
+  } while (1);
+
+  // we don't know which finished, need to check
+  if (topoll > 0) {
+    for (i = 0; i < num_handles; i++) {
+      if (cdata.pfds[i] != INVALID_HANDLE_VALUE) {
+	ret = WaitForSingleObject(cdata.pfds[i], 0);
+	if (ret == WAIT_FAILED) {
+	  ps__set_error_from_windows_error(0);
+	  ps__throw_error();
+	}
+	if (ret == WAIT_OBJECT_0) {
+	  LOGICAL(res)[i] = 1;
+	}
+      }
+    }
+  }
+
+  psll__wait_cleanup(&cdata);
+  UNPROTECT(2);
+  return res;
 }

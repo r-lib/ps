@@ -1155,3 +1155,45 @@ ps_set_cpu_affinity <- function(p = ps_handle(), affinity) {
 
   invisible(.Call(psll_set_cpu_aff, p, affinity))
 }
+
+#' Wait for one or more processes to terminate, with a timeout
+#'
+#' This function supports interruption with SIGINT on Unix, or CTRL+C
+#' or CTRL+BREAK on Windows.
+#'
+#' @param p A process handle, or a list of process handles. The
+#'   process(es) to wait for.
+#' @param timeout Timeout in milliseconds. If -1, `ps_wait()` will wait
+#'   indefinitely (or until it is interrupted). If 0, then it checks which
+#'   processes have already terminated, and returns immediately.
+#' @return Logical vector, with one value of each process in `p`.
+#'   For processes that terminated it contains a `TRUE` value. For
+#'   processes that are still running it contains a `FALSE` value.
+#'
+#' @export
+#' @examplesIf ps::ps_is_supported() && ! ps:::is_cran_check() && ps::ps_os_type()["POSIX"]
+#' # this example calls `sleep`, so it only works on Unix
+#' p1 <- processx::process$new("sleep", "100")
+#' p2 <- processx::process$new("sleep", "100")
+#'
+#' # returns c(FALSE, FALSE) immediately if p1 and p2 are running
+#' ps_wait(list(p1$as_ps_handle(), p2$as_ps_handle()), 0)
+#'
+#' # timeouts at one second
+#' ps_wait(list(p1$as_ps_handle(), p2$as_ps_handle()), 1000)
+#'
+#' p1$kill()
+#' p2$kill()
+#' # returns c(TRUE, TRUE) immediately
+#' ps_wait(list(p1$as_ps_handle(), p2$as_ps_handle()), 1000)
+
+ps_wait <- function(p, timeout = -1) {
+  if (!is.list(p)) p <- list(p)
+  assert_ps_handle_list(p)
+  timeout <- tryCatch(
+    suppressWarnings(as.integer(timeout)),
+    error = function(e) timeout
+  )
+  assert_integer(timeout)
+  call_with_cleanup(psll_wait, p, timeout)
+}

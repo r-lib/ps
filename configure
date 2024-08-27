@@ -62,7 +62,7 @@ unset AIX
 # ------------------------------------------------------------------------
 
 MACROS=""
-OBJECTS="init.o api-common.o common.o extra.o dummy.o error-codes.o"
+OBJECTS="init.o api-common.o common.o extra.o dummy.o error-codes.o cleancall.o"
 
 if [ -n "$POSIX" ]; then
     OBJECTS="${OBJECTS} posix.o api-posix.o";
@@ -171,4 +171,3 @@ for m in $MACROS; do
     echo \#undef $m
     eval echo '\#'define $m $ind
 done >> src/config.h
-

@@ -5,6 +5,8 @@
 #include "config.h"
 #include "ps.h"
 
+#define PROCESSX_INTERRUPT_INTERVAL 200
+
 #ifdef PS__MACOS
 
 #include <signal.h>
@@ -66,6 +68,12 @@ SEXP ps__define_signals(void);
 SEXP ps__define_errno(void);
 SEXP ps__define_socket_address_families(void);
 SEXP ps__define_socket_types(void);
+
+#define PS_MAYBE 0
+#define PS_YEAH 1
+#define PS_NOPE 2
+
+extern int ps_pidfd_open_support;
 
 /* Errors */
 
