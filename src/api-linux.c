@@ -22,6 +22,8 @@
 #include <sys/syscall.h>
 #include <sys/epoll.h>
 #include <time.h>
+#include <sys/inotify.h>
+#include <poll.h>
 
 #include <Rinternals.h>
 
@@ -1245,29 +1247,6 @@ SEXP psll_wait0(SEXP pps) {
   return res;
 }
 
-struct psll__wait_cleanup_data {
-  int epfd;
-  R_xlen_t num_handles;
-  int *pfds;
-};
-
-static void psll__wait_cleanup(void *data) {
-  struct psll__wait_cleanup_data *cdata =
-    (struct psll__wait_cleanup_data*) data;
-  if (cdata->epfd != -1) {
-    close(cdata->epfd);
-    cdata->epfd = -1;
-  }
-  R_xlen_t i;
-  if (cdata->pfds) {
-    for (i = 0; i < cdata->num_handles; i++) {
-      if (cdata->pfds[i] != -1) {
-	close(cdata->pfds[i]);
-      }
-    }
-  }
-}
-
 // Add time limit to current time.
 // clock_gettime does not fail, as long as the struct timespec
 // pointer is ok. So no need to check the return value.
@@ -1289,11 +1268,217 @@ static inline int time_left(struct timespec *due) {
     (due->tv_nsec - now.tv_nsec) / 1000 / 1000;
 }
 
+struct psll__wait_inotify_cleanup_data {
+  int inotfd;
+};
+
+void psll__wait_inotify_cleanup(void *data) {
+  struct psll__wait_inotify_cleanup_data *cdata =
+    (struct psll__wait_inotify_cleanup_data*) data;
+  if (cdata->inotfd != -1) {
+    close(cdata->inotfd);
+  }
+}
+
+SEXP psll_wait_inotify(SEXP pps, SEXP timeout) {
+  int ctimeout = INTEGER(timeout)[0];
+  int forever = ctimeout < 0;
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+
+  struct psll__wait_inotify_cleanup_data cdata = { -1 };
+  r_call_on_early_exit(psll__wait_inotify_cleanup, &cdata);
+
+  cdata.inotfd = inotify_init1(IN_NONBLOCK);
+  if (cdata.inotfd == -1) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+  memset(LOGICAL(res), 0, sizeof(int) * num_handles);
+  SEXP rwatches = PROTECT(Rf_allocVector(INTSXP, num_handles));
+  int *watches = INTEGER(rwatches);
+
+  char path[128];
+  R_xlen_t topoll = 0;
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    if (!LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0]) {
+      // already done
+      LOGICAL(res)[i] = 1;
+    } else {
+      snprintf(path, sizeof(path)-1, "/proc/%d/exe", handle->pid);
+      watches[i] = inotify_add_watch(cdata.inotfd, path, IN_CLOSE_NOWRITE);
+      if (watches[i] == -1) {
+        if (errno == ENOENT) {
+          // just finished
+          LOGICAL(res)[i] = 0;
+        } else {
+          ps__set_error_from_errno();
+          ps__throw_error();
+        }
+      } else {
+        topoll++;
+      }
+    }
+  }
+
+  // early exit if nothing to do
+  if (topoll == 0) {
+    psll__wait_inotify_cleanup(&cdata);
+    UNPROTECT(2);
+    return res;
+  }
+
+  // first timeout is the smaller of PROCESSX_INTERRUPT_INTERVAL & timeout
+  int ts;
+  if (forever || ctimeout > PROCESSX_INTERRUPT_INTERVAL) {
+    ts = PROCESSX_INTERRUPT_INTERVAL;
+  } else {
+    ts = ctimeout;
+  }
+
+  // this is the ultimate time limit, unless we poll forever
+  struct timespec due;
+  if (!forever) {
+    add_time(&due, ctimeout);
+  }
+
+  struct pollfd pfd = { cdata.inotfd, POLLIN, 0 };
+  int ret;
+
+  do {
+    do {
+      ret = poll(&pfd, 1, ts);
+    } while (ret == -1 && errno == EINTR);
+
+    if (ret == -1) {
+      ps__set_error_from_errno();
+      ps__throw_error();
+    }
+
+    if (ret > 0) {
+      struct inotify_event event;
+      ret = read(cdata.inotfd, &event, sizeof(event));
+      if (ret == -1) {
+        ps__set_error_from_errno();
+        ps__throw_error();
+      }
+      // this should not happen
+      if (event.len > 0) {
+        Rf_error("Invalid inotify event in ps_wait.");
+      }
+
+      // now we need to see if the event means that any processes have quit
+      for (i = 0; i < num_handles; i++) {
+        // we know that it finished
+        if (LOGICAL(res)[i]) continue;
+        if (watches[i] == event.wd) {
+          if (!LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0]) {
+            LOGICAL(res)[i] = 1;
+            topoll--;
+          } else {
+            // Still running, but we got an event. Maybe it called execve()
+            // We need to start watching the new exe, if any. We might be
+            // still watching the old exe, as this might be needed for
+            // other processes.
+            ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+            snprintf(path, sizeof(path)-1, "/proc/%d/exe", handle->pid);
+            watches[i] = inotify_add_watch(cdata.inotfd, path, IN_CLOSE_NOWRITE);
+            if (watches[i] == -1) {
+              if (errno == ENOENT) {
+                // just finished
+                LOGICAL(res)[i] = 1;
+                topoll--;
+              } else {
+                ps__set_error_from_errno();
+                ps__throw_error();
+              }
+            }
+          }
+        }
+      }
+
+      // are we done?
+      if (topoll == 0) {
+        break;
+      }
+    }
+
+    // is the time limit over? Do we need to update the poll timeout
+    if (!forever) {
+      int tl = time_left(&due);
+      if (tl < 0) {
+        break;
+      }
+      if (tl < PROCESSX_INTERRUPT_INTERVAL) {
+        ts = tl;
+      }
+    }
+
+    R_CheckUserInterrupt();
+
+  } while (1);
+
+  psll__wait_inotify_cleanup(&cdata);
+  UNPROTECT(2);
+  return res;
+}
+
+struct psll__wait_cleanup_data {
+  int epfd;
+  R_xlen_t num_handles;
+  int *pfds;
+};
+
+static void psll__wait_cleanup(void *data) {
+  struct psll__wait_cleanup_data *cdata =
+    (struct psll__wait_cleanup_data*) data;
+  if (cdata->epfd != -1) {
+    close(cdata->epfd);
+    cdata->epfd = -1;
+  }
+  R_xlen_t i;
+  if (cdata->pfds) {
+    for (i = 0; i < cdata->num_handles; i++) {
+      if (cdata->pfds[i] != -1) {
+        close(cdata->pfds[i]);
+      }
+    }
+  }
+}
+
 SEXP psll_wait(SEXP pps, SEXP timeout) {
   int ctimeout = INTEGER(timeout)[0];
   // this is much simpler, no need to poll at all
   if (ctimeout == 0) {
     return psll_wait0(pps);
+  }
+
+  // for testing
+  if (getenv("PS_WAIT_FORCE_INOTIFY")) {
+    return psll_wait_inotify(pps, timeout);
+  }
+
+  // Check if the kernel has pidfd_open() support
+  if (ps_pidfd_open_support == PS_MAYBE) {
+    int testfd = syscall(SYS_pidfd_open, getpid(), /* flags= */ 0);
+    if (testfd == -1) {
+      if (errno == ENOSYS || errno == ENODEV) {
+        ps_pidfd_open_support = PS_NOPE;
+      } else {
+        // this is a real error, e.g. EMFILE or ENFILE, but nevertheless
+        // we have pidfd_open support, so we march on, and error later, if
+        ps_pidfd_open_support = PS_YEAH;
+      }
+    } else {
+      ps_pidfd_open_support = PS_YEAH;
+      close(testfd);
+    }
+  }
+  if (ps_pidfd_open_support == PS_NOPE) {
+    return psll_wait_inotify(pps, timeout);
   }
 
   int forever = ctimeout < 0;

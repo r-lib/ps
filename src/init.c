@@ -90,6 +90,8 @@ static const R_CallMethodDef callMethods[]  = {
   { NULL, NULL, 0 }
 };
 
+int ps_pidfd_open_support = PS_MAYBE;
+
 /*
  * Called on module import on all platforms.
  */
