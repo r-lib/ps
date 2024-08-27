@@ -1995,21 +1995,28 @@ SEXP psll_wait(SEXP pps, SEXP timeout) {
     add_time(&due, ctimeout);
   }
 
+  // WaitForMultipleObjects can wait on at most 64 processes. If we have
+  // more than that, we poll the first 64, and then if all of them are
+  // done within the timeout, we poll the next 64, etc.
+  int first = 0;
+  topoll = num_handles;
   DWORD ret;
   do {
-    ret = WaitForMultipleObjects(topoll, cdata.pfds, TRUE, ts);
+    topoll = topoll > 64 ? 64 : topoll;
+    ret = WaitForMultipleObjects(topoll, cdata.pfds + first, TRUE, ts);
     if (ret == WAIT_FAILED) {
       ps__set_error_from_windows_error(0);
       ps__throw_error();
     }
 
-    // all of them are done
+    // all of them (or 64) are done
     if (ret != WAIT_TIMEOUT) {
-      for (i = 0; i < num_handles; i++) {
+      for (i = first; i < first + topoll; i++) {
 	LOGICAL(res)[i] = 1;
       }
-      topoll = 0;
-      break;
+      first += topoll;
+      topoll = num_handles - first;
+      if (topoll == 0) break;
     }
 
     // is the time limit over? Do we need to update the poll timeout
