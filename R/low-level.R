@@ -15,7 +15,7 @@
 #' p
 
 ps_handle <- function(pid = NULL, time = NULL) {
-  if (!is.null(pid)) assert_pid(pid)
+  if (!is.null(pid)) pid <- assert_pid(pid)
   if (!is.null(time)) assert_time(time)
   .Call(psll_handle, pid, time)
 }

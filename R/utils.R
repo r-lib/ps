@@ -126,7 +126,11 @@ assert_character <- function(x) {
 }
 
 assert_pid <- function(x) {
-  if (is.integer(x) && length(x) == 1 && !is.na(x)) return()
+  if (is.integer(x) && length(x) == 1 && !is.na(x)) return(x)
+  if (is.numeric(x) && length(x) == 1 && !is.na(x) &&
+      as.integer(x) == x) {
+    return(as.integer(x))
+  }
   stop(ps__invalid_argument(match.call()$x,
                             " is not a process id (integer scalar)"))
 }

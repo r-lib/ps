@@ -6,6 +6,9 @@
 * New `ps_wait()` to start an interruptible wait on multiple processes,
   with a timeout (#166).
 
+* `ps_handle()` now allowes a non-integer object as the pid, as long as
+  its value is integer.
+
 # ps 1.7.7
 
 * `ps_cpu_times()` values are now correct on newer arm64 macOS.
