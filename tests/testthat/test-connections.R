@@ -1,6 +1,4 @@
 
-context("connections")
-
 test_that("empty set", {
   px <- processx::process$new(
     px(), c("sleep", "5"),
@@ -12,7 +10,7 @@ test_that("empty set", {
   cl <- ps_connections(p)
   expect_equal(nrow(cl), 0)
   expect_s3_class(cl, "data.frame")
-  expect_s3_class(cl, "tbl_df")
+  expect_s3_class(cl, "tbl")
   expect_equal(
     names(cl),
     c("fd", "family", "type", "laddr", "lport", "raddr", "rport", "state"))
@@ -29,7 +27,7 @@ test_that("UNIX sockets", {
   cl <- ps_connections(p)
   expect_equal(nrow(cl), 1)
   expect_s3_class(cl, "data.frame")
-  expect_s3_class(cl, "tbl_df")
+  expect_s3_class(cl, "tbl")
   expect_equal(cl$fd, 1)
   expect_equal(cl$family, "AF_UNIX")
   expect_equal(cl$type, "SOCK_STREAM")
@@ -44,6 +42,7 @@ test_that("UNIX sockets with path", {
   if (!ps_os_type()[["POSIX"]]) skip("No UNIX sockets")
   skip_without_program("socat")
   skip_if_no_processx()
+  skip_on_cran()
 
   sfile <- tempfile()
   sfile <- file.path(normalizePath(dirname(sfile)), basename(sfile))
@@ -65,9 +64,14 @@ test_that("UNIX sockets with path", {
 })
 
 test_that("TCP", {
-  skip_if_offline()
+  skip_on_cran()
+
+  # need to connect now, otherwise the connections needed for webfakes
+  # show up in the list
+  httpbin$url()
+
   before <- ps_connections(ps_handle())
-  cx <- curl::curl(httpbin_url(), open = "r")
+  cx <- curl::curl(httpbin$url("/drip"), open = "r")
   on.exit({ close(cx); rm(cx); gc() }, add = TRUE)
   after <- ps_connections(ps_handle())
   new <- after[! after$lport %in% before$lport, ]
@@ -75,7 +79,7 @@ test_that("TCP", {
   expect_equal(new$type, "SOCK_STREAM")
   expect_true(is_ipv4_address(new$laddr))
   expect_true(is.integer(new$lport))
-  expect_equal(new$rport, 80L)
+  expect_equal(new$rport, httpbin$get_port())
   expect_equal(new$state, "CONN_ESTABLISHED")
 })
 
@@ -113,9 +117,11 @@ test_that("TCP on loopback", {
 })
 
 test_that("UDP", {
-  skip_if_offline()
+  # does not work offline
+  skip_on_cran()
   skip_without_program("socat")
   skip_if_no_processx()
+  if (!pingr::is_online()) skip("Offline")
 
   nc <- processx::process$new(
     "socat", c("-", "UDP4-CONNECT:8.8.8.8:53,pf=ip4"), stdin = "|")
@@ -170,7 +176,6 @@ test_that("UDP on loopback", {
 })
 
 test_that("TCP6", {
-  skip_if_offline()
   skip_without_program("socat")
   skip_if_no_processx()
   skip_without_ipv6()
@@ -229,7 +234,6 @@ test_that("TCP6 on loopback", {
 })
 
 test_that("UDP6", {
-  skip_if_offline()
   skip_without_ipv6()
   skip_without_ipv6_connection()
   skip_without_program("socat")

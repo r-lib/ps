@@ -21,7 +21,7 @@ SEXP psll_create_time(SEXP p) {
   return ScalarReal(handle->create_time);
 }
 
-SEXP ps__os_type() {
+SEXP ps__os_type(void) {
   SEXP res, names;
 
   PROTECT(res = allocVector(LGLSXP, 4));

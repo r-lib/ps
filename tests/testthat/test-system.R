@@ -1,6 +1,4 @@
 
-context("system")
-
 test_that("ps_pids", {
   pp <- ps_pids()
   expect_true(is.integer(pp))
@@ -9,7 +7,7 @@ test_that("ps_pids", {
 
 test_that("ps", {
   pp <- ps()
-  expect_true(tibble::is_tibble(pp))
+  expect_true(inherits(pp, "tbl"))
   expect_true(Sys.getpid() %in% pp$pid)
 
   px <- processx::process$new(px(), c("sleep", "5"))

@@ -1,5 +1,71 @@
+# ps (development version)
 
-# ps development version
+* New `ps_fs_info()` to query information about the file system of one
+  or more files or directories.
+
+* New `ps_wait()` to start an interruptible wait on multiple processes,
+  with a timeout (#166).
+
+* `ps_handle()` now allowes a non-integer object as the pid, as long as
+  its value is integer.
+
+# ps 1.7.7
+
+* `ps_cpu_times()` values are now correct on newer arm64 macOS.
+
+# ps 1.7.6
+
+* `ps_name()` now does not fail in the rare case when `ps_cmdline()` returns an empty vector (#150).
+
+* `ps_system_cpu_times()` now returns CPU times divided by the HZ as reported by CLK_TCK, in-line with other OS's and the per-process version. (#144, @michaelwalshe).
+
+# ps 1.7.5
+
+No user visible changes.
+
+# ps 1.7.4
+
+* `ps::ps_get_cpu_affinity()` now works for other processes on Linux, not only
+  the calling process.
+
+# ps 1.7.3
+
+* The output of `ps_disk_usage()`, `ps_disk_partitions()` and
+  `ps_shared_lib_users()` now do not include a spurious `stringsAsFactors`
+  column.
+
+# ps 1.7.2
+
+* `ps_system_memory()$percent` now returns a number scaled between 0 and 100
+  on Windows, rather than between 0 and 1 (#131, @francisbarton).
+
+# ps 1.7.1
+
+* ps now returns data frames instead of tibbles. While data frames and
+  tibbles are very similar, they are not completely compatible. To convert
+  the output of ps to tibbles call the `tibble::as_tibble()` function
+  on them.
+
+* `ps()` now does not fail if both `user` and `after` are specified (#129).
+
+# ps 1.7.0
+
+* ps now compiles on platforms that enable OpenMP (#109).
+
+* New functions `ps_get_cpu_affinity()` and `ps_set_cpu_affinity()` to query
+  and set CPU affinity (#123).
+
+* `ps_memory_info()` now does not mix up `rss` and `vms` on Linux.
+
+* `ps_memory_info()` now reports memory in bytes instead of pages on Linux (#115)
+
+# ps 1.6.0
+
+* New function `ps_system_cpu_times()` to calculate system CPU times.
+
+* New function `ps_loadavg()` to show the Unix style load average.
+
+# ps 1.5.0
 
 * New function `ps_shared_libs()` to list the loaded shared libraries
   of a process, on Windows.
@@ -29,7 +95,7 @@
 
 * New `ps_tty_size()` function to query the size of the terminal.
 
-* Fixed an issue in `CLeanupReporter()` that triggered random failures
+* Fixed an issue in `CleanupReporter()` that triggered random failures
   on macOS.
 
 # ps 1.3.4

@@ -10,15 +10,28 @@
 #include <sys/types.h>
 #include <libproc.h>
 #include <errno.h>
+#include <sys/errno.h>
 #include <string.h>
 #include <utmpx.h>
 #include <arpa/inet.h>
+#include <sys/param.h>
+#include <sys/mount.h>
 
 #include <mach/mach.h>
 #include <mach/mach_vm.h>
+#include <mach/shared_region.h>
+#include <mach/mach_time.h>
+
+#include <sys/event.h>
+#include <sys/time.h>
 
 #include "ps-internal.h"
 #include "arch/macos/process_info.h"
+#include "cleancall.h"
+
+#include <stdbool.h>
+
+struct mach_timebase_info PS_MACH_TIMEBASE_INFO;
 
 #define PS__TV2DOUBLE(t) ((t).tv_sec + (t).tv_usec / 1000000.0)
 
@@ -397,6 +410,8 @@ SEXP psll_cpu_times(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   struct proc_taskinfo pti;
   SEXP result, names;
+  uint64_t total_user;
+  uint64_t total_system;
 
   if (!handle) error("Process pointer cleaned up already");
 
@@ -407,9 +422,14 @@ SEXP psll_cpu_times(SEXP p) {
 
   PS__CHECK_HANDLE(handle);
 
+  total_user = pti.pti_total_user * PS_MACH_TIMEBASE_INFO.numer;
+  total_user /= PS_MACH_TIMEBASE_INFO.denom;
+  total_system = pti.pti_total_system * PS_MACH_TIMEBASE_INFO.numer;
+  total_system /= PS_MACH_TIMEBASE_INFO.denom;
+
   PROTECT(result = allocVector(REALSXP, 4));
-  REAL(result)[0] = (double) pti.pti_total_user / 1000000000.0;
-  REAL(result)[1] = (double) pti.pti_total_system / 1000000000.0;
+  REAL(result)[0] = (double) total_user / 1000000000.0;
+  REAL(result)[1] = (double) total_system / 1000000000.0;
   REAL(result)[2] = REAL(result)[3] = NA_REAL;
   PROTECT(names = ps__build_string("user", "system", "children_user",
 				   "children_system", NULL));
@@ -446,7 +466,7 @@ SEXP psll_memory_info(SEXP p) {
   return result;
 }
 
-SEXP ps__boot_time() {
+SEXP ps__boot_time(void) {
 #define MIB_SIZE 2
   int mib[MIB_SIZE];
   size_t size;
@@ -466,7 +486,7 @@ SEXP ps__boot_time() {
   return ScalarReal(unixtime);
 }
 
-SEXP ps__cpu_count_logical() {
+SEXP ps__cpu_count_logical(void) {
   int num = 0;
   size_t size = sizeof(int);
 
@@ -476,7 +496,7 @@ SEXP ps__cpu_count_logical() {
     return ScalarInteger(num);
 }
 
-SEXP ps__cpu_count_physical() {
+SEXP ps__cpu_count_physical(void) {
   int num = 0;
   size_t size = sizeof(int);
 
@@ -770,7 +790,7 @@ SEXP psll_connections(SEXP p) {
 
 	// check for inet_ntop failures
 	if (errno != 0) {
-	  ps__set_error_from_errno(0);
+	  ps__set_error_from_errno();
 	  goto error;
 	}
 
@@ -815,7 +835,133 @@ SEXP psll_connections(SEXP p) {
   return R_NilValue;
 }
 
-SEXP ps__users() {
+/*
+ * Indicates if the given virtual address on the given architecture is in the
+ * shared VM region.
+ */
+static bool ps_in_shared_region(mach_vm_address_t addr, cpu_type_t type) {
+  mach_vm_address_t base;
+  mach_vm_address_t size;
+
+  switch (type) {
+  case CPU_TYPE_ARM:
+    base = SHARED_REGION_BASE_ARM;
+    size = SHARED_REGION_SIZE_ARM;
+    break;
+  case CPU_TYPE_I386:
+    base = SHARED_REGION_BASE_I386;
+    size = SHARED_REGION_SIZE_I386;
+    break;
+  case CPU_TYPE_X86_64:
+    base = SHARED_REGION_BASE_X86_64;
+    size = SHARED_REGION_SIZE_X86_64;
+    break;
+  case CPU_TYPE_POWERPC:
+    base = SHARED_REGION_BASE_PPC;
+    size = SHARED_REGION_SIZE_PPC;
+    break;
+  case CPU_TYPE_POWERPC64:
+    base = SHARED_REGION_BASE_PPC64;
+    size = SHARED_REGION_SIZE_PPC64;
+    break;
+  default:
+    return false;
+  }
+
+  return base <= addr && addr < (base + size);
+}
+
+/*
+ * Returns the USS (unique set size) of the process. Reference:
+ * https://dxr.mozilla.org/mozilla-central/source/xpcom/base/
+ *     nsMemoryReporterManager.cpp
+ */
+
+SEXP psll_memory_uss(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  long pid;
+  size_t len;
+  cpu_type_t cpu_type;
+  size_t private_pages = 0;
+  mach_vm_size_t size = 0;
+  mach_msg_type_number_t info_count = VM_REGION_TOP_INFO_COUNT;
+  kern_return_t kr;
+  long pagesize = getpagesize();
+  mach_vm_address_t addr = MACH_VM_MIN_ADDRESS;
+  mach_port_t task = MACH_PORT_NULL;
+  vm_region_top_info_data_t info;
+  mach_port_t object_name;
+
+  if (!handle) error("Process pointer cleaned up already");
+  pid = handle->pid;
+
+  kern_return_t err = KERN_SUCCESS;
+  err = task_for_pid(mach_task_self(), pid, &task);
+  if (err != KERN_SUCCESS) {
+    ps__check_for_zombie(handle, 1);
+    PS__CHECK_HANDLE(handle);
+    ps__set_error("Access denied for task_for_pid() for %d", (int) pid);
+    ps__throw_error();
+  }
+
+  len = sizeof(cpu_type);
+  if (sysctlbyname("sysctl.proc_cputype", &cpu_type, &len, NULL, 0) != 0) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  // Roughly based on libtop_update_vm_regions in
+  // http://www.opensource.apple.com/source/top/top-100.1.2/libtop.c
+  for (addr = 0; ; addr += size) {
+    kr = mach_vm_region(
+      task, &addr, &size, VM_REGION_TOP_INFO, (vm_region_info_t)&info,
+      &info_count, &object_name);
+
+    if (kr == KERN_INVALID_ADDRESS) {
+      // Done iterating VM regions.
+      break;
+
+    } else if (kr != KERN_SUCCESS) {
+      ps__set_error(
+        "mach_vm_region(VM_REGION_TOP_INFO) syscall failed for %d",
+        (int) pid
+      );
+      ps__throw_error();
+    }
+
+    if (ps_in_shared_region(addr, cpu_type) &&
+        info.share_mode != SM_PRIVATE) {
+      continue;
+    }
+
+    switch (info.share_mode) {
+#ifdef SM_LARGE_PAGE
+    case SM_LARGE_PAGE:
+      // NB: Large pages are not shareable and always resident.
+#endif
+    case SM_PRIVATE:
+      private_pages += info.private_pages_resident;
+      private_pages += info.shared_pages_resident;
+      break;
+    case SM_COW:
+      private_pages += info.private_pages_resident;
+      if (info.ref_count == 1) {
+        // Treat copy-on-write pages as private if they only
+        // have one reference.
+        private_pages += info.shared_pages_resident;
+      }
+      break;
+    case SM_SHARED:
+    default:
+      break;
+    }
+  }
+
+  mach_port_deallocate(mach_task_self(), task);
+  return Rf_ScalarInteger(private_pages * pagesize);
+}
+
+SEXP ps__users(void) {
   struct utmpx *utx;
   SEXP result;
   PROTECT_INDEX pidx;
@@ -945,6 +1091,138 @@ error:
   return R_NilValue;
 }
 
+SEXP ps__fs_info(SEXP path, SEXP abspath) {
+  struct statfs sfs;
+  R_xlen_t i, len = Rf_xlength(path);
+
+  const char *nms[] = {
+    "path",                         // 0
+    "mount_point",                  // 1
+    "name",                         // 2
+    "type",                         // 3
+    "block_size",                   // 4
+    "transfer_block_size",          // 5
+    "total_data_blocks",            // 6
+    "free_blocks",                  // 7
+    "free_blocks_non_superuser",    // 8
+    "total_nodes",                  // 9
+    "free_nodes",                   // 10
+    "id",                           // 11
+    "owner",                        // 12
+    "type_code",                    // 13
+    "subtype_code",                 // 14
+
+    "RDONLY",
+    "SYNCHRONOUS",
+    "NOEXEC",
+    "NOSUID",
+    "NODEV",
+    "UNION",
+    "ASYNC",
+    "EXPORTED",
+    "LOCAL",
+    "QUOTA",
+    "ROOTFS",
+    "DOVOLFS",
+    "DONTBROWSE",
+    "UNKNOWNPERMISSIONS",
+    "AUTOMOUNTED",
+    "JOURNALED",
+    "DEFWRITE",
+    "MULTILABEL",
+    "CPROTECT",
+    ""
+  };
+  SEXP res = PROTECT(Rf_mkNamed(VECSXP, nms));
+  SET_VECTOR_ELT(res, 0, path);
+  SET_VECTOR_ELT(res, 1, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 2, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 3, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 4, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 5, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 6, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 7, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 8, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 9, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 10, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 11, Rf_allocVector(VECSXP, len));
+  SET_VECTOR_ELT(res, 12, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 13, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 14, Rf_allocVector(REALSXP, len));
+
+  SET_VECTOR_ELT(res, 15, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 16, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 17, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 18, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 19, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 20, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 21, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 22, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 23, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 24, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 25, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 26, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 27, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 28, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 29, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 30, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 31, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 32, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 33, Rf_allocVector(LGLSXP, len));
+
+  for (i = 0; i < len; i++) {
+    int ret = statfs(CHAR(STRING_ELT(abspath, i)), &sfs);
+    if (ret != 0) {
+      ps__set_error(
+        "statfs %s: %d %s",
+        CHAR(STRING_ELT(abspath, i)), errno, strerror(errno)
+      );
+      ps__throw_error();
+    }
+    SET_STRING_ELT(VECTOR_ELT(res, 1), i,
+                   Rf_mkCharCE(sfs.f_mntonname, CE_UTF8));
+    SET_STRING_ELT(VECTOR_ELT(res, 2), i,
+                   Rf_mkCharCE(sfs.f_mntfromname, CE_UTF8));
+    SET_STRING_ELT(VECTOR_ELT(res, 3), i,
+                   Rf_mkCharCE(sfs.f_fstypename, CE_UTF8));
+    REAL(VECTOR_ELT(res, 4))[i] = sfs.f_bsize;
+    REAL(VECTOR_ELT(res, 5))[i] = sfs.f_iosize;
+    REAL(VECTOR_ELT(res, 6))[i] = sfs.f_blocks;
+    REAL(VECTOR_ELT(res, 7))[i] = sfs.f_bfree;
+    REAL(VECTOR_ELT(res, 8))[i] = sfs.f_bavail;
+    REAL(VECTOR_ELT(res, 9))[i] = sfs.f_files;
+    REAL(VECTOR_ELT(res, 10))[i] = sfs.f_ffree;
+    SET_VECTOR_ELT(VECTOR_ELT(res, 11), i, Rf_allocVector(RAWSXP, sizeof(fsid_t)));
+    memcpy(RAW(VECTOR_ELT(VECTOR_ELT(res, 11), i)), &sfs.f_fsid, sizeof(fsid_t));
+    REAL(VECTOR_ELT(res, 12))[i] = sfs.f_owner;
+    REAL(VECTOR_ELT(res, 13))[i] = sfs.f_type;
+    REAL(VECTOR_ELT(res, 14))[i] = sfs.f_fssubtype;
+
+    LOGICAL(VECTOR_ELT(res, 15))[i] = sfs.f_flags & MNT_RDONLY;
+    LOGICAL(VECTOR_ELT(res, 16))[i] = sfs.f_flags & MNT_SYNCHRONOUS;
+    LOGICAL(VECTOR_ELT(res, 17))[i] = sfs.f_flags & MNT_NOEXEC;
+    LOGICAL(VECTOR_ELT(res, 18))[i] = sfs.f_flags & MNT_NOSUID;
+    LOGICAL(VECTOR_ELT(res, 19))[i] = sfs.f_flags & MNT_NODEV;
+    LOGICAL(VECTOR_ELT(res, 20))[i] = sfs.f_flags & MNT_UNION;
+    LOGICAL(VECTOR_ELT(res, 21))[i] = sfs.f_flags & MNT_ASYNC;
+    LOGICAL(VECTOR_ELT(res, 22))[i] = sfs.f_flags & MNT_EXPORTED;
+    LOGICAL(VECTOR_ELT(res, 23))[i] = sfs.f_flags & MNT_LOCAL;
+    LOGICAL(VECTOR_ELT(res, 24))[i] = sfs.f_flags & MNT_QUOTA;
+    LOGICAL(VECTOR_ELT(res, 25))[i] = sfs.f_flags & MNT_ROOTFS;
+    LOGICAL(VECTOR_ELT(res, 26))[i] = sfs.f_flags & MNT_DOVOLFS;
+    LOGICAL(VECTOR_ELT(res, 27))[i] = sfs.f_flags & MNT_DONTBROWSE;
+    LOGICAL(VECTOR_ELT(res, 28))[i] = sfs.f_flags & MNT_UNKNOWNPERMISSIONS;
+    LOGICAL(VECTOR_ELT(res, 29))[i] = sfs.f_flags & MNT_AUTOMOUNTED;
+    LOGICAL(VECTOR_ELT(res, 30))[i] = sfs.f_flags & MNT_JOURNALED;
+    LOGICAL(VECTOR_ELT(res, 31))[i] = sfs.f_flags & MNT_DEFWRITE;
+    LOGICAL(VECTOR_ELT(res, 32))[i] = sfs.f_flags & MNT_MULTILABEL;
+    LOGICAL(VECTOR_ELT(res, 33))[i] = sfs.f_flags & MNT_CPROTECT;
+  }
+
+  UNPROTECT(1);
+  return res;
+}
+
 int ps__sys_vminfo(vm_statistics_data_t *vmstat) {
   kern_return_t ret;
   mach_msg_type_number_t count = sizeof(*vmstat) / sizeof(integer_t);
@@ -962,7 +1240,7 @@ int ps__sys_vminfo(vm_statistics_data_t *vmstat) {
   return 0;
 }
 
-SEXP ps__system_memory() {
+SEXP ps__system_memory(void) {
   int mib[2];
   uint64_t total;
   size_t len = sizeof(total);
@@ -996,7 +1274,7 @@ SEXP ps__system_memory() {
   );
 }
 
-SEXP ps__system_swap() {
+SEXP ps__system_swap(void) {
   int mib[2];
   size_t size;
   struct xsw_usage totals;
@@ -1026,4 +1304,222 @@ SEXP ps__system_swap() {
     "sin",   (double) vm.pageins * pagesize,
     "sout",  (double) vm.pageouts * pagesize
   );
+}
+
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
+
+SEXP ps__loadavg(SEXP counter_name) {
+  struct loadavg info;
+  size_t size = sizeof(info);
+  int which[] = {CTL_VM, VM_LOADAVG};
+
+  if (sysctl(which, ARRAY_SIZE(which), &info, &size, NULL, 0) < 0) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  SEXP ret = PROTECT(allocVector(REALSXP, 3));
+  REAL(ret)[0] = (double) info.ldavg[0] / info.fscale;
+  REAL(ret)[1] = (double) info.ldavg[1] / info.fscale;
+  REAL(ret)[2] = (double) info.ldavg[2] / info.fscale;
+
+  UNPROTECT(1);
+  return ret;
+}
+
+SEXP ps__system_cpu_times(void) {
+  mach_msg_type_number_t count = HOST_CPU_LOAD_INFO_COUNT;
+  kern_return_t error;
+  host_cpu_load_info_data_t r_load;
+
+  mach_port_t host_port = mach_host_self();
+  error = host_statistics(host_port, HOST_CPU_LOAD_INFO,
+                          (host_info_t)&r_load, &count);
+
+  mach_port_deallocate(mach_task_self(), host_port);
+
+  if (error != KERN_SUCCESS) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  const char *nms[] = { "user", "nice", "system", "idle", "" };
+  SEXP ret = PROTECT(Rf_mkNamed(REALSXP, nms));
+
+  REAL(ret)[0] = (double) r_load.cpu_ticks[CPU_STATE_USER]   / CLK_TCK;
+  REAL(ret)[1] = (double) r_load.cpu_ticks[CPU_STATE_NICE]   / CLK_TCK;
+  REAL(ret)[2] = (double) r_load.cpu_ticks[CPU_STATE_SYSTEM] / CLK_TCK;
+  REAL(ret)[3] = (double) r_load.cpu_ticks[CPU_STATE_IDLE]   / CLK_TCK;
+
+  UNPROTECT(1);
+  return ret;
+}
+
+// timeout = 0 special case, no need to poll, just check if running
+SEXP psll_wait0(SEXP pps) {
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    LOGICAL(res)[i] = ! LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0];
+  }
+
+  UNPROTECT(1);
+  return res;
+}
+
+struct psll__wait_cleanup_data {
+  int epfd;
+};
+
+static void psll__wait_cleanup(void *data) {
+  struct psll__wait_cleanup_data *cdata =
+    (struct psll__wait_cleanup_data*) data;
+  if (cdata->epfd != -1) {
+    close(cdata->epfd);
+    cdata->epfd = -1;
+  }
+}
+
+// Add time limit to current time.
+// clock_gettime does not fail, as long as the struct timespec
+// pointer is ok. So no need to check the return value.
+static void add_time(struct timespec *due, int ms) {
+  clock_gettime(CLOCK_MONOTONIC, due);
+  due->tv_sec = due->tv_sec + ms / 1000;
+  due->tv_nsec = due->tv_nsec + (ms % 1000) * 1000000;
+  if (due->tv_nsec >= 1000000000) {
+    due->tv_nsec -= 1000000000;
+    due->tv_sec++;
+  }
+}
+
+static inline int time_left(struct timespec *due) {
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  return
+    (due->tv_sec - now.tv_sec) * 1000 +
+    (due->tv_nsec - now.tv_nsec) / 1000 / 1000;
+}
+
+SEXP psll_wait(SEXP pps, SEXP timeout) {
+  int ctimeout = INTEGER(timeout)[0];
+  // this is much simpler, no need to poll at all
+  if (ctimeout == 0) {
+    return psll_wait0(pps);
+  }
+
+  int forever = ctimeout < 0;
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+  struct psll__wait_cleanup_data cdata = { -1 };
+  r_call_on_early_exit(psll__wait_cleanup, &cdata);
+  cdata.epfd = kqueue();
+  if (cdata.epfd == -1) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
+
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+
+  int ret;
+  R_xlen_t topoll = 0;
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    if (!LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0]) {
+      // already done
+      LOGICAL(res)[i] = 1;
+    } else {
+      struct kevent ev;
+      EV_SET(
+        &ev,
+        handle->pid,
+        EVFILT_PROC,
+        EV_ADD | EV_ONESHOT,
+        NOTE_EXIT,
+        (intptr_t) NULL,
+        LOGICAL(res) + i
+      );
+      ret = kevent(cdata.epfd, &ev, 1, NULL, 0, NULL);
+      if (ret == -1) {
+        if (errno == ESRCH) {
+          LOGICAL(res)[i] = 1;
+        } else {
+          ps__set_error_from_errno();
+          ps__throw_error();
+        }
+      } else {
+        topoll++;
+        LOGICAL(res)[i] = 0;
+      }
+    }
+  }
+
+  // early exit if nothing to do
+  if (topoll == 0) {
+    psll__wait_cleanup(&cdata);
+    UNPROTECT(1);
+    return res;
+  }
+
+  SEXP revents = PROTECT(Rf_allocVector(RAWSXP, sizeof(struct kevent) * topoll));
+  struct kevent *events = (struct kevent*) RAW(revents);
+
+  // first timeout is the smaller of PROCESSX_INTERRUPT_INTERVAL & timeout
+  struct timespec ts = { 0, 0 };
+  if (forever || ctimeout > PROCESSX_INTERRUPT_INTERVAL) {
+    ts.tv_sec = PROCESSX_INTERRUPT_INTERVAL / 1000;
+    ts.tv_nsec = (PROCESSX_INTERRUPT_INTERVAL % 1000) * 1000 * 1000;
+  } else {
+    ts.tv_sec = ctimeout / 1000;
+    ts.tv_nsec = (ctimeout % 1000) * 1000 * 1000;
+  }
+
+  // this is the ultimate time limit, unless we poll forever
+  struct timespec due;
+  if (!forever) {
+    add_time(&due, ctimeout);
+  }
+
+  do {
+    do {
+      ret = kevent(cdata.epfd, NULL, 0, events, topoll, &ts);
+    } while (ret == -1 && errno == EINTR);
+
+    if (ret == -1) {
+      ps__set_error_from_errno();
+      ps__throw_error();
+    }
+
+    for (i = 0; i < ret; i++) {
+      int *ptr = (int*) events[i].udata;
+      *ptr = 1;
+      topoll--;
+    }
+
+    // are we done?
+    if (topoll == 0) {
+      break;
+    }
+
+    // is the time limit over? Do we need to update the poll timeout
+    if (!forever) {
+      int tl = time_left(&due);
+      if (tl < 0) {
+        break;
+      }
+      if (tl < PROCESSX_INTERRUPT_INTERVAL) {
+        ts.tv_sec = tl / 1000;
+        ts.tv_nsec = (tl % 1000) * 1000 * 1000;
+      }
+    }
+
+    R_CheckUserInterrupt();
+
+  } while (1);
+
+  psll__wait_cleanup(&cdata);
+  UNPROTECT(2);
+  return res;
 }

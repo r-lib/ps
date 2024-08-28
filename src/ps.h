@@ -31,6 +31,7 @@ SEXP psll_environ(SEXP p);
 SEXP psll_num_threads(SEXP p);
 SEXP psll_cpu_times(SEXP p);
 SEXP psll_memory_info(SEXP p);
+SEXP psll_memory_uss(SEXP p);
 SEXP psll_send_signal(SEXP p, SEXP sig);
 SEXP psll_suspend(SEXP p);
 SEXP psll_resume(SEXP p);
@@ -44,20 +45,26 @@ SEXP psll_get_nice(SEXP p);
 SEXP psll_set_nice(SEXP p, SEXP value);
 SEXP psll_dlls(SEXP p);
 SEXP psll_switch_to(SEXP plist);
+SEXP psll_get_cpu_aff(SEXP p);
+SEXP psll_set_cpu_aff(SEXP p, SEXP affinity);
+SEXP psll_wait(SEXP p, SEXP timeout);
 
 /* System API */
 
-SEXP ps__os_type();
-SEXP ps__pids();
-SEXP ps__boot_time();
-SEXP ps__cpu_count_logical();
-SEXP ps__cpu_count_physical();
-SEXP ps__users();
-SEXP ps__tty_size();
+SEXP ps__os_type(void);
+SEXP ps__pids(void);
+SEXP ps__boot_time(void);
+SEXP ps__cpu_count_logical(void);
+SEXP ps__cpu_count_physical(void);
+SEXP ps__system_cpu_times(void);
+SEXP ps__users(void);
+SEXP ps__tty_size(void);
 SEXP ps__disk_partitions(SEXP all);
 SEXP ps__disk_usage(SEXP paths);
-SEXP ps__system_memory();
-SEXP ps__system_swap();
+SEXP ps__fs_info(SEXP path, SEXP abspath);
+SEXP ps__system_memory(void);
+SEXP ps__system_swap(void);
+SEXP ps__loadavg(SEXP counter_name);
 
 /* Generic utils used from R */
 
@@ -65,11 +72,13 @@ SEXP ps__init(SEXP psenv, SEXP constenv);
 SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig);
 SEXP ps__find_if_env(SEXP marker, SEXP after, SEXP pid);
 SEXP ps__inet_ntop(SEXP raw, SEXP fam);
+SEXP ps__memory_maps(SEXP p);
 
-SEXP psp__zombie();
+SEXP psp__zombie(void);
 SEXP psp__waitpid(SEXP pid);
 SEXP psp__pid_exists(SEXP r_pid);
 SEXP psp__stat_st_rdev(SEXP files);
 
 SEXP psw__realpath(SEXP path);
+
 #endif

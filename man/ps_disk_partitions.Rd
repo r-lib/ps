@@ -12,7 +12,7 @@ Linux it will still list \code{overlay} and \code{grpcfuse} file systems, to
 provide some useful information in Docker containers.}
 }
 \value{
-A data frame (tibble) with columns \code{device}, \code{mountpoint},
+A data frame with columns \code{device}, \code{mountpoint},
 \code{fstype} and \code{options}.
 }
 \description{

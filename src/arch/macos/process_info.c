@@ -86,7 +86,7 @@ int ps__get_proc_list(kinfo_proc **procList, size_t *procCount) {
 
 
 // Read the maximum argument size for processes
-int ps__get_argmax() {
+int ps__get_argmax(void) {
   int argmax;
   int mib[] = { CTL_KERN, KERN_ARGMAX };
   size_t size = sizeof(argmax);

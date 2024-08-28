@@ -1,8 +1,6 @@
 
 if (!ps_os_type()[["WINDOWS"]]) return()
 
-context("windows")
-
 test_that("uids, gids", {
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)
@@ -29,3 +27,10 @@ test_that("terminal", {
 ## TODO: username
 ## TODO: cpu_times
 ## TODO: memory_info
+
+test_that("total and available mem", {
+  l <- .Call(ps__system_memory)[c("total", "avail")]
+  expect_true(is.numeric(l$total))
+  expect_true(is.numeric(l$avail))
+  expect_lte(l$avail, l$total)
+})

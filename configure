@@ -24,6 +24,10 @@ else
     UNAME=Windows
 fi
 
+if [ -n "$EMSCRIPTEN" ] && [ -n "$CROSS_COMPILE" ]; then
+    UNAME=Emscripten
+fi
+
 unset WINDOWS
 if [ "$R_OSTYPE" = "windows" ]; then WINDOWS=true; fi
 
@@ -58,7 +62,7 @@ unset AIX
 # ------------------------------------------------------------------------
 
 MACROS=""
-OBJECTS="init.o api-common.o common.o extra.o dummy.o error-codes.o"
+OBJECTS="init.o api-common.o common.o extra.o dummy.o error-codes.o cleancall.o"
 
 if [ -n "$POSIX" ]; then
     OBJECTS="${OBJECTS} posix.o api-posix.o";
@@ -90,9 +94,10 @@ if [ -n "$WINDOWS" ]; then
     OBJECTS="${OBJECTS} windows.o api-windows.o api-windows-conn.o"
     OBJECTS="${OBJECTS} arch/windows/process_info.o"
     OBJECTS="${OBJECTS} arch/windows/process_handles.o"
+    OBJECTS="${OBJECTS} arch/windows/wmi.o"
 
     LIBRARIES="psapi kernel32 advapi32 shell32 netapi32 iphlpapi wtsapi32"
-    LIBRARIES="${LIBRARIES} ws2_32 PowrProf"
+    LIBRARIES="${LIBRARIES} ws2_32 PowrProf Pdh"
 
     TARGETS=interrupt
 
@@ -166,4 +171,3 @@ for m in $MACROS; do
     echo \#undef $m
     eval echo '\#'define $m $ind
 done >> src/config.h
-

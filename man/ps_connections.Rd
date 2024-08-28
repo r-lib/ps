@@ -10,8 +10,7 @@ ps_connections(p = ps_handle())
 \item{p}{Process handle.}
 }
 \value{
-Data frame, or tibble if the \emph{tibble} package is available,
-with columns:
+Data frame, with columns:
 \itemize{
 \item \code{fd}: integer file descriptor on POSIX systems, \code{NA} on Windows.
 \item \code{family}: Address family, string, typically \code{AF_UNIX}, \code{AF_INET} or

@@ -20,7 +20,7 @@ PVOID GetLibraryProcAddress(PSTR LibraryName, PSTR ProcName) {
   return GetProcAddress(GetModuleHandleA(LibraryName), ProcName);
 }
 
-VOID ps__get_open_files_init() {
+VOID ps__get_open_files_init(void) {
   if (g_initialized == TRUE)
     return;
 

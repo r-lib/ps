@@ -3,6 +3,15 @@
 #define __NTEXTAPI_H__
 #include <winternl.h>
 
+// ================================================================
+// Enums
+// ================================================================
+
+#undef  MemoryWorkingSetInformation
+#define MemoryWorkingSetInformation 0x1
+
+// https://github.com/ajkhoury/TestDll/blob/master/nt_ddk.h
+#define STATUS_ACCESS_DENIED ((NTSTATUS)0xC0000022L)
 
 typedef struct {
     LARGE_INTEGER IdleTime;
@@ -287,6 +296,17 @@ typedef NTSTATUS (NTAPI *_NtSetInformationProcess)(
     DWORD ProcessInformationLength
 );
 
+extern NTSTATUS (NTAPI *_NtQueryVirtualMemory) (
+  HANDLE ProcessHandle,
+  PVOID BaseAddress,
+  int MemoryInformationClass,
+  PVOID MemoryInformation,
+  SIZE_T MemoryInformationLength,
+  PSIZE_T ReturnLength
+);
+
+#define NtQueryVirtualMemory _NtQueryVirtualMemory
+
 #ifndef __MINGW32__
 typedef enum _PROCESSINFOCLASS2 {
     _ProcessBasicInformation,
@@ -346,5 +366,32 @@ typedef enum _PROCESSINFOCLASS2 {
 #define ProcessImageFileName 27
 #define ProcessBreakOnTermination 29
 #endif
+
+// memory_uss()
+typedef struct _MEMORY_WORKING_SET_BLOCK {
+    ULONG_PTR Protection : 5;
+    ULONG_PTR ShareCount : 3;
+    ULONG_PTR Shared : 1;
+    ULONG_PTR Node : 3;
+#ifdef _WIN64
+    ULONG_PTR VirtualPage : 52;
+#else
+    ULONG VirtualPage : 20;
+#endif
+} MEMORY_WORKING_SET_BLOCK, *PMEMORY_WORKING_SET_BLOCK;
+
+// memory_uss()
+typedef struct _MEMORY_WORKING_SET_INFORMATION {
+    ULONG_PTR NumberOfEntries;
+    MEMORY_WORKING_SET_BLOCK WorkingSetInfo[1];
+} MEMORY_WORKING_SET_INFORMATION, *PMEMORY_WORKING_SET_INFORMATION;
+
+// memory_uss()
+typedef struct _PS__PROCESS_WS_COUNTERS {
+    SIZE_T NumberOfPages;
+    SIZE_T NumberOfPrivatePages;
+    SIZE_T NumberOfSharedPages;
+    SIZE_T NumberOfShareablePages;
+} PS__PROCESS_WS_COUNTERS;
 
 #endif // __NTEXTAPI_H__

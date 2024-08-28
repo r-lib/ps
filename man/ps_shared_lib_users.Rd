@@ -20,7 +20,7 @@ current user.}
 a vector of glob expressions, used to filter the process names.}
 }
 \value{
-A data frame (tibble) with columns:
+A data frame with columns:
 \itemize{
 \item \code{dll}: the file name of the dll file, without the path,
 \item \code{path}: path to the shared library,

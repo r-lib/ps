@@ -3,11 +3,13 @@
 #include "windows.h"
 #include "arch/windows/process_info.h"
 #include "arch/windows/process_handles.h"
+#include "cleancall.h"
 
 #include <tlhelp32.h>
 #include <string.h>
 #include <math.h>
 #include <wtsapi32.h>
+#include <time.h>
 
 static void psll_finalizer(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
@@ -920,7 +922,7 @@ SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path) {
   iret = ps__utf8_to_utf16(cinterrupt_path, &wpath);
   if (iret) goto error;
 
-  iret = snprintf(arguments, sizeof(arguments) - 1, "interrupt.exe %d %s", handle->pid,
+  iret = snprintf(arguments, sizeof(arguments) - 1, "interrupt.exe %d %s", (int) handle->pid,
 		  cctrlc ? "c" : "break");
   if  (iret < 0) goto error;
 
@@ -951,7 +953,7 @@ SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path) {
     /* lpProcessInformation = */ &info);
 
   if (!iret) {
-    ps__set_error_from_errno(0);
+    ps__set_error_from_errno();
     goto error;
   }
 
@@ -964,6 +966,123 @@ SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path) {
   if (hProcess) CloseHandle(hProcess);
   ps__throw_error();
   return R_NilValue;
+}
+
+static int ps_get_proc_wset_information(SEXP p, HANDLE hProcess,
+					PMEMORY_WORKING_SET_INFORMATION *wSetInfo) {
+
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  if (!handle) error("Process pointer cleaned up already");
+
+  DWORD pid = handle->pid;
+  NTSTATUS status;
+  PVOID buffer;
+  SIZE_T bufferSize;
+
+  bufferSize = 0x8000;
+  buffer = MALLOC_ZERO(bufferSize);
+  if (! buffer) {
+    ps__no_memory("get wset information");
+    ps__throw_error();
+  }
+
+  while (1) {
+    status = NtQueryVirtualMemory(
+      hProcess,
+      NULL,
+      MemoryWorkingSetInformation,
+      buffer,
+      bufferSize,
+      NULL
+    );
+    if (status != STATUS_INFO_LENGTH_MISMATCH) {
+      break;
+    }
+
+    FREE(buffer);
+    bufferSize *= 2;
+    // Fail if we're resizing the buffer to something very large.
+    if (bufferSize > 256 * 1024 * 1024) {
+      ps__set_error("NtQueryVirtualMemory bufsize is too large");
+      ps__throw_error();
+    }
+    buffer = MALLOC_ZERO(bufferSize);
+    if (! buffer) {
+      ps__no_memory("NtQueryVirtualMemory");
+      ps__throw_error();
+    }
+  }
+
+  if (!NT_SUCCESS(status)) {
+    if (status == STATUS_ACCESS_DENIED) {
+      ps__access_denied("NtQueryVirtualMemory -> STATUS_ACCESS_DENIED");
+    } else if (!LOGICAL(ps__is_running(handle))[0]) {
+      ps__no_such_process(pid, "NtQueryVirtualMemory");
+    } else {
+      ps__set_error_from_windows_error(0);
+    }
+    HeapFree(GetProcessHeap(), 0, buffer);
+    ps__throw_error();
+  }
+
+  *wSetInfo = (PMEMORY_WORKING_SET_INFORMATION) buffer;
+  return 0;
+}
+
+/*
+ * Returns the USS of the process.
+ * Reference:
+ * https://dxr.mozilla.org/mozilla-central/source/xpcom/base/
+ *     nsMemoryReporterManager.cpp
+ */
+
+SEXP psll_memory_uss(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  if (!handle) error("Process pointer cleaned up already");
+
+  DWORD pid = handle->pid;
+  HANDLE hProcess = ps__handle_from_pid(pid);
+  PS__PROCESS_WS_COUNTERS wsCounters;
+  PMEMORY_WORKING_SET_INFORMATION wsInfo;
+  ULONG_PTR i;
+
+  if (! hProcess) {
+    ps__throw_error();
+  }
+
+  if (ps_get_proc_wset_information(p, hProcess, &wsInfo) != 0) {
+    CloseHandle(hProcess);
+    return NULL;
+  }
+  memset(&wsCounters, 0, sizeof(PS__PROCESS_WS_COUNTERS));
+
+  for (i = 0; i < wsInfo->NumberOfEntries; i++) {
+    // This is what ProcessHacker does.
+    /*
+      wsCounters.NumberOfPages++;
+      if (wsInfo->WorkingSetInfo[i].ShareCount > 1)
+      wsCounters.NumberOfSharedPages++;
+      if (wsInfo->WorkingSetInfo[i].ShareCount == 0)
+      wsCounters.NumberOfPrivatePages++;
+      if (wsInfo->WorkingSetInfo[i].Shared)
+      wsCounters.NumberOfShareablePages++;
+    */
+
+    // This is what we do: count shared pages that only one process
+    // is using as private (USS).
+    if (!wsInfo->WorkingSetInfo[i].Shared ||
+	wsInfo->WorkingSetInfo[i].ShareCount <= 1) {
+      wsCounters.NumberOfPrivatePages++;
+    }
+  }
+
+  HeapFree(GetProcessHeap(), 0, wsInfo);
+  CloseHandle(hProcess);
+
+  SYSTEM_INFO sysinfo;
+  GetNativeSystemInfo(&sysinfo);
+
+  return Rf_ScalarInteger(wsCounters.NumberOfPrivatePages * sysinfo.dwPageSize);
 }
 
 SEXP ps__users() {
@@ -1152,7 +1271,7 @@ SEXP ps__disk_partitions(SEXP rall) {
   num_bytes = GetLogicalDriveStrings(254, drive_letter);
 
   if (num_bytes == 0) {
-    ps__set_error_from_errno(0);
+    ps__set_error_from_errno();
     goto error;
   }
 
@@ -1289,6 +1408,233 @@ SEXP ps__disk_usage(SEXP paths) {
 error:
   ps__throw_error();
   return R_NilValue;
+}
+
+#ifndef FILE_RETURNS_CLEANUP_RESULT_INFO
+#define FILE_RETURNS_CLEANUP_RESULT_INFO 0x00000200
+#endif
+#ifndef FILE_SUPPORTS_POSIX_UNLINK_RENAME
+#define FILE_SUPPORTS_POSIX_UNLINK_RENAME 0x00000400
+#endif
+#ifndef FILE_SUPPORTS_BLOCK_REFCOUNTING
+#define FILE_SUPPORTS_BLOCK_REFCOUNTING 0x08000000
+#endif
+#ifndef FILE_SUPPORTS_SPARSE_VDL
+#define FILE_SUPPORTS_SPARSE_VDL 0x10000000
+#endif
+#ifndef FILE_DAX_VOLUME
+#define FILE_DAX_VOLUME 0x20000000
+#endif
+#ifndef FILE_SUPPORTS_GHOSTING
+#define FILE_SUPPORTS_GHOSTING 0x40000000
+#endif
+
+SEXP ps__fs_info(SEXP path, SEXP abspath) {
+  R_xlen_t i, len = Rf_xlength(path);
+
+  const char *nms[] = {
+    "path",                           // 0
+    "mount_point",                    // 1
+    "name",                           // 2
+    "type",                           // 3
+    "block_size",                     // 4
+    "transfer_block_size",            // 5
+    "total_data_blocks",              // 6
+    "free_blocks",                    // 7
+    "free_blocks_non_superuser",      // 8
+    "total_nodes",                    // 9
+    "free_nodes",                     // 10
+    "id",                             // 11
+    "owner",                          // 12
+    "type_code",                      // 13
+    "subtype_code",                   // 14
+
+    "CASE_SENSITIVE_SEARCH",
+    "CASE_PRESERVED_NAMES",
+    "UNICODE_ON_DISK",
+    "PERSISTENT_ACLS",
+    "FILE_COMPRESSION",
+    "VOLUME_QUOTAS",
+    "SUPPORTS_SPARSE_FILES",
+    "SUPPORTS_REPARSE_POINTS",
+    "SUPPORTS_REMOTE_STORAGE",
+    "RETURNS_CLEANUP_RESULT_INFO",
+    "SUPPORTS_POSIX_UNLINK_RENAME",
+    "VOLUME_IS_COMPRESSED",
+    "SUPPORTS_OBJECT_IDS",
+    "SUPPORTS_ENCRYPTION",
+    "NAMED_STREAMS",
+    "READ_ONLY_VOLUME",
+    "SEQUENTIAL_WRITE_ONCE",
+    "SUPPORTS_TRANSACTIONS",
+    "SUPPORTS_HARD_LINKS",
+    "SUPPORTS_EXTENDED_ATTRIBUTES",
+    "SUPPORTS_OPEN_BY_FILE_ID",
+    "SUPPORTS_USN_JOURNAL",
+    "SUPPORTS_INTEGRITY_STREAMS",
+    "SUPPORTS_BLOCK_REFCOUNTING",
+    "SUPPORTS_SPARSE_VDL",
+    "DAX_VOLUME",
+    "SUPPORTS_GHOSTING",
+    ""
+  };
+  SEXP res = PROTECT(Rf_mkNamed(VECSXP, nms));
+
+  SET_VECTOR_ELT(res, 0, path);
+  SET_VECTOR_ELT(res, 1, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 2, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 3, Rf_allocVector(STRSXP, len));
+  SET_VECTOR_ELT(res, 4, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 5, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 6, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 7, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 8, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 9, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 10, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 11, Rf_allocVector(VECSXP, len));
+  SET_VECTOR_ELT(res, 12, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 13, Rf_allocVector(REALSXP, len));
+  SET_VECTOR_ELT(res, 14, Rf_allocVector(REALSXP, len));
+
+  SET_VECTOR_ELT(res, 15, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 16, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 17, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 18, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 19, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 20, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 21, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 22, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 23, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 24, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 25, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 26, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 27, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 28, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 29, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 30, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 31, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 32, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 33, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 34, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 35, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 36, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 37, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 38, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 39, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 40, Rf_allocVector(LGLSXP, len));
+  SET_VECTOR_ELT(res, 41, Rf_allocVector(LGLSXP, len));
+
+  for (i = 0; i < len; i++) {
+    const char *cpath = CHAR(STRING_ELT(abspath, i));
+    wchar_t *wpath;
+    int iret = ps__utf8_to_utf16(cpath, &wpath);
+    if (iret) {
+      ps__throw_error();
+    }
+
+    // look up mount point
+    wchar_t volume[MAX_PATH + 1];
+    BOOL ok = GetVolumePathNameW(
+      wpath,
+      volume,
+      sizeof(volume)/sizeof(wchar_t) - 1
+    );
+    if (!ok) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+    SET_STRING_ELT(
+      VECTOR_ELT(res, 1), i,
+      ps__utf16_to_charsxp(volume, -1)
+    );
+
+    // name of the volume
+    wchar_t volname[1024];
+    ok = GetVolumeNameForVolumeMountPointW(
+      volume,
+      volname,
+      sizeof(volname)/sizeof(wchar_t) - 1
+    );
+    if (!ok) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+    SET_STRING_ELT(
+      VECTOR_ELT(res, 2), i,
+      ps__utf16_to_charsxp(volname, -1)
+    );
+
+    DWORD sn, mcl, flags;
+    wchar_t type[MAX_PATH + 1];
+    ok = GetVolumeInformationW(
+      volume, NULL, 0, &sn, &mcl, &flags, type,
+      sizeof(type)/sizeof(wchar_t) - 1);
+    if (!ok) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+    // type
+    SET_STRING_ELT(
+      VECTOR_ELT(res, 3), i,
+      ps__utf16_to_charsxp(type, -1)
+    );
+
+    DWORD spc, bps, freec, totalc;
+    ok = GetDiskFreeSpaceW(volume, &spc, &bps, &freec, &totalc);
+    if (!ok) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+    REAL(VECTOR_ELT(res, 4))[i] = bps;
+    REAL(VECTOR_ELT(res, 5))[i] = bps * spc;
+
+    ULARGE_INTEGER freeuser, total, freeroot;
+    ok = GetDiskFreeSpaceExW(volume, &freeuser, &total, &freeroot);
+    if (!ok) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+    REAL(VECTOR_ELT(res, 6))[i] = total.QuadPart / bps;
+    REAL(VECTOR_ELT(res, 7))[i] = freeroot.QuadPart / bps;
+    REAL(VECTOR_ELT(res, 8))[i] = freeuser.QuadPart / bps;
+    REAL(VECTOR_ELT(res, 9))[i] = NA_REAL;
+    REAL(VECTOR_ELT(res, 10))[i] = NA_REAL;
+    SET_VECTOR_ELT(VECTOR_ELT(res, 11), i, R_NilValue);
+    REAL(VECTOR_ELT(res, 12))[i] = NA_REAL;
+    REAL(VECTOR_ELT(res, 13))[i] = NA_REAL;
+    REAL(VECTOR_ELT(res, 14))[i] = NA_REAL;
+
+    LOGICAL(VECTOR_ELT(res, 15))[i] = flags & FILE_CASE_SENSITIVE_SEARCH;
+    LOGICAL(VECTOR_ELT(res, 16))[i] = flags & FILE_CASE_PRESERVED_NAMES;
+    LOGICAL(VECTOR_ELT(res, 17))[i] = flags & FILE_UNICODE_ON_DISK;
+    LOGICAL(VECTOR_ELT(res, 18))[i] = flags & FILE_PERSISTENT_ACLS;
+    LOGICAL(VECTOR_ELT(res, 19))[i] = flags & FILE_FILE_COMPRESSION;
+    LOGICAL(VECTOR_ELT(res, 20))[i] = flags & FILE_VOLUME_QUOTAS;
+    LOGICAL(VECTOR_ELT(res, 21))[i] = flags & FILE_SUPPORTS_SPARSE_FILES;
+    LOGICAL(VECTOR_ELT(res, 22))[i] = flags & FILE_SUPPORTS_REPARSE_POINTS;
+    LOGICAL(VECTOR_ELT(res, 23))[i] = flags & FILE_SUPPORTS_REMOTE_STORAGE;
+    LOGICAL(VECTOR_ELT(res, 24))[i] = flags & FILE_RETURNS_CLEANUP_RESULT_INFO;
+    LOGICAL(VECTOR_ELT(res, 25))[i] = flags & FILE_SUPPORTS_POSIX_UNLINK_RENAME;
+    LOGICAL(VECTOR_ELT(res, 26))[i] = flags & FILE_VOLUME_IS_COMPRESSED;
+    LOGICAL(VECTOR_ELT(res, 27))[i] = flags & FILE_SUPPORTS_OBJECT_IDS;
+    LOGICAL(VECTOR_ELT(res, 28))[i] = flags & FILE_SUPPORTS_ENCRYPTION;
+    LOGICAL(VECTOR_ELT(res, 29))[i] = flags & FILE_NAMED_STREAMS;
+    LOGICAL(VECTOR_ELT(res, 30))[i] = flags & FILE_READ_ONLY_VOLUME;
+    LOGICAL(VECTOR_ELT(res, 31))[i] = flags & FILE_SEQUENTIAL_WRITE_ONCE;
+    LOGICAL(VECTOR_ELT(res, 32))[i] = flags & FILE_SUPPORTS_TRANSACTIONS;
+    LOGICAL(VECTOR_ELT(res, 33))[i] = flags & FILE_SUPPORTS_HARD_LINKS;
+    LOGICAL(VECTOR_ELT(res, 34))[i] = flags & FILE_SUPPORTS_EXTENDED_ATTRIBUTES;
+    LOGICAL(VECTOR_ELT(res, 35))[i] = flags & FILE_SUPPORTS_OPEN_BY_FILE_ID;
+    LOGICAL(VECTOR_ELT(res, 36))[i] = flags & FILE_SUPPORTS_USN_JOURNAL;
+    LOGICAL(VECTOR_ELT(res, 37))[i] = flags & FILE_SUPPORTS_INTEGRITY_STREAMS;
+    LOGICAL(VECTOR_ELT(res, 38))[i] = flags & FILE_SUPPORTS_BLOCK_REFCOUNTING;
+    LOGICAL(VECTOR_ELT(res, 39))[i] = flags & FILE_SUPPORTS_SPARSE_VDL;
+    LOGICAL(VECTOR_ELT(res, 40))[i] = flags & FILE_DAX_VOLUME;
+    LOGICAL(VECTOR_ELT(res, 41))[i] = flags & FILE_SUPPORTS_GHOSTING;
+  }
+
+  UNPROTECT(1);
+  return res;
 }
 
 SEXP ps__system_memory() {
@@ -1457,4 +1803,316 @@ SEXP psll_switch_to(SEXP pids) {
 
   UNPROTECT(1);
   return data.result;
+}
+
+
+SEXP psll_get_cpu_aff(SEXP p) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  HANDLE hProcess = NULL;
+  DWORD access = PROCESS_QUERY_LIMITED_INFORMATION;
+  DWORD_PTR proc_mask;
+  DWORD_PTR system_mask;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  hProcess = ps__handle_from_pid_waccess(handle->pid, access);
+  if (!hProcess) {
+    PS__CHECK_HANDLE(handle);
+    ps__set_error_from_windows_error(0);
+    goto error;
+  }
+
+  BOOL ret = GetProcessAffinityMask(hProcess, &proc_mask, &system_mask);
+  if (!ret) {
+    ps__set_error_from_windows_error(0);
+    goto error;
+  }
+
+  CloseHandle(hProcess);
+
+  unsigned long long n = (unsigned long long) proc_mask;
+  int count = 0, w = 0;
+  while (n) {
+    count += n & 1;
+    n >>= 1;
+  }
+  SEXP result = PROTECT(Rf_allocVector(INTSXP, count));
+  n = (unsigned long long) proc_mask;
+  count = 0;
+  while (n) {
+    if (n & 1) {
+      INTEGER(result)[count++] = w;
+    }
+    n >>= 1;
+    w++;
+  }
+
+  UNPROTECT(1);
+  return result;
+
+error:
+  if (hProcess) CloseHandle(hProcess);
+  ps__throw_error();
+  return R_NilValue;
+}
+
+SEXP psll_set_cpu_aff(SEXP p, SEXP affinity) {
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  HANDLE hProcess = NULL;
+  DWORD access = PROCESS_QUERY_INFORMATION | PROCESS_SET_INFORMATION;
+  DWORD_PTR mask = 0;
+
+  if (!handle) error("Process pointer cleaned up already");
+
+  hProcess = ps__handle_from_pid_waccess(handle->pid, access);
+  if (!hProcess) {
+    PS__CHECK_HANDLE(handle);
+    ps__set_error_from_windows_error(0);
+    goto error;
+  }
+
+  int *caff = INTEGER(affinity);
+  int i, len = LENGTH(affinity);
+  for (i = 0; i < len; i++) {
+    int m = 1 << caff[i];
+    mask |= m;
+  }
+
+  BOOL ret = SetProcessAffinityMask(hProcess, mask);
+  if (!ret) {
+    PS__CHECK_HANDLE(handle);
+    ps__set_error_from_windows_error(0);
+    goto error;
+  }
+
+  CloseHandle(hProcess);
+
+  return R_NilValue;
+
+error:
+  if (hProcess) CloseHandle(hProcess);
+  ps__throw_error();
+  return R_NilValue;
+}
+
+SEXP ps__loadavg(SEXP counter_name) {
+  SEXP ret = PROTECT(allocVector(REALSXP, 3));
+  ps__get_loadavg(REAL(ret), counter_name);
+  UNPROTECT(1);
+  return ret;
+}
+
+#define LO_T 1e-7
+#define HI_T 429.4967296
+
+SEXP ps__system_cpu_times() {
+  double idle, kernel, user, system;
+  FILETIME idle_time, kernel_time, user_time;
+
+  if (!GetSystemTimes(&idle_time, &kernel_time, &user_time)) {
+    ps__set_error_from_windows_error(0);
+    ps__throw_error();
+  }
+
+  idle = (double)((HI_T * idle_time.dwHighDateTime) +
+		  (LO_T * idle_time.dwLowDateTime));
+  user = (double)((HI_T * user_time.dwHighDateTime) +
+		  (LO_T * user_time.dwLowDateTime));
+  kernel = (double)((HI_T * kernel_time.dwHighDateTime) +
+		    (LO_T * kernel_time.dwLowDateTime));
+
+  // Kernel time includes idle time.
+  // We return only busy kernel time subtracting idle time from
+  // kernel time.
+  system = (kernel - idle);
+
+  const char *nms[] = { "user", "system", "idle", "" };
+  SEXP ret = PROTECT(Rf_mkNamed(REALSXP, nms));
+
+  REAL(ret)[0] = (double) user;
+  REAL(ret)[1] = (double) system;
+  REAL(ret)[2] = (double) idle;
+
+  UNPROTECT(1);
+  return ret;
+}
+
+// timeout = 0 special case, no need to poll, just check if running
+SEXP psll_wait0(SEXP pps) {
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    LOGICAL(res)[i] = ! LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0];
+  }
+
+  UNPROTECT(1);
+  return res;
+}
+
+struct psll__wait_cleanup_data {
+  R_xlen_t num_handles;
+  HANDLE *pfds;
+};
+
+static void psll__wait_cleanup(void *data) {
+  struct psll__wait_cleanup_data *cdata =
+    (struct psll__wait_cleanup_data*) data;
+  R_xlen_t i;
+  if (cdata->pfds) {
+    for (i = 0; i < cdata->num_handles; i++) {
+      if (cdata->pfds[i] != INVALID_HANDLE_VALUE) {
+	CloseHandle(cdata->pfds[i]);
+      }
+    }
+  }
+}
+
+// Add time limit to current time.
+// clock_gettime does not fail, as long as the struct timespec
+// pointer is ok. So no need to check the return value.
+static void add_time(struct timespec *due, int ms) {
+  clock_gettime(CLOCK_MONOTONIC, due);
+  due->tv_sec = due->tv_sec + ms / 1000;
+  due->tv_nsec = due->tv_nsec + (ms % 1000) * 1000000;
+  if (due->tv_nsec >= 1000000000) {
+    due->tv_nsec -= 1000000000;
+    due->tv_sec++;
+  }
+}
+
+static inline int time_left(struct timespec *due) {
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  return
+    (due->tv_sec - now.tv_sec) * 1000 +
+    (due->tv_nsec - now.tv_nsec) / 1000 / 1000;
+}
+
+SEXP psll_wait(SEXP pps, SEXP timeout) {
+  int ctimeout = INTEGER(timeout)[0];
+  // this is much simpler, no need to poll at all
+  if (ctimeout == 0) {
+    return psll_wait0(pps);
+  }
+
+  int forever = ctimeout < 0;
+  R_xlen_t i, num_handles = Rf_xlength(pps);
+
+  struct psll__wait_cleanup_data cdata = {
+    /* num_handles= */ num_handles,
+    /* pfds= */        NULL
+  };
+  r_call_on_early_exit(psll__wait_cleanup, &cdata);
+
+  SEXP res = PROTECT(Rf_allocVector(LGLSXP, num_handles));
+  SEXP rhandles = PROTECT(Rf_allocVector(RAWSXP, sizeof(HANDLE) * num_handles));
+  cdata.pfds = (HANDLE*) RAW(rhandles);
+
+  R_xlen_t topoll = 0;
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(pps, i));
+    if (!handle) Rf_error("Process pointer #%d cleaned up already", (int) i);
+    if (!LOGICAL(psll_is_running(VECTOR_ELT(pps, i)))[0]) {
+      // already done
+      LOGICAL(res)[i] = 1;
+      cdata.pfds[i] = INVALID_HANDLE_VALUE;
+    } else {
+      cdata.pfds[i] = OpenProcess(SYNCHRONIZE, FALSE, handle->pid);
+      if (cdata.pfds[i] == NULL) {
+	if (GetLastError() == 87) {
+	  LOGICAL(res)[i] = 1;
+	  cdata.pfds[i] = INVALID_HANDLE_VALUE;
+	} else {
+	  ps__set_error_from_windows_error(0);
+	  ps__throw_error();
+	}
+      } else {
+	cdata.pfds[topoll] = cdata.pfds[i];
+	topoll++;
+	LOGICAL(res)[i] = 0;
+      }
+    }
+  }
+
+  // early exit if nothing to do
+  if (topoll == 0) {
+    psll__wait_cleanup(&cdata);
+    UNPROTECT(2);
+    return res;
+  }
+
+  // first timeout is the smaller of PROCESSX_INTERRUPT_INTERVAL & timeout
+  int ts;
+  if (forever || ctimeout > PROCESSX_INTERRUPT_INTERVAL) {
+    ts = PROCESSX_INTERRUPT_INTERVAL;
+  } else {
+    ts = ctimeout;
+  }
+
+  // this is the ultimate time limit, unless we poll forever
+  struct timespec due;
+  if (!forever) {
+    add_time(&due, ctimeout);
+  }
+
+  // WaitForMultipleObjects can wait on at most 64 processes. If we have
+  // more than that, we poll the first 64, and then if all of them are
+  // done within the timeout, we poll the next 64, etc.
+  int first = 0;
+  topoll = num_handles;
+  DWORD ret;
+  do {
+    topoll = topoll > 64 ? 64 : topoll;
+    ret = WaitForMultipleObjects(topoll, cdata.pfds + first, TRUE, ts);
+    if (ret == WAIT_FAILED) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+
+    // all of them (or 64) are done
+    if (ret != WAIT_TIMEOUT) {
+      for (i = first; i < first + topoll; i++) {
+	LOGICAL(res)[i] = 1;
+      }
+      first += topoll;
+      topoll = num_handles - first;
+      if (topoll == 0) break;
+    }
+
+    // is the time limit over? Do we need to update the poll timeout
+    if (!forever) {
+      int tl = time_left(&due);
+      if (tl < 0) {
+        break;
+      }
+      if (tl < PROCESSX_INTERRUPT_INTERVAL) {
+        ts = tl;
+      }
+    }
+
+    R_CheckUserInterrupt();
+
+  } while (1);
+
+  // we don't know which finished, need to check
+  if (topoll > 0) {
+    for (i = 0; i < num_handles; i++) {
+      if (cdata.pfds[i] != INVALID_HANDLE_VALUE) {
+	ret = WaitForSingleObject(cdata.pfds[i], 0);
+	if (ret == WAIT_FAILED) {
+	  ps__set_error_from_windows_error(0);
+	  ps__throw_error();
+	}
+	if (ret == WAIT_OBJECT_0) {
+	  LOGICAL(res)[i] = 1;
+	}
+      }
+    }
+  }
+
+  psll__wait_cleanup(&cdata);
+  UNPROTECT(2);
+  return res;
 }

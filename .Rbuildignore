@@ -18,3 +18,5 @@
 ^header\.md$
 ^\.Rproj\.user$
 ^.*\.Rproj$
+^pkgdown$
+^LICENSE\.md$

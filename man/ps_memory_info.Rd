@@ -2,9 +2,12 @@
 % Please edit documentation in R/low-level.R
 \name{ps_memory_info}
 \alias{ps_memory_info}
+\alias{ps_memory_full_info}
 \title{Memory usage information}
 \usage{
 ps_memory_info(p = ps_handle())
+
+ps_memory_full_info(p = ps_handle())
 }
 \arguments{
 \item{p}{Process handle.}
@@ -13,46 +16,68 @@ ps_memory_info(p = ps_handle())
 Named real vector.
 }
 \description{
-A list with information about memory usage. Portable fields:
+Memory usage information
+}
+\details{
+\code{ps_memory_info()} returns information about memory usage.
+
+It returns a named vector. Portable fields:
 \itemize{
 \item \code{rss}: "Resident Set Size", this is the non-swapped physical memory a
-process has used. On UNIX it matches "top"‘s 'RES' column (see doc). On
+process has used (bytes). On UNIX it matches "top"‘s 'RES' column (see doc). On
 Windows this is an alias for \code{wset} field and it matches "Memory"
 column of \code{taskmgr.exe}.
 \item \code{vmem}: "Virtual Memory Size", this is the total amount of virtual
-memory used by the process. On UNIX it matches "top"‘s 'VIRT' column
+memory used by the process (bytes). On UNIX it matches "top"‘s 'VIRT' column
 (see doc). On Windows this is an alias for the \code{pagefile} field and
 it matches the "Working set (memory)" column of \code{taskmgr.exe}.
 }
-}
-\details{
+
 Non-portable fields:
 \itemize{
 \item \code{shared}: (Linux) memory that could be potentially shared with other
-processes. This matches "top"‘s 'SHR' column (see doc).
+processes (bytes). This matches "top"‘s 'SHR' column (see doc).
 \item \code{text}: (Linux): aka 'TRS' (text resident set) the amount of memory
-devoted to executable code. This matches "top"‘s 'CODE' column (see
+devoted to executable code (bytes). This matches "top"‘s 'CODE' column (see
 doc).
 \item \code{data}: (Linux): aka 'DRS' (data resident set) the amount of physical
-memory devoted to other than executable code. It matches "top"‘s
+memory devoted to other than executable code (bytes). It matches "top"‘s
 'DATA' column (see doc).
-\item \code{lib}: (Linux): the memory used by shared libraries.
-\item \code{dirty}: (Linux): the number of dirty pages.
+\item \code{lib}: (Linux): the memory used by shared libraries (bytes).
+\item \code{dirty}: (Linux): the amount of memory in dirty pages (bytes).
 \item \code{pfaults}: (macOS): number of page faults.
 \item \code{pageins}: (macOS): number of actual pageins.
 }
 
-For on explanation of Windows fields see the
-\href{https://docs.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex}{PROCESS_MEMORY_COUNTERS_EX}
+For the explanation of Windows fields see the
+\href{https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters_ex}{PROCESS_MEMORY_COUNTERS_EX}
 structure.
 
-Throws a \code{zombie_process()} error for zombie processes.
+\code{ps_memory_full_info()} returns all fields as \code{ps_memory_info()}, plus
+additional information, but typically takes slightly longer to run, and
+might not have access to some processes that \code{ps_memory_info()} can
+query:
+\itemize{
+\item \code{uss}: Unique Set Size, this is the memory which is unique to a
+process and which would be freed if the process was terminated right
+now.
+\item \code{pss} (Linux only): Proportional Set Size, is the amount of memory
+shared with other processes, accounted in a way that the amount is
+divided evenly between the processes that share it. I.e. if a process
+has 10 MBs all to itself and 10 MBs shared with another process its
+PSS will be 15 MBs.
+\item \code{swap} (Linux only): amount of memory that has been swapped out to
+disk.
+}
+
+They both throw a \code{zombie_process()} error for zombie processes.
 }
 \examples{
 \dontshow{if (ps::ps_is_supported() && ! ps:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 p <- ps_handle()
 p
 ps_memory_info(p)
+ps_memory_full_info(p)
 \dontshow{\}) # examplesIf}
 }
 \seealso{

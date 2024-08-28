@@ -7,18 +7,31 @@
 
 #include "ps-internal.h"
 #include "common.h"
+#include "config.h"
+#include "cleancall.h"
+
+#ifdef PS__MACOS
+#include <mach/mach_time.h>
+extern struct mach_timebase_info PS_MACH_TIMEBASE_INFO;
+#endif
+
 
 static const R_CallMethodDef callMethods[]  = {
+  CLEANCALL_METHOD_RECORD,
+
   /* System api */
   { "ps__os_type",            (DL_FUNC) ps__os_type,            0 },
   { "ps__pids",               (DL_FUNC) ps__pids,               0 },
   { "ps__boot_time",          (DL_FUNC) ps__boot_time,          0 },
   { "ps__cpu_count_logical",  (DL_FUNC) ps__cpu_count_logical,  0 },
   { "ps__cpu_count_physical", (DL_FUNC) ps__cpu_count_physical, 0 },
+  { "ps__system_cpu_times",   (DL_FUNC) ps__system_cpu_times,   0 },
   { "ps__users",              (DL_FUNC) ps__users,              0 },
+  { "ps__loadavg",            (DL_FUNC) ps__loadavg,            1 },
   { "ps__tty_size",           (DL_FUNC) ps__tty_size,           0 },
   { "ps__disk_partitions",    (DL_FUNC) ps__disk_partitions,    1 },
   { "ps__disk_usage",         (DL_FUNC) ps__disk_usage,         1 },
+  { "ps__fs_info",            (DL_FUNC) ps__fs_info,            2 },
   { "ps__system_memory",      (DL_FUNC) ps__system_memory,      0 },
   { "ps__system_swap",        (DL_FUNC) ps__system_swap,        0 },
 
@@ -43,6 +56,7 @@ static const R_CallMethodDef callMethods[]  = {
   { "psll_num_threads",  (DL_FUNC) psll_num_threads , 1 },
   { "psll_cpu_times",    (DL_FUNC) psll_cpu_times,    1 },
   { "psll_memory_info",  (DL_FUNC) psll_memory_info , 1 },
+  { "psll_memory_uss",   (DL_FUNC) psll_memory_uss,   1 },
   { "psll_send_signal",  (DL_FUNC) psll_send_signal , 2 },
   { "psll_suspend",      (DL_FUNC) psll_suspend,      1 },
   { "psll_resume",       (DL_FUNC) psll_resume,       1 },
@@ -56,12 +70,16 @@ static const R_CallMethodDef callMethods[]  = {
   { "psll_set_nice",     (DL_FUNC) psll_set_nice,     2 },
   { "psll_dlls",         (DL_FUNC) psll_dlls,         1 },
   { "psll_switch_to",    (DL_FUNC) psll_switch_to,    1 },
+  { "psll_get_cpu_aff",  (DL_FUNC) psll_get_cpu_aff,  1 },
+  { "psll_set_cpu_aff",  (DL_FUNC) psll_set_cpu_aff,  2 },
+  { "psll_wait",         (DL_FUNC) psll_wait,         2 },
 
   /* Utils */
   { "ps__init",          (DL_FUNC) ps__init,          2 },
   { "ps__kill_if_env",   (DL_FUNC) ps__kill_if_env,   4 },
   { "ps__find_if_env",   (DL_FUNC) ps__find_if_env,   3 },
   { "ps__inet_ntop",     (DL_FUNC) ps__inet_ntop,     2 },
+  { "ps__memory_maps",   (DL_FUNC) ps__memory_maps,   1 },
 
   { "psp__pid_exists",   (DL_FUNC) psp__pid_exists,   1 },
   { "psp__stat_st_rdev", (DL_FUNC) psp__stat_st_rdev, 1 },
@@ -73,10 +91,14 @@ static const R_CallMethodDef callMethods[]  = {
   { NULL, NULL, 0 }
 };
 
+int ps_pidfd_open_support = PS_MAYBE;
+
 /*
  * Called on module import on all platforms.
  */
 void R_init_ps(DllInfo *dll) {
+  cleancall_init();
+
   if (getenv("R_PS_DEBUG") != NULL) PS__DEBUG = 1;
   if (getenv("R_PS_TESTING") != NULL) PS__TESTING = 1;
 
@@ -90,6 +112,10 @@ void R_init_ps(DllInfo *dll) {
 
   R_PreserveObject(ps__last_error);
   UNPROTECT(1);
+
+#ifdef PS__MACOS
+  mach_timebase_info(&PS_MACH_TIMEBASE_INFO);
+#endif
 
   R_registerRoutines(dll, NULL, callMethods, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);

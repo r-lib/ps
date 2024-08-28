@@ -10,6 +10,7 @@ output:
 ```{r echo = FALSE}
 options(width = 100)
 suppressWarnings(suppressPackageStartupMessages(suppressMessages(library(dplyr))))
+suppressWarnings(suppressMessages(library(pillar)))
 ```
 
 ## Installation
@@ -19,6 +20,17 @@ You can install the released version of ps from
 
 ``` r
 install.packages("ps")
+```
+
+If you need the development version, install it with
+
+``` r
+pak::pak("r-lib/ps")
+```
+
+```{r}
+library(ps)
+library(pillar) # nicer printing of data frames
 ```
 
 ## Supported platforms
@@ -33,14 +45,12 @@ all of its functions fail with an error of class `"not_implemented"`.
 iterate over all processes.
 
 ```{r}
-library(ps)
 ps_pids()[1:20]
 ```
 
-`ps()` returns a data frame (tibble if you have the tibble package
-available), with data about each process. It contains a handle to each
-process, in the `ps_handle` column, you can use these to perform more
-queries on the processes.
+`ps()` returns a data frame, with data about each process. It contains a
+handle to each process, in the `ps_handle` column, you can use these to
+perform more queries on the processes.
 
 ```{r}
 ps()
@@ -460,11 +470,11 @@ ps() %>%
   select(pid, name, cpu_time)
 ```
 
-## Contributions
+## Code of Conduct
 
-Please note that this project is released with a
-[Contributor Code of Conduct](https://github.com/r-lib/ps/blob/master/.github/CODE_OF_CONDUCT.md).
-By participating in this project you agree to abide by its terms.
+Please note that the ps project is released with a
+[Contributor Code of Conduct](https://ps.r-lib.org/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
 
 ## License
 

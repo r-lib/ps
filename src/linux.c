@@ -79,7 +79,7 @@ SEXP ps__inet_ntop(SEXP raw, SEXP fam) {
   }
 }
 
-SEXP ps__define_tcp_statuses() {
+SEXP ps__define_tcp_statuses(void) {
   SEXP result, names;
 
   PROTECT(result = ps__build_string("01", "02", "03", "04", "05", "06",

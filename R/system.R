@@ -51,7 +51,7 @@ ps_boot_time <- function() {
 
 #' List users connected to the system
 #'
-#' @return A data frame (tibble) with columns
+#' @return A data frame with columns
 #'  `username`, `tty`, `hostname`, `start_time`, `pid`. `tty` and `pid`
 #'  are `NA` on Windows. `pid` is the process id of the login process.
 #'  For local users the `hostname` column is the empty string.
@@ -61,8 +61,7 @@ ps_boot_time <- function() {
 ps_users <- function() {
   l <- not_null(.Call(ps__users))
 
-  d <- data.frame(
-    stringsAsFactors = FALSE,
+  d <- data_frame(
     username = vapply(l, "[[", character(1), 1),
     tty = vapply(l, "[[", character(1), 2),
     hostname = vapply(l, "[[", character(1), 3),
@@ -70,8 +69,6 @@ ps_users <- function() {
     pid = vapply(l, "[[", integer(1),  5)
   )
 
-  requireNamespace("tibble", quietly = TRUE)
-  class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
 }
 
@@ -179,7 +176,7 @@ ps_tty_size <- function() {
 #' current user.
 #' @param filter Character vector or `NULL`. If not NULL, then it is
 #' a vector of glob expressions, used to filter the process names.
-#' @return A data frame (tibble) with columns:
+#' @return A data frame with columns:
 #' * `dll`: the file name of the dll file, without the path,
 #' * `path`: path to the shared library,
 #' * `pid`: process ID of the process,
@@ -245,8 +242,7 @@ ps_shared_lib_users <- function(paths, user = ps_username(),
   match_len <- match_len[match_len > 0]
   match_pids <- map_int(match_processes, ps_pid)
 
-  d <- data.frame(
-    stringsAsFactors = FALSE,
+  d <- data_frame(
     dll = basename(unlist(match)),
     path = unlist(match),
     pid = rep(match_pids, match_len),
@@ -258,8 +254,6 @@ ps_shared_lib_users <- function(paths, user = ps_username(),
   # The ones without name probably finished already.
   d <- d[!is.na(d$name), , drop = FALSE]
 
-  requireNamespace("tibble", quietly = TRUE)
-  class(d) <- unique(c("tbl_df", "tbl", class(d)))
   d
 }
 
@@ -268,4 +262,93 @@ short_username <- function(x) {
   p1 <- map_chr(xs, "[", 1)
   p2 <- map_chr(xs, "[", 2)
   ifelse(!is.na(p2), p2, x)
+}
+
+# Docs from psutil, thanks!
+
+#' Return the average system load over the last 1, 5 and 15 minutes as a
+#' tuple.
+#'
+#' The “load” represents the processes which are in a runnable
+#' state, either using the CPU or waiting to use the CPU (e.g. waiting for
+#' disk I/O). On Windows this is emulated by using a Windows API that
+#' spawns a thread which keeps running in background and updates results
+#' every 5 seconds, mimicking the UNIX behavior. Thus, on Windows, the
+#' first time this is called and for the next 5 seconds it will return a
+#' meaningless (0.0, 0.0, 0.0) vector. The numbers returned only make sense
+#' if related to the number of CPU cores installed on the system. So, for
+#' instance, a value of 3.14 on a system with 10 logical CPUs means that
+#' the system load was 31.4% percent over the last N minutes.
+#'
+#' @return Numeric vector of length 3.
+#'
+#' @export
+#' @examplesIf ps::ps_is_supported() && ! ps:::is_cran_check()
+#' ps_loadavg()
+
+ps_loadavg <- function() {
+  if (is.null(ps_env$counter_name)) {
+    if (ps_os_type()[["WINDOWS"]]) {
+      ps_env$counter_name <- find_loadavg_counter()
+    } else {
+      ps_env$counter_name <- ""
+    }
+  }
+
+  .Call(ps__loadavg, ps_env$counter_name)
+}
+
+find_loadavg_counter <- function() {
+  key <- paste0(
+    "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Perflib\\",
+    "CurrentLanguage"
+  )
+  tryCatch({
+    pc <- utils::readRegistry(key)
+    idx <- seq(2, length(pc$Counter), by = 2)
+    cnt <- structure(pc$Counter[idx], names = pc$Counter[idx - 1])
+    nm <- paste0("\\", cnt["2"], "\\", cnt["44"])
+    Encoding(nm) <- ""
+    enc2utf8(nm)
+  }, error = function(e) "\\System\\Processor Queue Length")
+}
+
+#' System CPU times.
+#'
+#' Every attribute represents the seconds the CPU has spent in the given
+#' mode. The attributes availability varies depending on the platform:
+#' * `user`: time spent by normal processes executing in user mode;
+#'   on Linux this also includes guest time.
+#' * `system`: time spent by processes executing in kernel mode.
+#' * `idle`: time spent doing nothing.
+#'
+#' Platform-specific fields:
+#'
+#' * `nice` (UNIX): time spent by niced (prioritized) processes executing
+#'   in user mode; on Linux this also includes guest_nice time.
+#' * `iowait` (Linux): time spent waiting for I/O to complete. This is not
+#'   accounted in idle time counter.
+#' * `irq` (Linux): time spent for servicing hardware interrupts.
+#' * `softirq` (Linux): time spent for servicing software interrupts.
+#' * `steal` (Linux 2.6.11+): time spent by other operating systems
+#'   running in a virtualized environment.
+#' * `guest` (Linux 2.6.24+): time spent running a virtual CPU for guest
+#'   operating systems under the control of the Linux kernel.
+#' * `guest_nice` (Linux 3.2.0+): time spent running a niced guest
+#'   (virtual CPU for guest operating systems under the control of the
+#'   Linux kernel).
+#'
+#' @return Named list
+#'
+#' @export
+#' @examplesIf ps::ps_is_supported()
+#' ps_system_cpu_times()
+
+ps_system_cpu_times <- function() {
+  os <- ps_os_name()
+  if (os == "LINUX") {
+    ps__system_cpu_times_linux()
+  } else {
+    .Call(ps__system_cpu_times)
+  }
 }

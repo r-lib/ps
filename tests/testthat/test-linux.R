@@ -1,8 +1,6 @@
 
 if (!ps_os_type()[["LINUX"]]) return()
 
-context("linux")
-
 test_that("status", {
   ## Argument check
   expect_error(ps_status(123), class = "invalid_argument")
@@ -40,7 +38,8 @@ test_that("memory_info", {
   mem <- ps_memory_info(ps)
   mem2 <- scan(sprintf("/proc/%d/statm", ps_pid(ps)), what = integer(),
                quiet = TRUE)
+  page_size <- as.integer(system2("getconf", "PAGESIZE", stdout = TRUE))
 
-  expect_equal(mem[["rss"]], mem2[[1]])
-  expect_equal(mem[["vms"]], mem2[[2]])
+  expect_equal(mem[["vms"]], mem2[[1]] * page_size)
+  expect_equal(mem[["rss"]], mem2[[2]] * page_size)
 })

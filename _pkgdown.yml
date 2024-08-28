@@ -1,8 +1,10 @@
-url: http://ps.r-lib.org
-
-authors:
-  "Gábor Csárdi":
-    href: https://github.com/gaborcsardi
+url: https://ps.r-lib.org/
+template:
+  package: tidytemplate
+  bootstrap: 5
+  includes:
+    in_header: |
+      <script defer data-domain="ps.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script>
 
 destination: docs
 
@@ -28,6 +30,7 @@ reference:
   - ps_handle
   - ps_is_running
   - ps_memory_info
+  - ps_memory_full_info
   - ps_name
   - ps_num_threads
   - ps_pid
@@ -52,8 +55,11 @@ reference:
   - ps_send_signal
   - ps_suspend
   - ps_terminate
+  - ps_get_cpu_affinity
+  - ps_set_cpu_affinity
   - ps_get_nice
   - ps_set_nice
+  - ps_wait
   - ps_windows_nice_values
 
 - title: Users
@@ -68,7 +74,10 @@ reference:
   - ps_tty_size
   - ps_disk_partitions
   - ps_disk_usage
+  - ps_fs_info
+  - ps_loadavg
   - ps_shared_lib_users
+  - ps_system_cpu_times
   - ps_system_memory
   - ps_system_swap
 

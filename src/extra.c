@@ -20,16 +20,13 @@ SEXP ps__last_error;
 
 /* TODO: these should throw real error objects */
 
-void *ps__set_error_impl(const char *class, int system_errno,
-			 long pid, const char *msg, ...) {
-  va_list args;
+void *ps__vset_error_impl(const char *class, int system_errno,
+			 long pid, const char *msg, va_list args) {
   const char *ps_error = "ps_error", *error = "error", *condition = "condition";
   SEXP rclass;
 
-  va_start(args, msg);
   vsnprintf(ps__last_error_string,
 	    sizeof(ps__last_error_string) - 1, msg, args);
-  va_end(args);
 
   SET_VECTOR_ELT(ps__last_error, 0, mkString(ps__last_error_string));
   if (class) {
@@ -44,11 +41,21 @@ void *ps__set_error_impl(const char *class, int system_errno,
   return NULL;
 }
 
+void *ps__set_error_impl(const char *class, int system_errno,
+			 long pid, const char *msg, ...) {
+  va_list args;
+
+  va_start(args, msg);
+  void *ret = ps__vset_error_impl(class, system_errno, pid, msg, args);
+  va_end(args);
+  return ret;
+}
+
 void *ps__set_error(const char *msg, ...) {
   va_list args;
 
   va_start(args, msg);
-  ps__set_error_impl(0, 0, NA_INTEGER, msg, args);
+  ps__vset_error_impl(0, 0, NA_INTEGER, msg, args);
   va_end(args);
 
   return NULL;
@@ -87,7 +94,7 @@ void *ps__no_memory(const char *msg) {
 			    msg && strlen(msg) ? msg : "Out of memory");
 }
 
-void *ps__set_error_from_errno() {
+void *ps__set_error_from_errno(void) {
   if (errno) {
     return ps__set_error_impl("os_error", errno, NA_INTEGER, "%s",
 			      strerror(errno));
@@ -105,7 +112,7 @@ void *ps__set_error_from_windows_error(long err) {
 }
 #endif
 
-SEXP ps__throw_error() {
+SEXP ps__throw_error(void) {
   SEXP stopfun, call, out;
 
   Rf_setAttrib(ps__last_error, R_ClassSymbol, VECTOR_ELT(ps__last_error, 1));

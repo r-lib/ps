@@ -1,6 +1,4 @@
 
-context("cleanup testthat reporter")
-
 test_that("unit: test, mode: cleanup-fail", {
 
   out <- list()
@@ -343,17 +341,11 @@ test_that("files already open are ignored", {
   expect_silent(close(conn))
 })
 
-# libcurl will open a pipe pair, when we call it the first time,
-# so we do a dummy download here, to avoid the false positive of
-# the cleanup reporter
-offline <- is_offline()
-if (!offline) {
-  conn <- curl::curl(httpbin_url(), open = "r")
-  close(conn)
-}
+conn <- curl::curl(httpbin$url(), open = "r")
+close(conn)
 
 test_that("Network cleanup, test, fail", {
-  if (offline) skip("Offline")
+  skip_on_cran()
   out <- list()
   on.exit({ try(close(out$conn), silent = TRUE); gc() }, add = TRUE)
   expect_failure(
@@ -362,7 +354,7 @@ test_that("Network cleanup, test, fail", {
         proc_fail = FALSE, rconn_cleanup = FALSE, rconn_fail = FALSE,
         file_fail = FALSE), {
         test_that("foobar", {
-          out$conn <<- curl::curl(httpbin_url(), open = "r")
+          out$conn <<- curl::curl(httpbin$url("/drip"), open = "r")
           out$open <<- isOpen(out$conn)
         })
       }
@@ -376,7 +368,7 @@ test_that("Network cleanup, test, fail", {
 })
 
 test_that("Network cleanup, unit: testsuite", {
-  if (offline) skip("Offline")
+  skip_on_cran()
   out <- list()
   on.exit(try(close(out$conn), silent = TRUE), add = TRUE)
   expect_failure(
@@ -385,7 +377,7 @@ test_that("Network cleanup, unit: testsuite", {
         conn_unit = "testsuite", proc_fail = FALSE, rconn_fail = FALSE,
         rconn_cleanup = FALSE, file_fail = FALSE), {
         test_that("foobar", {
-          out$conn <<- curl::curl(httpbin_url(), open = "r")
+          out$conn <<- curl::curl(httpbin$url("/drip"), open = "r")
           out$open <<- isOpen(out$conn)
         })
         test_that("foobar2", {
@@ -404,9 +396,8 @@ test_that("Network cleanup, unit: testsuite", {
 })
 
 test_that("Network connections already open are ignored", {
-  if (offline) skip("Offline")
-
-  conn <- curl::curl(httpbin_url(), open = "r")
+  skip_on_cran()
+  conn <- curl::curl(httpbin$url(), open = "r")
   on.exit(try(close(conn), silent = TRUE), add = TRUE)
 
   out <- list()
@@ -416,7 +407,7 @@ test_that("Network connections already open are ignored", {
       CleanupReporter(testthat::SilentReporter)$new(
         proc_fail = FALSE, rconn_fail = FALSE, rconn_cleanup = FALSE), {
         test_that("foobar", {
-          out$conn <<- curl::curl(httpbin_url(), open = "r")
+          out$conn <<- curl::curl(httpbin$url(), open = "r")
           out$open <<- isOpen(out$conn)
           close(out$conn)
         })

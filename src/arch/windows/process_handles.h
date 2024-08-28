@@ -97,10 +97,11 @@ typedef struct _OBJECT_TYPE_INFORMATION {
 #endif
 
 PVOID GetLibraryProcAddress(PSTR LibraryName, PSTR ProcName);
-VOID ps__get_open_files_init();
+VOID ps__get_open_files_init(void);
 SEXP ps__get_open_files(long pid, HANDLE processHandle);
 DWORD ps__NtQueryObject(void);
 DWORD WINAPI ps__NtQueryObjectThread(LPVOID lpvParam);
 SEXP ps__get_modules(HANDLE hProcess);
+SEXP ps__get_loadavg(double avg[3], SEXP counter_name);
 
 #endif // __PROCESS_HANDLES_H__

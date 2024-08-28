@@ -1,8 +1,6 @@
 
 if (!ps_os_type()[["POSIX"]]) return()
 
-context("posix-zombie")
-
 test_that("zombie api", {
   zpid <- zombie()
   on.exit(waitpid(zpid), add = TRUE)
@@ -57,4 +55,9 @@ test_that("zombie api", {
   chk(ps_connections(p))
   chk(ps_get_nice(p))
   chk(ps_set_nice(p, 20L))
+  if (ps_os_type()[["MACOS"]]) {
+    chk(.Call(psll_memory_uss, p))
+  } else if (ps_os_type()[["LINUX"]]) {
+    chk(.Call(ps__memory_maps, p))
+  }
 })
