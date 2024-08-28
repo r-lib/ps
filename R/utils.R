@@ -114,7 +114,11 @@ assert_string <- function(x) {
 }
 
 assert_integer <- function(x) {
-  if (is.integer(x) && length(x) == 1 && !is.na(x)) return()
+  x <- tryCatch(
+    suppressWarnings(as.integer(x)),
+    error = function(e) x
+  )
+  if (is.integer(x) && length(x) == 1 && !is.na(x)) return(x)
   stop(ps__invalid_argument(match.call()$x,
                             " is not a scalar integer"))
 }

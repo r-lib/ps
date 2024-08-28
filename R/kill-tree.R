@@ -140,7 +140,9 @@ ps_kill_tree <- function(marker, sig = signals()$SIGKILL) {
 
   assert_string(marker)
   # NULL on Windows
-  if (.Platform$OS.type != "windows") assert_integer(sig)
+  if (.Platform$OS.type != "windows") {
+    sig <- assert_integer(sig)
+  }
 
   after <- as.numeric(strsplit(marker, "_", fixed = TRUE)[[1]][2])
 
