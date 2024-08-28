@@ -3,6 +3,9 @@
 * New `ps_fs_info()` to query information about the file system of one
   or more files or directories.
 
+* New `ps_wait()` to start an interruptible wait on multiple processes,
+  with a timeout (#166).
+
 # ps 1.7.7
 
 * `ps_cpu_times()` values are now correct on newer arm64 macOS.
