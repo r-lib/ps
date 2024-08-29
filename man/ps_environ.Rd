@@ -32,6 +32,31 @@ enough.
 
 These functions throw a \code{zombie_process} error for zombie processes.
 }
+\section{macOS issues}{
+
+
+\code{ps_environ()} usually does not work on macOS nowadays. This is because
+macOS does not allow reading the environment variables of another
+process. Accoding to the Darwin source code, \code{ps_environ} will work is
+one of these conditions hold:
+\itemize{
+\item You are running a development or debug kernel, i.e. if you are
+debugging the macOS kernel itself.
+\item The target process is same as the calling process.
+\item SIP if off.
+\item The target process is not restricted, e.g. it is running a binary
+that was not signed.
+\item The calling process has the
+\code{com.apple.private.read-environment-variables} entitlement. However
+adding this entitlement to the R binary makes R crash on startup.
+}
+
+Otherwise \code{ps_environ} will return an empty set of environment variables
+on macOS.
+
+Issue 121 might have more information about this.
+}
+
 \examples{
 \dontshow{if (ps::ps_is_supported() && ! ps:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 p <- ps_handle()

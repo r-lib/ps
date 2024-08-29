@@ -409,6 +409,28 @@ ps_terminal <- function(p = ps_handle()) {
 #'
 #' These functions throw a `zombie_process` error for zombie processes.
 #'
+#' @section macOS issues:
+#'
+#' `ps_environ()` usually does not work on macOS nowadays. This is because
+#' macOS does not allow reading the environment variables of another
+#' process. Accoding to the Darwin source code, `ps_environ` will work is
+#' one of these conditions hold:
+#'
+#' * You are running a development or debug kernel, i.e. if you are
+#'   debugging the macOS kernel itself.
+#' * The target process is same as the calling process.
+#' * SIP if off.
+#' * The target process is not restricted, e.g. it is running a binary
+#'   that was not signed.
+#' * The calling process has the
+#'   `com.apple.private.read-environment-variables` entitlement. However
+#'   adding this entitlement to the R binary makes R crash on startup.
+#'
+#' Otherwise `ps_environ` will return an empty set of environment variables
+#' on macOS.
+#'
+#' Issue 121 might have more information about this.
+#'
 #' @param p Process handle.
 #' @return `ps_environ()` returns a named character vector (that has a
 #' `Dlist` class, so it is printed nicely), `ps_environ_raw()` returns a
