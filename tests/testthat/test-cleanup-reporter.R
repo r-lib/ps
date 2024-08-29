@@ -419,3 +419,15 @@ test_that("Network connections already open are ignored", {
   expect_true(isOpen(conn))
   expect_silent(close(conn))
 })
+
+# https://github.com/r-lib/ps/issues/163
+test_that("errors still cause a failure", {
+  rep <- CleanupReporter(testthat::SilentReporter)$new()
+  expect_error(
+    test_dir(
+      reporter = rep,
+      test_path("fixtures/cleanup-error"),
+      stop_on_failure = TRUE
+    )
+  )
+})

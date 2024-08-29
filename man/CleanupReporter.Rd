@@ -24,6 +24,11 @@ place, see the \code{proc_unit} argument below.
 Child processes can be reported via a failed expectation, cleaned up
 silently, or cleaned up and reported (the default).
 
+If a \code{test_that()} block has an error, \code{CLeanupReporter} does not
+emit any expectations at the end of that block. The error will lead to a
+test failure anyway. It will still perform the cleanup, if requested,
+however.
+
 The constructor of the \code{CleanupReporter} class has options:
 \itemize{
 \item \code{file}: the output file, if any, this is passed to \code{reporter}.
