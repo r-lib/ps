@@ -74,6 +74,27 @@ enough.</p>
 <p>These functions throw a <code>zombie_process</code> error for zombie processes.</p>
     </div>
     <div class="section level2">
+    <h2 id="macos-issues">macOS issues<a class="anchor" aria-label="anchor" href="#macos-issues"></a></h2>
+
+
+
+<p><code>ps_environ()</code> usually does not work on macOS nowadays. This is because
+macOS does not allow reading the environment variables of another
+process. Accoding to the Darwin source code, <code>ps_environ</code> will work is
+one of these conditions hold:</p><ul><li><p>You are running a development or debug kernel, i.e. if you are
+debugging the macOS kernel itself.</p></li>
+<li><p>The target process is same as the calling process.</p></li>
+<li><p>SIP if off.</p></li>
+<li><p>The target process is not restricted, e.g. it is running a binary
+that was not signed.</p></li>
+<li><p>The calling process has the
+<code>com.apple.private.read-environment-variables</code> entitlement. However
+adding this entitlement to the R binary makes R crash on startup.</p></li>
+</ul><p>Otherwise <code>ps_environ</code> will return an empty set of environment variables
+on macOS.</p>
+<p>Issue 121 might have more information about this.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other process handle functions:
 <code><a href="ps_children.html">ps_children</a>()</code>,
@@ -110,7 +131,7 @@ enough.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">p</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=5992, NAME=R, AT=2024-08-29 11:23:38.29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=6126, NAME=R, AT=2024-08-29 14:12:30.84</span>
 <span class="r-in"><span><span class="va">env</span> <span class="op">&lt;-</span> <span class="fu">ps_environ</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">env</span><span class="op">[[</span><span class="st">"R_HOME"</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/opt/R/4.4.1/lib/R"</span>
