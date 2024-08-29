@@ -103,7 +103,6 @@ cleanup_process <- function(p) {
   tryCatch(close(p$get_error_connection()), error = function(x) x)
   tryCatch(close(p$get_poll_connection()), error = function(x) x)
   tryCatch(p$kill(), error = function(x) x)
-  gc()
 }
 
 httpbin <- webfakes::new_app_process(

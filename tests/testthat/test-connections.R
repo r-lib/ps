@@ -72,7 +72,7 @@ test_that("TCP", {
 
   before <- ps_connections(ps_handle())
   cx <- curl::curl(httpbin$url("/drip"), open = "r")
-  on.exit({ close(cx); rm(cx); gc() }, add = TRUE)
+  on.exit({ close(cx); rm(cx) }, add = TRUE)
   after <- ps_connections(ps_handle())
   new <- after[! after$lport %in% before$lport, ]
   expect_equal(new$family, "AF_INET")

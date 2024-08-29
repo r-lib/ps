@@ -347,7 +347,7 @@ close(conn)
 test_that("Network cleanup, test, fail", {
   skip_on_cran()
   out <- list()
-  on.exit({ try(close(out$conn), silent = TRUE); gc() }, add = TRUE)
+  on.exit({ try(close(out$conn), silent = TRUE) }, add = TRUE)
   expect_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
