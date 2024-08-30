@@ -80,10 +80,46 @@ SEXP psll_terminate(SEXP p) {
 
 
 SEXP psll_kill(SEXP p) {
-  SEXP res, s;
-  PROTECT(s = ScalarInteger(SIGKILL));
-  PROTECT(res = psll_send_signal(p, s));
-  UNPROTECT(2);
+  R_xlen_t i, num_handles = Rf_xlength(p);
+
+  // check if handles are ok, and they are not pid 0
+  for (i = 0; i < num_handles; i++) {
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(p, i));
+    if (!handle) Rf_error("Process pointer clean up already");
+    if (handle->pid == 0) {
+      Rf_error(
+        "preventing sending KILL signal to process with PID 0 as it "
+	      "would affect every process in the process group of the "
+        "calling process (Sys.getpid()) instead of PID 0"
+      );
+    }
+  }
+
+  // OK, we can give it a go then
+  SEXP res = PROTECT(Rf_allocVector(VECSXP, num_handles));
+  for (i = 0; i < num_handles; i++) {
+    if (!LOGICAL(psll_is_running(VECTOR_ELT(p, i)))[0]) {
+      SET_VECTOR_ELT(res, i, Rf_mkString("dead"));
+      continue;
+    }
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(p, i));
+    int ret = kill(handle->pid, SIGKILL);
+    if (ret == -1) {
+      if (errno == ESRCH) {
+        SET_VECTOR_ELT(res, i, Rf_mkString("dead"));
+        continue;
+      } else if (errno == EPERM || errno == EACCES) {
+        ps__access_denied_pid(handle->pid, "");
+      } else {
+        ps__set_error_from_errno();
+      }
+      SET_VECTOR_ELT(res, i, Rf_duplicate(ps__last_error));
+    } else {
+      SET_VECTOR_ELT(res, i, Rf_mkString("killed"));
+    }
+  }
+
+  UNPROTECT(1);
   return res;
 }
 

@@ -159,6 +159,16 @@ assert_ps_handle_list <- function(x) {
   ))
 }
 
+assert_ps_handle_or_handle_list <- function(p) {
+  if (!is.list(p)) {
+    assert_ps_handle(p)
+    p <- list(p)
+  } else {
+    assert_ps_handle_list(p)
+  }
+  p
+}
+
 assert_flag <- function(x) {
   if (is.logical(x) && length(x) == 1 && !is.na(x)) return()
   stop(ps__invalid_argument(match.call()$x,

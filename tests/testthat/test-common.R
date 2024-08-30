@@ -338,3 +338,65 @@ test_that("cpu affinity", {
 
   expect_equal(callr::r(do), 0:0)
 })
+
+test_that("kill", {
+  skip_on_cran()
+  p <- processx::process$new(px(), c("sleep", "3"))
+  on.exit(p$kill(), add = TRUE)
+  ph <- p$as_ps_handle()
+
+  expect_equal(ps_kill(ph), "killed")
+  expect_equal(ps_kill(ph), "dead")
+
+  # multiple processes
+  p1 <- processx::process$new(px(), c("sleep", "3"))
+  on.exit(p1$kill(), add = TRUE)
+  ph1 <- p1$as_ps_handle()
+  p2 <- processx::process$new(px(), c("sleep", "3"))
+  on.exit(p2$kill(), add = TRUE)
+  ph2 <- p2$as_ps_handle()
+
+  expect_equal(ps_kill(list(ph1, ph2)), c("killed", "killed"))
+  expect_equal(ps_kill(list(ph1, ph2)), c("dead", "dead"))
+
+  # some dead, some alive
+  p3 <- processx::process$new(px(), c("sleep", "3"))
+  on.exit(p3$kill(), add = TRUE)
+  ph3 <- p3$as_ps_handle()
+  p4 <- processx::process$new(px(), c("sleep", "3"))
+  on.exit(p4$kill(), add = TRUE)
+  ph4 <- p4$as_ps_handle()
+
+  expect_equal(ps_kill(ph3), "killed")
+  expect_equal(ps_kill(list(ph3, ph4)), c("dead", "killed"))
+
+  # error up front for pid 0
+  if (ps_os_type()[["MACOS"]]) {
+    p5 <- processx::process$new(px(), c("sleep", "3"))
+    on.exit(p5$kill(), add = TRUE)
+    ph5 <- p5$as_ps_handle()
+    ph6 <- ps_handle(0)
+    expect_snapshot(error = TRUE, {
+      ps_kill(list(ph5, ph6))
+    })
+    expect_true(p5$is_alive())
+    p5$kill()
+  }
+
+  # access denied for some processes
+  if (ps_os_type()[["MACOS"]]) {
+    p7 <- processx::process$new(px(), c("sleep", "3"))
+    on.exit(p7$kill(), add = TRUE)
+    ph7 <- p7$as_ps_handle()
+    ph8 <- ps_handle(1)
+    p9 <- processx::process$new(px(), c("sleep", "3"))
+    on.exit(p9$kill(), add = TRUE)
+    ph9 <- p9$as_ps_handle()
+    expect_snapshot(error = TRUE, {
+      ps_kill(list(ph7, ph8, ph9))
+    })
+    expect_false(p7$is_alive())
+    expect_true(ps_is_running(ph8))
+    expect_false(p9$is_alive())
+  }
+})

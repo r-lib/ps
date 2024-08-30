@@ -75,42 +75,49 @@ SEXP ps__pids() {
 
 /*
  * Kill a process given its PID.
+ *
+ * On error it sets the error message and returns NULL.
  */
-SEXP ps__proc_kill(DWORD pid) {
-  HANDLE hProcess;
+SEXP ps__proc_kill(HANDLE hProcess, DWORD pid) {
   DWORD err;
 
   if (pid == 0) {
-    ps__access_denied("");
+    ps__access_denied_pid(pid, "");
     return R_NilValue;
   }
 
-  hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
-  if (hProcess == NULL) {
-    if (GetLastError() == ERROR_INVALID_PARAMETER) {
-      // see https://github.com/giampaolo/psutil/issues/24
-      ps__debug("OpenProcess -> ERROR_INVALID_PARAMETER turned "
-		   "into NoSuchProcess");
-      ps__no_such_process(pid, 0);
-    } else {
-      ps__set_error_from_windows_error(0);
+  int openhandle = hProcess == INVALID_HANDLE_VALUE;
+  if (openhandle) {
+    hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
+    if (hProcess == NULL) {
+      if (GetLastError() == ERROR_INVALID_PARAMETER) {
+        // see https://github.com/giampaolo/psutil/issues/24
+        ps__debug("OpenProcess -> ERROR_INVALID_PARAMETER turned "
+                  "into NoSuchProcess");
+        // already dead, this is ok, just report it
+        return Rf_mkString("dead");
+      } else {
+        ps__set_error_from_windows_error(0);
+        return R_NilValue;
+      }
     }
-    return R_NilValue;
   }
 
   // kill the process
   if (! TerminateProcess(hProcess, SIGTERM)) {
     err = GetLastError();
+    if (openhandle) CloseHandle(hProcess);
     // See: https://github.com/giampaolo/psutil/issues/1099
-    if (err != ERROR_ACCESS_DENIED) {
-      CloseHandle(hProcess);
+    if (err == ERROR_ACCESS_DENIED) {
+      ps__access_denided_pid(pid, "");
+    } else {
       ps__set_error_from_windows_error(0);
       return R_NilValue;
     }
   }
 
-  CloseHandle(hProcess);
-  return ScalarLogical(1);
+  if (openhandle) CloseHandle(hProcess);
+  return Rf_mkString("killed");
 }
 
 

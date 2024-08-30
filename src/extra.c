@@ -73,6 +73,11 @@ void *ps__access_denied(const char *msg) {
 			    msg && strlen(msg) ? msg : "Permission denied");
 }
 
+void *ps__access_denied_pid(long pid, const char *msg) {
+  return ps__set_error_impl("access_denied", 0, pid,
+			    msg && strlen(msg) ? msg : "Permission denied");
+}
+
 void *ps__zombie_process(long pid) {
   return ps__set_error_impl("zombie_process", 0, pid,
 			    "Process is a zombie, pid %ld", pid);

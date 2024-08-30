@@ -42,7 +42,9 @@ test_that("process already finished", {
   chk(ps_suspend(p))
   chk(ps_resume(p))
   if (ps_os_type()[["POSIX"]]) chk(ps_terminate(p))
-  chk(ps_kill(p))
+
+  ## kill will just work if the process has finished already
+  expect_equal(ps_kill(p), "dead")
 
   chk(ps_exe(p))
   chk(ps_cmdline(p))
