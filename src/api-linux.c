@@ -30,6 +30,10 @@
 #include "common.h"
 #include "cleancall.h"
 
+#ifndef SYS_pidfd_open
+#define SYS_pidfd_open              434
+#endif
+
 double psll_linux_boot_time = 0;
 double psll_linux_clock_period = 0;
 
