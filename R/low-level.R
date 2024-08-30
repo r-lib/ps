@@ -750,7 +750,9 @@ ps_kill <- function(p = ps_handle()) {
         } else {
           "dead"
         }
-      }, error = function(e) e)
+      }, error = function(e) {
+        if (inherits(e, "no_such_process")) "dead" else e
+      })
     })
   } else {
     res <- .Call(psll_kill, p)
