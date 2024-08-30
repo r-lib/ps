@@ -527,11 +527,11 @@ SEXP psll_kill(SEXP p) {
   // check if handles are ok, and they are not pid 0
   for (i = 0; i < num_handles; i++) {
     ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(p, i));
-    if (!handle) Rf_error("Process pointer clean up already");
+    if (!handle) Rf_error("Process pointer cleaned up already");
     if (handle->pid == 0) {
       Rf_error(
         "preventing sending KILL signal to process with PID 0 as it "
-	      "would affect every process in the process group of the "
+        "would affect every process in the process group of the "
         "calling process (Sys.getpid()) instead of PID 0"
       );
     }
@@ -543,12 +543,12 @@ SEXP psll_kill(SEXP p) {
       SET_VECTOR_ELT(res, i, Rf_mkString("dead"));
       continue;
     }
-    HANDLE hProcess = ps__handle_from_pid(handle->pid);
+    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(p, i));
+    HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, handle->pid);
     if (!hProcess) {
-      int ret = ps__is_phandle_running(hProcess, pid);
-      if (ret == 0) {
+      if (GetLastError() == ERROR_INVALID_PARAMETER) {
         SET_VECTOR_ELT(res, i, Rf_mkString("dead"));
-      } else if (ret == -1) {
+      } else {
         ps__set_error_from_windows_error(0);
         SET_VECTOR_ELT(res, i, Rf_duplicate(ps__last_error));
       }

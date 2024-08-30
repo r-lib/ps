@@ -109,7 +109,7 @@ SEXP ps__proc_kill(HANDLE hProcess, DWORD pid) {
     if (openhandle) CloseHandle(hProcess);
     // See: https://github.com/giampaolo/psutil/issues/1099
     if (err == ERROR_ACCESS_DENIED) {
-      ps__access_denided_pid(pid, "");
+      ps__access_denied_pid(pid, "");
     } else {
       ps__set_error_from_windows_error(0);
       return R_NilValue;
