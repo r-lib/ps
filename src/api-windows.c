@@ -522,48 +522,30 @@ SEXP psll_terminate(SEXP p) {
 }
 
 SEXP psll_kill(SEXP p) {
-  R_xlen_t i, num_handles = Rf_xlength(p);
+  ps_handle_t *handle = R_ExternalPtrAddr(p);
+  SEXP running, ret;
 
-  // check if handles are ok, and they are not pid 0
-  for (i = 0; i < num_handles; i++) {
-    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(p, i));
-    if (!handle) Rf_error("Process pointer cleaned up already");
-    if (handle->pid == 0) {
-      Rf_error(
-        "preventing sending KILL signal to process with PID 0 as it "
-        "would affect every process in the process group of the "
-        "calling process (Sys.getpid()) instead of PID 0"
-      );
-    }
+  if (!handle) error("Process pointer cleaned up already");
+
+  HANDLE hProcess = ps__handle_from_pid(handle->pid);
+  if (!hProcess) goto error;
+
+  running = ps__is_running(handle);
+  if (!LOGICAL(running)[0]) {
+    ps__no_such_process(handle->pid, 0);
+    goto error;
   }
 
-  SEXP res = PROTECT(Rf_allocVector(VECSXP, num_handles));
-  for (i = 0; i < num_handles; i++) {
-    if (!LOGICAL(psll_is_running(VECTOR_ELT(p, i)))[0]) {
-      SET_VECTOR_ELT(res, i, Rf_mkString("dead"));
-      continue;
-    }
-    ps_handle_t *handle = R_ExternalPtrAddr(VECTOR_ELT(p, i));
-    HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, handle->pid);
-    if (!hProcess) {
-      if (GetLastError() == ERROR_INVALID_PARAMETER) {
-        SET_VECTOR_ELT(res, i, Rf_mkString("dead"));
-      } else {
-        ps__set_error_from_windows_error(0);
-        SET_VECTOR_ELT(res, i, Rf_duplicate(ps__last_error));
-      }
-    } else {
-      // try to kill it, it'll return error string if fails
-      SET_VECTOR_ELT(res, i, ps__proc_kill(hProcess, handle->pid));
-      if (Rf_isNull(VECTOR_ELT(res, i))) {
-        SET_VECTOR_ELT(res, i, Rf_duplicate(ps__last_error));
-      }
-      CloseHandle(hProcess);
-    }
-  }
+  PROTECT(ret = ps__proc_kill(handle->pid));
+  if (isNull(ret)) ps__throw_error();
 
   UNPROTECT(1);
-  return res;
+  return R_NilValue;
+
+ error:
+  if (hProcess) CloseHandle(hProcess);
+  ps__throw_error();
+  return  R_NilValue;
 }
 
 static ULONGLONG (*ps__GetTickCount64)(void) = NULL;
@@ -762,29 +744,27 @@ SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
       SEXP name, ret2;
       int ret = ps__create_time_raw(cpid, &ftCreate);
       if (ret) {
-        CloseHandle(hProcess);
-        ps__throw_error();
+	CloseHandle(hProcess);
+	ps__throw_error();
       }
 
       ctime2 = ps__filetime_to_unix(ftCreate);
-      if (fabs(ctime - ctime2) < 0.01) {
-        PROTECT(name = ps__name(cpid));
-        ret2 = ps__proc_kill(hProcess, cpid);
-        CloseHandle(hProcess);
-        if (isNull(ret2)) {
-          ps__throw_error();
-        }
-        if (isNull(name)) {
-          UNPROTECT(2);
-          return mkString("???");
-        } else {
-          UNPROTECT(2);
-          return name;
-        }
-      } else {
-        CloseHandle(hProcess);
-        UNPROTECT(1);
-        return R_NilValue;
+      if (fabs(ctime - ctime2) < 0.01)  {
+	PROTECT(name = ps__name(cpid));
+	ret2 = ps__proc_kill(cpid);
+	CloseHandle(hProcess);
+	if (isNull(ret2)) ps__throw_error();
+	if (isNull(name)) {
+	  UNPROTECT(2);
+	  return mkString("???");
+	} else {
+	  UNPROTECT(2);
+	  return name;
+	}
+      } else  {
+	CloseHandle(hProcess);
+	UNPROTECT(1);
+	return R_NilValue;
       }
     }
   }

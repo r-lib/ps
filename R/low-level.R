@@ -741,7 +741,21 @@ ps_terminate <- function(p = ps_handle()) {
 
 ps_kill <- function(p = ps_handle()) {
   p <- assert_ps_handle_or_handle_list(p)
-  res <- .Call(psll_kill, p)
+  if (ps_os_type()[["WINDOWS"]]) {
+    res <- lapply(p, function(pp) {
+      tryCatch({
+        if (ps_is_running(pp)) {
+          .Call(psll_kill, pp)
+          "killed"
+        } else {
+          "dead"
+        }
+      }, error = function(e) e)
+    })
+  } else {
+    res <- .Call(psll_kill, p)
+  }
+
   ok <- map_lgl(res, is.character)
   if (all(ok)) {
     unlist(res)
