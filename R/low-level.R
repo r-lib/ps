@@ -714,12 +714,24 @@ ps_terminate <- function(p = ps_handle()) {
   .Call(psll_terminate, p)
 }
 
-#' Kill a process
+#' Kill one or more processes
 #'
-#' Kill the current process with SIGKILL preemptively checking
-#' whether PID has been reused. On Windows it uses `TerminateProcess()`.
+#' Kill the process with SIGKILL preemptively checking whether PID has
+#' been reused. On Windows it uses `TerminateProcess()`.
 #'
-#' @param p Process handle.
+#' Note that since ps version 1.8, `ps_kill()` does not error if the
+#' `p` process (or some processes if `p` is a list) are already terminated.
+#'
+#' @param p Process handle, or a list of process handles.
+#' @param grace Grace period, in milliseconds, used on Unix. If it is not
+#'   zero, then `ps_kill()` first sends a `SIGTERM` signal to all processes
+#'   in `p`. If some proccesses do not terminate withing `grace`
+#'   milliseconds after the `SIGTERM` signal, `ps_kill()` kills them by
+#'   sending `SIGKILL` signals.
+#' @return Character vector, with one element for each process handle in
+#'   `p`. If the process was already dead before `ps_kill()` tried to kill
+#'   it, the corresponding return value is `"dead"`. If `ps_kill()` just
+#'   killed it, it is `"killed"`.
 #'
 #' @family process handle functions
 #' @export
@@ -732,9 +744,47 @@ ps_terminate <- function(p = ps_handle()) {
 #' ps_is_running(p)
 #' px$get_exit_status()
 
-ps_kill <- function(p = ps_handle()) {
-  assert_ps_handle(p)
-  .Call(psll_kill, p)
+ps_kill <- function(p = ps_handle(), grace = 200) {
+  p <- assert_ps_handle_or_handle_list(p)
+  grace <- assert_grace(grace)
+  if (ps_os_type()[["WINDOWS"]]) {
+    res <- lapply(p, function(pp) {
+      tryCatch({
+        if (ps_is_running(pp)) {
+          .Call(psll_kill, pp, 0L)
+          "killed"
+        } else {
+          "dead"
+        }
+      }, error = function(e) {
+        if (inherits(e, "no_such_process")) "dead" else e
+      })
+    })
+  } else {
+    res <- call_with_cleanup(psll_kill, p, grace)
+  }
+
+  ok <- map_lgl(res, is.character)
+  if (all(ok)) {
+    unlist(res)
+  } else {
+    for (i in which(!ok)) {
+      class(res[[i]]) <- res[[i]][[2]]
+    }
+    pids <- map_int(res[!ok], "[[", "pid")
+    nms <- map_chr(p[!ok], function(pp) {
+      tryCatch(ps_name(pp), error = function(e) "???")
+    })
+    pmsg <- paste0(pids, " (", nms, ")", collapse = ", ")
+    err <- structure(
+      list(
+        message = paste0("Failed to kill some processes: ", pmsg),
+        results = res
+      ),
+      class = c("ps_error", "error", "condition")
+    )
+    stop(err)
+  }
 }
 
 #' List of child processes (process objects) of the process. Note that
@@ -1210,8 +1260,7 @@ ps_set_cpu_affinity <- function(p = ps_handle(), affinity) {
 #' ps_wait(list(p1$as_ps_handle(), p2$as_ps_handle()), 1000)
 
 ps_wait <- function(p, timeout = -1) {
-  if (!is.list(p)) p <- list(p)
-  assert_ps_handle_list(p)
+  p <- assert_ps_handle_or_handle_list(p)
   timeout <- assert_integer(timeout)
   call_with_cleanup(psll_wait, p, timeout)
 }

@@ -521,7 +521,7 @@ SEXP psll_terminate(SEXP p) {
   return R_NilValue;
 }
 
-SEXP psll_kill(SEXP p) {
+SEXP psll_kill(SEXP p, SEXP grace) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
   SEXP running, ret;
 

@@ -9,6 +9,13 @@
 * `ps_handle()` now allowes a non-integer object as the pid, as long as
   its value is integer.
 
+* `ps_kill()` can now kill multiple processes concurrently.
+
+* `ps_kill()` has a new `grace` argument. On Unix, if this argument is
+  not zero, then `ps_kill()` first sends a `TERM` signal, and waits for
+  the processes to quit gracefully, via `ps_wait()`. The processes that
+  are still alive after the grace period are then killed with `SIGKILL`.
+
 # ps 1.7.7
 
 * `ps_cpu_times()` values are now correct on newer arm64 macOS.

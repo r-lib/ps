@@ -91,6 +91,7 @@ void *ps__set_error_from_errno(void);
 SEXP ps__throw_error(void);
 
 void *ps__access_denied(const char *msg);
+void *ps__access_denied_pid(long pid, const char *msg);
 void *ps__no_such_process(long pid, const char *name);
 void *ps__zombie_process(long pid);
 void *ps__no_memory(const char *msg);
