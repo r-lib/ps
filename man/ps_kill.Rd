@@ -4,10 +4,16 @@
 \alias{ps_kill}
 \title{Kill one or more processes}
 \usage{
-ps_kill(p = ps_handle())
+ps_kill(p = ps_handle(), grace = 200)
 }
 \arguments{
 \item{p}{Process handle, or a list of process handles.}
+
+\item{grace}{Grace period, in milliseconds, used on Unix. If it is not
+zero, then \code{ps_kill()} first sends a \code{SIGTERM} signal to all processes
+in \code{p}. If some proccesses do not terminate withing \code{grace}
+milliseconds after the \code{SIGTERM} signal, \code{ps_kill()} kills them by
+sending \code{SIGKILL} signals.}
 }
 \value{
 Character vector, with one element for each process handle in

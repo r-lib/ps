@@ -1,9 +1,9 @@
-# kill
+# kill 2
 
     Code
       ps_kill(list(ph5, ph6))
     Condition
-      Error in `ps_kill()`:
+      Error:
       ! preventing sending KILL signal to process with PID 0 as it would affect every process in the process group of the calling process (Sys.getpid()) instead of PID 0
 
 ---

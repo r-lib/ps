@@ -236,7 +236,7 @@ test_that("kill", {
   expect_false(p1$is_alive())
   expect_false(ps_is_running(ps))
   if (ps_os_type()[["POSIX"]]) {
-    expect_equal(p1$get_exit_status(), - signals()$SIGKILL)
+    expect_equal(p1$get_exit_status(), - signals()$SIGTERM)
   }
 })
 
@@ -339,13 +339,13 @@ test_that("cpu affinity", {
   expect_equal(callr::r(do), 0:0)
 })
 
-test_that("kill", {
+test_that("kill 2", {
   skip_on_cran()
   p <- processx::process$new(px(), c("sleep", "3"))
   on.exit(p$kill(), add = TRUE)
   ph <- p$as_ps_handle()
 
-  expect_equal(ps_kill(ph), "killed")
+  expect_equal(ps_kill(ph), "terminated")
   expect_equal(ps_kill(ph), "dead")
 
   # multiple processes
@@ -356,7 +356,7 @@ test_that("kill", {
   on.exit(p2$kill(), add = TRUE)
   ph2 <- p2$as_ps_handle()
 
-  expect_equal(ps_kill(list(ph1, ph2)), c("killed", "killed"))
+  expect_equal(ps_kill(list(ph1, ph2)), c("terminated", "terminated"))
   expect_equal(ps_kill(list(ph1, ph2)), c("dead", "dead"))
 
   # some dead, some alive
@@ -367,8 +367,8 @@ test_that("kill", {
   on.exit(p4$kill(), add = TRUE)
   ph4 <- p4$as_ps_handle()
 
-  expect_equal(ps_kill(ph3), "killed")
-  expect_equal(ps_kill(list(ph3, ph4)), c("dead", "killed"))
+  expect_equal(ps_kill(ph3), "terminated")
+  expect_equal(ps_kill(list(ph3, ph4)), c("dead", "terminated"))
 
   # error up front for pid 0
   if (ps_os_type()[["MACOS"]]) {
@@ -399,4 +399,51 @@ test_that("kill", {
     expect_true(ps_is_running(ph8))
     expect_false(p9$is_alive())
   }
+})
+
+test_that("kill with grace", {
+  p1 <- processx::process$new(
+    px(),
+    c("sigterm", "ignore", "outln", "setup", "sleep", "3"),
+    stdout = "|"
+  )
+  on.exit(p1$kill(), add = TRUE)
+  ph1 <- p1$as_ps_handle()
+
+  # need to wait until the SIGTERM handler is set up in px
+  expect_equal(p1$poll_io(1000)[["output"]], "ready")
+  expect_equal(ps_kill(ph1), "killed")
+})
+
+test_that("kill with grace, multiple processes", {
+  # ignored SIGTERM completely
+  p1 <- processx::process$new(
+    px(),
+    c("sigterm", "ignore", "outln", "setup", "sleep", "3"),
+    stdout = "|"
+  )
+  on.exit(p1$kill(), add = TRUE)
+  ph1 <- p1$as_ps_handle()
+
+  # exits 0.5s later after SIGTERM
+  p2 <- processx::process$new(
+    px(),
+    c("sigterm", "sleep", "0.5", "outln", "setup", "sleep", "3"),
+    stdout = "|"
+  )
+  on.exit(p2$kill(), add = TRUE)
+  ph2 <- p2$as_ps_handle()
+
+  # exits on SIGTERM
+  p3 <- processx::process$new(px(), c("sleep", "3"))
+  on.exit(p3$kill(), add = TRUE)
+  ph3 <- p3$as_ps_handle()
+
+  # wait until signal handlers are set up
+  expect_equal(p1$poll_io(1000)[["output"]], "ready")
+  expect_equal(p2$poll_io(1000)[["output"]], "ready")
+  expect_equal(
+    ps_kill(list(ph1, ph2, ph3), grace = 1000),
+    c("killed", "terminated", "terminated")
+  )
 })

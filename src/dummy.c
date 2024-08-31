@@ -101,7 +101,7 @@ SEXP psll_send_signal(SEXP x, SEXP y) { return ps__dummy("ps_send_signal"); }
 SEXP psll_suspend(SEXP x) { return ps__dummy("ps_suspend"); }
 SEXP psll_resume(SEXP x) { return ps__dummy("ps_resume"); }
 SEXP psll_terminate(SEXP x) { return ps__dummy("ps_terminate"); }
-SEXP psll_kill(SEXP x) { return ps__dummy("ps_kill"); }
+SEXP psll_kill(SEXP x, SEXP grace) { return ps__dummy("ps_kill"); }
 SEXP psll_num_fds(SEXP x) { return ps__dummy("ps_num_fds"); }
 SEXP psll_open_files(SEXP x) { return ps__dummy("ps_open_files"); }
 SEXP psll_interrupt(SEXP x, SEXP y, SEXP z) { return ps__dummy("ps_interrupt"); }
