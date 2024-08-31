@@ -9,7 +9,9 @@
 * `ps_handle()` now allowes a non-integer object as the pid, as long as
   its value is integer.
 
-* `ps_kill()` can now kill multiple processes concurrently.
+* `ps_send_signal()`, `ps_suspend()`, `ps_resume()`, `ps_terminate()`,
+  `ps_kill()`, and `ps_interrupt()` can now operate on multiple processes,
+  if passed a list of process handles.
 
 * `ps_kill()` has a new `grace` argument. On Unix, if this argument is
   not zero, then `ps_kill()` first sends a `TERM` signal, and waits for

@@ -612,6 +612,41 @@ ps_memory_full_info <- function(p = ps_handle()) {
   }
 }
 
+process_signal_result <- function(p, res, err_msg) {
+  ok <- map_lgl(res, function(x) is.character(x) || is.null(x))
+  if (all(ok)) {
+    unlist(res)
+  } else {
+    for (i in which(!ok)) {
+      class(res[[i]]) <- res[[i]][[2]]
+    }
+    pids <- map_int(res[!ok], function(x) x[["pid"]] %||% NA_integer_)
+    nms <- map_chr(p[!ok], function(pp) {
+      tryCatch(ps_name(pp), error = function(e) "???")
+    })
+    pmsg <- paste0(pids, " (", nms, ")", collapse = ", ")
+    # put these classes at the end
+    common <- c("ps_error", "error", "condition")
+    cls <- c(
+      unique(setdiff(unlist(lapply(res[!ok], function(x) class(x))), common)),
+      common
+    )
+    err <- structure(
+      list(
+        message = paste0(
+          err_msg,
+          if (length(p) == 1) ": " else " some processes: ",
+          pmsg
+        ),
+        results = res,
+        pid = pids
+      ),
+      class = cls
+    )
+    stop(err)
+  }
+}
+
 #' Send signal to a process
 #'
 #' Send a signal to the process. Not implemented on Windows. See
@@ -620,7 +655,7 @@ ps_memory_full_info <- function(p = ps_handle()) {
 #' It checks if the process is still running, before sending the signal,
 #' to avoid signalling the wrong process, because of pid reuse.
 #'
-#' @param p Process handle.
+#' @param p Process handle, or a list of process handles.
 #' @param sig Signal number, see [signals()].
 #'
 #' @family process handle functions
@@ -635,9 +670,15 @@ ps_memory_full_info <- function(p = ps_handle()) {
 #' px$get_exit_status()
 
 ps_send_signal <- function(p = ps_handle(), sig) {
-  assert_ps_handle(p)
+  p <- assert_ps_handle_or_handle_list(p)
   assert_signal(sig)
-  .Call(psll_send_signal, p, sig)
+  res <- lapply(p, function(pp) {
+    tryCatch(
+      .Call(psll_send_signal, pp, sig),
+      error = function(e) e
+    )
+  })
+  process_signal_result(p, res, "Failed to send signal to")
 }
 
 #' Suspend (stop) the process
@@ -646,7 +687,7 @@ ps_send_signal <- function(p = ps_handle(), sig) {
 #' whether PID has been reused. On Windows this has the effect of
 #' suspending all process threads.
 #'
-#' @param p Process handle.
+#' @param p Process handle or a list of process handles.
 #'
 #' @family process handle functions
 #' @export
@@ -661,8 +702,14 @@ ps_send_signal <- function(p = ps_handle(), sig) {
 #' ps_kill(p)
 
 ps_suspend <- function(p = ps_handle()) {
-  assert_ps_handle(p)
-  .Call(psll_suspend, p)
+  p <- assert_ps_handle_or_handle_list(p)
+  res <- lapply(p, function(pp) {
+    tryCatch(
+      .Call(psll_suspend, pp),
+      error = function(e) e
+    )
+  })
+  process_signal_result(p, res, "Failed to suspend")
 }
 
 #' Resume (continue) a stopped process
@@ -671,7 +718,7 @@ ps_suspend <- function(p = ps_handle()) {
 #' whether PID has been reused. On Windows this has the effect of resuming
 #' all process threads.
 #'
-#' @param p Process handle.
+#' @param p Process handle or a list of process handles.
 #'
 #' @family process handle functions
 #' @export
@@ -686,8 +733,14 @@ ps_suspend <- function(p = ps_handle()) {
 #' ps_kill(p)
 
 ps_resume <- function(p = ps_handle()) {
-  assert_ps_handle(p)
-  .Call(psll_resume, p)
+  p <- assert_ps_handle_or_handle_list(p)
+  res <- lapply(p, function(pp) {
+    tryCatch(
+      .Call(psll_resume, pp),
+      error = function(e) e
+    )
+  })
+  process_signal_result(p, res, "Failed to resume")
 }
 
 #' Terminate a Unix process
@@ -696,7 +749,7 @@ ps_resume <- function(p = ps_handle()) {
 #'
 #' Checks if the process is still running, to work around pid reuse.
 #'
-#' @param p Process handle.
+#' @param p Process handle or a list of process handles.
 #'
 #' @family process handle functions
 #' @export
@@ -710,8 +763,14 @@ ps_resume <- function(p = ps_handle()) {
 #' px$get_exit_status()
 
 ps_terminate <- function(p = ps_handle()) {
-  assert_ps_handle(p)
-  .Call(psll_terminate, p)
+  p <- assert_ps_handle_or_handle_list(p)
+  res <- lapply(p, function(pp) {
+    tryCatch(
+      .Call(psll_terminate, pp),
+      error = function(e) e
+    )
+  })
+  process_signal_result(p, res, "Failed to terminate")
 }
 
 #' Kill one or more processes
@@ -764,27 +823,7 @@ ps_kill <- function(p = ps_handle(), grace = 200) {
     res <- call_with_cleanup(psll_kill, p, grace)
   }
 
-  ok <- map_lgl(res, is.character)
-  if (all(ok)) {
-    unlist(res)
-  } else {
-    for (i in which(!ok)) {
-      class(res[[i]]) <- res[[i]][[2]]
-    }
-    pids <- map_int(res[!ok], "[[", "pid")
-    nms <- map_chr(p[!ok], function(pp) {
-      tryCatch(ps_name(pp), error = function(e) "???")
-    })
-    pmsg <- paste0(pids, " (", nms, ")", collapse = ", ")
-    err <- structure(
-      list(
-        message = paste0("Failed to kill some processes: ", pmsg),
-        results = res
-      ),
-      class = c("ps_error", "error", "condition")
-    )
-    stop(err)
-  }
+  process_signal_result(p, res, "Failed to kill")
 }
 
 #' List of child processes (process objects) of the process. Note that
@@ -1046,22 +1085,27 @@ ps_connections <- function(p = ps_handle()) {
 #'
 #' Sends `SIGINT` on POSIX, and 'CTRL+C' or 'CTRL+BREAK' on Windows.
 #'
-#' @param p Process handle.
+#' @param p Process handle or a list of process handles.
 #' @param ctrl_c On Windows, whether to send 'CTRL+C'. If `FALSE`, then
 #'   'CTRL+BREAK' is sent. Ignored on non-Windows platforms.
 #'
 #' @family process handle functions
 #' @export
 
-ps_interrupt  <- function(p = ps_handle(), ctrl_c = TRUE) {
-  assert_ps_handle(p)
+ps_interrupt <- function(p = ps_handle(), ctrl_c = TRUE) {
+  p <- assert_ps_handle_or_handle_list(p)
   assert_flag(ctrl_c)
-  if (ps_os_type()[["WINDOWS"]]) {
-    interrupt <- get_tool("interrupt")
-    .Call(psll_interrupt, p, ctrl_c, interrupt)
-  } else {
-    .Call(psll_interrupt, p, ctrl_c, NULL)
-  }
+  res <- lapply(p, function(pp) {
+    tryCatch({
+      if (ps_os_type()[["WINDOWS"]]) {
+        interrupt <- get_tool("interrupt")
+        .Call(psll_interrupt, pp, ctrl_c, interrupt)
+      } else {
+        .Call(psll_interrupt, pp, ctrl_c, NULL)
+      }
+    }, error = function(e) e)
+  })
+  process_signal_result(p, res, "Failed to interrupt")
 }
 
 #' @return `ps_windows_nice_values()` return a character vector of possible

@@ -7,7 +7,7 @@
 ps_terminate(p = ps_handle())
 }
 \arguments{
-\item{p}{Process handle.}
+\item{p}{Process handle or a list of process handles.}
 }
 \description{
 Send a \code{SIGTERM} signal to the process. Not implemented on Windows.

@@ -7,7 +7,7 @@
 ps_send_signal(p = ps_handle(), sig)
 }
 \arguments{
-\item{p}{Process handle.}
+\item{p}{Process handle, or a list of process handles.}
 
 \item{sig}{Signal number, see \code{\link[=signals]{signals()}}.}
 }

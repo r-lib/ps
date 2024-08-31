@@ -7,7 +7,7 @@
 ps_interrupt(p = ps_handle(), ctrl_c = TRUE)
 }
 \arguments{
-\item{p}{Process handle.}
+\item{p}{Process handle or a list of process handles.}
 
 \item{ctrl_c}{On Windows, whether to send 'CTRL+C'. If \code{FALSE}, then
 'CTRL+BREAK' is sent. Ignored on non-Windows platforms.}
