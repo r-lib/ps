@@ -345,7 +345,8 @@ test_that("kill 2", {
   on.exit(p$kill(), add = TRUE)
   ph <- p$as_ps_handle()
 
-  expect_equal(ps_kill(ph), "terminated")
+  done <- if (ps_os_type()[["WINDOWS"]]) "killed" else "terminated"
+  expect_equal(ps_kill(ph), done)
   expect_equal(ps_kill(ph), "dead")
 
   # multiple processes
@@ -356,7 +357,7 @@ test_that("kill 2", {
   on.exit(p2$kill(), add = TRUE)
   ph2 <- p2$as_ps_handle()
 
-  expect_equal(ps_kill(list(ph1, ph2)), c("terminated", "terminated"))
+  expect_equal(ps_kill(list(ph1, ph2)), c(done, done))
   expect_equal(ps_kill(list(ph1, ph2)), c("dead", "dead"))
 
   # some dead, some alive
@@ -367,8 +368,8 @@ test_that("kill 2", {
   on.exit(p4$kill(), add = TRUE)
   ph4 <- p4$as_ps_handle()
 
-  expect_equal(ps_kill(ph3), "terminated")
-  expect_equal(ps_kill(list(ph3, ph4)), c("dead", "terminated"))
+  expect_equal(ps_kill(ph3), done)
+  expect_equal(ps_kill(list(ph3, ph4)), c("dead", done))
 
   # error up front for pid 0
   if (ps_os_type()[["MACOS"]]) {
