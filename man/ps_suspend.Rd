@@ -7,7 +7,7 @@
 ps_suspend(p = ps_handle())
 }
 \arguments{
-\item{p}{Process handle.}
+\item{p}{Process handle or a list of process handles.}
 }
 \description{
 Suspend process execution with \code{SIGSTOP} preemptively checking
