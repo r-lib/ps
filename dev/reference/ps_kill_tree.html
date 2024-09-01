@@ -60,7 +60,7 @@ process tree.)</p>
 <span></span>
 <span><span class="fu">ps_find_tree</span><span class="op">(</span><span class="va">marker</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">ps_kill_tree</span><span class="op">(</span><span class="va">marker</span>, sig <span class="op">=</span> <span class="fu"><a href="signals.html">signals</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">SIGKILL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">ps_kill_tree</span><span class="op">(</span><span class="va">marker</span>, sig <span class="op">=</span> <span class="fu"><a href="signals.html">signals</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">SIGKILL</span>, grace <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -79,6 +79,14 @@ use to find the marked processes.</p></dd>
 <dt id="arg-sig">sig<a class="anchor" aria-label="anchor" href="#arg-sig"></a></dt>
 <dd><p>The signal to send to the marked processes on Unix. On
 Windows this argument is ignored currently.</p></dd>
+
+
+<dt id="arg-grace">grace<a class="anchor" aria-label="anchor" href="#arg-grace"></a></dt>
+<dd><p>Grace period, in milliseconds, used on Unix, if <code>sig</code> is
+<code>SIGKILL</code>.  If it is not zero, then <code>ps_kill_tree()</code> first sends a
+<code>SIGTERM</code> signal to all processes. If some proccesses do not
+terminate within <code>grace</code> milliseconds after the <code>SIGTERM</code> signal,
+<code>ps_kill_tree()</code> kills them by sending <code>SIGKILL</code> signals.</p></dd>
 
 </dl></div>
     <div class="section level2">

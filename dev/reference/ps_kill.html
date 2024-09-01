@@ -56,7 +56,7 @@ been reused. On Windows it uses <code>TerminateProcess()</code>.</p>
 <dt id="arg-grace">grace<a class="anchor" aria-label="anchor" href="#arg-grace"></a></dt>
 <dd><p>Grace period, in milliseconds, used on Unix. If it is not
 zero, then <code>ps_kill()</code> first sends a <code>SIGTERM</code> signal to all processes
-in <code>p</code>. If some proccesses do not terminate withing <code>grace</code>
+in <code>p</code>. If some proccesses do not terminate within <code>grace</code>
 milliseconds after the <code>SIGTERM</code> signal, <code>ps_kill()</code> kills them by
 sending <code>SIGKILL</code> signals.</p></dd>
 
@@ -111,11 +111,11 @@ killed it, it is <code>"killed"</code>.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">px</span> <span class="op">&lt;-</span> <span class="fu">processx</span><span class="fu">::</span><span class="va"><a href="http://processx.r-lib.org/reference/process.html" class="external-link">process</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"sleep"</span>, <span class="st">"10"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="va">px</span><span class="op">$</span><span class="fu">get_pid</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">p</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=7069, NAME=sleep, AT=2024-08-31 15:11:49.9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=7168, NAME=sleep, AT=2024-09-01 08:39:31.19</span>
 <span class="r-in"><span><span class="fu">ps_kill</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "terminated"</span>
 <span class="r-in"><span><span class="va">p</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=7069, NAME=???, AT=2024-08-31 15:11:49.9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=7168, NAME=???, AT=2024-09-01 08:39:31.19</span>
 <span class="r-in"><span><span class="fu"><a href="ps_is_running.html">ps_is_running</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-in"><span><span class="va">px</span><span class="op">$</span><span class="fu">get_exit_status</span><span class="op">(</span><span class="op">)</span></span></span>
