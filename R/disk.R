@@ -151,24 +151,10 @@ ps_disk_io_counters <- function() {
   os <- ps_os_name()
   tab <- if (os == "LINUX") {
     ps__disk_io_counters_linux()
+  } else if (os == "WINDOWS") {
+    ps__disk_io_counters_windows()
   } else {
-    .Call(ps__disk_io_counters)
-  }
-
-  if (os == "MACOS") {
-    tab <- not_null(tab)
-    tab <- data_frame(
-      name        = names(tab),
-      read_count  = map_dbl(tab, "[[", 1),
-      read_merged_count = NA,
-      read_bytes  = map_dbl(tab, "[[", 3),
-      read_time   = map_dbl(tab, "[[", 5),
-      write_count = map_dbl(tab, "[[", 2),
-      write_merged_count = NA,
-      write_bytes = map_dbl(tab, "[[", 4),
-      write_time  = map_dbl(tab, "[[", 6),
-      busy_time = NA
-    )
+    ps__disk_io_counters_macos()
   }
 
   class(tab) <- c("tbl", "data.frame")
@@ -191,6 +177,22 @@ ps__disk_io_counters_windows <- function() {
   )
 
   disk_info[disk_info$name != "",]
+}
+
+ps__disk_io_counters_macos <- function() {
+  tab <- not_null(.Call(ps__disk_io_counters))
+  data_frame(
+    name = names(tab),
+    read_count = map_dbl(tab, "[[", 1),
+    read_merged_count = NA,
+    read_bytes = map_dbl(tab, "[[", 3),
+    read_time = map_dbl(tab, "[[", 5),
+    write_count = map_dbl(tab, "[[", 2),
+    write_merged_count = NA,
+    write_bytes = map_dbl(tab, "[[", 4),
+    write_time = map_dbl(tab, "[[", 6),
+    busy_time = NA
+  )
 }
 
 #' File system information for files
