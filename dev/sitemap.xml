@@ -23,6 +23,7 @@
 <url><loc>https://ps.r-lib.org/dev/reference/ps_create_time.html</loc></url>
 <url><loc>https://ps.r-lib.org/dev/reference/ps_cwd.html</loc></url>
 <url><loc>https://ps.r-lib.org/dev/reference/ps_descent.html</loc></url>
+<url><loc>https://ps.r-lib.org/dev/reference/ps_disk_io_counters.html</loc></url>
 <url><loc>https://ps.r-lib.org/dev/reference/ps_disk_partitions.html</loc></url>
 <url><loc>https://ps.r-lib.org/dev/reference/ps_disk_usage.html</loc></url>
 <url><loc>https://ps.r-lib.org/dev/reference/ps_environ.html</loc></url>
