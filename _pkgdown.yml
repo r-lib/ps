@@ -59,6 +59,7 @@ reference:
   - ps_set_cpu_affinity
   - ps_get_nice
   - ps_set_nice
+  - ps_wait
   - ps_windows_nice_values
 
 - title: Users
@@ -74,6 +75,7 @@ reference:
   - ps_disk_partitions
   - ps_disk_usage
   - ps_disk_io_counters
+  - ps_fs_info
   - ps_loadavg
   - ps_shared_lib_users
   - ps_system_cpu_times

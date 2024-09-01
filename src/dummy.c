@@ -76,6 +76,7 @@ SEXP ps__tty_size(void) { return ps__dummy("ps_tty_size"); }
 SEXP ps__disk_partitions(SEXP x) { return ps__dummy("ps_disk_partitions"); }
 SEXP ps__disk_io_counters(SEXP rperdisk) { return ps__dummy("ps__get_disk_io_counters"); }
 SEXP ps__disk_usage(void) { return ps__dummy("ps_disk_usage"); }
+SEXP ps__fs_info(SEXP x, SEXP y) { return ps__dummy("ps_fs_info"); }
 SEXP ps__system_cpu_times(void) { return ps__dummy("ps_system_cpu_times"); }
 SEXP ps__system_memory(void) { return ps__dummy("ps_system_memory"); }
 SEXP ps__system_swap(void) { return ps__dummy("ps_system_swap"); }
@@ -102,7 +103,7 @@ SEXP psll_send_signal(SEXP x, SEXP y) { return ps__dummy("ps_send_signal"); }
 SEXP psll_suspend(SEXP x) { return ps__dummy("ps_suspend"); }
 SEXP psll_resume(SEXP x) { return ps__dummy("ps_resume"); }
 SEXP psll_terminate(SEXP x) { return ps__dummy("ps_terminate"); }
-SEXP psll_kill(SEXP x) { return ps__dummy("ps_kill"); }
+SEXP psll_kill(SEXP x, SEXP grace) { return ps__dummy("ps_kill"); }
 SEXP psll_num_fds(SEXP x) { return ps__dummy("ps_num_fds"); }
 SEXP psll_open_files(SEXP x) { return ps__dummy("ps_open_files"); }
 SEXP psll_interrupt(SEXP x, SEXP y, SEXP z) { return ps__dummy("ps_interrupt"); }
@@ -112,9 +113,9 @@ SEXP psll_set_nice(SEXP x, SEXP y) { return ps__dummy("ps_set_nice"); }
 SEXP psll_memory_uss(SEXP p) { return ps__dummy("psll_memory_uss"); }
 SEXP psll_get_cpu_aff(SEXP p) { return ps__dummy("psll_get_cpu_aff"); }
 SEXP psll_set_cpu_aff(SEXP p) { return ps__dummy("psll_set_cpu_aff"); }
+SEXP psll_wait(SEXP pps, SEXP timeout) { return ps__dummy("psll_wait"); }
 
 SEXP ps__init(SEXP x, SEXP y) { return R_NilValue; /* this needs to run to load package */ }
-SEXP ps__kill_if_env(SEXP x, SEXP y, SEXP z, SEXP a) { return ps__dummy("ps__kill_if_env"); }
 SEXP ps__find_if_env(SEXP x, SEXP y, SEXP z) { return ps__dummy("ps__find_if_env"); }
 SEXP ps__memory_maps(SEXP p) { return ps__dummy("ps__memory_maps"); }
 

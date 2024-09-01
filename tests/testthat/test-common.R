@@ -130,7 +130,11 @@ test_that("exe", {
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
   expect_true(ps_is_running(ps))
-  expect_equal(ps_exe(ps), realpath(px()))
+  exe <- ps_exe(ps)
+  # In qemu the first entry is qemu, the second entry is the exe
+  if (!grepl("qemu", exe)) {
+    expect_equal(ps_exe(ps), realpath(px()))
+  }
 })
 
 test_that("cmdline", {
@@ -141,7 +145,12 @@ test_that("cmdline", {
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
   expect_true(ps_is_running(ps))
-  expect_equal(ps_cmdline(ps), c(px(), "sleep", "10"))
+  cmd <- ps_cmdline(ps)
+  # in qemu, need to drop the first two
+  if (grepl("qemu", cmd[1])) {
+    cmd <- cmd[-(1:2)]
+  }
+  expect_equal(cmd, c(px(), "sleep", "10"))
 })
 
 test_that("cwd", {
@@ -181,7 +190,10 @@ test_that("num_threads", {
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
   expect_true(ps_is_running(ps))
-  expect_equal(ps_num_threads(ps), 1)
+  # This is not reliable in qemu
+  if (!grepl("qemu", ps_exe(ps))) {
+    expect_equal(ps_num_threads(ps), 1)
+  }
   ## TODO: more threads?
 })
 
@@ -224,7 +236,7 @@ test_that("kill", {
   expect_false(p1$is_alive())
   expect_false(ps_is_running(ps))
   if (ps_os_type()[["POSIX"]]) {
-    expect_equal(p1$get_exit_status(), - signals()$SIGKILL)
+    expect_equal(p1$get_exit_status(), - signals()$SIGTERM)
   }
 })
 
@@ -325,4 +337,67 @@ test_that("cpu affinity", {
   }
 
   expect_equal(callr::r(do), 0:0)
+})
+
+test_that("kill 2", {
+  skip_on_cran()
+  p <- processx::process$new(px(), c("sleep", "3"))
+  on.exit(p$kill(), add = TRUE)
+  ph <- p$as_ps_handle()
+
+  done <- if (ps_os_type()[["WINDOWS"]]) "killed" else "terminated"
+  expect_equal(ps_kill(ph), done)
+  expect_equal(ps_kill(ph), "dead")
+
+  # multiple processes
+  p1 <- processx::process$new(px(), c("sleep", "3"))
+  on.exit(p1$kill(), add = TRUE)
+  ph1 <- p1$as_ps_handle()
+  p2 <- processx::process$new(px(), c("sleep", "3"))
+  on.exit(p2$kill(), add = TRUE)
+  ph2 <- p2$as_ps_handle()
+
+  expect_equal(ps_kill(list(ph1, ph2)), c(done, done))
+  expect_equal(ps_kill(list(ph1, ph2)), c("dead", "dead"))
+
+  # some dead, some alive
+  p3 <- processx::process$new(px(), c("sleep", "3"))
+  on.exit(p3$kill(), add = TRUE)
+  ph3 <- p3$as_ps_handle()
+  p4 <- processx::process$new(px(), c("sleep", "3"))
+  on.exit(p4$kill(), add = TRUE)
+  ph4 <- p4$as_ps_handle()
+
+  expect_equal(ps_kill(ph3), done)
+  expect_equal(ps_kill(list(ph3, ph4)), c("dead", done))
+
+  # error up front for pid 0
+  if (ps_os_type()[["MACOS"]]) {
+    p5 <- processx::process$new(px(), c("sleep", "3"))
+    on.exit(p5$kill(), add = TRUE)
+    ph5 <- p5$as_ps_handle()
+    ph6 <- ps_handle(0)
+    expect_snapshot(error = TRUE, {
+      ps_kill(list(ph5, ph6))
+    })
+    expect_true(p5$is_alive())
+    p5$kill()
+  }
+
+  # access denied for some processes
+  if (ps_os_type()[["MACOS"]]) {
+    p7 <- processx::process$new(px(), c("sleep", "3"))
+    on.exit(p7$kill(), add = TRUE)
+    ph7 <- p7$as_ps_handle()
+    ph8 <- ps_handle(1)
+    p9 <- processx::process$new(px(), c("sleep", "3"))
+    on.exit(p9$kill(), add = TRUE)
+    ph9 <- p9$as_ps_handle()
+    expect_snapshot(error = TRUE, {
+      ps_kill(list(ph7, ph8, ph9))
+    })
+    expect_false(p7$is_alive())
+    expect_true(ps_is_running(ph8))
+    expect_false(p9$is_alive())
+  }
 })

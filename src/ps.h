@@ -36,7 +36,7 @@ SEXP psll_send_signal(SEXP p, SEXP sig);
 SEXP psll_suspend(SEXP p);
 SEXP psll_resume(SEXP p);
 SEXP psll_terminate(SEXP p);
-SEXP psll_kill(SEXP p);
+SEXP psll_kill(SEXP p, SEXP grace);
 SEXP psll_num_fds(SEXP p);
 SEXP psll_open_files(SEXP p);
 SEXP psll_interrupt(SEXP p, SEXP ctrlc, SEXP interrupt_path);
@@ -46,6 +46,7 @@ SEXP psll_set_nice(SEXP p, SEXP value);
 SEXP psll_dlls(SEXP p);
 SEXP psll_get_cpu_aff(SEXP p);
 SEXP psll_set_cpu_aff(SEXP p, SEXP affinity);
+SEXP psll_wait(SEXP p, SEXP timeout);
 
 /* System API */
 
@@ -60,6 +61,7 @@ SEXP ps__tty_size(void);
 SEXP ps__disk_partitions(SEXP all);
 SEXP ps__disk_usage(SEXP paths);
 SEXP ps__disk_io_counters(SEXP rperdisk);
+SEXP ps__fs_info(SEXP path, SEXP abspath);
 SEXP ps__system_memory(void);
 SEXP ps__system_swap(void);
 SEXP ps__loadavg(SEXP counter_name);
@@ -67,7 +69,6 @@ SEXP ps__loadavg(SEXP counter_name);
 /* Generic utils used from R */
 
 SEXP ps__init(SEXP psenv, SEXP constenv);
-SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig);
 SEXP ps__find_if_env(SEXP marker, SEXP after, SEXP pid);
 SEXP ps__inet_ntop(SEXP raw, SEXP fam);
 SEXP ps__memory_maps(SEXP p);

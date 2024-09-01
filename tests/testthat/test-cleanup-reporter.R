@@ -347,7 +347,7 @@ close(conn)
 test_that("Network cleanup, test, fail", {
   skip_on_cran()
   out <- list()
-  on.exit({ try(close(out$conn), silent = TRUE); gc() }, add = TRUE)
+  on.exit({ try(close(out$conn), silent = TRUE) }, add = TRUE)
   expect_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
@@ -418,4 +418,16 @@ test_that("Network connections already open are ignored", {
   expect_error(isOpen(out$conn))
   expect_true(isOpen(conn))
   expect_silent(close(conn))
+})
+
+# https://github.com/r-lib/ps/issues/163
+test_that("errors still cause a failure", {
+  rep <- CleanupReporter(testthat::SilentReporter)$new()
+  expect_error(
+    test_dir(
+      reporter = rep,
+      test_path("fixtures/cleanup-error"),
+      stop_on_failure = TRUE
+    )
+  )
 })

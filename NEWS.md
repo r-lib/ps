@@ -2,6 +2,35 @@
 
 * New function `ps_disk_io_counters()` to query disk I/O counters implemented on Windows and Linux. (#145, @michaelwalshe).
 
+* New `ps_fs_info()` to query information about the file system of one
+  or more files or directories.
+
+* New `ps_wait()` to start an interruptible wait on multiple processes,
+  with a timeout (#166).
+
+* `ps_handle()` now allowes a numeric (double) scalar as the pid, as long
+  as its value is integer.
+
+* `ps_send_signal()`, `ps_suspend()`, `ps_resume()`, `ps_terminate()`,
+  `ps_kill()`, and `ps_interrupt()` can now operate on multiple processes,
+  if passed a list of process handles.
+
+* `ps_kill()` and `ps_kill_tree()` have a new `grace` argument.
+  On Unix, if this argument is not zero, then `ps_kill()` first sends a
+  `TERM` signal, and waits for the processes to quit gracefully, via
+  `ps_wait()`. The processes that are still alive after the grace period
+  are then killed with `SIGKILL`.
+
+# ps 1.7.7
+
+* `ps_cpu_times()` values are now correct on newer arm64 macOS.
+
+# ps 1.7.6
+
+* `ps_name()` now does not fail in the rare case when `ps_cmdline()` returns an empty vector (#150).
+
+* `ps_system_cpu_times()` now returns CPU times divided by the HZ as reported by CLK_TCK, in-line with other OS's and the per-process version. (#144, @michaelwalshe).
+
 # ps 1.7.5
 
 No user visible changes.

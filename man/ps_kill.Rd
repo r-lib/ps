@@ -2,16 +2,32 @@
 % Please edit documentation in R/low-level.R
 \name{ps_kill}
 \alias{ps_kill}
-\title{Kill a process}
+\title{Kill one or more processes}
 \usage{
-ps_kill(p = ps_handle())
+ps_kill(p = ps_handle(), grace = 200)
 }
 \arguments{
-\item{p}{Process handle.}
+\item{p}{Process handle, or a list of process handles.}
+
+\item{grace}{Grace period, in milliseconds, used on Unix. If it is not
+zero, then \code{ps_kill()} first sends a \code{SIGTERM} signal to all processes
+in \code{p}. If some proccesses do not terminate within \code{grace}
+milliseconds after the \code{SIGTERM} signal, \code{ps_kill()} kills them by
+sending \code{SIGKILL} signals.}
+}
+\value{
+Character vector, with one element for each process handle in
+\code{p}. If the process was already dead before \code{ps_kill()} tried to kill
+it, the corresponding return value is \code{"dead"}. If \code{ps_kill()} just
+killed it, it is \code{"killed"}.
 }
 \description{
-Kill the current process with SIGKILL preemptively checking
-whether PID has been reused. On Windows it uses \code{TerminateProcess()}.
+Kill the process with SIGKILL preemptively checking whether PID has
+been reused. On Windows it uses \code{TerminateProcess()}.
+}
+\details{
+Note that since ps version 1.8, \code{ps_kill()} does not error if the
+\code{p} process (or some processes if \code{p} is a list) are already terminated.
 }
 \examples{
 \dontshow{if (ps::ps_is_supported() && ps::ps_os_type()["POSIX"] && ! ps:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

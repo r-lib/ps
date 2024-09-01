@@ -7,7 +7,7 @@
 ps_resume(p = ps_handle())
 }
 \arguments{
-\item{p}{Process handle.}
+\item{p}{Process handle or a list of process handles.}
 }
 \description{
 Resume process execution with SIGCONT preemptively checking

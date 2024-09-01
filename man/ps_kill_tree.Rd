@@ -13,7 +13,7 @@ with_process_cleanup(expr)
 
 ps_find_tree(marker)
 
-ps_kill_tree(marker, sig = signals()$SIGKILL)
+ps_kill_tree(marker, sig = signals()$SIGKILL, grace = 200)
 }
 \arguments{
 \item{expr}{R expression to evaluate in the new context.}
@@ -23,6 +23,12 @@ use to find the marked processes.}
 
 \item{sig}{The signal to send to the marked processes on Unix. On
 Windows this argument is ignored currently.}
+
+\item{grace}{Grace period, in milliseconds, used on Unix, if \code{sig} is
+\code{SIGKILL}.  If it is not zero, then \code{ps_kill_tree()} first sends a
+\code{SIGTERM} signal to all processes. If some proccesses do not
+terminate within \code{grace} milliseconds after the \code{SIGTERM} signal,
+\code{ps_kill_tree()} kills them by sending \code{SIGKILL} signals.}
 }
 \value{
 \code{ps_mark_tree()} returns the name of the environment variable,

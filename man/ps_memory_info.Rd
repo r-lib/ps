@@ -21,7 +21,7 @@ Memory usage information
 \details{
 \code{ps_memory_info()} returns information about memory usage.
 
-It returns a named list. Portable fields:
+It returns a named vector. Portable fields:
 \itemize{
 \item \code{rss}: "Resident Set Size", this is the non-swapped physical memory a
 process has used (bytes). On UNIX it matches "top"‘s 'RES' column (see doc). On

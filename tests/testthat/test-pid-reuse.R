@@ -40,7 +40,9 @@ test_that("pid reuse", {
   chk(ps_suspend(p))
   chk(ps_resume(p))
   if (ps_os_type()[["POSIX"]]) chk(ps_terminate(p))
-  chk(ps_kill(p))
+
+  # kill will be still OK, the original process is already dead
+  expect_equal(ps_kill(p), "dead")
 
   chk(ps_exe(p))
   chk(ps_cmdline(p))

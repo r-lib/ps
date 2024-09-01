@@ -42,6 +42,7 @@ test_that("UNIX sockets with path", {
   if (!ps_os_type()[["POSIX"]]) skip("No UNIX sockets")
   skip_without_program("socat")
   skip_if_no_processx()
+  skip_on_cran()
 
   sfile <- tempfile()
   sfile <- file.path(normalizePath(dirname(sfile)), basename(sfile))
@@ -71,7 +72,7 @@ test_that("TCP", {
 
   before <- ps_connections(ps_handle())
   cx <- curl::curl(httpbin$url("/drip"), open = "r")
-  on.exit({ close(cx); rm(cx); gc() }, add = TRUE)
+  on.exit({ close(cx); rm(cx) }, add = TRUE)
   after <- ps_connections(ps_handle())
   new <- after[! after$lport %in% before$lport, ]
   expect_equal(new$family, "AF_INET")

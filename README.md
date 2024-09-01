@@ -45,6 +45,12 @@ You can install the released version of ps from
 install.packages("ps")
 ```
 
+If you need the development version, install it with
+
+``` r
+pak::pak("r-lib/ps")
+```
+
 ``` r
 library(ps)
 library(pillar) # nicer printing of data frames

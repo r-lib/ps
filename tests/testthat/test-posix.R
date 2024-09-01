@@ -17,7 +17,6 @@ test_that("terminal", {
   ## It is a character special file
   out <- processx::run("ls", c("-l", tty))$stdout
   expect_equal(substr(out, 1, 1), "c")
-  gc()
 })
 
 test_that("username, uids, gids", {
@@ -37,7 +36,6 @@ test_that("username, uids, gids", {
 
   ps2_gid <- parse_ps(c("-o", "rgid", "-p", ps_pid(ps)))
   expect_equal(ps_gids(ps)[["real"]], as.numeric(ps2_gid))
-  gc()
 })
 
 
@@ -65,4 +63,51 @@ test_that("terminate", {
   expect_false(p1$is_alive())
   expect_false(ps_is_running(ps))
   expect_equal(p1$get_exit_status(), - signals()$SIGTERM)
+})
+
+test_that("kill with grace", {
+  p1 <- processx::process$new(
+    px(),
+    c("sigterm", "ignore", "outln", "setup", "sleep", "3"),
+    stdout = "|"
+  )
+  on.exit(p1$kill(), add = TRUE)
+  ph1 <- p1$as_ps_handle()
+
+  # need to wait until the SIGTERM handler is set up in px
+  expect_equal(p1$poll_io(1000)[["output"]], "ready")
+  expect_equal(ps_kill(ph1), "killed")
+})
+
+test_that("kill with grace, multiple processes", {
+  # ignored SIGTERM completely
+  p1 <- processx::process$new(
+    px(),
+    c("sigterm", "ignore", "outln", "setup", "sleep", "3"),
+    stdout = "|"
+  )
+  on.exit(p1$kill(), add = TRUE)
+  ph1 <- p1$as_ps_handle()
+
+  # exits 0.5s later after SIGTERM
+  p2 <- processx::process$new(
+    px(),
+    c("sigterm", "sleep", "0.5", "outln", "setup", "sleep", "3"),
+    stdout = "|"
+  )
+  on.exit(p2$kill(), add = TRUE)
+  ph2 <- p2$as_ps_handle()
+
+  # exits on SIGTERM
+  p3 <- processx::process$new(px(), c("sleep", "3"))
+  on.exit(p3$kill(), add = TRUE)
+  ph3 <- p3$as_ps_handle()
+
+  # wait until signal handlers are set up
+  expect_equal(p1$poll_io(1000)[["output"]], "ready")
+  expect_equal(p2$poll_io(1000)[["output"]], "ready")
+  expect_equal(
+    ps_kill(list(ph1, ph2, ph3), grace = 1000),
+    c("killed", "terminated", "terminated")
+  )
 })
