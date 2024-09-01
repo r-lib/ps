@@ -29,6 +29,7 @@ ps_disk_usage()
 }
 \seealso{
 Other disk functions: 
+\code{\link{ps_disk_io_counters}()},
 \code{\link{ps_disk_partitions}()}
 }
 \concept{disk functions}

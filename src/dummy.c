@@ -21,6 +21,7 @@ SEXP ps__dummy(const char *what) {
 #ifndef PS__WINDOWS
 SEXP ps__pids(void)          { return ps__dummy("ps_pids"); }
 SEXP psll_memory_uss(SEXP p) { return ps__dummy("psll_memory_uss"); }
+SEXP ps__disk_io_counters(void) { return ps__dummy("ps__get_disk_io_counters"); }
 #endif
 #endif
 #endif
@@ -73,6 +74,7 @@ SEXP ps__users(void) { return ps__dummy("ps_users"); }
 SEXP ps__loadavg(SEXP x) { return ps__dummy("ps_loadavg"); }
 SEXP ps__tty_size(void) { return ps__dummy("ps_tty_size"); }
 SEXP ps__disk_partitions(SEXP x) { return ps__dummy("ps_disk_partitions"); }
+SEXP ps__disk_io_counters(void) { return ps__dummy("ps__get_disk_io_counters"); }
 SEXP ps__disk_usage(void) { return ps__dummy("ps_disk_usage"); }
 SEXP ps__fs_info(SEXP x, SEXP y) { return ps__dummy("ps_fs_info"); }
 SEXP ps__system_cpu_times(void) { return ps__dummy("ps_system_cpu_times"); }

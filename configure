@@ -105,6 +105,7 @@ elif [ -n "$MACOS" ]; then
     MACROS="${MACROS} PS__MACOS"
     PS__MACOS=1
     OBJECTS="${OBJECTS} macos.o api-macos.o arch/macos/process_info.o"
+    OBJECTS="${OBJECTS} arch/macos/disk.o"
 
 elif [ -n "$FREEBSD" ]; then
     MACROS="${MACROS} PS__FREEBSD"

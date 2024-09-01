@@ -1,5 +1,8 @@
 # ps (development version)
 
+* New function `ps_disk_io_counters()` to query disk I/O counters
+  (#145, @michaelwalshe).
+
 * New `ps_fs_info()` to query information about the file system of one
   or more files or directories.
 

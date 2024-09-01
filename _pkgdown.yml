@@ -74,6 +74,7 @@ reference:
   - ps_tty_size
   - ps_disk_partitions
   - ps_disk_usage
+  - ps_disk_io_counters
   - ps_fs_info
   - ps_loadavg
   - ps_shared_lib_users
