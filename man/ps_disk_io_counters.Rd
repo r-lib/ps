@@ -4,23 +4,19 @@
 \alias{ps_disk_io_counters}
 \title{System-wide disk I/O counters}
 \usage{
-ps_disk_io_counters(perdisk = FALSE)
-}
-\arguments{
-\item{perdisk}{If \code{TRUE}, return 1 row for every physical disk on the system, else
-return totals.}
+ps_disk_io_counters()
 }
 \value{
-A data frame of either 1 row of total disk I/O, or 1 row
-per disk of I/O stats, with columns \code{name}, \code{read_count} \code{read_merged_count}
-\code{read_bytes}, \code{read_time}, \code{write_count}, \code{write_merged_count}, \code{write_bytes}
-\code{write_time}, and \code{busy_time}. \code{name} will be \code{NA} if perdisk is \code{FALSE}.
+A data frame of one row per disk of I/O stats, with columns
+\code{name}, \code{read_count} \code{read_merged_count} \code{read_bytes}, \code{read_time},
+\code{write_count}, \code{write_merged_count}, \code{write_bytes} \code{write_time}, and
+\code{busy_time}.
 }
 \description{
 Returns a data.frame of system-wide disk I/O counters.
 }
 \details{
-Includes the following fields for all supported platforms:
+Includes the following non-NA fields for all supported platforms:
 \itemize{
 \item \code{read_count}: number of reads
 \item \code{write_count}: number of writes
@@ -38,9 +34,8 @@ And for only some platforms:
 }
 }
 \examples{
-\dontshow{if (ps:::ps_os_name() == "LINUX" && ! ps:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (ps:::ps_os_name() \%in\% c("LINUX", "WINDOWS") && !ps:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ps_disk_io_counters()
-ps_disk_io_counters(perdisk = TRUE)
 \dontshow{\}) # examplesIf}
 }
 \seealso{

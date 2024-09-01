@@ -1606,15 +1606,13 @@ SEXP ps__system_swap() {
   return R_NilValue;
 }
 
-SEXP ps__disk_io_counters(SEXP rperdisk) {
+SEXP ps__disk_io_counters() {
     // Based on the implementation from psutil
     DISK_PERFORMANCE diskPerformance;
     DWORD dwSize;
     HANDLE hDevice = NULL;
     char szDevice[MAX_PATH];
     char szDeviceDisplay[MAX_PATH];
-    // Currently unused internally
-    int perdisk = LOGICAL(rperdisk)[0];
     int devNum;
     int i;
     DWORD ioctrlSize;

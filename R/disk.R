@@ -138,41 +138,28 @@ ps__disk_usage_format_posix <- function(paths, l) {
 #' * `read_merged_count`: number of merged reads (see iostats doc)
 #' * `write_merged_count`: number of merged writes (see iostats doc)
 #'
-#' @param perdisk If `TRUE`, return 1 row for every physical disk on the system, else
-#' return totals.
-#'
-#' @return A data frame of either 1 row of total disk I/O, or 1 row
-#' per disk of I/O stats, with columns `name`, `read_count` `read_merged_count`
-#' `read_bytes`, `read_time`, `write_count`, `write_merged_count`, `write_bytes`
-#' `write_time`, and `busy_time`. `name` will be `NA` if perdisk is `FALSE`.
+#' @return A data frame of one row per disk of I/O stats, with columns
+#' `name`, `read_count` `read_merged_count` `read_bytes`, `read_time`,
+#' `write_count`, `write_merged_count`, `write_bytes` `write_time`, and
+#' `busy_time`.
 #'
 #' @family disk functions
 #' @export
-#' @examplesIf ps:::ps_os_name() %in% c("LINUX", "WINDOWS) && !ps:::is_cran_check()
+#' @examplesIf ps:::ps_os_name() %in% c("LINUX", "WINDOWS") && !ps:::is_cran_check()
 #' ps_disk_io_counters()
-#' ps_disk_io_counters(perdisk = TRUE)
-ps_disk_io_counters <- function(perdisk = FALSE) {
-  assert_flag(perdisk)
+ps_disk_io_counters <- function() {
   os <- ps_os_name()
   if (os == "LINUX") {
-    disk_info <- ps__disk_io_counters_linux(perdisk)
+    ps__disk_io_counters_linux()
   } else if (os == "WINDOWS") {
-    disk_info <- ps__disk_io_counters_windows(perdisk)
-  } else {
-    stop("ps_disk_io_counters is currently only implemented for Linux and Windows")
-  }
-
-  if (!perdisk) {
-    # Sum all numeric cols, convert to df via list to ensure 1 row
-    total_info <- data.frame(name = NA, as.list(colSums(disk_info[, -1])))
-    return(total_info)
-  } else {
-    return(disk_info)
+    ps__disk_io_counters_windows()
+  } else if (os == "MACOS") {
+    ps__disk_io_counters_macos()
   }
 }
 
-ps__disk_io_counters_windows <- function(perdisk) {
-  l <- .Call(ps__disk_io_counters, perdisk)
+ps__disk_io_counters_windows <- function() {
+  l <- .Call(ps__disk_io_counters)
   disk_info <- data_frame(
     name = l[[1]],
     read_count = l[[2]],
@@ -186,7 +173,11 @@ ps__disk_io_counters_windows <- function(perdisk) {
     busy_time = NA
   )
 
-  return(disk_info[disk_info$name != "",])
+  disk_info[disk_info$name != "",]
+}
+
+ps__disk_io_counters_windows <- function() {
+  .Call(ps__disk_io_counters)
 }
 
 #' File system information for files

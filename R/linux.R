@@ -192,23 +192,16 @@ ps__system_cpu_times_linux <- function() {
   tms
 }
 
-
-
-ps__disk_io_counters_linux <- function(perdisk = FALSE) {
+ps__disk_io_counters_linux <- function() {
   # Internal disk IO counters for Linux, reads lines from diskstats if it exists
   # or /sys/block as a backup
   if (file.exists("/proc/diskstats")) {
-    disk_info <- ps__read_procfs()
+    ps__read_procfs()
   } else if (dir.exists("/sys/block")) {
-    disk_info <- ps__read_sysfs()
+    ps__read_sysfs()
   } else {
     stop("Can't read disk IO, neither /proc/diskstats or /sys/block on this system")
   }
-
-  # Keep all if perdisk, only keep non-partitions if perdisk=FALSE to get correct sums
-  disk_info <- disk_info[perdisk | ps__is_storage_device(disk_info$name), ]
-
-  return(disk_info)
 }
 
 ps__is_storage_device <- function(name, including_virtual = TRUE) {

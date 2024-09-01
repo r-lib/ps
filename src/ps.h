@@ -60,7 +60,7 @@ SEXP ps__users(void);
 SEXP ps__tty_size(void);
 SEXP ps__disk_partitions(SEXP all);
 SEXP ps__disk_usage(SEXP paths);
-SEXP ps__disk_io_counters(SEXP rperdisk);
+SEXP ps__disk_io_counters(void);
 SEXP ps__fs_info(SEXP path, SEXP abspath);
 SEXP ps__system_memory(void);
 SEXP ps__system_swap(void);
