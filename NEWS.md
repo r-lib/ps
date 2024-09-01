@@ -13,10 +13,11 @@
   `ps_kill()`, and `ps_interrupt()` can now operate on multiple processes,
   if passed a list of process handles.
 
-* `ps_kill()` has a new `grace` argument. On Unix, if this argument is
-  not zero, then `ps_kill()` first sends a `TERM` signal, and waits for
-  the processes to quit gracefully, via `ps_wait()`. The processes that
-  are still alive after the grace period are then killed with `SIGKILL`.
+* `ps_kill()` and `ps_kill_tree()` have a new `grace` argument.
+  On Unix, if this argument is not zero, then `ps_kill()` first sends a
+  `TERM` signal, and waits for the processes to quit gracefully, via
+  `ps_wait()`. The processes that are still alive after the grace period
+  are then killed with `SIGKILL`.
 
 # ps 1.7.7
 
