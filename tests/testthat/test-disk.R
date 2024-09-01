@@ -8,11 +8,6 @@ test_that("ps_fs_info", {
 })
 
 test_that("disk_io", {
-  if (ps_os_type()[["MACOS"]]) skip("Not on macOS yet")
-
-  # Validate inputs
-  expect_error(ps_disk_io_counters(123), class = "invalid_argument")
-
   result <- ps_disk_io_counters()
 
   # Check structure

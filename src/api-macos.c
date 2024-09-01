@@ -1477,7 +1477,3 @@ SEXP psll_wait(SEXP pps, SEXP timeout) {
   UNPROTECT(2);
   return res;
 }
-
-SEXP ps__disk_io_counters(void) {
-  return R_NilValue;
-}

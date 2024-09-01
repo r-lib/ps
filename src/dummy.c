@@ -21,6 +21,7 @@ SEXP ps__dummy(const char *what) {
 #ifndef PS__WINDOWS
 SEXP ps__pids(void)          { return ps__dummy("ps_pids"); }
 SEXP psll_memory_uss(SEXP p) { return ps__dummy("psll_memory_uss"); }
+SEXP ps__disk_io_counters(void) { return ps__dummy("ps__get_disk_io_counters"); }
 #endif
 #endif
 #endif
