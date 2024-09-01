@@ -308,124 +308,55 @@ find_procs_by_name("R")
 
 ### Wait for a process to finish
 
-On POSIX, there is no good way to wait for non-child processes to finish,
-so we need to write a sleep-wait loop to do it. (On Windows, and BSD
-systems, including macOS, there are better solutions.)
+`ps_wait()`, from ps 1.8.0, implements a new way, efficient for waiting on
+a list of processes, so this is now very easy:
 
 ```{r}
-as_secs <- function(x) as.numeric(x, units = "secs")
-
-wait_for_process <- function(proc, timeout = Inf, sleep = 0.1) {
-  sleep <- as_secs(sleep)
-  deadline <- Sys.time() + timeout
-  while (ps_is_running(proc) && (timeout == Inf || Sys.time() < deadline)) {
-    to <- min(as_secs(deadline - Sys.time()), sleep)
-    Sys.sleep(to)
-  }
-  ! ps_is_running(proc)
-}
-
 px <- processx::process$new("sleep", "2")
-p <- ps_handle(px$get_pid())
-wait_for_process(p, 1)
-wait_for_process(p)
+p <- px$as_ps_handle()
+ps_wait(p, 1000)
+ps_wait(p)
 ```
-
 ### Wait for several processes to finish
 
-This is similar, but we need to wait on all processes in a loop.
+Again, this is much simpler with `ps_wait()`, added in ps 1.8.0.
 
 ```{r}
-wait_for_processes <- function(procs, timeout = Inf) {
-  gone <- list()
-  alive <- procs
-  deadline <- Sys.time() + timeout
-
-  check_gone <- function(proc, timeout) {
-    proc_gone <- wait_for_process(proc, timeout = timeout)
-    if (proc_gone) {
-      gone <<- c(gone, list(proc))
-      alive <<- setdiff(alive, list(proc))
-    }
-  }
-
-  while (length(alive)) {
-    if (timeout <= 0) break
-    for (proc in alive) {
-      max_timeout <- 1 / length(alive)
-      if (timeout != Inf) {
-        timeout <- min(as_secs(deadline - Sys.time()), max_timeout)
-        if (timeout <= 0) break
-        check_gone(proc, timeout)
-      } else {
-        check_gone(proc, max_timeout)
-      }
-    }
-  }
-  list(gone = gone, alive = alive)
-}
-
 px1 <- processx::process$new("sleep", "10")
 px2 <- processx::process$new("sleep", "10")
 px3 <- processx::process$new("sleep", "1")
 px4 <- processx::process$new("sleep", "1")
 
-p1 <- ps_handle(px1$get_pid())
-p2 <- ps_handle(px2$get_pid())
-p3 <- ps_handle(px3$get_pid())
-p4 <- ps_handle(px4$get_pid())
+p1 <- px1$as_ps_handle()
+p2 <- px2$as_ps_handle()
+p3 <- px3$as_ps_handle()
+p4 <- px4$as_ps_handle()
 
-wait_for_processes(list(p1, p2, p3, p4), timeout = 2)
+ps_wait(list(p1, p2, p3, p4), timeout = 2000)
 ```
 
 ### Kill process tree
 
-This sends a signal, so it'll only work on Unix. Use `ps_kill()`
-instead of `ps_send_signal()` on Windows.
-
-```{r}
-kill_proc_tree <- function(pid, sig = signals()$SIGTERM,
-                           include_parent = TRUE) {
-  if (pid == Sys.getpid() && include_parent) stop("I refuse to kill myself")
-  parent <- ps_handle(pid)
-  children <- ps_children(parent, recursive = TRUE)
-  if (include_parent) children <- c(children, parent)
-  for (p in children) ps_send_signal(p, sig)
-  wait_for_processes(children, timeout = 0.1)
-}
-
-p1 <- processx::process$new("sleep", "10")
-p2 <- processx::process$new("sleep", "10")
-p3 <- processx::process$new("sleep", "10")
-kill_proc_tree(Sys.getpid(), include_parent = FALSE)
-```
-
-### Terminate children
+From ps 1.8.0, `ps_kill()` will first send `SIGTERM` signals on Unix,
+and `SIGKILL` after a grace period, if needed.
 
 Note, that some R IDEs, including RStudio, run a multithreaded R process,
 and other threads may start processes as well. `reap_children()` will clean
 up all these as well, potentially causing the IDE to misbehave or crash.
 
 ```{r}
-reap_children <- function(timeout = 3) {
-  procs <- ps_children(ps_handle())
-
-  ## SIGTERM
-  lapply(procs, ps_terminate)
-
-  ga <- wait_for_processes(procs, timeout = timeout)
-
-  ## SIGKILL to the survivers
-  if (length(ga$alive)) lapply(ga$alive, ps_kill)
-
-  ga2 <- wait_for_processes(ga$alive, timeout = timeout)
-
-  ## Some might still survive
-  list(gone = c(ga$gone, ga2$gone), alive = ga2$alive)
+kill_proc_tree <- function(pid, include_parent = TRUE, ...) {
+  if (pid == Sys.getpid() && include_parent) stop("I refuse to kill myself")
+  parent <- ps_handle(pid)
+  children <- ps_children(parent, recursive = TRUE)
+  if (include_parent) children <- c(children, list(parent))
+  ps_kill(children, ...)
 }
 
-pxs <- replicate(3, processx::process$new("sleep", "3"))
-reap_children()
+p1 <- processx::process$new("sleep", "10")
+p2 <- processx::process$new("sleep", "10")
+p3 <- processx::process$new("sleep", "10")
+kill_proc_tree(Sys.getpid(), include_parent = FALSE)
 ```
 
 ### Filtering and sorting processes
