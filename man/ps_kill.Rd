@@ -11,7 +11,7 @@ ps_kill(p = ps_handle(), grace = 200)
 
 \item{grace}{Grace period, in milliseconds, used on Unix. If it is not
 zero, then \code{ps_kill()} first sends a \code{SIGTERM} signal to all processes
-in \code{p}. If some proccesses do not terminate withing \code{grace}
+in \code{p}. If some proccesses do not terminate within \code{grace}
 milliseconds after the \code{SIGTERM} signal, \code{ps_kill()} kills them by
 sending \code{SIGKILL} signals.}
 }

@@ -114,7 +114,6 @@ SEXP psll_set_cpu_aff(SEXP p) { return ps__dummy("psll_set_cpu_aff"); }
 SEXP psll_wait(SEXP pps, SEXP timeout) { return ps__dummy("psll_wait"); }
 
 SEXP ps__init(SEXP x, SEXP y) { return R_NilValue; /* this needs to run to load package */ }
-SEXP ps__kill_if_env(SEXP x, SEXP y, SEXP z, SEXP a) { return ps__dummy("ps__kill_if_env"); }
 SEXP ps__find_if_env(SEXP x, SEXP y, SEXP z) { return ps__dummy("ps__find_if_env"); }
 SEXP ps__memory_maps(SEXP p) { return ps__dummy("ps__memory_maps"); }
 

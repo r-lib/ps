@@ -75,7 +75,6 @@ static const R_CallMethodDef callMethods[]  = {
 
   /* Utils */
   { "ps__init",          (DL_FUNC) ps__init,          2 },
-  { "ps__kill_if_env",   (DL_FUNC) ps__kill_if_env,   4 },
   { "ps__find_if_env",   (DL_FUNC) ps__find_if_env,   3 },
   { "ps__inet_ntop",     (DL_FUNC) ps__inet_ntop,     2 },
   { "ps__memory_maps",   (DL_FUNC) ps__memory_maps,   1 },

@@ -506,52 +506,6 @@ SEXP ps__cpu_count_physical(void) {
     return ScalarInteger(num);
 }
 
-SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
-  const char *cmarker = CHAR(STRING_ELT(marker, 0));
-  pid_t cpid = INTEGER(pid)[0];
-  int csig = INTEGER(sig)[0];
-  SEXP env;
-  size_t i, len;
-
-  PROTECT(env = ps__get_environ(cpid));
-  if (isNull(env)) {
-    ps__set_error_from_errno();
-    ps__throw_error();
-  }
-
-  len = LENGTH(env);
-
-  for (i = 0; i < len; i++) {
-    if (strstr(CHAR(STRING_ELT(env, i)), cmarker)) {
-      struct kinfo_proc kp;
-      int kpret = ps__get_kinfo_proc(cpid, &kp);
-      int ret = kill(cpid, csig);
-
-      if (ret == -1) {
-	if (errno == ESRCH) {
-	  ps__no_such_process(cpid, 0);
-	} else if (errno == EPERM || errno == EACCES) {
-	  ps__access_denied("");
-	} else  {
-	  ps__set_error_from_errno();
-	}
-	ps__throw_error();
-      }
-
-      UNPROTECT(1);
-
-      if (kpret != -1) {
-	return ps__str_to_utf8(kp.kp_proc.p_comm);
-      } else {
-	return mkString("???");
-      }
-    }
-  }
-
-  UNPROTECT(1);
-  return R_NilValue;
-}
-
 SEXP ps__find_if_env(SEXP marker, SEXP after, SEXP pid) {
   const char *cmarker = CHAR(STRING_ELT(marker, 0));
   pid_t cpid = INTEGER(pid)[0];

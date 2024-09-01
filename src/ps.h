@@ -68,7 +68,6 @@ SEXP ps__loadavg(SEXP counter_name);
 /* Generic utils used from R */
 
 SEXP ps__init(SEXP psenv, SEXP constenv);
-SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig);
 SEXP ps__find_if_env(SEXP marker, SEXP after, SEXP pid);
 SEXP ps__inet_ntop(SEXP raw, SEXP fam);
 SEXP ps__memory_maps(SEXP p);

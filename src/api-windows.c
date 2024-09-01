@@ -717,62 +717,6 @@ SEXP ps__cpu_count_physical() {
   }
 }
 
-SEXP ps__kill_if_env(SEXP marker, SEXP after, SEXP pid, SEXP sig) {
-  const char *cmarker = CHAR(STRING_ELT(marker, 0));
-  double cafter = REAL(after)[0];
-  DWORD cpid = INTEGER(pid)[0];
-  SEXP env;
-  size_t i, len;
-  double ctime = 0, ctime2 = 0;
-
-  /* Filter on start time */
-  FILETIME ftCreate;
-  int ret = ps__create_time_raw(cpid, &ftCreate);
-  if (ret) ps__throw_error();
-  ctime = ps__filetime_to_unix(ftCreate);
-  if (ctime < cafter - 1) return R_NilValue;
-
-  PROTECT(env = ps__get_environ(cpid));
-  if (isNull(env)) ps__throw_error();
-
-  len = LENGTH(env);
-
-  for (i = 0; i < len; i++) {
-    if (strstr(CHAR(STRING_ELT(env, i)), cmarker)) {
-      HANDLE hProcess = ps__handle_from_pid(cpid);
-      FILETIME ftCreate;
-      SEXP name, ret2;
-      int ret = ps__create_time_raw(cpid, &ftCreate);
-      if (ret) {
-	CloseHandle(hProcess);
-	ps__throw_error();
-      }
-
-      ctime2 = ps__filetime_to_unix(ftCreate);
-      if (fabs(ctime - ctime2) < 0.01)  {
-	PROTECT(name = ps__name(cpid));
-	ret2 = ps__proc_kill(cpid);
-	CloseHandle(hProcess);
-	if (isNull(ret2)) ps__throw_error();
-	if (isNull(name)) {
-	  UNPROTECT(2);
-	  return mkString("???");
-	} else {
-	  UNPROTECT(2);
-	  return name;
-	}
-      } else  {
-	CloseHandle(hProcess);
-	UNPROTECT(1);
-	return R_NilValue;
-      }
-    }
-  }
-
-  UNPROTECT(1);
-  return R_NilValue;
-}
-
 SEXP ps__find_if_env(SEXP marker, SEXP after, SEXP pid) {
   const char *cmarker = CHAR(STRING_ELT(marker, 0));
   double cafter = REAL(after)[0];
