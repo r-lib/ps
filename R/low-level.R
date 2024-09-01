@@ -784,7 +784,7 @@ ps_terminate <- function(p = ps_handle()) {
 #' @param p Process handle, or a list of process handles.
 #' @param grace Grace period, in milliseconds, used on Unix. If it is not
 #'   zero, then `ps_kill()` first sends a `SIGTERM` signal to all processes
-#'   in `p`. If some proccesses do not terminate withing `grace`
+#'   in `p`. If some proccesses do not terminate within `grace`
 #'   milliseconds after the `SIGTERM` signal, `ps_kill()` kills them by
 #'   sending `SIGKILL` signals.
 #' @return Character vector, with one element for each process handle in

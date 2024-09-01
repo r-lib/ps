@@ -874,43 +874,6 @@ static int psl__linux_match_environ(SEXP r_marker, SEXP r_pid) {
   return ps__memmem(buf, ret, marker, strlen(marker)) != NULL;
 }
 
-SEXP ps__kill_if_env(SEXP r_marker, SEXP r_after, SEXP r_pid, SEXP r_sig) {
-
-  pid_t pid = INTEGER(r_pid)[0];
-  int sig = INTEGER(r_sig)[0];
-  int ret;
-  int match;
-
-  match = psl__linux_match_environ(r_marker, r_pid);
-
-  if (match == -1) ps__throw_error();
-
-  if (match) {
-    psl_stat_t stat;
-    char *name;
-    int stret = psll__parse_stat_file(pid, &stat, &name);
-    ret = kill(pid, sig);
-    if (ret == -1) {
-      if (errno == ESRCH) {
-	ps__no_such_process(pid, 0);
-      } else if (errno == EPERM  || errno == EACCES) {
-	ps__access_denied("");
-      } else {
-	ps__set_error_from_errno();
-      }
-      ps__throw_error();
-    }
-
-    if (stret != -1) {
-      return ps__str_to_utf8(name);
-    } else {
-      return mkString("???");
-    }
-  }
-
-  return R_NilValue;
-}
-
 SEXP ps__find_if_env(SEXP r_marker, SEXP r_after, SEXP r_pid) {
   SEXP phandle;
   int match;
