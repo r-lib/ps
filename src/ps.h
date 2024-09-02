@@ -65,6 +65,7 @@ SEXP ps__fs_info(SEXP path, SEXP abspath);
 SEXP ps__system_memory(void);
 SEXP ps__system_swap(void);
 SEXP ps__loadavg(SEXP counter_name);
+SEXP ps__list_apps(void);
 
 /* Generic utils used from R */
 
