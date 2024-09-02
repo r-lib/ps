@@ -62,6 +62,13 @@ SEXP ps__memory_maps(SEXP p) { return ps__dummy("ps__memory_maps"); }
 #endif
 #endif
 
+/* Only implemented on macOS */
+#ifndef PS__MACOS
+#if defined(PS__WINDOWS) || defined(PS__LINUX)
+SEXP ps__list_apps() { return ps__dummy("ps__list_apps"); }
+#endif
+#endif
+
 /* All C functions called from R */
 #ifndef PS__MACOS
 #ifndef PS__LINUX

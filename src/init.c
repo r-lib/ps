@@ -35,6 +35,7 @@ static const R_CallMethodDef callMethods[]  = {
   { "ps__fs_info",            (DL_FUNC) ps__fs_info,            2 },
   { "ps__system_memory",      (DL_FUNC) ps__system_memory,      0 },
   { "ps__system_swap",        (DL_FUNC) ps__system_swap,        0 },
+  { "ps__list_apps",          (DL_FUNC) ps__list_apps,          0 },
 
   /* ps_handle API */
   { "psll_pid",          (DL_FUNC) psll_pid,          1 },

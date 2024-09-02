@@ -1,5 +1,7 @@
 # ps (development version)
 
+* New `ps_apss()` function to list all running applications on macOS.
+
 * New function `ps_disk_io_counters()` to query disk I/O counters
   (#145, @michaelwalshe).
 
