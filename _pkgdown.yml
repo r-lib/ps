@@ -15,6 +15,7 @@ reference:
 - title: List processes
   contents:
   - ps
+  - ps_apps
   - ps_pids
 
 - title: Process query API
