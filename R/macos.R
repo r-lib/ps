@@ -47,3 +47,39 @@ macos_archs <- data.frame(
   name = c("arm64",    "i386",     "x86_64",   "ppc",      "ppc64"),
   code = c(0x0100000c, 0x00000007, 0x01000007, 0x00000012, 0x01000012)
 )
+
+ps_status_macos_ps <- function(pids) {
+  stopifnot(is.integer(pids))
+  suppressWarnings(tryCatch({
+    out <- system2(
+      "/bin/ps",
+      c("-o", "pid,stat", "-p", paste(pids, collapse = ",")),
+      stdout = TRUE,
+      stderr = FALSE
+    )
+    out <- out[-1]
+    out <- trimws(out)
+    out2 <- strsplit(out, " ")
+    opids <- map_int(out2, function(x) as.integer(x[[1]]))
+    state <- map_chr(out2, function(x) substr(x[[2]], 1, 1))
+    state <- macos_process_states[state]
+    unname(state[match(pids, opids)])
+  }, error = function(e) rep(NA_character_, length(pids))))
+}
+
+# From `man 1 ps`
+# I       Marks a process that is idle (sleeping for longer than about 20 seconds).
+# R       Marks a runnable process.
+# S       Marks a process that is sleeping for less than about 20 seconds.
+# T       Marks a stopped process.
+# U       Marks a process in uninterruptible wait.
+# Z       Marks a dead process (a “zombie”).
+
+macos_process_states <- c(
+  I = "idle",
+  R = "running",
+  S = "sleeping",
+  T = "stopped",
+  U = "uninterruptible",
+  Z = "zombie"
+)

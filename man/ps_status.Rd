@@ -15,7 +15,8 @@ Character scalar.
 \description{
 One of the following:
 \itemize{
-\item \code{"idle"}: Process being created by fork, macOS only.
+\item \code{"idle"}: Process being created by fork, or process has been sleeping
+for a long time. macOS only.
 \item \code{"running"}: Currently runnable on macOS and Windows. Actually
 running on Linux.
 \item \code{"sleeping"} Sleeping on a wait or poll.
@@ -23,6 +24,7 @@ running on Linux.
 (Linux only).
 \item \code{"stopped"} Stopped, either by a job control signal or because it
 is being traced.
+\item \code{"uninterruptible"} Process is in uninterruptible wait. macOS only.
 \item \code{"tracing_stop"} Stopped for tracing (Linux only).
 \item \code{"zombie"} Zombie. Finished, but parent has not read out the exit
 status yet.
@@ -32,8 +34,32 @@ status yet.
 }
 }
 \details{
+It might return \code{NA_character_} on macOS.
+
 Works for zombie processes.
 }
+\section{Note on macOS}{
+
+On macOS \code{ps_status()} often falls back to calling the external \code{ps}
+program, because macOS does not let R access the status of most other
+processes. Notably, it is usually able to access the status of other R
+processes.
+
+The external \code{ps} program always runs as the root user, and
+it also has special entitlements, so it can typically access the status
+of most processes.
+
+If this behavior is problematic for you, e.g. because calling an
+external program is too slow, set the \code{ps.no_external_ps} option to
+\code{TRUE}:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{options(ps.no_external_ps = TRUE)
+}\if{html}{\out{</div>}}
+
+Note that setting this option to \code{TRUE} will cause \code{ps_status()} to
+return \code{NA_character_} for most processes.
+}
+
 \examples{
 \dontshow{if (ps::ps_is_supported() && ! ps:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 p <- ps_handle()

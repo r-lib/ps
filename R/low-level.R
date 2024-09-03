@@ -249,7 +249,8 @@ ps_cmdline <- function(p = ps_handle()) {
 #' Current process status
 #'
 #' One of the following:
-#' * `"idle"`: Process being created by fork, macOS only.
+#' * `"idle"`: Process being created by fork, or process has been sleeping
+#'     for a long time. macOS only.
 #' * `"running"`: Currently runnable on macOS and Windows. Actually
 #'     running on Linux.
 #' * `"sleeping"` Sleeping on a wait or poll.
@@ -257,6 +258,7 @@ ps_cmdline <- function(p = ps_handle()) {
 #'    (Linux only).
 #' * `"stopped"` Stopped, either by a job control signal or because it
 #'    is being traced.
+#' * `"uninterruptible"` Process is in uninterruptible wait. macOS only.
 #' * `"tracing_stop"` Stopped for tracing (Linux only).
 #' * `"zombie"` Zombie. Finished, but parent has not read out the exit
 #'    status yet.
@@ -264,7 +266,28 @@ ps_cmdline <- function(p = ps_handle()) {
 #' * `"wake_kill"` Received fatal signal (Linux only).
 #' * `"waking"` Paging (Linux only, not valid since the 2.6.xx kernel).
 #'
+#' It might return `NA_character_` on macOS.
+#'
 #' Works for zombie processes.
+#'
+#' @section Note on macOS:
+#' On macOS `ps_status()` often falls back to calling the external `ps`
+#' program, because macOS does not let R access the status of most other
+#' processes. Notably, it is usually able to access the status of other R
+#' processes.
+#'
+#' The external `ps` program always runs as the root user, and
+#' it also has special entitlements, so it can typically access the status
+#' of most processes.
+#'
+#' If this behavior is problematic for you, e.g. because calling an
+#' external program is too slow, set the `ps.no_external_ps` option to
+#' `TRUE`:
+#' ```
+#' options(ps.no_external_ps = TRUE)
+#' ```
+#' Note that setting this option to `TRUE` will cause `ps_status()` to
+#' return `NA_character_` for most processes.
 #'
 #' @param p Process handle.
 #' @return Character scalar.
@@ -278,9 +301,13 @@ ps_cmdline <- function(p = ps_handle()) {
 
 ps_status <- function(p = ps_handle()) {
   assert_ps_handle(p)
-  .Call(psll_status, p)
+  ret <- .Call(psll_status, p)
+  if (is.na(ret) && ps_os_type()[["MACOS"]] &&
+      !isTRUE(getOption("ps.no_external_ps"))) {
+    ret <- ps_status_macos_ps(ps_pid(p))
+  }
+  ret
 }
-
 
 #' Owner of the process
 #'

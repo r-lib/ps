@@ -3,6 +3,7 @@ if (!ps_os_type()[["MACOS"]]) return()
 
 test_that("status", {
   ## Argument check
+  skip_on_cran()
   expect_error(ps_status(123), class = "invalid_argument")
 
   p1 <- processx::process$new("sleep", "10")
@@ -10,12 +11,13 @@ test_that("status", {
   ps <- ps_handle(p1$get_pid())
   expect_true(ps_is_running(ps))
 
-  expect_equal(ps_status(ps), "running")
+  expect_equal(ps_status(), "running")
+  expect_equal(ps_status(ps), "sleeping")
   ps_suspend(ps)
   expect_equal(ps_status(ps), "stopped")
   ps_resume(ps)
-  expect_equal(ps_status(ps), "running")
-  ## TODO: can't easily test 'sleeping' and 'idle'
+  expect_equal(ps_status(ps), "sleeping")
+  ## TODO: can't easily test 'idle'
 })
 
 test_that("cpu_times", {

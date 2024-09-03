@@ -51,15 +51,100 @@ struct mach_timebase_info PS_MACH_TIMEBASE_INFO;
     PS__CHECK_KINFO(kp, handle);			\
   } while (0)
 
-#define PS__GET_STATUS(stat, result, error)		\
+#define PS__GET_STATUS(pid, stat, result, error)		\
   switch(stat) {					\
   case SIDL:   result = mkString("idle");     break;	\
-  case SRUN:   result = mkString("running");  break;	\
+  case SRUN:   result = ps__get_status(pid);  break;	\
   case SSLEEP: result = mkString("sleeping"); break;	\
   case SSTOP:  result = mkString("stopped");  break;	\
   case SZOMB:  result = mkString("zombie");   break;	\
   default:     error;					\
   }
+
+// this is a non-API alternative for task_for_pid(). ps uses this:
+// https://github.com/apple-oss-distributions/adv_cmds/blob/8744084ea0ff41ca4bb96b0f9c22407d0e48e9b7/ps/tasks.c#L28
+// but it seems that it does not actually change anything, and we still
+// cannot get the tesk for most processes, so no need to use it right now
+// extern kern_return_t task_read_for_pid(
+// 	mach_port_name_t target_tport,
+// 	int pid,
+// 	mach_port_name_t *t);
+
+SEXP ps__get_status(long pid) {
+  /*
+   * Scan threads for process state information.
+   * Based on:
+   * http://stackoverflow.com/questions/6788274/ios-mac-cpu-usage-for-thread and
+   * https://github.com/max-horvath/htop-osx/blob/e86692e869e30b0bc7264b3675d2a4014866ef46/ProcessList.c
+   */
+
+  kern_return_t ret;
+  task_t port;
+  ret = task_for_pid(mach_task_self(), pid, &port);
+  if (ret != KERN_SUCCESS) {
+    return Rf_ScalarString(NA_STRING);
+  }
+
+  task_info_data_t tinfo;
+  mach_msg_type_number_t task_info_count = TASK_INFO_MAX;
+  ret = task_info(
+    port,
+    TASK_BASIC_INFO,
+    (task_info_t) tinfo,
+    &task_info_count
+  );
+  if (ret != KERN_SUCCESS) {
+    return Rf_ScalarString(NA_STRING);
+  }
+
+  thread_array_t thread_list;
+  mach_msg_type_number_t thread_count;
+  ret = task_threads(port, &thread_list, &thread_count);
+  if (ret != KERN_SUCCESS) {
+    mach_port_deallocate(mach_task_self(), port);
+    return Rf_ScalarString(NA_STRING);
+  }
+
+  integer_t run_state = 999;
+  for (unsigned int i = 0; i < thread_count; i++) {
+    thread_info_data_t thinfo;
+    mach_msg_type_number_t thread_info_count = THREAD_BASIC_INFO_COUNT;
+    ret = thread_info(
+      thread_list[i],
+      THREAD_BASIC_INFO,
+      (thread_info_t) thinfo,
+      &thread_info_count
+    );
+    if (ret == KERN_SUCCESS) {
+      thread_basic_info_t basic_info_th = (thread_basic_info_t)thinfo;
+      if (basic_info_th->run_state < run_state) {
+        run_state = basic_info_th->run_state;
+      }
+      mach_port_deallocate(mach_task_self(), thread_list[i]);
+    }
+  }
+  vm_deallocate(
+    mach_task_self(),
+    (vm_address_t)thread_list,
+    sizeof(thread_port_array_t) * thread_count
+  );
+  mach_port_deallocate(mach_task_self(), port);
+
+  switch (run_state) {
+  case TH_STATE_RUNNING:
+    return mkString("running");
+  case TH_STATE_STOPPED:
+    return mkString("stopped");
+  case TH_STATE_WAITING:
+    return mkString("sleeping");
+  case TH_STATE_UNINTERRUPTIBLE:
+    return mkString("uninterruptible");
+  case TH_STATE_HALTED:
+    return mkString("halted");
+  default:
+    return Rf_ScalarString(NA_STRING);
+  }
+}
 
 void ps__check_for_zombie(ps_handle_t *handle, int err) {
   struct kinfo_proc kp;
@@ -140,7 +225,7 @@ SEXP psll_format(SEXP p) {
     PROTECT(status = mkString("terminated"));
   } else {
     PROTECT(name = ps__str_to_utf8(kp.kp_proc.p_comm));
-    PS__GET_STATUS(kp.kp_proc.p_stat, status, status = mkString("unknown"));
+    PS__GET_STATUS(handle->pid, kp.kp_proc.p_stat, status, status = mkString("unknown"));
     PROTECT(status);
   }
   PROTECT(result = ps__build_list("OldO", name, (long) handle->pid,
@@ -264,7 +349,7 @@ SEXP psll_status(SEXP p) {
 
   PS__CHECK_KINFO(kp, handle);
 
-  PS__GET_STATUS(kp.kp_proc.p_stat, result, error("Unknown process status"));
+  PS__GET_STATUS(handle->pid, kp.kp_proc.p_stat, result, error("Unknown process status"));
 
   return result;
 }
