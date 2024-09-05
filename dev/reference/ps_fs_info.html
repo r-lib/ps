@@ -57,7 +57,7 @@ direcories as well.</p></dd>
     <p>Data frame with file system information for each
 path in <code>paths</code>, one row per path. Common columns for all
 operating systems:</p><ul><li><p><code>path</code>: The input paths, i.e. the <code>paths</code> argument.</p></li>
-<li><p><code>mount_point</code>: Directory where the file system is mounted.
+<li><p><code>mountpoint</code>: Directory where the file system is mounted.
 On Linux there is a small chance that it was not possible to
 look this up, and it is <code>NA_character_</code>. This is the drive letter
 or the mount directory on Windows, with a trailing <code>\</code>.</p></li>
@@ -172,11 +172,11 @@ zeroed).</p></li>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ps_fs_info</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"/"</span>, <span class="st">"~"</span>, <span class="st">"."</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 3 × 25</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   path  mount_point name      type  block_size transfer_block_size</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> /     /           /dev/root ext4        <span style="text-decoration: underline;">4</span>096                <span style="text-decoration: underline;">4</span>096</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> ~     /           /dev/root ext4        <span style="text-decoration: underline;">4</span>096                <span style="text-decoration: underline;">4</span>096</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> .     /           /dev/root ext4        <span style="text-decoration: underline;">4</span>096                <span style="text-decoration: underline;">4</span>096</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   path  mountpoint name      type  block_size transfer_block_size</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> /     /          /dev/root ext4        <span style="text-decoration: underline;">4</span>096                <span style="text-decoration: underline;">4</span>096</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> ~     /          /dev/root ext4        <span style="text-decoration: underline;">4</span>096                <span style="text-decoration: underline;">4</span>096</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> .     /          /dev/root ext4        <span style="text-decoration: underline;">4</span>096                <span style="text-decoration: underline;">4</span>096</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 19 more variables: total_data_blocks &lt;dbl&gt;, free_blocks &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   free_blocks_non_superuser &lt;dbl&gt;, total_nodes &lt;dbl&gt;, free_nodes &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   id &lt;list&gt;, owner &lt;dbl&gt;, type_code &lt;dbl&gt;, subtype_code &lt;dbl&gt;,</span></span>
