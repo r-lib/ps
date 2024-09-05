@@ -17,7 +17,7 @@ path in \code{paths}, one row per path. Common columns for all
 operating systems:
 \itemize{
 \item \code{path}: The input paths, i.e. the \code{paths} argument.
-\item \code{mount_point}: Directory where the file system is mounted.
+\item \code{mountpoint}: Directory where the file system is mounted.
 On Linux there is a small chance that it was not possible to
 look this up, and it is \code{NA_character_}. This is the drive letter
 or the mount directory on Windows, with a trailing \verb{\\}.

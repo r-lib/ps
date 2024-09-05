@@ -1136,7 +1136,7 @@ SEXP ps__fs_info(SEXP path, SEXP abspath) {
 
   const char *nms[] = {
     "path",                         // 0
-    "mount_point",                  // 1
+    "mountpoint",                  // 1
     "name",                         // 2
     "type",                         // 3
     "block_size",                   // 4

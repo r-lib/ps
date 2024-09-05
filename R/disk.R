@@ -204,7 +204,7 @@ ps__disk_io_counters_macos <- function() {
 #'   path in `paths`, one row per path. Common columns for all
 #'   operating systems:
 #'   * `path`: The input paths, i.e. the `paths` argument.
-#'   * `mount_point`: Directory where the file system is mounted.
+#'   * `mountpoint`: Directory where the file system is mounted.
 #'     On Linux there is a small chance that it was not possible to
 #'     look this up, and it is `NA_character_`. This is the drive letter
 #'     or the mount directory on Windows, with a trailing `\`.
