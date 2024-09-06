@@ -30,6 +30,8 @@
 <url><loc>https://ps.r-lib.org/dev/reference/ps_environ.html</loc></url>
 <url><loc>https://ps.r-lib.org/dev/reference/ps_exe.html</loc></url>
 <url><loc>https://ps.r-lib.org/dev/reference/ps_fs_info.html</loc></url>
+<url><loc>https://ps.r-lib.org/dev/reference/ps_fs_mount_point.html</loc></url>
+<url><loc>https://ps.r-lib.org/dev/reference/ps_fs_stat.html</loc></url>
 <url><loc>https://ps.r-lib.org/dev/reference/ps_get_cpu_affinity.html</loc></url>
 <url><loc>https://ps.r-lib.org/dev/reference/ps_get_nice.html</loc></url>
 <url><loc>https://ps.r-lib.org/dev/reference/ps_handle.html</loc></url>
