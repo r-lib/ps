@@ -67,16 +67,21 @@ reference:
   contents:
   - ps_users
 
-- title: System information
+- title: Disks and files
+  contents:
+  - ps_disk_partitions
+  - ps_disk_usage
+  - ps_disk_io_counters
+  - ps_fs_info
+  - ps_fs_mount_point
+  - ps_fs_stat
+
+- title: Other system information
   contents:
   - ps_boot_time
   - ps_os_type
   - ps_cpu_count
   - ps_tty_size
-  - ps_disk_partitions
-  - ps_disk_usage
-  - ps_disk_io_counters
-  - ps_fs_info
   - ps_loadavg
   - ps_shared_lib_users
   - ps_system_cpu_times

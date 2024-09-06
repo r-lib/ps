@@ -87,6 +87,8 @@ SEXP ps__fs_info(SEXP x, SEXP y) { return ps__dummy("ps_fs_info"); }
 SEXP ps__system_cpu_times(void) { return ps__dummy("ps_system_cpu_times"); }
 SEXP ps__system_memory(void) { return ps__dummy("ps_system_memory"); }
 SEXP ps__system_swap(void) { return ps__dummy("ps_system_swap"); }
+SEXP ps__stat(SEXP x, SEXP f) { return ps__dummy("ps_fs_stat"); }
+SEXP ps__mount_point(SEXP x) { return ps__dummy("ps_fs_mount_point"); }
 
 SEXP psll_handle(SEXP x, SEXP y) { return ps__dummy("ps_handle"); }
 SEXP psll_format(SEXP x) { return ps__dummy("ps_format"); }

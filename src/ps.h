@@ -66,6 +66,8 @@ SEXP ps__system_memory(void);
 SEXP ps__system_swap(void);
 SEXP ps__loadavg(SEXP counter_name);
 SEXP ps__list_apps(void);
+SEXP ps__stat(SEXP path, SEXP follow);
+SEXP ps__mount_point(SEXP paths);
 
 /* Generic utils used from R */
 

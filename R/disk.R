@@ -348,3 +348,76 @@ linux_fs_types <- utils::read.table(
   header = TRUE,
   stringsAsFactors = FALSE
 )
+
+posix_stat_types <- c(
+  "regular file",
+  "directory",
+  "character device",
+  "block device",
+  "FIFO",
+  "symbolic link",
+  "socket"
+)
+
+#' File status
+#'
+#' This function is currently not implemented on Windows.
+#'
+#' @param paths Paths to files, directories, devices, etc. They must
+#'   exist. They are expanded using [base::path.expand()].
+#' @param follow Whether to follow symbolic links. If `FALSE` it returns
+#'   information on the links themselves.
+#' @return Data frame with one row for each path in `paths`. Columns:
+#'   * `path`: Expanded `paths`.
+#'   * `dev_major`: Major device ID of the device the path resides on.
+#'   * `dev_minor`: Minor device ID of the device the path resodes on.
+#'   * `inode`: Inode number.
+#'   * `mode`: File type and mode (permissions). It is easier to use the
+#'     `type` and `permissions` columns.
+#'   * `type`: File type, character. One of
+#'     `r paste(posix_stat_types, collapse = ", ")`.
+#'   * `permissions`: Permissions, numeric code in an integer column.
+#'   * `nlink`: Number of hard links.
+#'   * `uid`: User id of owner.
+#'   * `gid`: Group id of owner.
+#'   * `rdev_major`: If the path is a device, its major device id,
+#'     otherwise `NA_integer_`.
+#'   * `rdev_minor`: IF the path is a device, its minor device id,
+#'     otherwise `NA_integer_`.
+#'   * `size`: File size in bytes.
+#'   * `block_size`: Block size for filesystem I/O.
+#'   * `blocks`: Number of 512B blocks allocated.
+#'   * `access_time`: Time of last access.
+#'   * `modification_time`: Time of last modification.
+#'   * `change_time`: Time of last status change.
+#'
+#' @export
+#' @examplesIf ps::ps_is_supported() && ! ps:::is_cran_check() && ps_os_type()[["POSIX"]]
+#' ps_fs_stat(c(".", tempdir()))
+
+ps_fs_stat <- function(paths, follow = TRUE) {
+  assert_character(paths)
+  paths <- path.expand(paths)
+  res <- .Call(ps__stat, paths, follow)
+  res[["type"]] <- posix_stat_types[res[["type"]]]
+  res[["access_time"]] <- .POSIXct(res[["access_time"]], "UTC")
+  res[["modification_time"]] <- .POSIXct(res[["modification_time"]], "UTC")
+  res[["change_time"]] <- .POSIXct(res[["change_time"]], "UTC")
+  as_data_frame(res)
+}
+
+#' Find the mount point of a file or directory
+#'
+#' @param paths Paths to files, directories, devices, etc. They must
+#'   exist. They are expanded using [base::path.expand()].
+#' @return Character vector, paths to the mount points of the input
+#'   `paths`.
+#' @export
+#' @examplesIf ps::ps_is_supported() && ! ps:::is_cran_check()
+#' ps_fs_mount_point(".")
+
+ps_fs_mount_point <- function(paths) {
+  assert_character(paths)
+  paths <- path.expand(paths)
+  call_with_cleanup(ps__mount_point, paths)
+}

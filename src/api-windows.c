@@ -2108,3 +2108,37 @@ SEXP psll_wait(SEXP pps, SEXP timeout) {
   UNPROTECT(2);
   return res;
 }
+
+SEXP ps__stat(SEXP paths, SEXP follow) {
+  Rf_error("ps__stat is not implemented on Windows");
+}
+
+SEXP ps__mount_point(SEXP paths) {
+  R_xlen_t i, len = Rf_xlength(paths);
+  SEXP res = PROTECT(Rf_allocVector(STRSXP, len));
+
+  for (i = 0; i < len; i++) {
+    const char *cpath = CHAR(STRING_ELT(paths, i));
+    wchar_t *wpath;
+    int iret = ps__utf8_to_utf16(cpath, &wpath);
+    if (iret) {
+      ps__throw_error();
+    }
+
+    // look up mount point
+    wchar_t volume[MAX_PATH + 1];
+    BOOL ok = GetVolumePathNameW(
+      wpath,
+      volume,
+      sizeof(volume)/sizeof(wchar_t) - 1
+    );
+    if (!ok) {
+      ps__set_error_from_windows_error(0);
+      ps__throw_error();
+    }
+    SET_STRING_ELT(res, i, ps__utf16_to_charsxp(volume, -1));
+  }
+
+  UNPROTECT(1);
+  return res;
+}
