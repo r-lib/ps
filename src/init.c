@@ -32,7 +32,7 @@ static const R_CallMethodDef callMethods[]  = {
   { "ps__disk_partitions",    (DL_FUNC) ps__disk_partitions,    1 },
   { "ps__disk_usage",         (DL_FUNC) ps__disk_usage,         1 },
   { "ps__disk_io_counters",   (DL_FUNC) ps__disk_io_counters,   0 },
-  { "ps__fs_info",            (DL_FUNC) ps__fs_info,            2 },
+  { "ps__fs_info",            (DL_FUNC) ps__fs_info,            3 },
   { "ps__system_memory",      (DL_FUNC) ps__system_memory,      0 },
   { "ps__system_swap",        (DL_FUNC) ps__system_swap,        0 },
   { "ps__list_apps",          (DL_FUNC) ps__list_apps,          0 },

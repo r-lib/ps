@@ -1130,13 +1130,13 @@ error:
   return R_NilValue;
 }
 
-SEXP ps__fs_info(SEXP path, SEXP abspath) {
+SEXP ps__fs_info(SEXP path, SEXP abspath, SEXP mps) {
   struct statfs sfs;
   R_xlen_t i, len = Rf_xlength(path);
 
   const char *nms[] = {
     "path",                         // 0
-    "mountpoint",                  // 1
+    "mountpoint",                   // 1
     "name",                         // 2
     "type",                         // 3
     "block_size",                   // 4
@@ -1218,8 +1218,7 @@ SEXP ps__fs_info(SEXP path, SEXP abspath) {
       );
       ps__throw_error();
     }
-    SET_STRING_ELT(VECTOR_ELT(res, 1), i,
-                   Rf_mkCharCE(sfs.f_mntonname, CE_UTF8));
+    SET_STRING_ELT(VECTOR_ELT(res, 1), i, STRING_ELT(mps, i));
     SET_STRING_ELT(VECTOR_ELT(res, 2), i,
                    Rf_mkCharCE(sfs.f_mntfromname, CE_UTF8));
     SET_STRING_ELT(VECTOR_ELT(res, 3), i,

@@ -1654,41 +1654,14 @@ error:
 #define ST_RELATIME	0x1000	/* update atime relative to mtime/ctime */
 #define ST_NOSYMFOLLOW	0x2000	/* do not follow symlinks */
 
-SEXP ps__fs_info(SEXP path, SEXP abspath) {
+SEXP ps__fs_info(SEXP path, SEXP abspath, SEXP mps) {
   struct statfs sfs;
   R_xlen_t i, j, len = Rf_xlength(path);
   int ret;
 
-  // Need to query all partitions and look up their
-  // fs id, because struct statfs does not contain the
-  // directory or the device of the file systems. So we'll
-  // run statfs for the directory of all partitions as well,
-  // to match the input paths to device names.
-
+  // Need to query all partitions to get the device name and fs type.
   SEXP partitions = PROTECT(ps__disk_partitions(Rf_ScalarLogical(1)));
   R_xlen_t num_parts = Rf_xlength(partitions);
-  SEXP rfsid = PROTECT(Rf_allocVector(RAWSXP, num_parts * sizeof(fsid_t)));
-  fsid_t *fsid = (fsid_t *) RAW(rfsid);
-  memset(fsid, 0, num_parts * sizeof(fsid_t));
-  for (i = 0; i < num_parts; i++) {
-    if (isNull(VECTOR_ELT(partitions, i))) {
-      num_parts = i;
-      break;
-    }
-    const char *mp = CHAR(STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, i), 1), 0));
-    ret = statfs(mp, &sfs);
-    // Skip the ones that fail, those are zeroed out,
-    // we assume the zeros do not match any real fs id.
-    if (ret == 0) {
-      memcpy(&fsid[i], &sfs.f_fsid, sizeof(fsid_t));
-    }
-  }
-
-  // Some files and partitions do not have a proper fsid, but it is just
-  // all zeros. For these we try to match dirnam() to a mount point
-  // recursively.
-  fsid_t zerofsid;
-  memset(&zerofsid, 0, sizeof(fsid_t));
 
   const char *nms[] = {
     "path",
@@ -1762,68 +1735,22 @@ SEXP ps__fs_info(SEXP path, SEXP abspath) {
     SET_STRING_ELT(VECTOR_ELT(res, 2), i, NA_STRING);
     SET_STRING_ELT(VECTOR_ELT(res, 3), i, NA_STRING);
 
-    // match to partition, either with fsid, or matching a parent
-    // directory to a mount point
-    int found_part = 0;
-    if (0 != memcmp(&sfs.f_fsid, &zerofsid, sizeof(fsid_t))) {
-      for (j = 0; j < num_parts; j++) {
-        if (0 == memcmp(&fsid[j], &sfs.f_fsid, sizeof(fsid_t))) {
-          SET_STRING_ELT(
-            VECTOR_ELT(res, 1), i,
-            STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 1), 0));
-          SET_STRING_ELT(
-            VECTOR_ELT(res, 2), i,
-            STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 0), 0));
-          SET_STRING_ELT(
-            VECTOR_ELT(res, 3), i,
-            STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 2), 0));
-          found_part = 1;
-          break;
-        }
+    // match the mount point to the partitions
+    const char *mpi = CHAR(STRING_ELT(mps, i));
+    for (j = 0; j < num_parts; j++) {
+      const char *mpp = CHAR(STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 1), 0));
+      if (0 == strcmp(mpi, mpp)) {
+        SET_STRING_ELT(
+          VECTOR_ELT(res, 1), i,
+          STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 1), 0));
+        SET_STRING_ELT(
+          VECTOR_ELT(res, 2), i,
+          STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 0), 0));
+        SET_STRING_ELT(
+          VECTOR_ELT(res, 3), i,
+          STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 2), 0));
+        break;
       }
-    }
-    if (!found_part) {
-      char *dn = strdup(CHAR(STRING_ELT(abspath, i)));
-      while (!found_part) {
-        for (j = 0; j < num_parts; j++) {
-          const char *mp = CHAR(STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 1), 0));
-          if (0 == strcmp(dn, mp)) {
-            SET_STRING_ELT(
-              VECTOR_ELT(res, 1), i,
-              STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 1), 0));
-            SET_STRING_ELT(
-              VECTOR_ELT(res, 2), i,
-              STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 0), 0));
-            SET_STRING_ELT(
-              VECTOR_ELT(res, 3), i,
-              STRING_ELT(VECTOR_ELT(VECTOR_ELT(partitions, j), 2), 0));
-            found_part = 1;
-            break;
-          }
-        }
-        // quit asap, to avoid the dirname() mess
-        if (found_part) {
-          break;
-        }
-        // we didn't even find /??? wow
-        if (0 == strcmp("/", dn)) {
-          break;
-        }
-        // Get parent. dirname() might modify dn and return the
-        // same pointer (!!!). So need to copy both input and output.
-        char *orig = strdup(dn);
-        char *ddn = strdup(dirname(dn));
-        // This might happen if dn has no /. (Should not happen here,
-        // because we use the absolute file name, but just in case.)
-        if (0 == strcmp(orig, ddn)) {
-          free(orig);
-          free(ddn);
-          break;
-        }
-        free(orig);
-        dn = ddn;
-      }
-      free(dn);
     }
 
     REAL(VECTOR_ELT(res, 4))[i] = sfs.f_bsize;
@@ -1851,7 +1778,7 @@ SEXP ps__fs_info(SEXP path, SEXP abspath) {
     LOGICAL(VECTOR_ELT(res, 24))[i] = sfs.f_flags & ST_NOSYMFOLLOW;
   }
 
-  UNPROTECT(3);
+  UNPROTECT(2);
   return res;
 }
 

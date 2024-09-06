@@ -1373,7 +1373,7 @@ error:
 #define FILE_SUPPORTS_GHOSTING 0x40000000
 #endif
 
-SEXP ps__fs_info(SEXP path, SEXP abspath) {
+SEXP ps__fs_info(SEXP path, SEXP abspath, SEXP mps) {
   R_xlen_t i, len = Rf_xlength(path);
 
   const char *nms[] = {
@@ -1476,26 +1476,18 @@ SEXP ps__fs_info(SEXP path, SEXP abspath) {
       ps__throw_error();
     }
 
-    // look up mount point
-    wchar_t volume[MAX_PATH + 1];
-    BOOL ok = GetVolumePathNameW(
-      wpath,
-      volume,
-      sizeof(volume)/sizeof(wchar_t) - 1
-    );
-    if (!ok) {
-      ps__set_error_from_windows_error(0);
+    // we already have the mount point, convert to UTF-16
+    wchar_t *wmp;
+    iret = ps__utf8_to_utf16(CHAR(STRING_ELT(mps, i)), &wmp);
+    if (iret) {
       ps__throw_error();
     }
-    SET_STRING_ELT(
-      VECTOR_ELT(res, 1), i,
-      ps__utf16_to_charsxp(volume, -1)
-    );
+    SET_STRING_ELT(VECTOR_ELT(res, 1), i, STRING_ELT(mps, i));
 
     // name of the volume
     wchar_t volname[1024];
     ok = GetVolumeNameForVolumeMountPointW(
-      volume,
+      wmp,
       volname,
       sizeof(volname)/sizeof(wchar_t) - 1
     );
@@ -1511,7 +1503,7 @@ SEXP ps__fs_info(SEXP path, SEXP abspath) {
     DWORD sn, mcl, flags;
     wchar_t type[MAX_PATH + 1];
     ok = GetVolumeInformationW(
-      volume, NULL, 0, &sn, &mcl, &flags, type,
+      wmp, NULL, 0, &sn, &mcl, &flags, type,
       sizeof(type)/sizeof(wchar_t) - 1);
     if (!ok) {
       ps__set_error_from_windows_error(0);
@@ -1524,7 +1516,7 @@ SEXP ps__fs_info(SEXP path, SEXP abspath) {
     );
 
     DWORD spc, bps, freec, totalc;
-    ok = GetDiskFreeSpaceW(volume, &spc, &bps, &freec, &totalc);
+    ok = GetDiskFreeSpaceW(wmp, &spc, &bps, &freec, &totalc);
     if (!ok) {
       ps__set_error_from_windows_error(0);
       ps__throw_error();
@@ -1533,7 +1525,7 @@ SEXP ps__fs_info(SEXP path, SEXP abspath) {
     REAL(VECTOR_ELT(res, 5))[i] = bps * spc;
 
     ULARGE_INTEGER freeuser, total, freeroot;
-    ok = GetDiskFreeSpaceExW(volume, &freeuser, &total, &freeroot);
+    ok = GetDiskFreeSpaceExW(wmp, &freeuser, &total, &freeroot);
     if (!ok) {
       ps__set_error_from_windows_error(0);
       ps__throw_error();

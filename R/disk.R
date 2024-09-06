@@ -331,7 +331,8 @@ ps__disk_io_counters_macos <- function() {
 ps_fs_info <- function(paths = "/") {
   assert_character(paths)
   abspaths <- normalizePath(paths, mustWork = TRUE)
-  res <- .Call(ps__fs_info, paths, abspaths)
+  mps <- ps_fs_mount_point(paths)
+  res <- .Call(ps__fs_info, paths, abspaths, mps)
   df <- as_data_frame(res)
 
   # this should not happen in practice, but just in case
