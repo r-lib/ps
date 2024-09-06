@@ -83,7 +83,7 @@ SEXP ps__tty_size(void) { return ps__dummy("ps_tty_size"); }
 SEXP ps__disk_partitions(SEXP x) { return ps__dummy("ps_disk_partitions"); }
 SEXP ps__disk_io_counters(void) { return ps__dummy("ps__get_disk_io_counters"); }
 SEXP ps__disk_usage(void) { return ps__dummy("ps_disk_usage"); }
-SEXP ps__fs_info(SEXP x, SEXP y) { return ps__dummy("ps_fs_info"); }
+SEXP ps__fs_info(SEXP x, SEXP y, SEXP z) { return ps__dummy("ps_fs_info"); }
 SEXP ps__system_cpu_times(void) { return ps__dummy("ps_system_cpu_times"); }
 SEXP ps__system_memory(void) { return ps__dummy("ps_system_memory"); }
 SEXP ps__system_swap(void) { return ps__dummy("ps_system_swap"); }
