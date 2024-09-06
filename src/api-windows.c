@@ -1486,7 +1486,7 @@ SEXP ps__fs_info(SEXP path, SEXP abspath, SEXP mps) {
 
     // name of the volume
     wchar_t volname[1024];
-    ok = GetVolumeNameForVolumeMountPointW(
+    BOOL ok = GetVolumeNameForVolumeMountPointW(
       wmp,
       volname,
       sizeof(volname)/sizeof(wchar_t) - 1
