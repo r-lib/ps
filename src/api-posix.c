@@ -381,7 +381,7 @@ SEXP ps__stat(SEXP paths, SEXP follow) {
 
 void ps__mount_point_cleanup(void *data) {
   char *wd = (char*) data;
-  chdir(wd);
+  (void) chdir(wd);
 }
 
 SEXP ps__mount_point(SEXP paths) {
@@ -464,7 +464,11 @@ SEXP ps__mount_point(SEXP paths) {
     SET_STRING_ELT(res, i, Rf_mkChar(buf));
   }
 
-  chdir(wd);
+  ret = chdir(wd);
+  if (ret) {
+    ps__set_error_from_errno();
+    ps__throw_error();
+  }
   UNPROTECT(1);
   return res;
 }
