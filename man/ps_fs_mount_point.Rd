@@ -8,7 +8,7 @@ ps_fs_mount_point(paths)
 }
 \arguments{
 \item{paths}{Paths to files, directories, devices, etc. They must
-exist. They are expanded using \code{\link[base:path.expand]{base::path.expand()}}.}
+exist. They are normalized using \code{\link[base:normalizePath]{base::normalizePath()}}.}
 }
 \value{
 Character vector, paths to the mount points of the input

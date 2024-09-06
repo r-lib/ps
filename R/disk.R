@@ -409,7 +409,7 @@ ps_fs_stat <- function(paths, follow = TRUE) {
 #' Find the mount point of a file or directory
 #'
 #' @param paths Paths to files, directories, devices, etc. They must
-#'   exist. They are expanded using [base::path.expand()].
+#'   exist. They are normalized using [base::normalizePath()].
 #' @return Character vector, paths to the mount points of the input
 #'   `paths`.
 #' @export
