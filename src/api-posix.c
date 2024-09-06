@@ -381,7 +381,13 @@ SEXP ps__stat(SEXP paths, SEXP follow) {
 
 void ps__mount_point_cleanup(void *data) {
   char *wd = (char*) data;
-  (void) chdir(wd);
+  int ret = chdir(wd);
+  if (ret) {
+    REprintf(
+      "Could not restore current working directory "
+      "in ps::ps_fs_mount_point()"
+    );
+  }
 }
 
 SEXP ps__mount_point(SEXP paths) {
