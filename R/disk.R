@@ -418,6 +418,6 @@ ps_fs_stat <- function(paths, follow = TRUE) {
 
 ps_fs_mount_point <- function(paths) {
   assert_character(paths)
-  paths <- path.expand(paths)
+  paths <- normalizePath(paths, mustWork = TRUE)
   call_with_cleanup(ps__mount_point, paths)
 }
