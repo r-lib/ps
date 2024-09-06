@@ -348,3 +348,29 @@ linux_fs_types <- utils::read.table(
   header = TRUE,
   stringsAsFactors = FALSE
 )
+
+posix_stat_types <- c(
+  "regular file",
+  "directory",
+  "character device",
+  "block device",
+  "FIFO",
+  "symbolic link",
+  "socket"
+)
+
+ps_fs_stat <- function(paths, follow = TRUE) {
+  assert_character(paths)
+  res <- .Call(ps__stat, paths, follow)
+  res[["type"]] <- posix_stat_types[res[["type"]]]
+  res[["access_time"]] <- .POSIXct(res[["access_time"]], "UTC")
+  res[["modification_time"]] <- .POSIXct(res[["modification_time"]], "UTC")
+  res[["change_time"]] <- .POSIXct(res[["change_time"]], "UTC")
+  as_data_frame(res)
+}
+
+ps_fs_mount_pojnt <- function(paths) {
+  assert_character(paths)
+  paths <- normalizePath(paths, mustWork = TRUE)
+  call_with_cleanup(ps__mount_point, paths)
+}
