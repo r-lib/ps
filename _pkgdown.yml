@@ -68,6 +68,7 @@ reference:
   - ps_users
 
 - title: Disks and files
+  contents:
   - ps_disk_partitions
   - ps_disk_usage
   - ps_disk_io_counters
