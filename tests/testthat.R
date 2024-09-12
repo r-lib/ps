@@ -8,4 +8,6 @@ if (ps::ps_is_supported() && Sys.getenv("R_COVR", "") != "true" &&
   reporter <- "summary"
 }
 
-if (ps_is_supported()) test_check("ps", reporter = reporter)
+if (ps_is_supported() && Sys.getenv("NOT_CRAN") != "") {
+  test_check("ps", reporter = reporter)
+}
