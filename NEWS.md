@@ -1,4 +1,4 @@
-# ps (development version)
+# ps 1.8.0
 
 * New `ps_apps()` function to list all running applications on macOS.
 
