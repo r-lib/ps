@@ -25,8 +25,9 @@
   are then killed with `SIGKILL`.
 
 * `ps_status()` (and thus `ps()`) is now better at getting the correct
-  status of processes. This usually requires calling the external `ps`
-  tool. See `?ps_status()` on how to opt out from the new behavior (#31).
+  status of processes on macOS. This usually requires calling the external
+  `ps` tool. See `?ps_status()` on how to opt out from the new
+  behavior (#31).
 
 # ps 1.7.7
 
