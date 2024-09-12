@@ -65,7 +65,7 @@ SEXP ps__memory_maps(SEXP p) { return ps__dummy("ps__memory_maps"); }
 /* Only implemented on macOS */
 #ifndef PS__MACOS
 #if defined(PS__WINDOWS) || defined(PS__LINUX)
-SEXP ps__list_apps() { return ps__dummy("ps__list_apps"); }
+SEXP ps__list_apps(void) { return ps__dummy("ps__list_apps"); }
 #endif
 #endif
 
