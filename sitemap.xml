@@ -1,189 +1,71 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://ps.r-lib.org/404.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/ISSUE_TEMPLATE.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/SUPPORT.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/header.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/index.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/CleanupReporter.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/errno.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps-package.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_boot_time.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_children.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_cmdline.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_connections.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_cpu_count.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_cpu_times.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_create_time.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_cwd.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_descent.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_disk_partitions.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_disk_usage.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_environ.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_exe.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_get_cpu_affinity.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_get_nice.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_handle.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_interrupt.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_is_running.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_kill.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_kill_tree.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_loadavg.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_memory_info.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_name.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_num_fds.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_num_threads.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_open_files.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_os_type.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_pid.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_pids.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_ppid.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_resume.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_send_signal.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_shared_lib_users.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_shared_libs.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_status.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_suspend.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_system_cpu_times.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_system_memory.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_system_swap.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_terminal.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_terminate.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_tty_size.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_uids.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_username.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/ps_users.html</loc>
-  </url>
-  <url>
-    <loc>https://ps.r-lib.org/reference/signals.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://ps.r-lib.org/404.html</loc></url>
+<url><loc>https://ps.r-lib.org/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://ps.r-lib.org/CONTRIBUTING.html</loc></url>
+<url><loc>https://ps.r-lib.org/ISSUE_TEMPLATE.html</loc></url>
+<url><loc>https://ps.r-lib.org/LICENSE-text.html</loc></url>
+<url><loc>https://ps.r-lib.org/LICENSE.html</loc></url>
+<url><loc>https://ps.r-lib.org/SUPPORT.html</loc></url>
+<url><loc>https://ps.r-lib.org/authors.html</loc></url>
+<url><loc>https://ps.r-lib.org/header.html</loc></url>
+<url><loc>https://ps.r-lib.org/index.html</loc></url>
+<url><loc>https://ps.r-lib.org/news/index.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/CleanupReporter.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/errno.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/index.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps-package.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_apps.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_boot_time.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_children.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_cmdline.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_connections.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_cpu_count.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_cpu_times.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_create_time.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_cwd.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_descent.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_disk_io_counters.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_disk_partitions.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_disk_usage.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_environ.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_exe.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_fs_info.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_fs_mount_point.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_fs_stat.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_get_cpu_affinity.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_get_nice.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_handle.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_interrupt.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_is_running.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_kill.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_kill_tree.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_loadavg.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_memory_info.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_name.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_num_fds.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_num_threads.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_open_files.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_os_type.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_pid.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_pids.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_ppid.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_resume.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_send_signal.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_shared_lib_users.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_shared_libs.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_status.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_suspend.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_system_cpu_times.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_system_memory.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_system_swap.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_terminal.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_terminate.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_tty_size.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_uids.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_username.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_users.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/ps_wait.html</loc></url>
+<url><loc>https://ps.r-lib.org/reference/signals.html</loc></url>
 </urlset>
+
