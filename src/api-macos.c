@@ -31,6 +31,11 @@
 
 #include <stdbool.h>
 
+#if defined(__i386__) || defined(__ppc__)
+#define statfs statfs64
+#define getfsstat getfsstat64
+#endif
+
 struct mach_timebase_info PS_MACH_TIMEBASE_INFO;
 
 #define PS__TV2DOUBLE(t) ((t).tv_sec + (t).tv_usec / 1000000.0)
