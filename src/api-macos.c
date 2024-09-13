@@ -31,6 +31,11 @@
 
 #include <stdbool.h>
 
+#if defined(__i386__) || defined(__ppc__)
+#define statfs statfs64
+#define getfsstat getfsstat64
+#endif
+
 struct mach_timebase_info PS_MACH_TIMEBASE_INFO;
 
 #define PS__TV2DOUBLE(t) ((t).tv_sec + (t).tv_usec / 1000000.0)
@@ -1254,7 +1259,10 @@ SEXP ps__fs_info(SEXP path, SEXP abspath, SEXP mps) {
     LOGICAL(VECTOR_ELT(res, 30))[i] = sfs.f_flags & MNT_JOURNALED;
     LOGICAL(VECTOR_ELT(res, 31))[i] = sfs.f_flags & MNT_DEFWRITE;
     LOGICAL(VECTOR_ELT(res, 32))[i] = sfs.f_flags & MNT_MULTILABEL;
+/* Since sys/mount.h includes Availability.h, we use underscore-prefixed macro */
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= 1090
     LOGICAL(VECTOR_ELT(res, 33))[i] = sfs.f_flags & MNT_CPROTECT;
+#endif
   }
 
   UNPROTECT(1);
