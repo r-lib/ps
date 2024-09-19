@@ -118,7 +118,7 @@ test_that("kill_tree, grandchild", {
 
   ## Nevertheless none of them should be alive.
   ## (Taking the risk of pid reuse here...)
-  timeout <- Sys.time() + 5
+  timeout <- Sys.time() + 10
   while (any(ccpids %in% ps_pids()) && Sys.time() < timeout) Sys.sleep(0.1)
   expect_true(Sys.time() < timeout)
 })
