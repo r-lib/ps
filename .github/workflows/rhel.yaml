@@ -13,8 +13,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: rhel7, r: 'release', key: '${{ secrets.REDHAT_ACTIVATION_KEY_RHEL7 }}' }
-          - { os: rhel8, r: 'release', key: '${{ secrets.REDHAT_ACTIVATION_KEY_RHEL8 }}' }
+          - { os: rhel7, r: 'release', key: REDHAT_ACTIVATION_KEY_RHEL7 }
+          - { os: rhel8, r: 'release', key: REDHAT_ACTIVATION_KEY_RHEL8 }
     container:
       image: ghcr.io/r-hub/containers/${{ matrix.config.os }}:latest
 
@@ -25,7 +25,7 @@ jobs:
         run: |
           subscription-manager register \
             --org ${{ secrets.REDHAT_ORG }} \
-            --activationkey ${{ matrix.config.key }}
+            --activationkey ${{ secrets[matrix.key] }}
         shell: bash
 
       - name: Install R
