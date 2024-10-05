@@ -137,6 +137,7 @@ SEXP psw__realpath(SEXP x) { return ps__dummy("psw__realpath"); }
 SEXP psll_dlls(SEXP x) { return ps__dummy("psll_dlls"); }
 
 SEXP ps__inet_ntop(SEXP x, SEXP y) { return ps__dummy("ps__inet_ntop"); }
+SEXP ps__list_apps(void) { return ps__dummy("ps__list_apps"); }
 #endif
 #endif
 #endif
