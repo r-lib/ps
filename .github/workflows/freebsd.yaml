@@ -19,6 +19,7 @@ jobs:
           Sys.getenv("R_LIBS_SITE")
           Sys.getenv("R_LIBS_USER")
           find.package("pak")
+          Sys.getenv()
         shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
