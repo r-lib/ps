@@ -1,0 +1,18 @@
+on:
+  workflow_dispatch:
+
+name: freebsd.yaml
+
+jobs:
+  freebsd:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-hub/actions/setup-r-freebsd@main
+
+      - name: Test R in FreeBSD VM
+        run: |
+          getRversion()
+          R.version[["platform"]]
+        shell: Rscript {0}
+
