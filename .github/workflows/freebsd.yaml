@@ -8,12 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: r-hub/actions/setup-r-freebsd@main
       - uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
           detached: true
-      - uses: r-hub/actions/setup-r-freebsd@main
-
       - name: Test R in FreeBSD VM
         run: |
           getRversion()
