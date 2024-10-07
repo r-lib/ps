@@ -14,6 +14,11 @@ jobs:
         run: |
           getRversion()
           R.version[["platform"]]
+          .libPaths()
+          .Library
+          Sys.getenv("R_LIBS_SITE")
+          Sys.getenv("R_LIBS_USER")
+          find.package("pak")
         shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
