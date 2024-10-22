@@ -13,7 +13,7 @@
 * New `ps_wait()` to start an interruptible wait on multiple processes,
   with a timeout (#166).
 
-* `ps_handle()` now allowes a numeric (double) scalar as the pid, as long
+* `ps_handle()` now allows a numeric (double) scalar as the pid, as long
   as its value is integer.
 
 * `ps_send_signal()`, `ps_suspend()`, `ps_resume()`, `ps_terminate()`,
