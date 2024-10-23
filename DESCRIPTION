@@ -29,6 +29,8 @@ Suggests:
     testthat (>= 3.0.0),
     webfakes,
     withr
+Remotes:
+    r-lib/pingr
 Biarch: true
 Config/Needs/website: tidyverse/tidytemplate
 Config/testthat/edition: 3
