@@ -145,7 +145,7 @@ ps__disk_usage_format_posix <- function(paths, l) {
 #'
 #' @family disk functions
 #' @export
-#' @examplesIf ps:::ps_os_name() %in% c("LINUX", "WINDOWS") && !ps:::is_cran_check()
+#' @examplesIf ps::ps_is_supported() && ps:::ps_os_name() %in% c("LINUX", "WINDOWS") && !ps:::is_cran_check()
 #' ps_disk_io_counters()
 ps_disk_io_counters <- function() {
   os <- ps_os_name()
