@@ -1,5 +1,17 @@
 on:
   workflow_dispatch:
+    inputs:
+      release:
+        description: 'FreeBSD release'
+        required: true
+        type: choice
+        options:
+        - '14.1'
+        - '14.0'
+        - '13.4'
+        - '13.3'
+        - '13.2'
+        default: '14.1'
 
 name: freebsd.yaml
 
@@ -9,10 +21,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: r-hub/actions/setup-r-freebsd@main
-      - uses: mxschmitt/action-tmate@v3
         with:
-          limit-access-to-actor: true
-          detached: true
+          release: ${{ github.event.inputs.release || '14.1' }}
+
       - name: Test R in FreeBSD VM
         run: |
           getRversion()
@@ -24,6 +35,8 @@ jobs:
           find.package("pak")
           Sys.getenv()
         shell: Rscript {0}
+
+      - uses: r-hub/actions/debug-shell@main
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
