@@ -5,49 +5,50 @@ on:
   workflow_dispatch:
     inputs:
       release:
-        description: 'FreeBSD release'
+        description: 'OpenBSD release'
         required: true
         type: choice
         options:
-        - '14.1'
-        - '14.0'
-        - '13.4'
-        - '13.3'
-        - '13.2'
-        - '12.4'
-        default: '14.1'
+        - '7.6'
+        - '7.5'
+        - '7.4'
+        default: '7.6'
 
-name: freebsd.yaml
+name: openbsd.yaml
 
 jobs:
-  freebsd:
+  openbsd:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: r-hub/actions/setup-r-freebsd@main
+      - uses: r-hub/actions/setup-r-openbsd@v1
         with:
-          release: ${{ github.event.inputs.release || '14.1' }}
+          release: ${{ github.event.inputs.release || '7.6' }}
 
-      - name: Test R in FreeBSD VM
+      - name: Test R in OpenBSD VM
         run: |
           getRversion()
           R.version[["platform"]]
           .libPaths()
           .Library
-          Sys.getenv("R_LIBS_SITE")
-          Sys.getenv("R_LIBS_USER")
           find.package("pak")
           Sys.getenv()
         shell: Rscript {0}
 
-      - uses: r-hub/actions/debug-shell@main
+      - uses: r-hub/actions/debug-shell@v1
+
+      - name: Install system packages (for pingr)
+        run: |
+          pkg_add -I libbind
+          cd /usr/local/lib && ln -s libbind/libbind.so* .
+        shell: openbsd {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           pak-version: none
           install-pandoc: false
           install-quarto: false
-          cache-version: freebsd-1
+          cache-version: openbsd-1
           extra-packages: any::rcmdcheck
           needs: check
 
