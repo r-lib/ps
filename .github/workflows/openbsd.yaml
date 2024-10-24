@@ -37,6 +37,12 @@ jobs:
 
       - uses: r-hub/actions/debug-shell@v1
 
+      - name: Install system packages (for pingr)
+        run: |
+          pkg_add -I libbind
+          cd /usr/local/lib && ln -s libbind/libbind.so* .
+        shell: openbsd {0}
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           pak-version: none
