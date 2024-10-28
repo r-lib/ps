@@ -1,5 +1,7 @@
 # ps (development version)
 
+* ps can now be installed again on unsupported platforms.
+
 # ps 1.8.0
 
 * New `ps_apps()` function to list all running applications on macOS.
