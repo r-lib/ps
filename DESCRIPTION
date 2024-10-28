@@ -1,6 +1,6 @@
 Package: ps
 Title: List, Query, Manipulate System Processes
-Version: 1.8.0.9000
+Version: 1.8.1
 Authors@R: c(
     person("Jay", "Loden", role = "aut"),
     person("Dave", "Daeschler", role = "aut"),
