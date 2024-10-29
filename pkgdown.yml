@@ -1,8 +1,8 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2024-09-13T08:10Z
+last_built: 2024-10-29T08:51Z
 urls:
   reference: https://ps.r-lib.org/reference
   article: https://ps.r-lib.org/articles

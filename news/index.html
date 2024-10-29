@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.8.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,12 +33,16 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.8.1" id="ps-181">ps 1.8.1<a class="anchor" aria-label="anchor" href="#ps-181"></a></h2><p class="text-muted">CRAN release: 2024-10-28</p>
+<ul><li>ps can now be installed again on unsupported platforms.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.8.0" id="ps-180">ps 1.8.0<a class="anchor" aria-label="anchor" href="#ps-180"></a></h2><p class="text-muted">CRAN release: 2024-09-12</p>
 <ul><li><p>New <code><a href="../reference/ps_apps.html">ps_apps()</a></code> function to list all running applications on macOS.</p></li>
 <li><p>New function <code><a href="../reference/ps_disk_io_counters.html">ps_disk_io_counters()</a></code> to query disk I/O counters (<a href="https://github.com/r-lib/ps/issues/145" class="external-link">#145</a>, <a href="https://github.com/michaelwalshe" class="external-link">@michaelwalshe</a>).</p></li>
 <li><p>New <code><a href="../reference/ps_fs_info.html">ps_fs_info()</a></code> to query information about the file system of one or more files or directories.</p></li>
 <li><p>New <code><a href="../reference/ps_wait.html">ps_wait()</a></code> to start an interruptible wait on multiple processes, with a timeout (<a href="https://github.com/r-lib/ps/issues/166" class="external-link">#166</a>).</p></li>
-<li><p><code><a href="../reference/ps_handle.html">ps_handle()</a></code> now allowes a numeric (double) scalar as the pid, as long as its value is integer.</p></li>
+<li><p><code><a href="../reference/ps_handle.html">ps_handle()</a></code> now allows a numeric (double) scalar as the pid, as long as its value is integer.</p></li>
 <li><p><code><a href="../reference/ps_send_signal.html">ps_send_signal()</a></code>, <code><a href="../reference/ps_suspend.html">ps_suspend()</a></code>, <code><a href="../reference/ps_resume.html">ps_resume()</a></code>, <code><a href="../reference/ps_terminate.html">ps_terminate()</a></code>, <code><a href="../reference/ps_kill.html">ps_kill()</a></code>, and <code><a href="../reference/ps_interrupt.html">ps_interrupt()</a></code> can now operate on multiple processes, if passed a list of process handles.</p></li>
 <li><p><code><a href="../reference/ps_kill.html">ps_kill()</a></code> and <code><a href="../reference/ps_kill_tree.html">ps_kill_tree()</a></code> have a new <code>grace</code> argument. On Unix, if this argument is not zero, then <code><a href="../reference/ps_kill.html">ps_kill()</a></code> first sends a <code>TERM</code> signal, and waits for the processes to quit gracefully, via <code><a href="../reference/ps_wait.html">ps_wait()</a></code>. The processes that are still alive after the grace period are then killed with <code>SIGKILL</code>.</p></li>
 <li><p><code><a href="../reference/ps_status.html">ps_status()</a></code> (and thus <code><a href="../reference/ps.html">ps()</a></code>) is now better at getting the correct status of processes on macOS. This usually requires calling the external <code>ps</code> tool. See <code>?ps_status()</code> on how to opt out from the new behavior (<a href="https://github.com/r-lib/ps/issues/31" class="external-link">#31</a>).</p></li>
@@ -163,7 +167,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
   </div></footer></body></html>
