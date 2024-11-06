@@ -24,18 +24,7 @@ jobs:
       - uses: r-hub/actions/setup-r-openbsd@v1
         with:
           release: ${{ github.event.inputs.release || '7.6' }}
-
-      - name: Test R in OpenBSD VM
-        run: |
-          getRversion()
-          R.version[["platform"]]
-          .libPaths()
-          .Library
-          find.package("pak")
-          Sys.getenv()
-        shell: Rscript {0}
-
-      - uses: r-hub/actions/debug-shell@v1
+      - uses: r-hub/actions/platform-info@v1
 
       - name: Install system packages (for pingr)
         run: |
@@ -48,20 +37,12 @@ jobs:
           pak-version: none
           install-pandoc: false
           install-quarto: false
-          cache-version: openbsd-1
           extra-packages: any::rcmdcheck
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
         with:
+          upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
-          upload-results: never
-          upload-snapshots: false
         env:
           NOT_CRAN: true
-
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: 'check-results'
-          path: check

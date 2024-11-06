@@ -9,6 +9,8 @@ on:
         required: true
         type: choice
         options:
+        - '15.0'
+        - '14.2-pre'
         - '14.1'
         - '14.0'
         - '13.4'
@@ -27,7 +29,6 @@ jobs:
       - uses: r-hub/actions/setup-r-freebsd@main
         with:
           release: ${{ github.event.inputs.release || '14.1' }}
-
       - uses: r-hub/actions/platform-info@v1
 
       - uses: r-lib/actions/setup-r-dependencies@v2
@@ -40,6 +41,7 @@ jobs:
 
       - uses: r-lib/actions/check-r-package@v2
         with:
+          upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
         env:
           NOT_CRAN: true
