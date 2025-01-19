@@ -72,6 +72,7 @@ static const R_CallMethodDef callMethods[]  = {
   { "psll_get_nice",     (DL_FUNC) psll_get_nice,     1 },
   { "psll_set_nice",     (DL_FUNC) psll_set_nice,     2 },
   { "psll_dlls",         (DL_FUNC) psll_dlls,         1 },
+  { "psll_switch_to",    (DL_FUNC) psll_switch_to,    1 },
   { "psll_get_cpu_aff",  (DL_FUNC) psll_get_cpu_aff,  1 },
   { "psll_set_cpu_aff",  (DL_FUNC) psll_set_cpu_aff,  2 },
   { "psll_wait",         (DL_FUNC) psll_wait,         2 },
