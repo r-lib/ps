@@ -64,6 +64,9 @@ jobs:
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
+      - name: Interactive debug
+        if: ${{ always() }}
+        uses: r-hub/actions/ssh-server@main
 
   other-platforms:
     needs: setup
