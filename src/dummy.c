@@ -66,6 +66,7 @@ SEXP ps__memory_maps(SEXP p) { return ps__dummy("ps__memory_maps"); }
 #ifndef PS__MACOS
 #if defined(PS__WINDOWS) || defined(PS__LINUX)
 SEXP ps__list_apps(void) { return ps__dummy("ps__list_apps"); }
+SEXP psll_memory_maxrss(SEXP p) { return ps__dummy("psll_memory_maxrss"); }
 #endif
 #endif
 
@@ -120,6 +121,7 @@ SEXP psll_connections(SEXP x) { return ps__dummy("ps_connections"); }
 SEXP psll_get_nice(SEXP x) { return ps__dummy("ps_get_nice"); }
 SEXP psll_set_nice(SEXP x, SEXP y) { return ps__dummy("ps_set_nice"); }
 SEXP psll_memory_uss(SEXP p) { return ps__dummy("psll_memory_uss"); }
+SEXP psll_memory_maxrss(SEXP p) { return ps__dummy("psll_memory_maxrss"); }
 SEXP psll_get_cpu_aff(SEXP p) { return ps__dummy("psll_get_cpu_aff"); }
 SEXP psll_set_cpu_aff(SEXP p) { return ps__dummy("psll_set_cpu_aff"); }
 SEXP psll_wait(SEXP pps, SEXP timeout) { return ps__dummy("psll_wait"); }

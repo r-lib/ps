@@ -1032,6 +1032,12 @@ SEXP ps__users(void) {
   return result;
 }
 
+SEXP psll_memory_maxrss(SEXP p) {
+  struct rusage rusage;
+  getrusage(RUSAGE_SELF, &rusage);
+  return Rf_ScalarReal(rusage.ru_maxrss);
+}
+
 SEXP ps__disk_partitions(SEXP all) {
   int num;
   int i;

@@ -584,6 +584,9 @@ ps_cpu_times <- function(p = ps_handle()) {
 #'   PSS will be 15 MBs.
 #' * `swap` (Linux only): amount of memory that has been swapped out to
 #'   disk.
+#' * `maxrss` (macOS only): maximum resident set size over the process's
+#'   lifetime. This only works for the calling process, otherwise it is
+#'   `NA_real_`.
 #'
 #' They both throw a `zombie_process()` error for zombie processes.
 #'
@@ -630,9 +633,14 @@ ps_memory_full_info <- function(p = ps_handle()) {
   } else if (type[["MACOS"]]) {
     info <- ps_memory_info(p)
     info[["uss"]] <- .Call(psll_memory_uss, p)
+    info[["maxrss"]] <- if (Sys.getpid() == ps_pid(p)) {
+      .Call(psll_memory_maxrss, p)
+    } else {
+      NA_real_
+    }
     info
 
-  } else if (type[["WINDOWS"]]) {
+    } else if (type[["WINDOWS"]]) {
     info <- ps_memory_info(p)
     info[["uss"]] <- .Call(psll_memory_uss, p)
     info

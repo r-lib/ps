@@ -68,6 +68,9 @@ has 10 MBs all to itself and 10 MBs shared with another process its
 PSS will be 15 MBs.
 \item \code{swap} (Linux only): amount of memory that has been swapped out to
 disk.
+\item \code{maxrss} (macOS only): maximum resident set size over the process's
+lifetime. This only works for the calling process, otherwise it is
+\code{NA_real_}.
 }
 
 They both throw a \code{zombie_process()} error for zombie processes.
