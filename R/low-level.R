@@ -643,6 +643,11 @@ ps_memory_full_info <- function(p = ps_handle()) {
     } else if (type[["WINDOWS"]]) {
     info <- ps_memory_info(p)
     info[["uss"]] <- .Call(psll_memory_uss, p)
+    info[["maxrss"]] <- if (Sys.getpid() == ps_pid(p)) {
+      .Call(psll_memory_maxrss, p)
+    } else {
+      NA_real_
+    }
     info
   }
 }
