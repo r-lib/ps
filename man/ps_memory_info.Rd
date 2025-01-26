@@ -58,6 +58,8 @@ additional information, but typically takes slightly longer to run, and
 might not have access to some processes that \code{ps_memory_info()} can
 query:
 \itemize{
+\item \code{maxrss} maximum resident set size over the process's lifetime. This
+only works for the calling process, otherwise it is \code{NA_real_}.
 \item \code{uss}: Unique Set Size, this is the memory which is unique to a
 process and which would be freed if the process was terminated right
 now.
@@ -68,9 +70,6 @@ has 10 MBs all to itself and 10 MBs shared with another process its
 PSS will be 15 MBs.
 \item \code{swap} (Linux only): amount of memory that has been swapped out to
 disk.
-\item \code{maxrss} (macOS only): maximum resident set size over the process's
-lifetime. This only works for the calling process, otherwise it is
-\code{NA_real_}.
 }
 
 They both throw a \code{zombie_process()} error for zombie processes.
