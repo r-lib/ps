@@ -85,7 +85,9 @@ structure.</p>
 <p><code>ps_memory_full_info()</code> returns all fields as <code>ps_memory_info()</code>, plus
 additional information, but typically takes slightly longer to run, and
 might not have access to some processes that <code>ps_memory_info()</code> can
-query:</p><ul><li><p><code>uss</code>: Unique Set Size, this is the memory which is unique to a
+query:</p><ul><li><p><code>maxrss</code> maximum resident set size over the process's lifetime. This
+only works for the calling process, otherwise it is <code>NA_real_</code>.</p></li>
+<li><p><code>uss</code>: Unique Set Size, this is the memory which is unique to a
 process and which would be freed if the process was terminated right
 now.</p></li>
 <li><p><code>pss</code> (Linux only): Proportional Set Size, is the amount of memory
@@ -134,15 +136,15 @@ disk.</p></li>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">p</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=8083, NAME=R, AT=2025-01-24 12:55:32.67</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=7868, NAME=R, AT=2025-01-26 10:05:22.15</span>
 <span class="r-in"><span><span class="fu">ps_memory_info</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       rss       vms    shared      text       lib      data     dirty </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 279597056 967213056  31064064      4096         0 773541888         0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 279896064 967262208  31195136      4096         0 773591040         0 </span>
 <span class="r-in"><span><span class="fu">ps_memory_full_info</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       rss       vms    shared      text       lib      data     dirty </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 279597056 967213056  31064064      4096         0 773541888         0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       uss       pss      swap </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 261861376 265228288         0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 279896064 967262208  31195136      4096         0 773591040         0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    maxrss       uss       pss      swap </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 280039424 261935104 265583616         0 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
