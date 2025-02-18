@@ -3,6 +3,9 @@
 * `ps_memory_full_info()` now contains `maxrss`, the maximum resident set
   size for the calling process.
 
+* New `columns` argument in `ps()`, to customize what data is returned
+  (#138).
+
 # ps 1.8.1
 
 * ps can now be installed again on unsupported platforms.

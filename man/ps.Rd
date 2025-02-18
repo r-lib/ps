@@ -4,18 +4,28 @@
 \alias{ps}
 \title{Process table}
 \usage{
-ps(user = NULL, after = NULL)
+ps(user = NULL, after = NULL, columns = NULL)
 }
 \arguments{
 \item{user}{Username, to filter the results to matching processes.}
 
 \item{after}{Start time (\code{POSIXt}), to filter the results to processes
 that started after this.}
+
+\item{columns}{Columns to include in the result. If \code{NULL} (the default),
+then a default set of columns are returned, see below. The columns are
+shown in the same order they are specified in \code{columns}, but each
+column is included at most once. Use \code{"*"} to include all possible
+columns, and prefix a column name with \code{-} to remove it.}
 }
 \value{
 Data frame, see columns below.
-
-Columns:
+}
+\description{
+Data frame with the currently running processes.
+}
+\details{
+Columns shown by default, if \code{columns} is not given or \code{NULL}:
 \itemize{
 \item \code{pid}: Process ID.
 \item \code{ppid}: Process ID of parent process.
@@ -31,7 +41,37 @@ shared libraries.
 \item \code{created}: Time stamp when the process was created.
 \item \code{ps_handle}: \code{ps_handle} objects, in a list column.
 }
+
+Additional columns that can be requested via \code{columns}:
+\itemize{
+\item \code{cmdline}: Command line, in a single string, from \code{\link[=ps_cmdline]{ps_cmdline()}}.
+\item \code{vcmdline}: Like \code{cmdline}, but each command line argument in a
+separate string.
+\item \code{cwd}: Current working directory, from \code{\link[=ps_cwd]{ps_cwd()}}.
+\item \code{exe}: Path of the executable of the process, from \code{\link[=ps_exe]{ps_exe()}}.
+\item \code{num_fds}: Number of open file descriptors, from \code{\link[=ps_num_fds]{ps_num_fds()}}.
+\item \code{num_threads}: Number of threads, from \code{\link[=ps_num_threads]{ps_num_threads()}}.
+\item \code{cpu_children_user}: See \code{\link[=ps_cpu_times]{ps_cpu_times()}}.
+\item \code{cpu_children_system}: See \code{\link[=ps_cpu_times]{ps_cpu_times()}}.
+\item \code{terminal}: Terminal device, from \code{\link[=ps_terminal]{ps_terminal()}}.
+\item \code{uid_real}: Real user id, from \code{\link[=ps_uids]{ps_uids()}}.
+\item \code{uid_effective}: Effective user id, from \code{\link[=ps_uids]{ps_uids()}}.
+\item \code{uid_saved}: Saved user id, from \code{\link[=ps_uids]{ps_uids()}}.
+\item \code{gid_real}: Real group id, from \code{\link[=ps_gids]{ps_gids()}}.
+\item \code{gid_effective}: Effective group id, from \code{\link[=ps_gids]{ps_gids()}}.
+\item \code{gid_saved}: Saved group id, from \code{\link[=ps_gids]{ps_gids()}}.
+\item \code{mem_shared}: See \code{\link[=ps_memory_info]{ps_memory_info()}}.
+\item \code{mem_text}: See \code{\link[=ps_memory_info]{ps_memory_info()}}.
+\item \code{mem_data}: See \code{\link[=ps_memory_info]{ps_memory_info()}}.
+\item \code{mem_lib}: See \code{\link[=ps_memory_info]{ps_memory_info()}}.
+\item \code{mem_dirty}: See \code{\link[=ps_memory_info]{ps_memory_info()}}.
+\item \code{mem_pfaults}: See \code{\link[=ps_memory_info]{ps_memory_info()}}.
+\item \code{mem_pageins}: See \code{\link[=ps_memory_info]{ps_memory_info()}}.
+\item \code{mem_maxrss}: See \code{\link[=ps_memory_full_info]{ps_memory_full_info()}}.
+\item \code{mem_uss}: See \code{\link[=ps_memory_full_info]{ps_memory_full_info()}}.
+\item \code{mem_pss}: See \code{\link[=ps_memory_full_info]{ps_memory_full_info()}}.
+\item \code{mem_swap}: See \code{\link[=ps_memory_full_info]{ps_memory_full_info()}}.
 }
-\description{
-Process table
+
+Use \code{"*"} in \code{columns} to include all columns.
 }
