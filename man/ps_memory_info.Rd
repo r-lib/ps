@@ -58,6 +58,8 @@ additional information, but typically takes slightly longer to run, and
 might not have access to some processes that \code{ps_memory_info()} can
 query:
 \itemize{
+\item \code{maxrss} maximum resident set size over the process's lifetime. This
+only works for the calling process, otherwise it is \code{NA_real_}.
 \item \code{uss}: Unique Set Size, this is the memory which is unique to a
 process and which would be freed if the process was terminated right
 now.

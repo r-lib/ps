@@ -1,3 +1,12 @@
+# ps (development version)
+
+* `ps_memory_full_info()` now contains `maxrss`, the maximum resident set
+  size for the calling process.
+
+# ps 1.8.1
+
+* ps can now be installed again on unsupported platforms.
+
 # ps 1.8.0
 
 * New `ps_apps()` function to list all running applications on macOS.
@@ -11,7 +20,7 @@
 * New `ps_wait()` to start an interruptible wait on multiple processes,
   with a timeout (#166).
 
-* `ps_handle()` now allowes a numeric (double) scalar as the pid, as long
+* `ps_handle()` now allows a numeric (double) scalar as the pid, as long
   as its value is integer.
 
 * `ps_send_signal()`, `ps_suspend()`, `ps_resume()`, `ps_terminate()`,

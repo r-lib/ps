@@ -25,6 +25,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
+          - {os: macos-15,       r: 'devel'}
+          - {os: macos-latest,   r: 'devel'}
           - {os: macos-latest,   r: 'release'}
 
           - {os: windows-latest, r: 'release'}
@@ -33,6 +35,7 @@ jobs:
           - {os: windows-latest, r: '3.6.3'}
 
           - {os: ubuntu-latest,  r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-22.04-arm, r: 'release', rspm: 'no' }
           - {os: ubuntu-latest,  r: 'release'}
           - {os: ubuntu-latest,  r: 'oldrel-1'}
           - {os: ubuntu-latest,  r: 'oldrel-2'}
@@ -52,7 +55,7 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
+          use-public-rspm: ${{ matrix.config.rspm || 'true' }}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
@@ -63,3 +66,7 @@ jobs:
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+
+      - name: Interactive debug
+        if: ${{ always() && runner.os == 'Linux' && runner.debug == '1' && github.run_attempt != '1' }}
+        uses: r-hub/actions/ssh-server@main
