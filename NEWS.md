@@ -1,4 +1,4 @@
-# ps (development version)
+# ps 1.9.0
 
 * `ps_memory_full_info()` now contains `maxrss`, the maximum resident set
   size for the calling process.
