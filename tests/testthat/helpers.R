@@ -60,6 +60,8 @@ have_ipv6_connection <- local({
   function(url = ipv6_url()) {
     if (is.null(ok) || myurl != url) {
       myurl <<- url
+      opt <- options(warn = 2)
+      on.exit(options(opt), add = TRUE)
       tryCatch({
         cx <- curl::curl(url)
         open(cx)
