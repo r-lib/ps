@@ -36,6 +36,7 @@ jobs:
 
           - {os: ubuntu-latest,  r: 'devel' }
           - {os: ubuntu-22.04-arm, r: 'release' }
+          - {os: ubuntu-24.04-arm, r: 'release' }
           - {os: ubuntu-latest,  r: 'release'}
           - {os: ubuntu-latest,  r: 'oldrel-1'}
           - {os: ubuntu-latest,  r: 'oldrel-2'}
