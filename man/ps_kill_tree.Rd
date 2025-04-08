@@ -68,6 +68,13 @@ cleaned pids, names are the process names.
 If \code{expr} throws an error, then so does \code{with_process_cleanup()}, the
 same error. Nevertheless processes are still cleaned up.
 }
+\section{macOS issues}{
+
+
+These functions do not work on macOS, unless specific criteria are
+met. See \code{\link[=ps_environ]{ps_environ()}} for details.
+}
+
 \section{Note}{
 
 Note that \code{with_process_cleanup()} is problematic if the R process is

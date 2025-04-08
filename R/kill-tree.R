@@ -28,7 +28,7 @@
 #' @section macOS issues:
 #'
 #' These functions do not work on macOS, unless specific criteria are
-#' met. See `ps_environ()` for details.
+#' met. See [ps_environ()] for details.
 #'
 #' @section Note:
 #' Note that `with_process_cleanup()` is problematic if the R process is
