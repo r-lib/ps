@@ -52,7 +52,7 @@ ps__str_decode <- function (str) {
   micro_secs <- sum(val[11:14] * 52 ^ (0:3))
 
   time <- whole_secs + (micro_secs / 1000000)
-  time <- as.POSIXct(time, 'GMT')
+  time <- as.POSIXct(time, tz = 'GMT', origin = '1970-01-01')
 
   p <- ps_handle(pid = process_id)
 
