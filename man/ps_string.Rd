@@ -11,7 +11,7 @@ ps_string(p = ps_handle())
 }
 \value{
 A process string (scalar character), that can be passed to
-\code{ps_handle()}.
+\code{ps_handle()} in place of a pid.
 }
 \description{
 A convenient format for passing between processes, naming semaphores, or

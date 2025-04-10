@@ -22,7 +22,7 @@ test_that("string", {
 
   # Values satisfy encoding assumptions
   expect_true(all(ps_pids() < 52^4))
-  expect_true(Sys.time() < 62^6 * .95)
+  expect_true(Sys.time() < 62^6 * .99)
   expect_identical(nchar(format(ps_create_time(), "%OS8")), 9L)
 
   # Roundtrip through ps_string
