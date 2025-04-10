@@ -26,7 +26,7 @@ ps_string <- function (p = ps_handle()) {
 ps__str_encode <- function (process_id, time) {
 
   whole_secs <- as.integer(time)
-  micro_secs <- as.integer(strsplit(format(time, "%OS6"), '.', TRUE)[[1]][[2]])
+  micro_secs <- as.numeric(time) %% 1 * 1000000
 
   # Assumptions:
   #   time between Jan 1st 1970 and Dec 5th 3769.
@@ -54,11 +54,15 @@ ps__str_decode <- function (str) {
   time <- whole_secs + (micro_secs / 1000000)
   time <- as.POSIXct(time, tz = 'GMT', origin = '1970-01-01')
 
-  p <- ps_handle(pid = process_id)
-
-  # No matching process with pid and time +/- 2 microseconds
-  if (!ps_is_running(p) || abs(ps_create_time(p) - time) > 2/1000000)
-    p <- ps_handle(pid = process_id, time = time)
-
-  return(p)
+  # Allow fuzzy-matching the time by +/- 2 microseconds
+  tryCatch(
+    expr  = {
+      p <- ps_handle(pid = process_id)
+      stopifnot(abs(ps_create_time(p) - time) < 2/1000000)
+      p
+    },
+    error = function (e) {
+      ps_handle(pid = process_id, time = time)
+    }
+  )
 }
