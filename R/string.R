@@ -3,8 +3,8 @@
 #'
 #' A convenient format for passing between processes, naming semaphores, or
 #' using as a directory/file name. Will always be 14 alphanumeric characters,
-#' with the first and last characters guarantied to be letters. Encodes the
-#' pid and creation time for a process.
+#' with the first character guarantied to be a letter. Encodes the pid and
+#' creation time for a process.
 #'
 #' @param p Process handle.
 #'
@@ -33,12 +33,14 @@ ps__str_encode <- function (process_id, time) {
   #   max time precision = 1/1,000,000 of a second.
   #   pid <= 7,311,615 (current std max = 4,194,304).
 
+  # Note: micro_secs has three extra unused bits
+
   map <- c(letters, LETTERS, 0:9)
 
   paste(collapse = '', map[1 + c(
     floor(process_id / 52 ^ (0:3)) %% 52,
     floor(whole_secs / 62 ^ (0:5)) %% 62,
-    floor(micro_secs / 52 ^ (0:3)) %% 52 )])
+    floor(micro_secs / 62 ^ (0:3)) %% 62 )])
 }
 
 
@@ -49,7 +51,7 @@ ps__str_decode <- function (str) {
 
   process_id <- sum(val[01:04] * 52 ^ (0:3))
   whole_secs <- sum(val[05:10] * 62 ^ (0:5))
-  micro_secs <- sum(val[11:14] * 52 ^ (0:3))
+  micro_secs <- sum(val[11:14] * 62 ^ (0:3))
 
   time <- whole_secs + (micro_secs / 1000000)
   time <- as.POSIXct(time, tz = 'GMT', origin = '1970-01-01')
