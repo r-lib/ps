@@ -26,7 +26,7 @@ ps_string <- function (p = ps_handle()) {
 ps__str_encode <- function (process_id, time) {
 
   whole_secs <- as.integer(time)
-  micro_secs <- as.integer(strsplit(format(time, "%OS6"), '.', TRUE)[[1]][[2]])
+  micro_secs <- as.numeric(time) %% 1 * 1000000
 
   # Assumptions:
   #   time between Jan 1st 1970 and Dec 5th 3769.
