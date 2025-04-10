@@ -33,6 +33,11 @@ test_that("string", {
   expect_true(ps_is_running(ps2))
   expect_identical(ps_pid(ps),  ps_pid(ps2))
   expect_identical(ps_ppid(ps), ps_ppid(ps2))
+
+  # Invalid process
+  str <- ps__str_encode(ps_pid(ps), ps_create_time(ps) + 1)
+  ps3 <- expect_silent(ps_handle(str))
+  expect_false(ps_is_running(ps3))
 })
 
 test_that("pid", {

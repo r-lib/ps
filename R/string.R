@@ -18,17 +18,19 @@
 #' ps_handle(pid = str)
 
 ps_string <- function (p = ps_handle()) {
-
   assert_ps_handle(p)
+  ps__str_encode(ps_pid(p), ps_create_time(p))
+}
 
-  process_id <- ps_pid(p)
-  ctime      <- ps_create_time(p)
-  whole_secs <- as.integer(ctime)
-  micro_secs <- as.integer(strsplit(format(ctime, "%OS6"), '.', TRUE)[[1]][[2]])
+
+ps__str_encode <- function (process_id, time) {
+
+  whole_secs <- as.integer(time)
+  micro_secs <- as.integer(strsplit(format(time, "%OS6"), '.', TRUE)[[1]][[2]])
 
   # Assumptions:
-  #   ctime between Jan 1st 1970 and Dec 5th 3769.
-  #   max ctime precision = 1/1,000,000 of a second.
+  #   time between Jan 1st 1970 and Dec 5th 3769.
+  #   max time precision = 1/1,000,000 of a second.
   #   pid <= 7,311,615 (current std max = 4,194,304).
 
   map <- c(letters, LETTERS, 0:9)
@@ -52,5 +54,11 @@ ps__str_decode <- function (str) {
   time <- whole_secs + (micro_secs / 1000000)
   time <- as.POSIXct(time, 'GMT')
 
-  ps_handle(pid = process_id, time = time)
+  p <- ps_handle(pid = process_id)
+
+  # No matching process with pid and time +/- 2 microseconds
+  if (!ps_is_running(p) || abs(ps_create_time(p) - time) > 2/1000000)
+    p <- ps_handle(pid = process_id, time = time)
+
+  return(p)
 }
