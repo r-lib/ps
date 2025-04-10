@@ -135,8 +135,13 @@ assert_pid <- function(x) {
       as.integer(x) == x) {
     return(as.integer(x))
   }
-  stop(ps__invalid_argument(match.call()$x,
-                            " is not a process id (integer scalar)"))
+  if (is.character(x) && length(x) == 1 && !is.na(x) &&
+      grepl("^[A-Za-z]{4}[A-Za-z0-9]{6}[A-Za-z]{4}$", x)) {
+    return(x)
+  }
+  stop(ps__invalid_argument(
+    match.call()$x,
+    " is not a process id (integer scalar) or process string (from `ps_string()`)"))
 }
 
 assert_grace <- function(x) {

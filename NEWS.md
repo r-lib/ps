@@ -1,5 +1,7 @@
 # ps (development version)
 
+* New `ps_string()` for uniquely identifying a process.
+
 # ps 1.9.0
 
 * `ps_memory_full_info()` now contains `maxrss`, the maximum resident set

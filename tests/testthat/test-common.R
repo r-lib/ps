@@ -17,6 +17,24 @@ test_that("print", {
   expect_output(print(ps), format_regexp())
 })
 
+test_that("string", {
+  ps <- ps_handle()
+
+  # Values satisfy encoding assumptions
+  expect_true(all(ps_pids() < 52^4))
+  expect_true(Sys.time() < 62^6 * .95)
+  expect_identical(nchar(format(ps_create_time(), "%OS8")), 9L)
+
+  # Roundtrip through ps_string
+  str <- expect_silent(ps_string(ps))
+  ps2 <- expect_silent(ps_handle(str))
+
+  # Got the same process back
+  expect_true(ps_is_running(ps2))
+  expect_identical(ps_pid(ps),  ps_pid(ps2))
+  expect_identical(ps_ppid(ps), ps_ppid(ps2))
+})
+
 test_that("pid", {
   ## Argument check
   expect_error(ps_pid(123), class = "invalid_argument")
