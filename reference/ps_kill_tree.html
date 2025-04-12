@@ -17,7 +17,7 @@ process tree.)"><script defer data-domain="ps.r-lib.org,all.tidyverse.org" src="
 
     <a class="navbar-brand me-2" href="../index.html">ps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.9.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.9.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,6 +114,14 @@ to the screen, and <code>process_cleanup</code> is a named integer vector of the
 cleaned pids, names are the process names.</p>
 <p>If <code>expr</code> throws an error, then so does <code>with_process_cleanup()</code>, the
 same error. Nevertheless processes are still cleaned up.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="macos-issues">macOS issues<a class="anchor" aria-label="anchor" href="#macos-issues"></a></h2>
+
+
+
+<p>These functions do not work on macOS, unless specific criteria are
+met. See <code><a href="ps_environ.html">ps_environ()</a></code> for details.</p>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
