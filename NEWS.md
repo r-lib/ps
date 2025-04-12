@@ -1,4 +1,4 @@
-# ps (development version)
+# ps 1.9.1
 
 * ps now builds correctly on Alpine Linux (3.19) on R 4.5.0.
 
