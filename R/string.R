@@ -38,9 +38,9 @@ ps__str_encode <- function (process_id, time) {
   map <- c(letters, LETTERS, 0:9)
 
   paste(collapse = '', map[1 + c(
-    floor(process_id / 52 ^ (0:3)) %% 52,
-    floor(whole_secs / 62 ^ (0:5)) %% 62,
-    floor(micro_secs / 62 ^ (0:3)) %% 62 )])
+    floor(process_id / 52 ^ (3:0)) %% 52,
+    floor(whole_secs / 62 ^ (5:0)) %% 62,
+    floor(micro_secs / 62 ^ (3:0)) %% 62 )])
 }
 
 
@@ -49,9 +49,9 @@ ps__str_decode <- function (str) {
   map <- structure(0:61, names = c(letters, LETTERS, 0:9))
   val <- map[strsplit(str, '', fixed = TRUE)[[1]]]
 
-  process_id <- sum(val[01:04] * 52 ^ (0:3))
-  whole_secs <- sum(val[05:10] * 62 ^ (0:5))
-  micro_secs <- sum(val[11:14] * 62 ^ (0:3))
+  process_id <- sum(val[01:04] * 52 ^ (3:0))
+  whole_secs <- sum(val[05:10] * 62 ^ (5:0))
+  micro_secs <- sum(val[11:14] * 62 ^ (3:0))
 
   time <- whole_secs + (micro_secs / 1000000)
   time <- as.POSIXct(time, tz = 'GMT', origin = '1970-01-01')

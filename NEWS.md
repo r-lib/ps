@@ -2,6 +2,10 @@
 
 * New `ps_string()` for uniquely identifying a process.
 
+# ps 1.9.1
+
+* ps now builds correctly on Alpine Linux (3.19) on R 4.5.0.
+
 # ps 1.9.0
 
 * `ps_memory_full_info()` now contains `maxrss`, the maximum resident set
