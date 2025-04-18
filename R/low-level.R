@@ -2,8 +2,8 @@
 
 #' Create a process handle
 #'
-#' @param pid Process id. Integer scalar. `NULL` means the current R
-#'   process.
+#' @param pid A process id (integer scalar) or process string (from
+#'   `ps_string()`). `NULL` means the current R process.
 #' @param time Start time of the process. Usually `NULL` and ps will query
 #'   the start time.
 #' @return `ps_handle()` returns a process handle (class `ps_handle`).
@@ -16,6 +16,7 @@
 
 ps_handle <- function(pid = NULL, time = NULL) {
   if (!is.null(pid)) pid <- assert_pid(pid)
+  if (is.character(pid)) return(ps__str_decode(pid))
   if (!is.null(time)) assert_time(time)
   .Call(psll_handle, pid, time)
 }

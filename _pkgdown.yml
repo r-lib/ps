@@ -96,5 +96,6 @@ reference:
 - title: Utility functions
   contents:
   - ps_is_supported
+  - ps_string
   - signals
   - errno

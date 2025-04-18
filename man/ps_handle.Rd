@@ -16,8 +16,8 @@ ps_handle(pid = NULL, time = NULL)
 \method{print}{ps_handle}(x, ...)
 }
 \arguments{
-\item{pid}{Process id. Integer scalar. \code{NULL} means the current R
-process.}
+\item{pid}{A process id (integer scalar) or process string (from
+\code{ps_string()}). \code{NULL} means the current R process.}
 
 \item{time}{Start time of the process. Usually \code{NULL} and ps will query
 the start time.}
