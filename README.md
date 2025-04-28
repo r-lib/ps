@@ -83,16 +83,16 @@ ps()
     ## # A data frame: 572 × 11
     ##      pid  ppid name      username status   user system    rss     vms created             ps_handle 
     ##  * <int> <int> <chr>     <chr>    <chr>   <dbl>  <dbl>  <dbl>   <dbl> <dttm>              <I<list>> 
-    ##  1 45364  4159 Google C… gaborcs… sleep… 0.0353 0.0177 1.01e8 1.91e12 2025-04-28 08:03:24 <ps_handl>
-    ##  2 44844 39673 R         gaborcs… runni… 0.933  0.184  2.19e8 4.21e11 2025-04-28 08:01:34 <ps_handl>
-    ##  3 44741     1 mdworker… gaborcs… sleep… 0.125  0.0634 2.56e7 4.37e11 2025-04-28 08:00:55 <ps_handl>
-    ##  4 44738  4159 Google C… gaborcs… sleep… 0.0271 0.0145 4.77e7 4.89e11 2025-04-28 08:00:51 <ps_handl>
-    ##  5 44734     1 mdworker… gaborcs… sleep… 0.202  0.0824 2.84e7 4.37e11 2025-04-28 08:00:49 <ps_handl>
+    ##  1 45911  4159 Google C… gaborcs… sleep… 0.0473 0.0227 1.05e8 1.91e12 2025-04-28 08:05:25 <ps_handl>
+    ##  2 45860  4159 Google C… gaborcs… sleep… 0.0751 0.0347 1.21e8 1.91e12 2025-04-28 08:05:19 <ps_handl>
+    ##  3 45700     1 mdworker… gaborcs… sleep… 0.327  0.0861 2.88e7 4.37e11 2025-04-28 08:04:26 <ps_handl>
+    ##  4 44844 39673 R         gaborcs… runni… 1.70   0.634  2.55e8 4.22e11 2025-04-28 08:01:34 <ps_handl>
+    ##  5 44738  4159 Google C… gaborcs… sleep… 0.0325 0.0157 4.77e7 4.89e11 2025-04-28 08:00:51 <ps_handl>
     ##  6 43786     1 Messages… gaborcs… sleep… 0.162  0.233  6.90e6 4.37e11 2025-04-28 07:59:53 <ps_handl>
     ##  7 43785     1 business… gaborcs… sleep… 0.110  0.112  8.72e6 4.37e11 2025-04-28 07:59:53 <ps_handl>
     ##  8 43628     1 MENotifi… gaborcs… sleep… 0.0291 0.0116 3.08e6 4.21e11 2025-04-28 07:59:35 <ps_handl>
     ##  9 43627     1 MTLAsset… gaborcs… sleep… 0.0498 0.0208 3.29e6 4.37e11 2025-04-28 07:59:35 <ps_handl>
-    ## 10 43472     1 replayd   gaborcs… sleep… 2.32   0.557  2.46e7 4.37e11 2025-04-28 07:59:21 <ps_handl>
+    ## 10 43472     1 replayd   gaborcs… sleep… 2.32   0.560  2.46e7 4.37e11 2025-04-28 07:59:21 <ps_handl>
     ## # ℹ 562 more rows
 
 ## Process API
@@ -267,7 +267,7 @@ ps_cpu_times(p)
 ```
 
     ##            user          system   children_user children_system 
-    ##       1.0056932       0.2030207              NA              NA
+    ##       1.7681955       0.6514954              NA              NA
 
 `ps_memory_info(p)` returns memory usage information. See the manual for
 details.
@@ -277,7 +277,7 @@ ps_memory_info(p)
 ```
 
     ##          rss          vms      pfaults      pageins 
-    ##    231440384 421495160832        23364           13
+    ##    261783552 421933465600        41422           13
 
 `ps_children(p)` lists all child processes (potentially recursively) of
 the current process.
@@ -299,14 +299,14 @@ Windows):
 ps_num_fds(p)
 ```
 
-    ## [1] 15
+    ## [1] 23
 
 ``` r
 f <- file(tmp <- tempfile(), "w")
 ps_num_fds(p)
 ```
 
-    ## [1] 16
+    ## [1] 24
 
 ``` r
 close(f)
@@ -325,7 +325,7 @@ ps_open_files(p)
     ## 1     0 /dev/ttys019                                                                      
     ## 2     1 /dev/ttys019                                                                      
     ## 3     2 /dev/ttys019                                                                      
-    ## 4    14 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpoaXwPG/Rfaf2c15b4b2c7
+    ## 4    14 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpoaXwPG/Rfaf2c3705b93c
 
 ``` r
 f <- file(tmp <- tempfile(), "w")
@@ -333,13 +333,13 @@ ps_open_files(p)
 ```
 
     ## # A data frame: 5 × 2
-    ##      fd path                                                                               
-    ##   <int> <chr>                                                                              
-    ## 1     0 /dev/ttys019                                                                       
-    ## 2     1 /dev/ttys019                                                                       
-    ## 3     2 /dev/ttys019                                                                       
-    ## 4    14 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpoaXwPG/Rfaf2c15b4b2c7 
-    ## 5    15 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpoaXwPG/fileaf2ca4531f3
+    ##      fd path                                                                                
+    ##   <int> <chr>                                                                               
+    ## 1     0 /dev/ttys019                                                                        
+    ## 2     1 /dev/ttys019                                                                        
+    ## 3     2 /dev/ttys019                                                                        
+    ## 4    14 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpoaXwPG/Rfaf2c3705b93c  
+    ## 5    23 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpoaXwPG/fileaf2c58c42e5c
 
 ``` r
 close(f)
@@ -353,7 +353,7 @@ ps_open_files(p)
     ## 1     0 /dev/ttys019                                                                      
     ## 2     1 /dev/ttys019                                                                      
     ## 3     2 /dev/ttys019                                                                      
-    ## 4    14 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpoaXwPG/Rfaf2c15b4b2c7
+    ## 4    14 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpoaXwPG/Rfaf2c3705b93c
 
 ### Process manipulation
 
@@ -537,8 +537,8 @@ ps() |>
     ##      pid  ppid name        username    status      user  system     rss      vms created            
     ##    <int> <int> <chr>       <chr>       <chr>      <dbl>   <dbl>   <dbl>    <dbl> <dttm>             
     ##  1 41838     1 ReportCrash root        sleepi… NA       NA      NA      NA       2025-04-28 07:57:52
-    ##  2 40290 40090 zsh         gaborcsardi sleepi…  0.0286   0.122   3.01e6  4.21e11 2025-04-28 07:53:47
-    ##  3 40090 40088 zsh         gaborcsardi sleepi…  0.489    0.319   3.12e7  4.21e11 2025-04-28 07:53:47
+    ##  2 40290 40090 zsh         gaborcsardi sleepi…  0.0361   0.154   3.01e6  4.21e11 2025-04-28 07:53:47
+    ##  3 40090 40088 zsh         gaborcsardi sleepi…  0.587    0.406   3.14e7  4.21e11 2025-04-28 07:53:47
     ##  4 39874 39673 zsh         gaborcsardi sleepi…  0.00552  0.0208  2.62e6  4.21e11 2025-04-28 07:53:00
     ##  5 39673 39672 zsh         gaborcsardi sleepi…  0.270    0.0922  2.96e7  4.21e11 2025-04-28 07:53:00
     ##  6 35995 35795 zsh         gaborcsardi sleepi…  0.0117   0.0485  9.67e5  4.21e11 2025-04-28 07:45:03
@@ -557,20 +557,20 @@ ps() |>
   select(pid, name)
 ```
 
-    ## # A data frame: 346 × 2
+    ## # A data frame: 347 × 2
     ##      pid name                           
     ##    <int> <chr>                          
-    ##  1 45364 Google Chrome Helper (Renderer)
-    ##  2 44844 R                              
-    ##  3 44738 Google Chrome Helper           
-    ##  4 44734 mdworker_shared                
-    ##  5 43786 MessagesBlastDoorService       
-    ##  6 43785 businessservicesd              
-    ##  7 43628 MENotificationAgent            
-    ##  8 43627 MTLAssetUpgraderD              
-    ##  9 43472 replayd                        
-    ## 10 43442 gamecontrolleragentd           
-    ## # ℹ 336 more rows
+    ##  1 45911 Google Chrome Helper (Renderer)
+    ##  2 45860 Google Chrome Helper (Renderer)
+    ##  3 45700 mdworker_shared                
+    ##  4 44844 R                              
+    ##  5 44738 Google Chrome Helper           
+    ##  6 43786 MessagesBlastDoorService       
+    ##  7 43785 businessservicesd              
+    ##  8 43628 MENotificationAgent            
+    ##  9 43627 MTLAssetUpgraderD              
+    ## 10 43472 replayd                        
+    ## # ℹ 337 more rows
 
 Processes consuming more than 100MB of memory:
 
@@ -579,27 +579,29 @@ ps() |>
   filter(rss > 100 * 1024 * 1024)
 ```
 
-    ## # A data frame: 18 × 11
-    ##      pid  ppid name     username status   user  system    rss     vms created             ps_handle 
-    ##    <int> <int> <chr>    <chr>    <chr>   <dbl>   <dbl>  <dbl>   <dbl> <dttm>              <I<list>> 
-    ##  1 44844 39673 R        gaborcs… runni… 1.38e0 4.72e-1 2.48e8 4.22e11 2025-04-28 08:01:34 <ps_handl>
-    ##  2 40521  4159 Google … gaborcs… sleep… 3.10e0 4.40e-1 2.02e8 1.91e12 2025-04-28 07:54:07 <ps_handl>
-    ##  3 40037  4159 Google … gaborcs… sleep… 5.49e0 7.60e-1 2.54e8 1.91e12 2025-04-28 07:53:23 <ps_handl>
-    ##  4 39666  4159 Google … gaborcs… sleep… 1.30e0 2.36e-1 1.45e8 1.91e12 2025-04-28 07:52:34 <ps_handl>
-    ##  5 28176  4159 Google … gaborcs… sleep… 1.16e1 1.09e+0 2.17e8 1.91e12 2025-04-28 07:23:37 <ps_handl>
-    ##  6 18695  4159 Google … gaborcs… sleep… 2.33e1 2.18e+0 2.23e8 1.91e12 2025-04-28 06:48:50 <ps_handl>
-    ##  7 18673  4159 Google … gaborcs… sleep… 2.08e1 1.72e+0 2.38e8 1.91e12 2025-04-28 06:47:44 <ps_handl>
-    ##  8 18257  4159 Google … gaborcs… sleep… 2.10e1 2.84e+0 2.02e8 1.91e12 2025-04-28 06:31:40 <ps_handl>
-    ##  9 17380  4159 Google … gaborcs… sleep… 1.25e1 1.50e+0 1.76e8 1.91e12 2025-04-28 05:48:24 <ps_handl>
-    ## 10 16963  4159 Google … gaborcs… sleep… 4.67e2 6.74e+1 5.24e8 1.91e12 2025-04-28 05:31:43 <ps_handl>
-    ## 11  4214  4159 Google … gaborcs… sleep… 4.88e0 1.34e+0 1.34e8 1.91e12 2025-04-26 23:27:03 <ps_handl>
-    ## 12  4199  4159 Google … gaborcs… sleep… 1.26e2 1.07e+1 3.44e8 1.91e12 2025-04-26 23:26:59 <ps_handl>
-    ## 13  4176  4159 Google … gaborcs… sleep… 2.37e2 2.31e+2 1.23e8 4.55e11 2025-04-26 23:26:58 <ps_handl>
-    ## 14  4175  4159 Google … gaborcs… sleep… 2.05e3 1.09e+3 1.35e8 4.56e11 2025-04-26 23:26:58 <ps_handl>
-    ## 15  4159     1 Google … gaborcs… sleep… 1.21e3 3.78e+2 5.98e8 4.56e11 2025-04-26 23:26:54 <ps_handl>
-    ## 16 22365 22350 qemu-sy… gaborcs… sleep… 1.26e4 1.65e+3 1.57e8 4.26e11 2025-04-24 10:02:15 <ps_handl>
-    ## 17  1726     1 Spotlig… gaborcs… sleep… 1.63e2 4.42e+1 1.47e8 4.25e11 2025-04-22 14:34:30 <ps_handl>
-    ## 18  1644     1 iTerm2   gaborcs… sleep… 6.30e3 1.32e+3 3.60e8 4.23e11 2025-04-22 14:34:22 <ps_handl>
+    ## # A data frame: 20 × 11
+    ##      pid  ppid name    username status    user  system    rss     vms created             ps_handle 
+    ##    <int> <int> <chr>   <chr>    <chr>    <dbl>   <dbl>  <dbl>   <dbl> <dttm>              <I<list>> 
+    ##  1 45911  4159 Google… gaborcs… sleep… 4.73e-2 2.27e-2 1.05e8 1.91e12 2025-04-28 08:05:25 <ps_handl>
+    ##  2 45860  4159 Google… gaborcs… sleep… 7.51e-2 3.47e-2 1.21e8 1.91e12 2025-04-28 08:05:19 <ps_handl>
+    ##  3 44844 39673 R       gaborcs… runni… 2.08e+0 9.20e-1 2.80e8 4.22e11 2025-04-28 08:01:34 <ps_handl>
+    ##  4 40521  4159 Google… gaborcs… sleep… 3.14e+0 4.45e-1 2.03e8 1.91e12 2025-04-28 07:54:07 <ps_handl>
+    ##  5 40037  4159 Google… gaborcs… sleep… 7.78e+0 1.03e+0 2.66e8 1.91e12 2025-04-28 07:53:23 <ps_handl>
+    ##  6 39666  4159 Google… gaborcs… sleep… 1.30e+0 2.37e-1 1.45e8 1.91e12 2025-04-28 07:52:34 <ps_handl>
+    ##  7 28176  4159 Google… gaborcs… sleep… 1.16e+1 1.09e+0 2.18e8 1.91e12 2025-04-28 07:23:37 <ps_handl>
+    ##  8 18695  4159 Google… gaborcs… sleep… 2.33e+1 2.18e+0 2.23e8 1.91e12 2025-04-28 06:48:50 <ps_handl>
+    ##  9 18673  4159 Google… gaborcs… sleep… 2.08e+1 1.73e+0 2.39e8 1.91e12 2025-04-28 06:47:44 <ps_handl>
+    ## 10 18257  4159 Google… gaborcs… sleep… 2.11e+1 2.85e+0 2.02e8 1.91e12 2025-04-28 06:31:40 <ps_handl>
+    ## 11 17380  4159 Google… gaborcs… sleep… 1.25e+1 1.50e+0 1.76e8 1.91e12 2025-04-28 05:48:24 <ps_handl>
+    ## 12 16963  4159 Google… gaborcs… sleep… 4.73e+2 6.83e+1 5.52e8 1.91e12 2025-04-28 05:31:43 <ps_handl>
+    ## 13  4214  4159 Google… gaborcs… sleep… 4.88e+0 1.34e+0 1.34e8 1.91e12 2025-04-26 23:27:03 <ps_handl>
+    ## 14  4199  4159 Google… gaborcs… sleep… 1.26e+2 1.08e+1 3.45e8 1.91e12 2025-04-26 23:26:59 <ps_handl>
+    ## 15  4176  4159 Google… gaborcs… sleep… 2.38e+2 2.31e+2 1.23e8 4.55e11 2025-04-26 23:26:58 <ps_handl>
+    ## 16  4175  4159 Google… gaborcs… sleep… 2.05e+3 1.09e+3 1.35e8 4.56e11 2025-04-26 23:26:58 <ps_handl>
+    ## 17  4159     1 Google… gaborcs… sleep… 1.21e+3 3.79e+2 6.00e8 4.56e11 2025-04-26 23:26:54 <ps_handl>
+    ## 18 22365 22350 qemu-s… gaborcs… sleep… 1.26e+4 1.65e+3 1.58e8 4.26e11 2025-04-24 10:02:15 <ps_handl>
+    ## 19  1726     1 Spotli… gaborcs… sleep… 1.64e+2 4.42e+1 1.47e8 4.25e11 2025-04-22 14:34:30 <ps_handl>
+    ## 20  1644     1 iTerm2  gaborcs… sleep… 6.32e+3 1.32e+3 3.87e8 4.23e11 2025-04-22 14:34:22 <ps_handl>
 
 Top 3 memory consuming processes:
 
@@ -612,9 +614,9 @@ ps() |>
     ## # A data frame: 3 × 11
     ##     pid  ppid name        username status  user system    rss     vms created             ps_handle 
     ##   <int> <int> <chr>       <chr>    <chr>  <dbl>  <dbl>  <dbl>   <dbl> <dttm>              <I<list>> 
-    ## 1  4159     1 Google Chr… gaborcs… sleep… 1208.  378.  5.98e8 4.56e11 2025-04-26 23:26:54 <ps_handl>
-    ## 2 16963  4159 Google Chr… gaborcs… sleep…  467.   67.4 5.24e8 1.91e12 2025-04-28 05:31:43 <ps_handl>
-    ## 3  1644     1 iTerm2      gaborcs… sleep… 6302. 1318.  3.60e8 4.23e11 2025-04-22 14:34:22 <ps_handl>
+    ## 1  4159     1 Google Chr… gaborcs… sleep… 1211.  379.  6.00e8 4.56e11 2025-04-26 23:26:54 <ps_handl>
+    ## 2 16963  4159 Google Chr… gaborcs… sleep…  473.   68.3 5.52e8 1.91e12 2025-04-28 05:31:43 <ps_handl>
+    ## 3  1644     1 iTerm2      gaborcs… sleep… 6316. 1322.  3.87e8 4.23e11 2025-04-22 14:34:22 <ps_handl>
 
 Top 3 processes which consumed the most CPU time:
 
@@ -629,9 +631,9 @@ ps() |>
     ## # A data frame: 3 × 3
     ##     pid name                       cpu_time
     ##   <int> <chr>                         <dbl>
-    ## 1 22365 qemu-system-aarch64          14265.
-    ## 2  1644 iTerm2                        7620.
-    ## 3  4175 Google Chrome Helper (GPU)    3136.
+    ## 1 22365 qemu-system-aarch64          14269.
+    ## 2  1644 iTerm2                        7639.
+    ## 3  4175 Google Chrome Helper (GPU)    3140.
 
 ## Code of Conduct
 

@@ -7,7 +7,8 @@ output:
       before_body: header.md
 ---
 
-```{r echo = FALSE}
+```{r}
+#| echo: false
 options(width = 100)
 suppressWarnings(suppressPackageStartupMessages(suppressMessages(library(dplyr))))
 suppressWarnings(suppressMessages(library(pillar)))
