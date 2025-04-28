@@ -109,25 +109,24 @@
 <p><code><a href="reference/ps_pids.html">ps_pids()</a></code> returns all process ids on the system. This can be useful to iterate over all processes.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_pids.html">ps_pids</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="do">##  [1]    0    1 1125 1127 1129 1130 1133 1136 1138 1139 1144 1149 1153 1155 1156 1161 1164 1165 1166</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="do">## [20] 1167</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="do">##  [1]   0   1 265 266 275 276 557 559 561 562 564 567 569 570 574 578 580 584 586 587</span></span></code></pre></div>
 <p><code><a href="reference/ps.html">ps()</a></code> returns a data frame, with data about each process. It contains a handle to each process, in the <code>ps_handle</code> column, you can use these to perform more queries on the processes.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="do">## # A data frame: 477 × 11</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="do">##      pid  ppid name  username status    user  system     rss      vms created             ps_handle</span></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="do">##  * &lt;int&gt; &lt;int&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt; &lt;dttm&gt;              &lt;I&lt;list&gt;&gt;</span></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="do">##  1 81068     1 mdwo… gaborcs… runni…  0.0377  0.0143  2.61e7  4.20e11 2024-09-01 09:39:46 &lt;ps_handl&gt;</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="do">##  2 81067     1 mdwo… gaborcs… runni…  0.0423  0.0133  2.19e7  4.20e11 2024-09-01 09:39:46 &lt;ps_handl&gt;</span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="do">##  3 80413     1 mdwo… gaborcs… runni…  0.0717  0.0220  2.84e7  4.20e11 2024-09-01 09:39:27 &lt;ps_handl&gt;</span></span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="do">##  4 80412     1 mdwo… gaborcs… runni…  0.0749  0.0241  3.00e7  4.20e11 2024-09-01 09:39:27 &lt;ps_handl&gt;</span></span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="do">##  5 80366     1 mdwo… gaborcs… runni…  0.287   0.0797  3.00e7  4.20e11 2024-09-01 09:37:07 &lt;ps_handl&gt;</span></span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="do">##  6 80360 69319 Goog… gaborcs… runni…  0.0462  0.0191  9.14e7  1.66e12 2024-09-01 09:37:05 &lt;ps_handl&gt;</span></span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="do">##  7 80264     1 coun… root     runni… NA      NA      NA      NA       2024-09-01 09:36:10 &lt;ps_handl&gt;</span></span>
-<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="do">##  8 80261     1 mdwo… gaborcs… runni…  0.300   0.0755  3.00e7  4.20e11 2024-09-01 09:35:55 &lt;ps_handl&gt;</span></span>
-<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="do">##  9 78900 69319 Goog… gaborcs… runni…  2.26    0.429   1.76e8  1.66e12 2024-09-01 09:26:07 &lt;ps_handl&gt;</span></span>
-<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="do">## 10 78888 69319 Goog… gaborcs… runni…  5.68    0.595   2.38e8  1.66e12 2024-09-01 09:25:57 &lt;ps_handl&gt;</span></span>
-<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="do">## # ℹ 467 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="do">## # A data frame: 572 × 11</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="do">##      pid  ppid name      username status   user system    rss     vms created             ps_handle </span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="do">##  * &lt;int&gt; &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;dttm&gt;              &lt;I&lt;list&gt;&gt; </span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="do">##  1 45911  4159 Google C… gaborcs… sleep… 0.0473 0.0227 1.05e8 1.91e12 2025-04-28 08:05:25 &lt;ps_handl&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="do">##  2 45860  4159 Google C… gaborcs… sleep… 0.0751 0.0347 1.21e8 1.91e12 2025-04-28 08:05:19 &lt;ps_handl&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="do">##  3 45700     1 mdworker… gaborcs… sleep… 0.327  0.0861 2.88e7 4.37e11 2025-04-28 08:04:26 &lt;ps_handl&gt;</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="do">##  4 44844 39673 R         gaborcs… runni… 1.70   0.634  2.55e8 4.22e11 2025-04-28 08:01:34 &lt;ps_handl&gt;</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="do">##  5 44738  4159 Google C… gaborcs… sleep… 0.0325 0.0157 4.77e7 4.89e11 2025-04-28 08:00:51 &lt;ps_handl&gt;</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="do">##  6 43786     1 Messages… gaborcs… sleep… 0.162  0.233  6.90e6 4.37e11 2025-04-28 07:59:53 &lt;ps_handl&gt;</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="do">##  7 43785     1 business… gaborcs… sleep… 0.110  0.112  8.72e6 4.37e11 2025-04-28 07:59:53 &lt;ps_handl&gt;</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="do">##  8 43628     1 MENotifi… gaborcs… sleep… 0.0291 0.0116 3.08e6 4.21e11 2025-04-28 07:59:35 &lt;ps_handl&gt;</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="do">##  9 43627     1 MTLAsset… gaborcs… sleep… 0.0498 0.0208 3.29e6 4.37e11 2025-04-28 07:59:35 &lt;ps_handl&gt;</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="do">## 10 43472     1 replayd   gaborcs… sleep… 2.32   0.560  2.46e7 4.37e11 2025-04-28 07:59:21 &lt;ps_handl&gt;</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="do">## # ℹ 562 more rows</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="process-api">Process API<a class="anchor" aria-label="anchor" href="#process-api"></a>
@@ -137,18 +136,18 @@
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">p</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="do">## &lt;ps::ps_handle&gt; PID=56773, NAME=R, AT=2024-08-31 14:11:26.708347</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="do">## &lt;ps::ps_handle&gt; PID=44844, NAME=R, AT=2025-04-28 08:01:34.873763</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="query-functions">Query functions<a class="anchor" aria-label="anchor" href="#query-functions"></a>
 </h3>
 <p><code>ps_pid(p)</code> returns the pid of the process.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_pid.html">ps_pid</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="do">## [1] 56773</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="do">## [1] 44844</span></span></code></pre></div>
 <p><code><a href="reference/ps_create_time.html">ps_create_time()</a></code> returns the creation time of the process (according to the OS).</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_create_time.html">ps_create_time</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="do">## [1] "2024-08-31 14:11:26 GMT"</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="do">## [1] "2025-04-28 08:01:34 GMT"</span></span></code></pre></div>
 <p>The process id and the creation time uniquely identify a process in a system. ps uses them to make sure that it reports information about, and manipulates the correct process.</p>
 <p><code>ps_is_running(p)</code> returns whether <code>p</code> is still running. It handles pid reuse safely.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
@@ -157,11 +156,11 @@
 <p><code>ps_ppid(p)</code> returns the pid of the parent of <code>p</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_ppid.html">ps_ppid</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="do">## [1] 55975</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="do">## [1] 39673</span></span></code></pre></div>
 <p><code>ps_parent(p)</code> returns a process handle to the parent process of <code>p</code>.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_ppid.html">ps_parent</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="do">## &lt;ps::ps_handle&gt; PID=55975, NAME=zsh, AT=2024-08-29 15:04:35.020175</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="do">## &lt;ps::ps_handle&gt; PID=39673, NAME=zsh, AT=2025-04-28 07:53:00.030062</span></span></code></pre></div>
 <p><code>ps_name(p)</code> returns the name of the program <code>p</code> is running.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_name.html">ps_name</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
@@ -169,11 +168,11 @@
 <p><code>ps_exe(p)</code> returns the full path to the executable the <code>p</code> is running.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_exe.html">ps_exe</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb23"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="do">## [1] "/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/bin/exec/R"</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="do">## [1] "/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/bin/exec/R"</span></span></code></pre></div>
 <p><code>ps_cmdline(p)</code> returns the command line (executable and arguments) of <code>p</code>.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_cmdline.html">ps_cmdline</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb25"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="do">## [1] "/Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/bin/exec/R"</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="do">## [1] "/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/bin/exec/R"</span></span></code></pre></div>
 <p><code>ps_status(p)</code> returns the status of the process. Possible values are OS dependent, but typically there is <code>"running"</code> and <code>"stopped"</code>.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_status.html">ps_status</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
@@ -185,11 +184,11 @@
 <p><code>ps_uids(p)</code> and <code>ps_gids(p)</code> return the real, effective and saved user ids of the process. They are only implemented on POSIX systems.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="reference/ps_os_type.html">ps_os_type</a></span><span class="op">(</span><span class="op">)</span><span class="op">[[</span><span class="st">"POSIX"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="fu"><a href="reference/ps_uids.html">ps_uids</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb31"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="do">##      real effective     saved</span></span>
+<div class="sourceCode" id="cb31"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="do">##      real effective     saved </span></span>
 <span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a><span class="do">##       501       501       501</span></span></code></pre></div>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="reference/ps_os_type.html">ps_os_type</a></span><span class="op">(</span><span class="op">)</span><span class="op">[[</span><span class="st">"POSIX"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="fu"><a href="reference/ps_uids.html">ps_gids</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb33"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="do">##      real effective     saved</span></span>
+<div class="sourceCode" id="cb33"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="do">##      real effective     saved </span></span>
 <span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a><span class="do">##        20        20        20</span></span></code></pre></div>
 <p><code>ps_cwd(p)</code> returns the current working directory of the process.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
@@ -198,14 +197,14 @@
 <p><code>ps_terminal(p)</code> returns the name of the terminal of the process, if any. For processes without a terminal, and on Windows it returns <code>NA_character_</code>.</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_terminal.html">ps_terminal</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb37"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="do">## [1] "/dev/ttys015"</span></span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="do">## [1] "/dev/ttys019"</span></span></code></pre></div>
 <p><code>ps_environ(p)</code> returns the environment variables of the process. <code>ps_environ_raw(p)</code> does the same, in a different form. Typically they reflect the environment variables at the start of the process.</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_environ.html">ps_environ</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TERM"</span>, <span class="st">"USER"</span>, <span class="st">"SHELL"</span>, <span class="st">"R_HOME"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <div class="sourceCode" id="cb39"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="do">## TERM                          xterm-256color</span></span>
 <span id="cb39-2"><a href="#cb39-2" tabindex="-1"></a><span class="do">## USER                          gaborcsardi</span></span>
 <span id="cb39-3"><a href="#cb39-3" tabindex="-1"></a><span class="do">## SHELL                         /bin/zsh</span></span>
-<span id="cb39-4"><a href="#cb39-4" tabindex="-1"></a><span class="do">## R_HOME                        /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources</span></span></code></pre></div>
+<span id="cb39-4"><a href="#cb39-4" tabindex="-1"></a><span class="do">## R_HOME                        /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources</span></span></code></pre></div>
 <p><code>ps_num_threads(p)</code> returns the current number of threads of the process.</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_num_threads.html">ps_num_threads</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
@@ -213,61 +212,64 @@
 <p><code>ps_cpu_times(p)</code> returns the CPU times of the process, similarly to <code><a href="https://rdrr.io/r/base/proc.time.html" class="external-link">proc.time()</a></code>.</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_cpu_times.html">ps_cpu_times</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb43"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="do">##            user          system   children_user children_system</span></span>
-<span id="cb43-2"><a href="#cb43-2" tabindex="-1"></a><span class="do">##        33.87137        15.05281              NA              NA</span></span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="do">##            user          system   children_user children_system </span></span>
+<span id="cb43-2"><a href="#cb43-2" tabindex="-1"></a><span class="do">##       1.7681955       0.6514954              NA              NA</span></span></code></pre></div>
 <p><code>ps_memory_info(p)</code> returns memory usage information. See the manual for details.</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_memory_info.html">ps_memory_info</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb45"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a><span class="do">##          rss          vms      pfaults      pageins</span></span>
-<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a><span class="do">##    255983616 423297335296      2173700          742</span></span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a><span class="do">##          rss          vms      pfaults      pageins </span></span>
+<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a><span class="do">##    261783552 421933465600        41422           13</span></span></code></pre></div>
 <p><code>ps_children(p)</code> lists all child processes (potentially recursively) of the current process.</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_children.html">ps_children</a></span><span class="op">(</span><span class="fu"><a href="reference/ps_ppid.html">ps_parent</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb47"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="do">## [[1]]</span></span>
-<span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a><span class="do">## &lt;ps::ps_handle&gt; PID=56773, NAME=R, AT=2024-08-31 14:11:26.708347</span></span>
-<span id="cb47-3"><a href="#cb47-3" tabindex="-1"></a><span class="do">##</span></span>
+<span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a><span class="do">## &lt;ps::ps_handle&gt; PID=39874, NAME=zsh, AT=2025-04-28 07:53:00.889347</span></span>
+<span id="cb47-3"><a href="#cb47-3" tabindex="-1"></a><span class="do">## </span></span>
 <span id="cb47-4"><a href="#cb47-4" tabindex="-1"></a><span class="do">## [[2]]</span></span>
-<span id="cb47-5"><a href="#cb47-5" tabindex="-1"></a><span class="do">## &lt;ps::ps_handle&gt; PID=57966, NAME=zsh, AT=2024-08-29 15:04:37.802087</span></span></code></pre></div>
+<span id="cb47-5"><a href="#cb47-5" tabindex="-1"></a><span class="do">## &lt;ps::ps_handle&gt; PID=44844, NAME=R, AT=2025-04-28 08:01:34.873763</span></span></code></pre></div>
 <p><code>ps_num_fds(p)</code> returns the number of open file descriptors (handles on Windows):</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_num_fds.html">ps_num_fds</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb49"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a><span class="do">## [1] 49</span></span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a><span class="do">## [1] 23</span></span></code></pre></div>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"w"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ps_num_fds.html">ps_num_fds</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb51"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a><span class="do">## [1] 50</span></span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a><span class="do">## [1] 24</span></span></code></pre></div>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span></code></pre></div>
 <p><code>ps_open_files(p)</code> lists all open files:</p>
 <div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/ps_open_files.html">ps_open_files</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb54"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" tabindex="-1"></a><span class="do">## # A data frame: 3 × 2</span></span>
-<span id="cb54-2"><a href="#cb54-2" tabindex="-1"></a><span class="do">##       fd path</span></span>
-<span id="cb54-3"><a href="#cb54-3" tabindex="-1"></a><span class="do">##    &lt;int&gt; &lt;chr&gt;</span></span>
-<span id="cb54-4"><a href="#cb54-4" tabindex="-1"></a><span class="do">##  1     0 /dev/ttys015</span></span>
-<span id="cb54-5"><a href="#cb54-5" tabindex="-1"></a><span class="do">##  2     1 /dev/ttys015</span></span>
-<span id="cb54-6"><a href="#cb54-6" tabindex="-1"></a><span class="do">##  3     2 /dev/ttys015</span></span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" tabindex="-1"></a><span class="do">## # A data frame: 4 × 2</span></span>
+<span id="cb54-2"><a href="#cb54-2" tabindex="-1"></a><span class="do">##      fd path                                                                              </span></span>
+<span id="cb54-3"><a href="#cb54-3" tabindex="-1"></a><span class="do">##   &lt;int&gt; &lt;chr&gt;                                                                             </span></span>
+<span id="cb54-4"><a href="#cb54-4" tabindex="-1"></a><span class="do">## 1     0 /dev/ttys019                                                                      </span></span>
+<span id="cb54-5"><a href="#cb54-5" tabindex="-1"></a><span class="do">## 2     1 /dev/ttys019                                                                      </span></span>
+<span id="cb54-6"><a href="#cb54-6" tabindex="-1"></a><span class="do">## 3     2 /dev/ttys019                                                                      </span></span>
+<span id="cb54-7"><a href="#cb54-7" tabindex="-1"></a><span class="do">## 4    14 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpoaXwPG/Rfaf2c3705b93c</span></span></code></pre></div>
 <div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">file</a></span><span class="op">(</span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"w"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ps_open_files.html">ps_open_files</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb56"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a><span class="do">## # A data frame: 4 × 2</span></span>
-<span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a><span class="do">##       fd path</span></span>
-<span id="cb56-3"><a href="#cb56-3" tabindex="-1"></a><span class="do">##    &lt;int&gt; &lt;chr&gt;</span></span>
-<span id="cb56-4"><a href="#cb56-4" tabindex="-1"></a><span class="do">##  1     0 /dev/ttys015</span></span>
-<span id="cb56-5"><a href="#cb56-5" tabindex="-1"></a><span class="do">##  2     1 /dev/ttys015</span></span>
-<span id="cb56-6"><a href="#cb56-6" tabindex="-1"></a><span class="do">##  3     2 /dev/ttys015</span></span>
-<span id="cb56-7"><a href="#cb56-7" tabindex="-1"></a><span class="do">##  4    45 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpFPtZXU/fileddc51cac4863</span></span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a><span class="do">## # A data frame: 5 × 2</span></span>
+<span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a><span class="do">##      fd path                                                                                </span></span>
+<span id="cb56-3"><a href="#cb56-3" tabindex="-1"></a><span class="do">##   &lt;int&gt; &lt;chr&gt;                                                                               </span></span>
+<span id="cb56-4"><a href="#cb56-4" tabindex="-1"></a><span class="do">## 1     0 /dev/ttys019                                                                        </span></span>
+<span id="cb56-5"><a href="#cb56-5" tabindex="-1"></a><span class="do">## 2     1 /dev/ttys019                                                                        </span></span>
+<span id="cb56-6"><a href="#cb56-6" tabindex="-1"></a><span class="do">## 3     2 /dev/ttys019                                                                        </span></span>
+<span id="cb56-7"><a href="#cb56-7" tabindex="-1"></a><span class="do">## 4    14 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpoaXwPG/Rfaf2c3705b93c  </span></span>
+<span id="cb56-8"><a href="#cb56-8" tabindex="-1"></a><span class="do">## 5    23 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpoaXwPG/fileaf2c58c42e5c</span></span></code></pre></div>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/ps_open_files.html">ps_open_files</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb58"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a><span class="do">## # A data frame: 3 × 2</span></span>
-<span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a><span class="do">##       fd path</span></span>
-<span id="cb58-3"><a href="#cb58-3" tabindex="-1"></a><span class="do">##    &lt;int&gt; &lt;chr&gt;</span></span>
-<span id="cb58-4"><a href="#cb58-4" tabindex="-1"></a><span class="do">##  1     0 /dev/ttys015</span></span>
-<span id="cb58-5"><a href="#cb58-5" tabindex="-1"></a><span class="do">##  2     1 /dev/ttys015</span></span>
-<span id="cb58-6"><a href="#cb58-6" tabindex="-1"></a><span class="do">##  3     2 /dev/ttys015</span></span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a><span class="do">## # A data frame: 4 × 2</span></span>
+<span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a><span class="do">##      fd path                                                                              </span></span>
+<span id="cb58-3"><a href="#cb58-3" tabindex="-1"></a><span class="do">##   &lt;int&gt; &lt;chr&gt;                                                                             </span></span>
+<span id="cb58-4"><a href="#cb58-4" tabindex="-1"></a><span class="do">## 1     0 /dev/ttys019                                                                      </span></span>
+<span id="cb58-5"><a href="#cb58-5" tabindex="-1"></a><span class="do">## 2     1 /dev/ttys019                                                                      </span></span>
+<span id="cb58-6"><a href="#cb58-6" tabindex="-1"></a><span class="do">## 3     2 /dev/ttys019                                                                      </span></span>
+<span id="cb58-7"><a href="#cb58-7" tabindex="-1"></a><span class="do">## 4    14 /private/var/folders/ph/fpcmzfd16rgbbk8mxvy9m2_h0000gn/T/RtmpoaXwPG/Rfaf2c3705b93c</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="process-manipulation">Process manipulation<a class="anchor" aria-label="anchor" href="#process-manipulation"></a>
@@ -306,14 +308,17 @@
 <div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="va">find_procs_by_name</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="op">!</span><span class="op">!</span><span class="va">name</span><span class="op">)</span>  <span class="op">%&gt;%</span></span>
+<span>  <span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="op">!</span><span class="op">!</span><span class="va">name</span><span class="op">)</span>  <span class="op">|&gt;</span></span>
 <span>    <span class="fu">pull</span><span class="op">(</span><span class="va">ps_handle</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu">find_procs_by_name</span><span class="op">(</span><span class="st">"R"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb60"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" tabindex="-1"></a><span class="do">## [[1]]</span></span>
-<span id="cb60-2"><a href="#cb60-2" tabindex="-1"></a><span class="do">## &lt;ps::ps_handle&gt; PID=56773, NAME=R, AT=2024-08-31 14:11:26.708347</span></span></code></pre></div>
+<span id="cb60-2"><a href="#cb60-2" tabindex="-1"></a><span class="do">## &lt;ps::ps_handle&gt; PID=44844, NAME=R, AT=2025-04-28 08:01:34.873763</span></span>
+<span id="cb60-3"><a href="#cb60-3" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb60-4"><a href="#cb60-4" tabindex="-1"></a><span class="do">## [[2]]</span></span>
+<span id="cb60-5"><a href="#cb60-5" tabindex="-1"></a><span class="do">## &lt;ps::ps_handle&gt; PID=32722, NAME=R, AT=2025-04-28 07:36:42.295781</span></span></code></pre></div>
 <p>Without creating the full table of processes:</p>
 <div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">find_procs_by_name</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op">{</span></span>
@@ -330,7 +335,10 @@
 <span></span>
 <span><span class="fu">find_procs_by_name</span><span class="op">(</span><span class="st">"R"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb62"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" tabindex="-1"></a><span class="do">## [[1]]</span></span>
-<span id="cb62-2"><a href="#cb62-2" tabindex="-1"></a><span class="do">## &lt;ps::ps_handle&gt; PID=56773, NAME=R, AT=2024-08-31 14:11:26.708347</span></span></code></pre></div>
+<span id="cb62-2"><a href="#cb62-2" tabindex="-1"></a><span class="do">## &lt;ps::ps_handle&gt; PID=32722, NAME=R, AT=2025-04-28 07:36:42.295781</span></span>
+<span id="cb62-3"><a href="#cb62-3" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb62-4"><a href="#cb62-4" tabindex="-1"></a><span class="do">## [[2]]</span></span>
+<span id="cb62-5"><a href="#cb62-5" tabindex="-1"></a><span class="do">## &lt;ps::ps_handle&gt; PID=44844, NAME=R, AT=2025-04-28 08:01:34.873763</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="wait-for-a-process-to-finish">Wait for a process to finish<a class="anchor" aria-label="anchor" href="#wait-for-a-process-to-finish"></a>
@@ -388,83 +396,93 @@
 </h3>
 <p>Process name ending with “sh”:</p>
 <div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"sh$"</span>, <span class="va">name</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb72"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" tabindex="-1"></a><span class="do">## # A data frame: 38 × 11</span></span>
-<span id="cb72-2"><a href="#cb72-2" tabindex="-1"></a><span class="do">##      pid  ppid name    username status    user  system    rss     vms created             ps_handle</span></span>
-<span id="cb72-3"><a href="#cb72-3" tabindex="-1"></a><span class="do">##    &lt;int&gt; &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;dttm&gt;              &lt;I&lt;list&gt;&gt;</span></span>
-<span id="cb72-4"><a href="#cb72-4" tabindex="-1"></a><span class="do">##  1 67374     1 Report… gaborcs… runni… 0.00899 0.0148  5.47e6 4.20e11 2024-09-01 03:02:35 &lt;ps_handl&gt;</span></span>
-<span id="cb72-5"><a href="#cb72-5" tabindex="-1"></a><span class="do">##  2 44801 44603 zsh     gaborcs… runni… 0.00261 0.00945 7.86e5 4.21e11 2024-08-31 09:42:36 &lt;ps_handl&gt;</span></span>
-<span id="cb72-6"><a href="#cb72-6" tabindex="-1"></a><span class="do">##  3 44603 44602 zsh     gaborcs… runni… 0.155   0.0547  9.99e5 4.21e11 2024-08-31 09:42:35 &lt;ps_handl&gt;</span></span>
-<span id="cb72-7"><a href="#cb72-7" tabindex="-1"></a><span class="do">##  4 24830 24631 zsh     gaborcs… runni… 0.00736 0.0332  7.86e5 4.21e11 2024-08-30 22:11:24 &lt;ps_handl&gt;</span></span>
-<span id="cb72-8"><a href="#cb72-8" tabindex="-1"></a><span class="do">##  5 24631 24630 zsh     gaborcs… runni… 0.333   0.134   9.67e5 4.21e11 2024-08-30 22:11:24 &lt;ps_handl&gt;</span></span>
-<span id="cb72-9"><a href="#cb72-9" tabindex="-1"></a><span class="do">##  6 58680 55972 zsh     gaborcs… runni… 0.168   0.651   9.34e5 4.21e11 2024-08-29 15:04:39 &lt;ps_handl&gt;</span></span>
-<span id="cb72-10"><a href="#cb72-10" tabindex="-1"></a><span class="do">##  7 58570 55971 zsh     gaborcs… runni… 0.0186  0.0693  2.38e6 4.21e11 2024-08-29 15:04:39 &lt;ps_handl&gt;</span></span>
-<span id="cb72-11"><a href="#cb72-11" tabindex="-1"></a><span class="do">##  8 58509 55974 zsh     gaborcs… runni… 0.00364 0.0117  7.54e5 4.21e11 2024-08-29 15:04:38 &lt;ps_handl&gt;</span></span>
-<span id="cb72-12"><a href="#cb72-12" tabindex="-1"></a><span class="do">##  9 58474 55964 zsh     gaborcs… runni… 0.00367 0.00942 7.54e5 4.21e11 2024-08-29 15:04:38 &lt;ps_handl&gt;</span></span>
-<span id="cb72-13"><a href="#cb72-13" tabindex="-1"></a><span class="do">## 10 58437 55966 zsh     gaborcs… runni… 0.00341 0.00986 7.54e5 4.21e11 2024-08-29 15:04:38 &lt;ps_handl&gt;</span></span>
-<span id="cb72-14"><a href="#cb72-14" tabindex="-1"></a><span class="do">## # ℹ 28 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" tabindex="-1"></a><span class="do">## # A data frame: 35 × 11</span></span>
+<span id="cb72-2"><a href="#cb72-2" tabindex="-1"></a><span class="do">##      pid  ppid name        username    status      user  system     rss      vms created            </span></span>
+<span id="cb72-3"><a href="#cb72-3" tabindex="-1"></a><span class="do">##    &lt;int&gt; &lt;int&gt; &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt; &lt;dttm&gt;             </span></span>
+<span id="cb72-4"><a href="#cb72-4" tabindex="-1"></a><span class="do">##  1 41838     1 ReportCrash root        sleepi… NA       NA      NA      NA       2025-04-28 07:57:52</span></span>
+<span id="cb72-5"><a href="#cb72-5" tabindex="-1"></a><span class="do">##  2 40290 40090 zsh         gaborcsardi sleepi…  0.0361   0.154   3.01e6  4.21e11 2025-04-28 07:53:47</span></span>
+<span id="cb72-6"><a href="#cb72-6" tabindex="-1"></a><span class="do">##  3 40090 40088 zsh         gaborcsardi sleepi…  0.587    0.406   3.14e7  4.21e11 2025-04-28 07:53:47</span></span>
+<span id="cb72-7"><a href="#cb72-7" tabindex="-1"></a><span class="do">##  4 39874 39673 zsh         gaborcsardi sleepi…  0.00552  0.0208  2.62e6  4.21e11 2025-04-28 07:53:00</span></span>
+<span id="cb72-8"><a href="#cb72-8" tabindex="-1"></a><span class="do">##  5 39673 39672 zsh         gaborcsardi sleepi…  0.270    0.0922  2.96e7  4.21e11 2025-04-28 07:53:00</span></span>
+<span id="cb72-9"><a href="#cb72-9" tabindex="-1"></a><span class="do">##  6 35995 35795 zsh         gaborcsardi sleepi…  0.0117   0.0485  9.67e5  4.21e11 2025-04-28 07:45:03</span></span>
+<span id="cb72-10"><a href="#cb72-10" tabindex="-1"></a><span class="do">##  7 35795 35794 zsh         gaborcsardi sleepi…  0.236    0.128   1.69e6  4.21e11 2025-04-28 07:45:03</span></span>
+<span id="cb72-11"><a href="#cb72-11" tabindex="-1"></a><span class="do">##  8 35595 35391 zsh         gaborcsardi sleepi…  0.00781  0.0332  9.67e5  4.21e11 2025-04-28 07:44:16</span></span>
+<span id="cb72-12"><a href="#cb72-12" tabindex="-1"></a><span class="do">##  9 35391 35390 zsh         gaborcsardi sleepi…  0.262    0.115   1.69e6  4.21e11 2025-04-28 07:44:15</span></span>
+<span id="cb72-13"><a href="#cb72-13" tabindex="-1"></a><span class="do">## 10 30303 30302 bash        gaborcsardi sleepi…  0.00806  0.0194  8.68e5  4.20e11 2025-04-28 07:32:12</span></span>
+<span id="cb72-14"><a href="#cb72-14" tabindex="-1"></a><span class="do">## # ℹ 25 more rows</span></span>
+<span id="cb72-15"><a href="#cb72-15" tabindex="-1"></a><span class="do">## # ℹ 1 more variable: ps_handle &lt;I&lt;list&gt;&gt;</span></span></code></pre></div>
 <p>Processes owned by user:</p>
 <div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">username</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.info.html" class="external-link">Sys.info</a></span><span class="op">(</span><span class="op">)</span><span class="op">[[</span><span class="st">"user"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">username</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.info.html" class="external-link">Sys.info</a></span><span class="op">(</span><span class="op">)</span><span class="op">[[</span><span class="st">"user"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">pid</span>, <span class="va">name</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb74"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" tabindex="-1"></a><span class="do">## # A data frame: 286 × 2</span></span>
-<span id="cb74-2"><a href="#cb74-2" tabindex="-1"></a><span class="do">##      pid name</span></span>
-<span id="cb74-3"><a href="#cb74-3" tabindex="-1"></a><span class="do">##    &lt;int&gt; &lt;chr&gt;</span></span>
-<span id="cb74-4"><a href="#cb74-4" tabindex="-1"></a><span class="do">##  1 81199 Google Chrome Helper (Renderer)</span></span>
-<span id="cb74-5"><a href="#cb74-5" tabindex="-1"></a><span class="do">##  2 81198 Google Chrome Helper (Renderer)</span></span>
-<span id="cb74-6"><a href="#cb74-6" tabindex="-1"></a><span class="do">##  3 81197 Google Chrome Helper (Renderer)</span></span>
-<span id="cb74-7"><a href="#cb74-7" tabindex="-1"></a><span class="do">##  4 81068 mdworker_shared</span></span>
-<span id="cb74-8"><a href="#cb74-8" tabindex="-1"></a><span class="do">##  5 81067 mdworker_shared</span></span>
-<span id="cb74-9"><a href="#cb74-9" tabindex="-1"></a><span class="do">##  6 80413 mdworker_shared</span></span>
-<span id="cb74-10"><a href="#cb74-10" tabindex="-1"></a><span class="do">##  7 80412 mdworker_shared</span></span>
-<span id="cb74-11"><a href="#cb74-11" tabindex="-1"></a><span class="do">##  8 80366 mdworker_shared</span></span>
-<span id="cb74-12"><a href="#cb74-12" tabindex="-1"></a><span class="do">##  9 80360 Google Chrome Helper (Renderer)</span></span>
-<span id="cb74-13"><a href="#cb74-13" tabindex="-1"></a><span class="do">## 10 80261 mdworker_shared</span></span>
-<span id="cb74-14"><a href="#cb74-14" tabindex="-1"></a><span class="do">## # ℹ 276 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" tabindex="-1"></a><span class="do">## # A data frame: 347 × 2</span></span>
+<span id="cb74-2"><a href="#cb74-2" tabindex="-1"></a><span class="do">##      pid name                           </span></span>
+<span id="cb74-3"><a href="#cb74-3" tabindex="-1"></a><span class="do">##    &lt;int&gt; &lt;chr&gt;                          </span></span>
+<span id="cb74-4"><a href="#cb74-4" tabindex="-1"></a><span class="do">##  1 45911 Google Chrome Helper (Renderer)</span></span>
+<span id="cb74-5"><a href="#cb74-5" tabindex="-1"></a><span class="do">##  2 45860 Google Chrome Helper (Renderer)</span></span>
+<span id="cb74-6"><a href="#cb74-6" tabindex="-1"></a><span class="do">##  3 45700 mdworker_shared                </span></span>
+<span id="cb74-7"><a href="#cb74-7" tabindex="-1"></a><span class="do">##  4 44844 R                              </span></span>
+<span id="cb74-8"><a href="#cb74-8" tabindex="-1"></a><span class="do">##  5 44738 Google Chrome Helper           </span></span>
+<span id="cb74-9"><a href="#cb74-9" tabindex="-1"></a><span class="do">##  6 43786 MessagesBlastDoorService       </span></span>
+<span id="cb74-10"><a href="#cb74-10" tabindex="-1"></a><span class="do">##  7 43785 businessservicesd              </span></span>
+<span id="cb74-11"><a href="#cb74-11" tabindex="-1"></a><span class="do">##  8 43628 MENotificationAgent            </span></span>
+<span id="cb74-12"><a href="#cb74-12" tabindex="-1"></a><span class="do">##  9 43627 MTLAssetUpgraderD              </span></span>
+<span id="cb74-13"><a href="#cb74-13" tabindex="-1"></a><span class="do">## 10 43472 replayd                        </span></span>
+<span id="cb74-14"><a href="#cb74-14" tabindex="-1"></a><span class="do">## # ℹ 337 more rows</span></span></code></pre></div>
 <p>Processes consuming more than 100MB of memory:</p>
 <div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">rss</span> <span class="op">&gt;</span> <span class="fl">100</span> <span class="op">*</span> <span class="fl">1024</span> <span class="op">*</span> <span class="fl">1024</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb76"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" tabindex="-1"></a><span class="do">## # A data frame: 29 × 11</span></span>
-<span id="cb76-2"><a href="#cb76-2" tabindex="-1"></a><span class="do">##      pid  ppid name    username status    user  system    rss     vms created             ps_handle</span></span>
-<span id="cb76-3"><a href="#cb76-3" tabindex="-1"></a><span class="do">##    &lt;int&gt; &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;dttm&gt;              &lt;I&lt;list&gt;&gt;</span></span>
-<span id="cb76-4"><a href="#cb76-4" tabindex="-1"></a><span class="do">##  1 81199 69319 Google… gaborcs… runni…  0.0412  0.0162 1.07e8 1.66e12 2024-09-01 09:39:54 &lt;ps_handl&gt;</span></span>
-<span id="cb76-5"><a href="#cb76-5" tabindex="-1"></a><span class="do">##  2 81198 69319 Google… gaborcs… runni…  0.0704  0.0242 1.22e8 1.66e12 2024-09-01 09:39:53 &lt;ps_handl&gt;</span></span>
-<span id="cb76-6"><a href="#cb76-6" tabindex="-1"></a><span class="do">##  3 81197 69319 Google… gaborcs… runni…  1.23    0.565  3.12e8 1.66e12 2024-09-01 09:39:53 &lt;ps_handl&gt;</span></span>
-<span id="cb76-7"><a href="#cb76-7" tabindex="-1"></a><span class="do">##  4 78900 69319 Google… gaborcs… runni…  2.27    0.430  1.76e8 1.66e12 2024-09-01 09:26:07 &lt;ps_handl&gt;</span></span>
-<span id="cb76-8"><a href="#cb76-8" tabindex="-1"></a><span class="do">##  5 78888 69319 Google… gaborcs… runni…  5.68    0.596  2.38e8 1.66e12 2024-09-01 09:25:57 &lt;ps_handl&gt;</span></span>
-<span id="cb76-9"><a href="#cb76-9" tabindex="-1"></a><span class="do">##  6 76222 69319 Google… gaborcs… runni… 34.6     2.86   2.22e8 1.66e12 2024-09-01 09:17:46 &lt;ps_handl&gt;</span></span>
-<span id="cb76-10"><a href="#cb76-10" tabindex="-1"></a><span class="do">##  7 74007 69319 Google… gaborcs… runni…  6.59    1.08   1.46e8 1.66e12 2024-09-01 08:37:02 &lt;ps_handl&gt;</span></span>
-<span id="cb76-11"><a href="#cb76-11" tabindex="-1"></a><span class="do">##  8 73963 69319 Google… gaborcs… runni…  7.16    0.987  1.86e8 1.66e12 2024-09-01 08:34:37 &lt;ps_handl&gt;</span></span>
-<span id="cb76-12"><a href="#cb76-12" tabindex="-1"></a><span class="do">##  9 73601 69319 Google… gaborcs… runni… 98.1    19.2    1.94e8 1.66e12 2024-09-01 07:54:27 &lt;ps_handl&gt;</span></span>
-<span id="cb76-13"><a href="#cb76-13" tabindex="-1"></a><span class="do">## 10 69386 69319 Google… gaborcs… runni…  1.38    0.244  1.09e8 1.66e12 2024-09-01 07:06:19 &lt;ps_handl&gt;</span></span>
-<span id="cb76-14"><a href="#cb76-14" tabindex="-1"></a><span class="do">## # ℹ 19 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" tabindex="-1"></a><span class="do">## # A data frame: 20 × 11</span></span>
+<span id="cb76-2"><a href="#cb76-2" tabindex="-1"></a><span class="do">##      pid  ppid name    username status    user  system    rss     vms created             ps_handle </span></span>
+<span id="cb76-3"><a href="#cb76-3" tabindex="-1"></a><span class="do">##    &lt;int&gt; &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;dttm&gt;              &lt;I&lt;list&gt;&gt; </span></span>
+<span id="cb76-4"><a href="#cb76-4" tabindex="-1"></a><span class="do">##  1 45911  4159 Google… gaborcs… sleep… 4.73e-2 2.27e-2 1.05e8 1.91e12 2025-04-28 08:05:25 &lt;ps_handl&gt;</span></span>
+<span id="cb76-5"><a href="#cb76-5" tabindex="-1"></a><span class="do">##  2 45860  4159 Google… gaborcs… sleep… 7.51e-2 3.47e-2 1.21e8 1.91e12 2025-04-28 08:05:19 &lt;ps_handl&gt;</span></span>
+<span id="cb76-6"><a href="#cb76-6" tabindex="-1"></a><span class="do">##  3 44844 39673 R       gaborcs… runni… 2.08e+0 9.20e-1 2.80e8 4.22e11 2025-04-28 08:01:34 &lt;ps_handl&gt;</span></span>
+<span id="cb76-7"><a href="#cb76-7" tabindex="-1"></a><span class="do">##  4 40521  4159 Google… gaborcs… sleep… 3.14e+0 4.45e-1 2.03e8 1.91e12 2025-04-28 07:54:07 &lt;ps_handl&gt;</span></span>
+<span id="cb76-8"><a href="#cb76-8" tabindex="-1"></a><span class="do">##  5 40037  4159 Google… gaborcs… sleep… 7.78e+0 1.03e+0 2.66e8 1.91e12 2025-04-28 07:53:23 &lt;ps_handl&gt;</span></span>
+<span id="cb76-9"><a href="#cb76-9" tabindex="-1"></a><span class="do">##  6 39666  4159 Google… gaborcs… sleep… 1.30e+0 2.37e-1 1.45e8 1.91e12 2025-04-28 07:52:34 &lt;ps_handl&gt;</span></span>
+<span id="cb76-10"><a href="#cb76-10" tabindex="-1"></a><span class="do">##  7 28176  4159 Google… gaborcs… sleep… 1.16e+1 1.09e+0 2.18e8 1.91e12 2025-04-28 07:23:37 &lt;ps_handl&gt;</span></span>
+<span id="cb76-11"><a href="#cb76-11" tabindex="-1"></a><span class="do">##  8 18695  4159 Google… gaborcs… sleep… 2.33e+1 2.18e+0 2.23e8 1.91e12 2025-04-28 06:48:50 &lt;ps_handl&gt;</span></span>
+<span id="cb76-12"><a href="#cb76-12" tabindex="-1"></a><span class="do">##  9 18673  4159 Google… gaborcs… sleep… 2.08e+1 1.73e+0 2.39e8 1.91e12 2025-04-28 06:47:44 &lt;ps_handl&gt;</span></span>
+<span id="cb76-13"><a href="#cb76-13" tabindex="-1"></a><span class="do">## 10 18257  4159 Google… gaborcs… sleep… 2.11e+1 2.85e+0 2.02e8 1.91e12 2025-04-28 06:31:40 &lt;ps_handl&gt;</span></span>
+<span id="cb76-14"><a href="#cb76-14" tabindex="-1"></a><span class="do">## 11 17380  4159 Google… gaborcs… sleep… 1.25e+1 1.50e+0 1.76e8 1.91e12 2025-04-28 05:48:24 &lt;ps_handl&gt;</span></span>
+<span id="cb76-15"><a href="#cb76-15" tabindex="-1"></a><span class="do">## 12 16963  4159 Google… gaborcs… sleep… 4.73e+2 6.83e+1 5.52e8 1.91e12 2025-04-28 05:31:43 &lt;ps_handl&gt;</span></span>
+<span id="cb76-16"><a href="#cb76-16" tabindex="-1"></a><span class="do">## 13  4214  4159 Google… gaborcs… sleep… 4.88e+0 1.34e+0 1.34e8 1.91e12 2025-04-26 23:27:03 &lt;ps_handl&gt;</span></span>
+<span id="cb76-17"><a href="#cb76-17" tabindex="-1"></a><span class="do">## 14  4199  4159 Google… gaborcs… sleep… 1.26e+2 1.08e+1 3.45e8 1.91e12 2025-04-26 23:26:59 &lt;ps_handl&gt;</span></span>
+<span id="cb76-18"><a href="#cb76-18" tabindex="-1"></a><span class="do">## 15  4176  4159 Google… gaborcs… sleep… 2.38e+2 2.31e+2 1.23e8 4.55e11 2025-04-26 23:26:58 &lt;ps_handl&gt;</span></span>
+<span id="cb76-19"><a href="#cb76-19" tabindex="-1"></a><span class="do">## 16  4175  4159 Google… gaborcs… sleep… 2.05e+3 1.09e+3 1.35e8 4.56e11 2025-04-26 23:26:58 &lt;ps_handl&gt;</span></span>
+<span id="cb76-20"><a href="#cb76-20" tabindex="-1"></a><span class="do">## 17  4159     1 Google… gaborcs… sleep… 1.21e+3 3.79e+2 6.00e8 4.56e11 2025-04-26 23:26:54 &lt;ps_handl&gt;</span></span>
+<span id="cb76-21"><a href="#cb76-21" tabindex="-1"></a><span class="do">## 18 22365 22350 qemu-s… gaborcs… sleep… 1.26e+4 1.65e+3 1.58e8 4.26e11 2025-04-24 10:02:15 &lt;ps_handl&gt;</span></span>
+<span id="cb76-22"><a href="#cb76-22" tabindex="-1"></a><span class="do">## 19  1726     1 Spotli… gaborcs… sleep… 1.64e+2 4.42e+1 1.47e8 4.25e11 2025-04-22 14:34:30 &lt;ps_handl&gt;</span></span>
+<span id="cb76-23"><a href="#cb76-23" tabindex="-1"></a><span class="do">## 20  1644     1 iTerm2  gaborcs… sleep… 6.32e+3 1.32e+3 3.87e8 4.23e11 2025-04-22 14:34:22 &lt;ps_handl&gt;</span></span></code></pre></div>
 <p>Top 3 memory consuming processes:</p>
 <div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">top_n</span><span class="op">(</span><span class="fl">3</span>, <span class="va">rss</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">top_n</span><span class="op">(</span><span class="fl">3</span>, <span class="va">rss</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">arrange</span><span class="op">(</span><span class="fu">desc</span><span class="op">(</span><span class="va">rss</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb78"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" tabindex="-1"></a><span class="do">## # A data frame: 3 × 11</span></span>
-<span id="cb78-2"><a href="#cb78-2" tabindex="-1"></a><span class="do">##     pid  ppid name       username status   user system    rss     vms created             ps_handle</span></span>
-<span id="cb78-3"><a href="#cb78-3" tabindex="-1"></a><span class="do">##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;dttm&gt;              &lt;I&lt;list&gt;&gt;</span></span>
-<span id="cb78-4"><a href="#cb78-4" tabindex="-1"></a><span class="do">## 1 64110     1 com.apple… gaborcs… runni… 68283. 7992.  7.39e8 4.29e11 2024-07-17 08:14:51 &lt;ps_handl&gt;</span></span>
-<span id="cb78-5"><a href="#cb78-5" tabindex="-1"></a><span class="do">## 2 56754 56683 ark        gaborcs… runni…   813.  112.  5.66e8 4.22e11 2024-08-29 15:04:36 &lt;ps_handl&gt;</span></span>
-<span id="cb78-6"><a href="#cb78-6" tabindex="-1"></a><span class="do">## 3 69319     1 Google Ch… gaborcs… runni…   280.   86.9 5.63e8 4.56e11 2024-09-01 07:06:06 &lt;ps_handl&gt;</span></span></code></pre></div>
+<span id="cb78-2"><a href="#cb78-2" tabindex="-1"></a><span class="do">##     pid  ppid name        username status  user system    rss     vms created             ps_handle </span></span>
+<span id="cb78-3"><a href="#cb78-3" tabindex="-1"></a><span class="do">##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;       &lt;chr&gt;    &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;dttm&gt;              &lt;I&lt;list&gt;&gt; </span></span>
+<span id="cb78-4"><a href="#cb78-4" tabindex="-1"></a><span class="do">## 1  4159     1 Google Chr… gaborcs… sleep… 1211.  379.  6.00e8 4.56e11 2025-04-26 23:26:54 &lt;ps_handl&gt;</span></span>
+<span id="cb78-5"><a href="#cb78-5" tabindex="-1"></a><span class="do">## 2 16963  4159 Google Chr… gaborcs… sleep…  473.   68.3 5.52e8 1.91e12 2025-04-28 05:31:43 &lt;ps_handl&gt;</span></span>
+<span id="cb78-6"><a href="#cb78-6" tabindex="-1"></a><span class="do">## 3  1644     1 iTerm2      gaborcs… sleep… 6316. 1322.  3.87e8 4.23e11 2025-04-22 14:34:22 &lt;ps_handl&gt;</span></span></code></pre></div>
 <p>Top 3 processes which consumed the most CPU time:</p>
 <div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>cpu_time <span class="op">=</span> <span class="va">user</span> <span class="op">+</span> <span class="va">system</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">top_n</span><span class="op">(</span><span class="fl">3</span>, <span class="va">cpu_time</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">arrange</span><span class="op">(</span><span class="fu">desc</span><span class="op">(</span><span class="va">cpu_time</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/ps.html">ps</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>cpu_time <span class="op">=</span> <span class="va">user</span> <span class="op">+</span> <span class="va">system</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">top_n</span><span class="op">(</span><span class="fl">3</span>, <span class="va">cpu_time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">arrange</span><span class="op">(</span><span class="fu">desc</span><span class="op">(</span><span class="va">cpu_time</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">select</span><span class="op">(</span><span class="va">pid</span>, <span class="va">name</span>, <span class="va">cpu_time</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb80"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" tabindex="-1"></a><span class="do">## # A data frame: 3 × 3</span></span>
-<span id="cb80-2"><a href="#cb80-2" tabindex="-1"></a><span class="do">##     pid name                                    cpu_time</span></span>
-<span id="cb80-3"><a href="#cb80-3" tabindex="-1"></a><span class="do">##   &lt;int&gt; &lt;chr&gt;                                      &lt;dbl&gt;</span></span>
-<span id="cb80-4"><a href="#cb80-4" tabindex="-1"></a><span class="do">## 1 64110 com.apple.Virtualization.VirtualMachine   76275.</span></span>
-<span id="cb80-5"><a href="#cb80-5" tabindex="-1"></a><span class="do">## 2  3525 Dato                                      12825.</span></span>
-<span id="cb80-6"><a href="#cb80-6" tabindex="-1"></a><span class="do">## 3  2617 CursorUIViewService                        6700.</span></span></code></pre></div>
+<span id="cb80-2"><a href="#cb80-2" tabindex="-1"></a><span class="do">##     pid name                       cpu_time</span></span>
+<span id="cb80-3"><a href="#cb80-3" tabindex="-1"></a><span class="do">##   &lt;int&gt; &lt;chr&gt;                         &lt;dbl&gt;</span></span>
+<span id="cb80-4"><a href="#cb80-4" tabindex="-1"></a><span class="do">## 1 22365 qemu-system-aarch64          14269.</span></span>
+<span id="cb80-5"><a href="#cb80-5" tabindex="-1"></a><span class="do">## 2  1644 iTerm2                        7639.</span></span>
+<span id="cb80-6"><a href="#cb80-6" tabindex="-1"></a><span class="do">## 3  4175 Google Chrome Helper (GPU)    3140.</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -521,6 +539,7 @@
 <a href="https://github.com/gaborcsardi" class="external-link">Gábor Csárdi</a> <br><small class="roles"> Author, maintainer </small>  </li>
 <li>
 <a href="https://www.posit.co" class="external-link"><img src="https://www.tidyverse.org/posit-logo.svg" alt="Posit" height="16" width="62" style="margin-bottom: 3px;"></a> <br><small class="roles"> Copyright holder, funder </small>  </li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
 
@@ -531,7 +550,7 @@
 <li><a href="https://github.com/r-lib/ps/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/r-lib/ps/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://cran.r-project.org/package=ps" class="external-link"><img src="https://www.r-pkg.org/badges/version/ps" alt="CRAN status"></a></li>
 <li><a href="https://www.r-pkg.org/pkg/ps" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/ps" alt="CRAN RStudio mirror downloads"></a></li>
-<li><a href="https://app.codecov.io/gh/r-lib/ps?branch=main" class="external-link"><img src="https://codecov.io/gh/r-lib/ps/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://app.codecov.io/gh/r-lib/ps" class="external-link"><img src="https://codecov.io/gh/r-lib/ps/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
 
