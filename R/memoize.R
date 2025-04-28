@@ -1,4 +1,3 @@
-
 ## nocov start
 memoize <- function(fun) {
   fun
@@ -15,7 +14,7 @@ memoize <- function(fun) {
   dec
 }
 
-`$.memoize`  <- function(x, name) {
+`$.memoize` <- function(x, name) {
   switch(
     name,
     "clear" = attr(x, "clear"),

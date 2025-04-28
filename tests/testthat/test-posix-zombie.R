@@ -1,4 +1,3 @@
-
 if (!ps_os_type()[["POSIX"]]) return()
 
 test_that("zombie api", {

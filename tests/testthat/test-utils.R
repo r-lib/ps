@@ -1,4 +1,3 @@
-
 test_that("errno", {
   err <- errno()
   expect_true(is.data.frame(err))
@@ -9,7 +8,7 @@ test_that("errno", {
 
 test_that("str_strip", {
   tcs <- list(
-    list("",  ""),
+    list("", ""),
     list(" ", ""),
     list("a ", "a"),
     list(" a", "a"),

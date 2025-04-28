@@ -1,4 +1,3 @@
-
 test_that("ps_mark_tree", {
   id <- ps_mark_tree()
   on.exit(Sys.unsetenv(id), add = TRUE)
@@ -8,7 +7,7 @@ test_that("ps_mark_tree", {
   expect_false(Sys.getenv(id) == "")
 })
 
-test_that("kill_tree",  {
+test_that("kill_tree", {
   skip_on_cran()
   skip_in_rstudio()
 
@@ -32,8 +31,11 @@ test_that("kill_tree",  {
   on.exit(lapply(p, function(x) x$kill()), add = TRUE)
 
   timeout <- Sys.time() + 5
-  while (sum(file_size(dir(tmp, full.names = TRUE)) > 0) < 5 &&
-         Sys.time() < timeout) Sys.sleep(0.1)
+  while (
+    sum(file_size(dir(tmp, full.names = TRUE)) > 0) < 5 &&
+      Sys.time() < timeout
+  )
+    Sys.sleep(0.1)
 
   expect_true(Sys.time() < timeout)
 
@@ -42,14 +44,18 @@ test_that("kill_tree",  {
   expect_equal(length(res), 5)
   expect_equal(
     sort(as.integer(res)),
-    sort(map_int(p, function(x) x$get_pid())))
+    sort(map_int(p, function(x) x$get_pid()))
+  )
 
   ## We need to wait a bit here, potentially, because the process
   ## might be a zombie, which is technically alive.
   now <- Sys.time()
   timeout <- now + 5
-  while (any(map_lgl(p, function(pp) pp$is_alive())) &&
-         Sys.time() < timeout) Sys.sleep(0.1)
+  while (
+    any(map_lgl(p, function(pp) pp$is_alive())) &&
+      Sys.time() < timeout
+  )
+    Sys.sleep(0.1)
 
   expect_true(Sys.time() < timeout)
   lapply(p, function(pp) expect_false(pp$is_alive()))
@@ -77,7 +83,8 @@ test_that("kill_tree, grandchild", {
             cat("OK\n", file = file.path(d, Sys.getpid()))
             Sys.sleep(5)
           },
-          args = list(d = d)))
+          args = list(d = d)
+        ))
         Sys.sleep(5)
       },
       args = list(d = tmp),
@@ -87,7 +94,7 @@ test_that("kill_tree, grandchild", {
   on.exit(lapply(p, function(x) x$kill()), add = TRUE)
 
   timeout <- Sys.time() + 10
-  while (length(dir(tmp)) < 2*N && Sys.time() < timeout) Sys.sleep(0.1)
+  while (length(dir(tmp)) < 2 * N && Sys.time() < timeout) Sys.sleep(0.1)
 
   expect_true(Sys.time() < timeout)
 
@@ -137,13 +144,20 @@ test_that("kill_tree, orphaned grandchild", {
 
   N <- 3
   lapply(1:N, function(x) {
-    system2(px(), c("outln", "ok","sleep", "5"),
-            stdout = file.path(tmp, x), wait = FALSE)
+    system2(
+      px(),
+      c("outln", "ok", "sleep", "5"),
+      stdout = file.path(tmp, x),
+      wait = FALSE
+    )
   })
 
   timeout <- Sys.time() + 10
-  while (sum(file_size(dir(tmp, full.names = TRUE)) > 0) < N &&
-         Sys.time() < timeout) Sys.sleep(0.1)
+  while (
+    sum(file_size(dir(tmp, full.names = TRUE)) > 0) < N &&
+      Sys.time() < timeout
+  )
+    Sys.sleep(0.1)
 
   res <- ps_kill_tree(id)
   res <- res[names(res) %in% c("px", "px.exe")]
@@ -170,14 +184,17 @@ test_that("with_process_cleanup", {
   ## might be a zombie, which is technically alive.
   now <- Sys.time()
   timeout <- now + 5
-  while (any(map_lgl(p, function(pp) pp$is_alive())) &&
-         Sys.time() < timeout) Sys.sleep(0.05)
+  while (
+    any(map_lgl(p, function(pp) pp$is_alive())) &&
+      Sys.time() < timeout
+  )
+    Sys.sleep(0.05)
 
   lapply(p, function(pp) expect_false(pp$is_alive()))
   rm(p)
 })
 
-test_that("find_tree",  {
+test_that("find_tree", {
   skip_on_cran()
   skip_in_rstudio()
   skip_if_no_processx()
@@ -197,7 +214,8 @@ test_that("find_tree",  {
   expect_equal(length(res), 5)
   expect_equal(
     sort(map_int(res, ps_pid)),
-    sort(map_int(p, function(x) x$get_pid())))
+    sort(map_int(p, function(x) x$get_pid()))
+  )
 
   lapply(p, function(x) x$kill())
 })
@@ -221,9 +239,11 @@ test_that("find_tree, grandchild", {
             cat("OK\n", file = file.path(d, Sys.getpid()))
             Sys.sleep(5)
           },
-          args = list(d = d))
+          args = list(d = d)
+        )
       },
-      args = list(d = tmp))
+      args = list(d = tmp)
+    )
   })
   on.exit(lapply(p, function(x) x$kill()), add = TRUE)
   on.exit(ps_kill_tree(id), add = TRUE)
@@ -264,14 +284,21 @@ test_that("find_tree, orphaned grandchild", {
 
   N <- 3
   lapply(1:N, function(x) {
-    system2(px(), c("outln", "ok","sleep", "5"),
-            stdout = file.path(tmp, x), wait = FALSE)
+    system2(
+      px(),
+      c("outln", "ok", "sleep", "5"),
+      stdout = file.path(tmp, x),
+      wait = FALSE
+    )
   })
   on.exit(ps_kill_tree(id), add = TRUE)
 
   timeout <- Sys.time() + 10
-  while (sum(file_size(dir(tmp, full.names = TRUE)) > 0) < N &&
-         Sys.time() < timeout) Sys.sleep(0.1)
+  while (
+    sum(file_size(dir(tmp, full.names = TRUE)) > 0) < N &&
+      Sys.time() < timeout
+  )
+    Sys.sleep(0.1)
 
   res <- ps_find_tree(id)
   names <- not_null(lapply(res, function(p) fallback(ps_name(p), NULL)))

@@ -1,4 +1,3 @@
-
 test_that("ps_pids", {
   pp <- ps_pids()
   expect_true(is.integer(pp))
@@ -36,7 +35,8 @@ test_that("ps_os_type", {
   expect_true(any(os))
   expect_equal(
     names(os),
-    c("POSIX", "WINDOWS", "LINUX", "MACOS"))
+    c("POSIX", "WINDOWS", "LINUX", "MACOS")
+  )
 })
 
 test_that("ps_is_supported", {

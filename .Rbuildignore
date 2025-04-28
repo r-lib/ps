@@ -20,3 +20,5 @@
 ^.*\.Rproj$
 ^pkgdown$
 ^LICENSE\.md$
+^[\.]?air\.toml$
+^\.vscode$

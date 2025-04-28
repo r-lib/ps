@@ -1,4 +1,3 @@
-
 winver_ver <- function(v = NULL) {
   if (is.null(v)) v <- system("cmd /c ver", intern = TRUE)
   v2 <- grep("\\[.*\\s.*\\]", v, value = TRUE)[1]

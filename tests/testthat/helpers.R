@@ -1,4 +1,3 @@
-
 format_regexp <- function() {
   "<ps::ps_handle> PID=[0-9]+, NAME=.*, AT="
 }
@@ -62,13 +61,15 @@ have_ipv6_connection <- local({
       myurl <<- url
       opt <- options(warn = 2)
       on.exit(options(opt), add = TRUE)
-      tryCatch({
-        cx <- curl::curl(url)
-        open(cx)
-        ok <<- TRUE
-      },
-      error = function(x) ok <<- FALSE,
-      finally = close(cx))
+      tryCatch(
+        {
+          cx <- curl::curl(url)
+          open(cx)
+          ok <<- TRUE
+        },
+        error = function(x) ok <<- FALSE,
+        finally = close(cx)
+      )
     }
     ok
   }

@@ -1,4 +1,3 @@
-
 if (!ps_os_type()[["WINDOWS"]]) return()
 
 test_that("uids, gids", {

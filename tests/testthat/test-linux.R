@@ -1,4 +1,3 @@
-
 if (!ps_os_type()[["LINUX"]]) return()
 
 test_that("status", {
@@ -36,8 +35,11 @@ test_that("memory_info", {
   Sys.sleep(0.2)
   ps_suspend(ps)
   mem <- ps_memory_info(ps)
-  mem2 <- scan(sprintf("/proc/%d/statm", ps_pid(ps)), what = integer(),
-               quiet = TRUE)
+  mem2 <- scan(
+    sprintf("/proc/%d/statm", ps_pid(ps)),
+    what = integer(),
+    quiet = TRUE
+  )
   page_size <- as.integer(system2("getconf", "PAGESIZE", stdout = TRUE))
 
   expect_equal(mem[["vms"]], mem2[[1]] * page_size)

@@ -1,4 +1,3 @@
-
 #' Mark a process and its (future) child tree
 #'
 #' `ps_mark_tree()` generates a random environment variable name and sets
@@ -97,7 +96,8 @@ with_process_cleanup <- function(expr) {
   ret <- list(
     result = res$value,
     visible = res$visible,
-    process_cleanup = stat)
+    process_cleanup = stat
+  )
   class(ret) <- "with_process_cleanup"
   ret
 }
@@ -147,7 +147,6 @@ ps_find_tree <- function(marker) {
 #' @export
 
 ps_kill_tree <- function(marker, sig = signals()$SIGKILL, grace = 200) {
-
   # NULL on Windows
   if (!ps_os_type()[["WINDOWS"]]) {
     sig <- assert_integer(sig)
