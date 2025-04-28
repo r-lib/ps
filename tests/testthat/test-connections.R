@@ -1,8 +1,9 @@
-
 test_that("empty set", {
   px <- processx::process$new(
-    px(), c("sleep", "5"),
-    poll_connection = FALSE)
+    px(),
+    c("sleep", "5"),
+    poll_connection = FALSE
+  )
   on.exit(cleanup_process(px), add = TRUE)
   pid <- px$get_pid()
   p <- ps_handle(pid)
@@ -13,7 +14,8 @@ test_that("empty set", {
   expect_s3_class(cl, "tbl")
   expect_equal(
     names(cl),
-    c("fd", "family", "type", "laddr", "lport", "raddr", "rport", "state"))
+    c("fd", "family", "type", "laddr", "lport", "raddr", "rport", "state")
+  )
 })
 
 test_that("UNIX sockets", {
@@ -48,7 +50,10 @@ test_that("UNIX sockets with path", {
   sfile <- file.path(normalizePath(dirname(sfile)), basename(sfile))
   on.exit(unlink(sfile, recursive = TRUE), add = TRUE)
   nc <- processx::process$new(
-    "socat", c("-", paste0("UNIX-LISTEN:", sfile)), stdin = "|")
+    "socat",
+    c("-", paste0("UNIX-LISTEN:", sfile)),
+    stdin = "|"
+  )
   on.exit(cleanup_process(nc), add = TRUE)
   p <- nc$as_ps_handle()
 
@@ -72,9 +77,15 @@ test_that("TCP", {
 
   before <- ps_connections(ps_handle())
   cx <- curl::curl(httpbin$url("/drip"), open = "r")
-  on.exit({ close(cx); rm(cx) }, add = TRUE)
+  on.exit(
+    {
+      close(cx)
+      rm(cx)
+    },
+    add = TRUE
+  )
   after <- ps_connections(ps_handle())
-  new <- after[! after$lport %in% before$lport, ]
+  new <- after[!after$lport %in% before$lport, ]
   expect_equal(new$family, "AF_INET")
   expect_equal(new$type, "SOCK_STREAM")
   expect_true(is_ipv4_address(new$laddr))
@@ -88,8 +99,11 @@ test_that("TCP on loopback", {
   skip_if_no_processx()
 
   nc <- processx::process$new(
-    "socat", c("-d", "-d", "-ls", "-", "TCP4-LISTEN:0"),
-    stdin = "|", stderr = "|")
+    "socat",
+    c("-d", "-d", "-ls", "-", "TCP4-LISTEN:0"),
+    stdin = "|",
+    stderr = "|"
+  )
   on.exit(cleanup_process(nc), add = TRUE)
   p <- nc$as_ps_handle()
 
@@ -102,13 +116,19 @@ test_that("TCP on loopback", {
   port <- cl$lport
 
   nc2 <- processx::process$new(
-    "socat", c("-", paste0("TCP4-CONNECT:127.0.0.1:", port)), stdin = "|")
+    "socat",
+    c("-", paste0("TCP4-CONNECT:127.0.0.1:", port)),
+    stdin = "|"
+  )
   on.exit(cleanup_process(nc2), add = TRUE)
   p2 <- nc2$as_ps_handle()
 
   deadline <- Sys.time() + as.difftime(5, units = "secs")
-  while (Sys.time() < deadline &&
-         ! port %in% (cl2 <- ps_connections(p2))$rport) Sys.sleep(0.1)
+  while (
+    Sys.time() < deadline &&
+      !port %in% (cl2 <- ps_connections(p2))$rport
+  )
+    Sys.sleep(0.1)
 
   cl2 <- cl2[!is.na(cl2$rport & cl2$rport == port), ]
   expect_equal(cl2$family, "AF_INET")
@@ -124,13 +144,18 @@ test_that("UDP", {
   if (!pingr::is_online()) skip("Offline")
 
   nc <- processx::process$new(
-    "socat", c("-", "UDP4-CONNECT:8.8.8.8:53,pf=ip4"), stdin = "|")
+    "socat",
+    c("-", "UDP4-CONNECT:8.8.8.8:53,pf=ip4"),
+    stdin = "|"
+  )
   on.exit(cleanup_process(nc), add = TRUE)
   p <- nc$as_ps_handle()
 
   deadline <- Sys.time() + as.difftime(5, units = "secs")
-  while (Sys.time() < deadline &&
-         ! 53 %in% (cl <- ps_connections(p))$rport) {
+  while (
+    Sys.time() < deadline &&
+      !53 %in% (cl <- ps_connections(p))$rport
+  ) {
     Sys.sleep(.1)
   }
 
@@ -148,27 +173,36 @@ test_that("UDP on loopback", {
   skip_if_no_processx()
 
   nc <- processx::process$new(
-    "socat", c("-d", "-d", "-ls", "-", "UDP4-LISTEN:0"),
-    stdin = "|", stderr = "|")
+    "socat",
+    c("-d", "-d", "-ls", "-", "UDP4-LISTEN:0"),
+    stdin = "|",
+    stderr = "|"
+  )
   on.exit(cleanup_process(nc), add = TRUE)
   p <- nc$as_ps_handle()
 
   wait_for_string(nc, "listening on", timeout = 2000)
 
   cl <- ps_connections(p)
-  cl  <-  cl[!is.na(cl$lport) & cl$type == "SOCK_DGRAM", ]
+  cl <- cl[!is.na(cl$lport) & cl$type == "SOCK_DGRAM", ]
   port <- cl$lport
   expect_equal(cl$family, "AF_INET")
   expect_equal(cl$type, "SOCK_DGRAM")
 
   nc2 <- processx::process$new(
-    "socat", c("-", paste0("UDP4-CONNECT:127.0.0.1:", port)), stdin = "|")
+    "socat",
+    c("-", paste0("UDP4-CONNECT:127.0.0.1:", port)),
+    stdin = "|"
+  )
   on.exit(cleanup_process(nc2), add = TRUE)
   p2 <- nc2$as_ps_handle()
 
   deadline <- Sys.time() + as.difftime(5, units = "secs")
-  while (Sys.time() < deadline &&
-         ! port %in% (cl2 <- ps_connections(p2))$rport) Sys.sleep(0.1)
+  while (
+    Sys.time() < deadline &&
+      !port %in% (cl2 <- ps_connections(p2))$rport
+  )
+    Sys.sleep(0.1)
 
   cl2 <- cl2[!is.na(cl2$rport & cl2$rport == port), ]
   expect_equal(cl2$family, "AF_INET")
@@ -182,8 +216,11 @@ test_that("TCP6", {
   skip_without_ipv6_connection()
 
   nc <- processx::process$new(
-    "socat", c("-d", "-d", "-", paste0("TCP6:", ipv6_host(), ":443")),
-     stdin = "|",  stderr = "|")
+    "socat",
+    c("-d", "-d", "-", paste0("TCP6:", ipv6_host(), ":443")),
+    stdin = "|",
+    stderr = "|"
+  )
   on.exit(cleanup_process(nc), add = TRUE)
   p <- nc$as_ps_handle()
 
@@ -202,8 +239,11 @@ test_that("TCP6 on loopback", {
   skip_without_ipv6()
 
   nc <- processx::process$new(
-    "socat", c("-d", "-d", "-", "TCP6-LISTEN:0"),
-    stdin = "|", stderr = "|")
+    "socat",
+    c("-d", "-d", "-", "TCP6-LISTEN:0"),
+    stdin = "|",
+    stderr = "|"
+  )
   on.exit(cleanup_process(nc), add = TRUE)
   p <- nc$as_ps_handle()
 
@@ -216,15 +256,19 @@ test_that("TCP6 on loopback", {
   port <- cl$lport
 
   nc2 <- processx::process$new(
-    "socat", c("-d", "-d", "-", paste0("TCP6-CONNECT:\\:\\:1:", port)),
-    stdin = "|", stderr = "|")
+    "socat",
+    c("-d", "-d", "-", paste0("TCP6-CONNECT:\\:\\:1:", port)),
+    stdin = "|",
+    stderr = "|"
+  )
   on.exit(cleanup_process(nc2), add = TRUE)
   p2 <- nc2$as_ps_handle()
 
   err <- FALSE
   tryCatch(
     wait_for_string(nc2, "starting data transfer", timeout = 2000),
-    error = function(e) err <<- TRUE)
+    error = function(e) err <<- TRUE
+  )
   if (err) skip("Could not bind to IPv6 address")
 
   cl2 <- ps_connections(p2)
@@ -240,13 +284,18 @@ test_that("UDP6", {
   skip_if_no_processx()
 
   nc <- processx::process$new(
-    "socat", c("-", "UDP6:2001\\:4860\\:4860\\:8888:53"), stdin = "|")
+    "socat",
+    c("-", "UDP6:2001\\:4860\\:4860\\:8888:53"),
+    stdin = "|"
+  )
   on.exit(cleanup_process(nc), add = TRUE)
   p <- nc$as_ps_handle()
 
   deadline <- Sys.time() + as.difftime(5, units = "secs")
-  while (Sys.time() < deadline &&
-         ! 53 %in% (cl <- ps_connections(p))$rport) {
+  while (
+    Sys.time() < deadline &&
+      !53 %in% (cl <- ps_connections(p))$rport
+  ) {
     Sys.sleep(.1)
   }
 
@@ -265,29 +314,36 @@ test_that("UDP6 on loopback", {
   skip_without_ipv6()
 
   nc <- processx::process$new(
-    "socat", c("-d", "-d", "-ls", "-", "UDP6-LISTEN:0"),
-    stdin = "|", stderr = "|")
+    "socat",
+    c("-d", "-d", "-ls", "-", "UDP6-LISTEN:0"),
+    stdin = "|",
+    stderr = "|"
+  )
   on.exit(cleanup_process(nc), add = TRUE)
   p <- nc$as_ps_handle()
 
   wait_for_string(nc, "listening on", timeout = 2000)
 
   cl <- ps_connections(p)
-  cl  <-  cl[!is.na(cl$lport) & cl$type == "SOCK_DGRAM", ]
+  cl <- cl[!is.na(cl$lport) & cl$type == "SOCK_DGRAM", ]
   port <- cl$lport
   expect_equal(cl$family, "AF_INET6")
   expect_equal(cl$type, "SOCK_DGRAM")
 
   nc2 <- processx::process$new(
-    "socat", c("-d", "-d", "-", paste0("UDP6-CONNECT:\\:\\:1:", port)),
-     stdin = "|", stderr = "|")
+    "socat",
+    c("-d", "-d", "-", paste0("UDP6-CONNECT:\\:\\:1:", port)),
+    stdin = "|",
+    stderr = "|"
+  )
   on.exit(cleanup_process(nc2), add = TRUE)
   p2 <- nc2$as_ps_handle()
 
   err <- FALSE
   tryCatch(
     wait_for_string(nc2, "starting data transfer", timeout = 2000),
-    error = function(e) err <<- TRUE)
+    error = function(e) err <<- TRUE
+  )
   if (err) skip("Could not bind to IPv6 address")
 
   cl2 <- ps_connections(p2)

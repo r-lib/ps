@@ -8,7 +8,6 @@ on:
   push:
     branches: [main, master]
   pull_request:
-    branches: [main, master]
   workflow_dispatch:
 
 name: R-CMD-check.yaml
@@ -66,7 +65,3 @@ jobs:
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
-
-      - name: Interactive debug
-        if: ${{ always() && runner.os == 'Linux' && runner.debug == '1' && github.run_attempt != '1' }}
-        uses: r-hub/actions/ssh-server@main

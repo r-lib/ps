@@ -1,8 +1,11 @@
 library(testthat)
 library(ps)
 
-if (ps::ps_is_supported() && Sys.getenv("R_COVR", "") != "true" &&
-    Sys.getenv("NOT_CRAN") != "" ) {
+if (
+  ps::ps_is_supported() &&
+    Sys.getenv("R_COVR", "") != "true" &&
+    Sys.getenv("NOT_CRAN") != ""
+) {
   reporter <- ps::CleanupReporter(testthat::SummaryReporter)$new()
 } else {
   reporter <- "summary"

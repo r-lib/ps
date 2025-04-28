@@ -1,4 +1,3 @@
-
 if (!ps_os_type()[["POSIX"]]) return()
 
 test_that("is_running", {
@@ -49,7 +48,7 @@ test_that("send_signal", {
   while (Sys.time() < timeout && p1$is_alive()) Sys.sleep(0.05)
   expect_false(p1$is_alive())
   expect_false(ps_is_running(ps))
-  expect_equal(p1$get_exit_status(), - signals()$SIGINT)
+  expect_equal(p1$get_exit_status(), -signals()$SIGINT)
 })
 
 test_that("terminate", {
@@ -62,7 +61,7 @@ test_that("terminate", {
   while (Sys.time() < timeout && p1$is_alive()) Sys.sleep(0.05)
   expect_false(p1$is_alive())
   expect_false(ps_is_running(ps))
-  expect_equal(p1$get_exit_status(), - signals()$SIGTERM)
+  expect_equal(p1$get_exit_status(), -signals()$SIGTERM)
 })
 
 test_that("kill with grace", {

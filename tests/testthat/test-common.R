@@ -1,4 +1,3 @@
-
 test_that("create self process", {
   expect_error(ps_handle("foobar"), class = "invalid_argument")
   expect_error(ps_handle(time = 123), class = "invalid_argument")
@@ -31,7 +30,7 @@ test_that("string", {
 
   # Got the same process back
   expect_true(ps_is_running(ps2))
-  expect_identical(ps_pid(ps),  ps_pid(ps2))
+  expect_identical(ps_pid(ps), ps_pid(ps2))
   expect_identical(ps_ppid(ps), ps_ppid(ps2))
 
   # Invalid process
@@ -90,7 +89,7 @@ test_that("is_running", {
 
   p1$kill()
   timeout <- Sys.time() + 5
-  while (ps_is_running(ps) &&  Sys.time() < timeout) Sys.sleep(0.05)
+  while (ps_is_running(ps) && Sys.time() < timeout) Sys.sleep(0.05)
   expect_false(ps_is_running(ps))
 })
 
@@ -129,18 +128,19 @@ test_that("name", {
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
   expect_true(ps_is_running(ps))
-  expect_true(ps_name(ps) %in%  c("px", "px.exe"))
+  expect_true(ps_name(ps) %in% c("px", "px.exe"))
 
   ## Long names are not truncated
   file.copy(
     px(),
-    tmp <- paste0(tempfile(pattern = "file1234567890123456"), ".bat"))
+    tmp <- paste0(tempfile(pattern = "file1234567890123456"), ".bat")
+  )
   on.exit(unlink(tmp), add = TRUE)
   Sys.chmod(tmp, "0755")
 
   p2 <- processx::process$new(tmp, c("sleep", "10"))
   on.exit(p2$kill(), add = TRUE)
-  ps  <- ps_handle(p2$get_pid())
+  ps <- ps_handle(p2$get_pid())
   expect_true(ps_is_running(ps))
   expect_equal(ps_name(ps), basename(tmp))
 })
@@ -259,7 +259,7 @@ test_that("kill", {
   expect_false(p1$is_alive())
   expect_false(ps_is_running(ps))
   if (ps_os_type()[["POSIX"]]) {
-    expect_equal(p1$get_exit_status(), - signals()$SIGTERM)
+    expect_equal(p1$get_exit_status(), -signals()$SIGTERM)
   }
 })
 

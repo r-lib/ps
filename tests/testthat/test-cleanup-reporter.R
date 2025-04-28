@@ -1,11 +1,10 @@
-
 test_that("unit: test, mode: cleanup-fail", {
-
   out <- list()
   on.exit(if (!is.null(out$p)) out$p$kill(), add = TRUE)
   expect_failure(
     with_reporter(
-      CleanupReporter(testthat::SilentReporter)$new(proc_unit = "test"), {
+      CleanupReporter(testthat::SilentReporter)$new(proc_unit = "test"),
+      {
         test_that("foobar", {
           out$p <<- processx::process$new(px(), c("sleep", "5"))
           out$running <<- out$p$is_alive()
@@ -23,13 +22,13 @@ test_that("unit: test, mode: cleanup-fail", {
 })
 
 test_that("unit: test, multiple processes", {
-
   out <- list()
   on.exit(if (!is.null(out$p1)) out$p1$kill(), add = TRUE)
   on.exit(if (!is.null(out$p2)) out$p2$kill(), add = TRUE)
   expect_failure(
     with_reporter(
-      CleanupReporter(testthat::SilentReporter)$new(proc_unit = "test"), {
+      CleanupReporter(testthat::SilentReporter)$new(proc_unit = "test"),
+      {
         test_that("foobar", {
           out$p1 <<- processx::process$new(px(), c("sleep", "5"))
           out$p2 <<- processx::process$new(px(), c("sleep", "5"))
@@ -46,12 +45,12 @@ test_that("unit: test, multiple processes", {
 })
 
 test_that("on.exit() works", {
-
   out <- list()
   on.exit(if (!is.null(out$p)) out$p$kill(), add = TRUE)
   expect_success(
     with_reporter(
-      CleanupReporter(testthat::SilentReporter)$new(proc_unit = "test"), {
+      CleanupReporter(testthat::SilentReporter)$new(proc_unit = "test"),
+      {
         test_that("foobar", {
           out$p <<- processx::process$new(px(), c("sleep", "5"))
           on.exit(out$p$kill(), add = TRUE)
@@ -66,18 +65,21 @@ test_that("on.exit() works", {
 })
 
 test_that("only report", {
-
   out <- list()
   on.exit(if (!is.null(out$p)) out$p$kill(), add = TRUE)
   expect_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
-        proc_unit = "test", proc_cleanup = FALSE, proc_fail = TRUE), {
-          test_that("foobar", {
-            out$p <<- processx::process$new(px(), c("sleep", "5"))
-            out$running <<- out$p$is_alive()
-          })
-        }
+        proc_unit = "test",
+        proc_cleanup = FALSE,
+        proc_fail = TRUE
+      ),
+      {
+        test_that("foobar", {
+          out$p <<- processx::process$new(px(), c("sleep", "5"))
+          out$running <<- out$p$is_alive()
+        })
+      }
     ),
     "did not clean up processes"
   )
@@ -92,19 +94,23 @@ test_that("only kill", {
   on.exit(if (!is.null(out$p)) out$p$kill(), add = TRUE)
   with_reporter(
     CleanupReporter(testthat::SilentReporter)$new(
-      proc_unit = "test", proc_cleanup = TRUE, proc_fail = FALSE,
-      conn_fail = FALSE), {
-        test_that("foobar", {
-          out$p <<- processx::process$new(px(), c("sleep", "5"))
-          out$running <<- out$p$is_alive()
-        })
-        ## It must be killed by now
-        test_that("foobar2", {
-          deadline <- Sys.time() + 3
-          while (out$p$is_alive()  && Sys.time() < deadline) Sys.sleep(0.05)
-          out$running2 <<- out$p$is_alive()
-        })
-      }
+      proc_unit = "test",
+      proc_cleanup = TRUE,
+      proc_fail = FALSE,
+      conn_fail = FALSE
+    ),
+    {
+      test_that("foobar", {
+        out$p <<- processx::process$new(px(), c("sleep", "5"))
+        out$running <<- out$p$is_alive()
+      })
+      ## It must be killed by now
+      test_that("foobar2", {
+        deadline <- Sys.time() + 3
+        while (out$p$is_alive() && Sys.time() < deadline) Sys.sleep(0.05)
+        out$running2 <<- out$p$is_alive()
+      })
+    }
   )
 
   expect_true(out$running)
@@ -118,8 +124,12 @@ test_that("unit: testsuite", {
   expect_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
-        proc_unit = "testsuite", rconn_fail = FALSE, file_fail = FALSE,
-        conn_fail = FALSE), {
+        proc_unit = "testsuite",
+        rconn_fail = FALSE,
+        file_fail = FALSE,
+        conn_fail = FALSE
+      ),
+      {
         test_that("foobar", {
           out$p <<- processx::process$new(px(), c("sleep", "5"))
           out$running <<- out$p$is_alive()
@@ -147,7 +157,8 @@ test_that("R connection cleanup, test, close, fail", {
   on.exit(try(close(out$conn), silent = TRUE), add = TRUE)
   expect_failure(
     with_reporter(
-      CleanupReporter(testthat::SilentReporter)$new(proc_fail = FALSE), {
+      CleanupReporter(testthat::SilentReporter)$new(proc_fail = FALSE),
+      {
         test_that("foobar", {
           out$conn <<- file(tmp, open = "w")
           out$open <<- isOpen(out$conn)
@@ -169,7 +180,10 @@ test_that("R connection cleanup, test, do not close, fail", {
   expect_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
-        proc_fail = FALSE, rconn_cleanup = FALSE), {
+        proc_fail = FALSE,
+        rconn_cleanup = FALSE
+      ),
+      {
         test_that("foobar", {
           out$conn <<- file(tmp, open = "w")
           out$open <<- isOpen(out$conn)
@@ -191,12 +205,15 @@ test_that("R connection cleanup, test, close, do not fail", {
   on.exit(try(close(out$conn), silent = TRUE), add = TRUE)
   with_reporter(
     CleanupReporter(testthat::SilentReporter)$new(
-      proc_fail = FALSE, rconn_fail = FALSE), {
-        test_that("foobar", {
-          out$conn <<- file(tmp, open = "w")
-          out$open <<- isOpen(out$conn)
-        })
-      }
+      proc_fail = FALSE,
+      rconn_fail = FALSE
+    ),
+    {
+      test_that("foobar", {
+        out$conn <<- file(tmp, open = "w")
+        out$open <<- isOpen(out$conn)
+      })
+    }
   )
 
   expect_true(out$open)
@@ -211,8 +228,12 @@ test_that("R connections, unit: testsuite", {
   expect_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
-        rconn_unit = "testsuite", proc_fail = FALSE, file_fail = FALSE,
-        conn_fail = FALSE), {
+        rconn_unit = "testsuite",
+        proc_fail = FALSE,
+        file_fail = FALSE,
+        conn_fail = FALSE
+      ),
+      {
         test_that("foobar", {
           out$conn <<- file(tmp, open = "w")
           out$open <<- isOpen(out$conn)
@@ -232,7 +253,6 @@ test_that("R connections, unit: testsuite", {
 })
 
 test_that("connections already open are ignored", {
-
   tmp2 <- tempfile()
   on.exit(unlink(tmp2), add = TRUE)
   conn <- file(tmp2, open = "w")
@@ -244,7 +264,8 @@ test_that("connections already open are ignored", {
   on.exit(try(close(out$conn), silent = TRUE), add = TRUE)
   expect_success(
     with_reporter(
-      CleanupReporter(testthat::SilentReporter)$new(proc_fail = FALSE), {
+      CleanupReporter(testthat::SilentReporter)$new(proc_fail = FALSE),
+      {
         test_that("foobar", {
           out$conn <<- file(tmp, open = "w")
           out$open <<- isOpen(out$conn)
@@ -268,7 +289,11 @@ test_that("File cleanup, test, fail", {
   expect_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
-        proc_fail = FALSE, rconn_cleanup = FALSE, rconn_fail = FALSE), {
+        proc_fail = FALSE,
+        rconn_cleanup = FALSE,
+        rconn_fail = FALSE
+      ),
+      {
         test_that("foobar", {
           out$conn <<- file(tmp, open = "r")
           out$open <<- isOpen(out$conn)
@@ -291,8 +316,13 @@ test_that("File cleanup, unit: testsuite", {
   expect_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
-        file_unit = "testsuite", proc_fail = FALSE, rconn_fail = FALSE,
-        rconn_cleanup = FALSE, conn_fail = FALSE), {
+        file_unit = "testsuite",
+        proc_fail = FALSE,
+        rconn_fail = FALSE,
+        rconn_cleanup = FALSE,
+        conn_fail = FALSE
+      ),
+      {
         test_that("foobar", {
           out$conn <<- file(tmp, open = "w")
           out$open <<- isOpen(out$conn)
@@ -313,7 +343,6 @@ test_that("File cleanup, unit: testsuite", {
 })
 
 test_that("files already open are ignored", {
-
   tmp2 <- tempfile()
   on.exit(unlink(tmp2), add = TRUE)
   conn <- file(tmp2, open = "w")
@@ -326,7 +355,11 @@ test_that("files already open are ignored", {
   expect_success(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
-        proc_fail = FALSE, rconn_fail = FALSE, rconn_cleanup = FALSE), {
+        proc_fail = FALSE,
+        rconn_fail = FALSE,
+        rconn_cleanup = FALSE
+      ),
+      {
         test_that("foobar", {
           out$conn <<- file(tmp, open = "w")
           out$open <<- isOpen(out$conn)
@@ -347,12 +380,21 @@ close(conn)
 test_that("Network cleanup, test, fail", {
   skip_on_cran()
   out <- list()
-  on.exit({ try(close(out$conn), silent = TRUE) }, add = TRUE)
+  on.exit(
+    {
+      try(close(out$conn), silent = TRUE)
+    },
+    add = TRUE
+  )
   expect_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
-        proc_fail = FALSE, rconn_cleanup = FALSE, rconn_fail = FALSE,
-        file_fail = FALSE), {
+        proc_fail = FALSE,
+        rconn_cleanup = FALSE,
+        rconn_fail = FALSE,
+        file_fail = FALSE
+      ),
+      {
         test_that("foobar", {
           out$conn <<- curl::curl(httpbin$url("/drip"), open = "r")
           out$open <<- isOpen(out$conn)
@@ -374,8 +416,13 @@ test_that("Network cleanup, unit: testsuite", {
   expect_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
-        conn_unit = "testsuite", proc_fail = FALSE, rconn_fail = FALSE,
-        rconn_cleanup = FALSE, file_fail = FALSE), {
+        conn_unit = "testsuite",
+        proc_fail = FALSE,
+        rconn_fail = FALSE,
+        rconn_cleanup = FALSE,
+        file_fail = FALSE
+      ),
+      {
         test_that("foobar", {
           out$conn <<- curl::curl(httpbin$url("/drip"), open = "r")
           out$open <<- isOpen(out$conn)
@@ -405,7 +452,11 @@ test_that("Network connections already open are ignored", {
   expect_success(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
-        proc_fail = FALSE, rconn_fail = FALSE, rconn_cleanup = FALSE), {
+        proc_fail = FALSE,
+        rconn_fail = FALSE,
+        rconn_cleanup = FALSE
+      ),
+      {
         test_that("foobar", {
           out$conn <<- curl::curl(httpbin$url(), open = "r")
           out$open <<- isOpen(out$conn)

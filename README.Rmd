@@ -7,7 +7,8 @@ output:
       before_body: header.md
 ---
 
-```{r echo = FALSE}
+```{r}
+#| echo: false
 options(width = 100)
 suppressWarnings(suppressPackageStartupMessages(suppressMessages(library(dplyr))))
 suppressWarnings(suppressMessages(library(pillar)))
@@ -280,8 +281,8 @@ Using `ps()` and dplyr:
 ```{r}
 library(dplyr)
 find_procs_by_name <- function(name) {
-  ps() %>%
-    filter(name == !!name)  %>%
+  ps() |>
+    filter(name == !!name)  |>
     pull(ps_handle)
 }
 
@@ -364,40 +365,40 @@ kill_proc_tree(Sys.getpid(), include_parent = FALSE)
 Process name ending with "sh":
 
 ```{r}
-ps() %>%
+ps() |>
   filter(grepl("sh$", name))
 ```
 
 Processes owned by user:
 
 ```{r}
-ps() %>%
-  filter(username == Sys.info()[["user"]]) %>%
+ps() |>
+  filter(username == Sys.info()[["user"]]) |>
   select(pid, name)
 ```
 
 Processes consuming more than 100MB of memory:
 
 ```{r}
-ps() %>%
+ps() |>
   filter(rss > 100 * 1024 * 1024)
 ```
 
 Top 3 memory consuming processes:
 
 ```{r}
-ps() %>%
-  top_n(3, rss) %>%
+ps() |>
+  top_n(3, rss) |>
   arrange(desc(rss))
 ```
 
 Top 3 processes which consumed the most CPU time:
 
 ```{r}
-ps() %>%
-  mutate(cpu_time = user + system) %>%
-  top_n(3, cpu_time) %>%
-  arrange(desc(cpu_time)) %>%
+ps() |>
+  mutate(cpu_time = user + system) |>
+  top_n(3, cpu_time) |>
+  arrange(desc(cpu_time)) |>
   select(pid, name, cpu_time)
 ```
 
