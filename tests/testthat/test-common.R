@@ -21,8 +21,6 @@ test_that("string", {
 
   # Values satisfy encoding assumptions
   expect_true(all(ps_pids() < 52^4))
-  expect_true(Sys.time() < 62^6 * .99)
-  expect_identical(nchar(format(ps_create_time(), "%OS8")), 9L)
 
   # Roundtrip through ps_string
   str <- expect_silent(ps_string(ps))
@@ -34,9 +32,11 @@ test_that("string", {
   expect_identical(ps_ppid(ps), ps_ppid(ps2))
 
   # Invalid process
-  str <- ps__str_encode(ps_pid(ps), ps_create_time(ps) + 1)
-  ps3 <- expect_silent(ps_handle(str))
-  expect_false(ps_is_running(ps3))
+  ps2 <- expect_silent(ps_handle(ps_pid(ps), ps_create_time(ps) + 1))
+  expect_false(ps_is_running(ps2))
+  str <- expect_silent(ps_string(ps2))
+  ps2 <- expect_silent(ps_handle(str))
+  expect_false(ps_is_running(ps2))
 })
 
 test_that("pid", {
