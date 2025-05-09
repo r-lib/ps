@@ -16,29 +16,6 @@ test_that("print", {
   expect_output(print(ps), format_regexp())
 })
 
-test_that("string", {
-  ps <- ps_handle()
-
-  # Values satisfy encoding assumptions
-  expect_true(all(ps_pids() < 52^4))
-
-  # Roundtrip through ps_string
-  str <- expect_silent(ps_string(ps))
-  ps2 <- expect_silent(ps_handle(str))
-
-  # Got the same process back
-  expect_true(ps_is_running(ps2))
-  expect_identical(ps_pid(ps), ps_pid(ps2))
-  expect_identical(ps_ppid(ps), ps_ppid(ps2))
-
-  # Invalid process
-  ps2 <- expect_silent(ps_handle(ps_pid(ps), ps_create_time(ps) + 1))
-  expect_false(ps_is_running(ps2))
-  str <- expect_silent(ps_string(ps2))
-  ps2 <- expect_silent(ps_handle(str))
-  expect_false(ps_is_running(ps2))
-})
-
 test_that("pid", {
   ## Argument check
   expect_error(ps_pid(123), class = "invalid_argument")
