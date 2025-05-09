@@ -24,25 +24,32 @@ ps_string <- function(p = ps_handle()) {
 
 ps__str_encode <- function(p) {
 
-  process_id  <- ps_pid(p)
-  create_secs <- as.numeric(ps_create_time(p))
-  boot_secs   <- as.numeric(ps_boot_time())
-  offset_ms   <- floor((create_secs - boot_secs) * 1000)
-
   # Assumptions:
-  #   System uptime < 111 years.
-  #   PIDs are not reused within the same millisecond.
-  #   PID <= 7,311,615 (current std max = 4,194,304).
+  #   - Date < 3085-12-14 and System uptime < 1116 years.
+  #   - PIDs are not reused within the same 0.01 seconds.
+  #   - PID <= 7,311,615 (current std max = 4,194,304).
+
+  # Surprisingly, `ps_boot_time()` is not constant from process to process, and
+  # `ps_create_time()` is derived from `ps_boot_time()` on Unix. Therefore:
+  #   - On Windows, encode `ps_create_time()`
+  #   - On Unix, encode `ps_create_time() - `ps_boot_time()`
+
+  pid  <- ps_pid(p)
+  time <- as.numeric(ps_create_time(p))
+
+  if (.Platform$OS.type == "unix")
+    time <- time - as.numeric(ps_boot_time())
+
+  time <- round(time, 2) * 100 # 1/100 second resolution
 
   map <- c(letters, LETTERS, 0:9)
-
   paste(
     collapse = '',
     map[
       1 +
         c(
-          floor(process_id / 52^(3:0)) %% 52,
-          floor(offset_ms  / 62^(6:0)) %% 62
+          floor(pid  / 52^(3:0)) %% 52,
+          floor(time / 62^(6:0)) %% 62
         )
     ]
   )
@@ -50,22 +57,25 @@ ps__str_encode <- function(p) {
 
 
 ps__str_decode <- function(str) {
+
   map <- structure(0:61, names = c(letters, LETTERS, 0:9))
   val <- map[strsplit(str, '', fixed = TRUE)[[1]]]
+  pid <- sum(val[01:04] * 52^(3:0))
 
-  process_id  <- sum(val[01:04] * 52^(3:0))
-  offset_ms   <- sum(val[05:11] * 62^(6:0))
-  create_time <- ps_boot_time() + (offset_ms / 1000)
-
-  # Allow fuzzy-matching the microseconds
   tryCatch(
     expr = {
-      p <- ps_handle(pid = process_id)
-      stopifnot(abs(ps_create_time(p) - create_time) < 1 / 1000)
+      p <- ps_handle(pid = pid)
+      stopifnot(str == ps__str_encode(p))
       p
     },
     error = function(e) {
-      ps_handle(pid = process_id, time = create_time)
+
+      time <- sum(val[05:11] * 62^(6:0)) / 100
+
+      if (.Platform$OS.type == "unix")
+        time <- time + as.numeric(ps_boot_time())
+
+      ps_handle(pid = pid, time = format_unix_time(time))
     }
   )
 }
