@@ -1,7 +1,7 @@
 #' Encode a `ps_handle` as a short string
 #'
 #' A convenient format for passing between processes, naming semaphores, or
-#' using as a directory/file name. Will always be 11 alphanumeric characters,
+#' using as a directory/file name. Will always be 12 alphanumeric characters,
 #' with the first character guarantied to be a letter. Encodes the pid and
 #' creation time for a process.
 #'
@@ -25,9 +25,10 @@ ps_string <- function(p = ps_handle()) {
 ps__str_encode <- function(p) {
 
   # Assumptions:
-  #   - Date < 3085-12-14 and System uptime < 1116 years.
-  #   - PIDs are not reused within the same 0.01 seconds.
-  #   - PID <= 7,311,615 (current std max = 4,194,304).
+  #   - Date < 3664-01-26 (Windows only).
+  #   - System uptime < 1694 years (Unix only).
+  #   - PID <= 4,194,304 (current standard maximum).
+  #   - PIDs are not reused within the same millisecond.
 
   # Surprisingly, `ps_boot_time()` is not constant from process to process, and
   # `ps_create_time()` is derived from `ps_boot_time()` on Unix. Therefore:
@@ -40,16 +41,16 @@ ps__str_encode <- function(p) {
   if (.Platform$OS.type == "unix")
     time <- time - as.numeric(ps_boot_time())
 
-  time <- round(time, 2) * 100 # 1/100 second resolution
+  time <- round(time, 3) * 1000 # millisecond resolution
 
-  map <- c(letters, LETTERS, 0:9)
+  map <- c(letters, LETTERS)
   paste(
     collapse = '',
     map[
       1 +
         c(
           floor(pid  / 52^(3:0)) %% 52,
-          floor(time / 62^(6:0)) %% 62
+          floor(time / 52^(7:0)) %% 52
         )
     ]
   )
@@ -58,7 +59,7 @@ ps__str_encode <- function(p) {
 
 ps__str_decode <- function(str) {
 
-  map <- structure(0:61, names = c(letters, LETTERS, 0:9))
+  map <- structure(0:51, names = c(letters, LETTERS))
   val <- map[strsplit(str, '', fixed = TRUE)[[1]]]
   pid <- sum(val[01:04] * 52^(3:0))
 
@@ -70,7 +71,7 @@ ps__str_decode <- function(str) {
     },
     error = function(e) {
 
-      time <- sum(val[05:11] * 62^(6:0)) / 100
+      time <- sum(val[05:12] * 52^(7:0)) / 1000
 
       if (.Platform$OS.type == "unix")
         time <- time + as.numeric(ps_boot_time())

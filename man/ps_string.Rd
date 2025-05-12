@@ -15,7 +15,7 @@ A process string (scalar character), that can be passed to
 }
 \description{
 A convenient format for passing between processes, naming semaphores, or
-using as a directory/file name. Will always be 11 alphanumeric characters,
+using as a directory/file name. Will always be 12 alphanumeric characters,
 with the first character guarantied to be a letter. Encodes the pid and
 creation time for a process.
 }
