@@ -25,9 +25,9 @@ ps_string <- function(p = ps_handle()) {
 ps__str_encode <- function(p) {
 
   # Assumptions:
-  #   - Date < 3664-01-26 (Windows only).
-  #   - System uptime < 1694 years (Unix only).
-  #   - PID <= 4,194,304 (current standard maximum).
+  #   - Date < 8888-12-02 (Windows only).
+  #   - System uptime < 6918 years (Unix only).
+  #   - PID <= 768,369,472 (current std max = 4,194,304).
   #   - PIDs are not reused within the same millisecond.
 
   # Surprisingly, `ps_boot_time()` is not constant from process to process, and
@@ -43,14 +43,14 @@ ps__str_encode <- function(p) {
 
   time <- round(time, 3) * 1000 # millisecond resolution
 
-  map <- c(letters, LETTERS)
+  map <- c(letters, LETTERS, 0:9)
   paste(
     collapse = '',
     map[
       1 +
         c(
-          floor(pid  / 52^(3:0)) %% 52,
-          floor(time / 52^(7:0)) %% 52
+          floor(pid  / 62^(3:0)) %% 62,
+          floor(time / 62^(7:0)) %% 62
         )
     ]
   )
@@ -59,9 +59,9 @@ ps__str_encode <- function(p) {
 
 ps__str_decode <- function(str) {
 
-  map <- structure(0:51, names = c(letters, LETTERS))
+  map <- structure(0:61, names = c(letters, LETTERS, 0:9))
   val <- map[strsplit(str, '', fixed = TRUE)[[1]]]
-  pid <- sum(val[01:04] * 52^(3:0))
+  pid <- sum(val[01:04] * 62^(3:0))
 
   tryCatch(
     expr = {
@@ -71,7 +71,7 @@ ps__str_decode <- function(str) {
     },
     error = function(e) {
 
-      time <- sum(val[05:12] * 52^(7:0)) / 1000
+      time <- sum(val[05:12] * 62^(7:0)) / 1000
 
       if (.Platform$OS.type == "unix")
         time <- time + as.numeric(ps_boot_time())
