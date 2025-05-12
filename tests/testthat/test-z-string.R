@@ -6,7 +6,8 @@ test_that("string", {
   ps <- ps_handle()
 
   # Values satisfy encoding assumptions
-  expect_true(all(ps_pids() < 52^4))
+  expect_true(all(ps_pids() < 52 * 62^3))
+  expect_lt(Sys.time(), (62^8 / 1000) * 0.99)
 
   # Roundtrip through ps_string
   str <- expect_silent(ps_string(ps))
