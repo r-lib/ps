@@ -19,7 +19,9 @@ test_that("empty set", {
 })
 
 test_that("UNIX sockets", {
-  if (!ps_os_type()[["POSIX"]]) skip("No UNIX sockets")
+  if (!ps_os_type()[["POSIX"]]) {
+    skip("No UNIX sockets")
+  }
 
   px <- processx::process$new(px(), c("sleep", "5"), stdout = "|")
   on.exit(cleanup_process(px), add = TRUE)
@@ -41,7 +43,9 @@ test_that("UNIX sockets", {
 })
 
 test_that("UNIX sockets with path", {
-  if (!ps_os_type()[["POSIX"]]) skip("No UNIX sockets")
+  if (!ps_os_type()[["POSIX"]]) {
+    skip("No UNIX sockets")
+  }
   skip_without_program("socat")
   skip_if_no_processx()
   skip_on_cran()
@@ -127,8 +131,9 @@ test_that("TCP on loopback", {
   while (
     Sys.time() < deadline &&
       !port %in% (cl2 <- ps_connections(p2))$rport
-  )
+  ) {
     Sys.sleep(0.1)
+  }
 
   cl2 <- cl2[!is.na(cl2$rport & cl2$rport == port), ]
   expect_equal(cl2$family, "AF_INET")
@@ -141,7 +146,9 @@ test_that("UDP", {
   skip_on_cran()
   skip_without_program("socat")
   skip_if_no_processx()
-  if (!pingr::is_online()) skip("Offline")
+  if (!pingr::is_online()) {
+    skip("Offline")
+  }
 
   nc <- processx::process$new(
     "socat",
@@ -201,8 +208,9 @@ test_that("UDP on loopback", {
   while (
     Sys.time() < deadline &&
       !port %in% (cl2 <- ps_connections(p2))$rport
-  )
+  ) {
     Sys.sleep(0.1)
+  }
 
   cl2 <- cl2[!is.na(cl2$rport & cl2$rport == port), ]
   expect_equal(cl2$family, "AF_INET")
@@ -269,7 +277,9 @@ test_that("TCP6 on loopback", {
     wait_for_string(nc2, "starting data transfer", timeout = 2000),
     error = function(e) err <<- TRUE
   )
-  if (err) skip("Could not bind to IPv6 address")
+  if (err) {
+    skip("Could not bind to IPv6 address")
+  }
 
   cl2 <- ps_connections(p2)
   cl2 <- cl2[!is.na(cl2$rport & cl2$rport == port), ]
@@ -344,7 +354,9 @@ test_that("UDP6 on loopback", {
     wait_for_string(nc2, "starting data transfer", timeout = 2000),
     error = function(e) err <<- TRUE
   )
-  if (err) skip("Could not bind to IPv6 address")
+  if (err) {
+    skip("Could not bind to IPv6 address")
+  }
 
   cl2 <- ps_connections(p2)
   cl2 <- cl2[!is.na(cl2$rport & cl2$rport == port), ]

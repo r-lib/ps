@@ -6,7 +6,9 @@ memoize <- function(fun) {
     stop("Only memoizing functions without arguments")
   }
   dec <- function() {
-    if (is.null(cache)) cache <<- fun()
+    if (is.null(cache)) {
+      cache <<- fun()
+    }
     cache
   }
   attr(dec, "clear") <- function() cache <<- TRUE

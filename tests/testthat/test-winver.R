@@ -7,7 +7,9 @@ test_that("winver_ver", {
 
   source(system.file("tools", "winver.R", package = "ps"), local = TRUE)
 
-  for (x in cases) expect_identical(winver_ver(x[[1]]), x[[2]])
+  for (x in cases) {
+    expect_identical(winver_ver(x[[1]]), x[[2]])
+  }
 })
 
 test_that("winver_wmic", {
@@ -19,5 +21,7 @@ test_that("winver_wmic", {
 
   source(system.file("tools", "winver.R", package = "ps"), local = TRUE)
 
-  for (x in cases) expect_identical(winver_wmic(x[[1]]), x[[2]])
+  for (x in cases) {
+    expect_identical(winver_wmic(x[[1]]), x[[2]])
+  }
 })

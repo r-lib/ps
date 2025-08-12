@@ -34,8 +34,9 @@ test_that("kill_tree", {
   while (
     sum(file_size(dir(tmp, full.names = TRUE)) > 0) < 5 &&
       Sys.time() < timeout
-  )
+  ) {
     Sys.sleep(0.1)
+  }
 
   expect_true(Sys.time() < timeout)
 
@@ -54,8 +55,9 @@ test_that("kill_tree", {
   while (
     any(map_lgl(p, function(pp) pp$is_alive())) &&
       Sys.time() < timeout
-  )
+  ) {
     Sys.sleep(0.1)
+  }
 
   expect_true(Sys.time() < timeout)
   lapply(p, function(pp) expect_false(pp$is_alive()))
@@ -94,7 +96,9 @@ test_that("kill_tree, grandchild", {
   on.exit(lapply(p, function(x) x$kill()), add = TRUE)
 
   timeout <- Sys.time() + 10
-  while (length(dir(tmp)) < 2 * N && Sys.time() < timeout) Sys.sleep(0.1)
+  while (length(dir(tmp)) < 2 * N && Sys.time() < timeout) {
+    Sys.sleep(0.1)
+  }
 
   expect_true(Sys.time() < timeout)
 
@@ -126,7 +130,9 @@ test_that("kill_tree, grandchild", {
   ## Nevertheless none of them should be alive.
   ## (Taking the risk of pid reuse here...)
   timeout <- Sys.time() + 5
-  while (any(ccpids %in% ps_pids()) && Sys.time() < timeout) Sys.sleep(0.1)
+  while (any(ccpids %in% ps_pids()) && Sys.time() < timeout) {
+    Sys.sleep(0.1)
+  }
   expect_true(Sys.time() < timeout)
 })
 
@@ -156,8 +162,9 @@ test_that("kill_tree, orphaned grandchild", {
   while (
     sum(file_size(dir(tmp, full.names = TRUE)) > 0) < N &&
       Sys.time() < timeout
-  )
+  ) {
     Sys.sleep(0.1)
+  }
 
   res <- ps_kill_tree(id)
   res <- res[names(res) %in% c("px", "px.exe")]
@@ -187,8 +194,9 @@ test_that("with_process_cleanup", {
   while (
     any(map_lgl(p, function(pp) pp$is_alive())) &&
       Sys.time() < timeout
-  )
+  ) {
     Sys.sleep(0.05)
+  }
 
   lapply(p, function(pp) expect_false(pp$is_alive()))
   rm(p)
@@ -249,7 +257,9 @@ test_that("find_tree, grandchild", {
   on.exit(ps_kill_tree(id), add = TRUE)
 
   timeout <- Sys.time() + 10
-  while (length(dir(tmp)) < N && Sys.time() < timeout) Sys.sleep(0.1)
+  while (length(dir(tmp)) < N && Sys.time() < timeout) {
+    Sys.sleep(0.1)
+  }
 
   res <- ps_find_tree(id)
   names <- not_null(lapply(res, function(p) fallback(ps_name(p), NULL)))
@@ -297,8 +307,9 @@ test_that("find_tree, orphaned grandchild", {
   while (
     sum(file_size(dir(tmp, full.names = TRUE)) > 0) < N &&
       Sys.time() < timeout
-  )
+  ) {
     Sys.sleep(0.1)
+  }
 
   res <- ps_find_tree(id)
   names <- not_null(lapply(res, function(p) fallback(ps_name(p), NULL)))

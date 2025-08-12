@@ -131,14 +131,18 @@ psl__read_table <- function(
 
 psl__decode_address <- function(addr, family) {
   ipp <- strsplit(addr, ":")[[1]]
-  if (length(ipp) != 2) return(list(NA_character_, NA_integer_))
+  if (length(ipp) != 2) {
+    return(list(NA_character_, NA_integer_))
+  }
   addr <- str_strip(ipp[[1]])
   port <- strtoi(ipp[[2]], 16)
 
   if (family == "AF_INET") {
     AF_INET <- ps_env$constants$address_families[["AF_INET"]]
     addrn <- strtoi(substring(addr, 1:4 * 2 - 1, 1:4 * 2), base = 16)
-    if (.Platform$endian == "little") addrn <- rev(addrn)
+    if (.Platform$endian == "little") {
+      addrn <- rev(addrn)
+    }
     addrs <- .Call(ps__inet_ntop, as.raw(addrn), AF_INET) %||% NA_character_
     list(addrs, port)
   } else {

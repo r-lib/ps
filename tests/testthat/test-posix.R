@@ -1,4 +1,6 @@
-if (!ps_os_type()[["POSIX"]]) return()
+if (!ps_os_type()[["POSIX"]]) {
+  return()
+}
 
 test_that("is_running", {
   ## Zombie is running
@@ -10,7 +12,9 @@ test_that("is_running", {
 
 test_that("terminal", {
   tty <- ps_terminal(ps_handle())
-  if (is.na(tty)) skip("no terminal")
+  if (is.na(tty)) {
+    skip("no terminal")
+  }
   expect_true(file.exists(tty))
 
   ## It is a character special file
@@ -19,9 +23,13 @@ test_that("terminal", {
 })
 
 test_that("username, uids, gids", {
-  if (Sys.which("ps") == "") skip("No ps program")
+  if (Sys.which("ps") == "") {
+    skip("No ps program")
+  }
   ret <- system("ps -p 1 >/dev/null 2>/dev/null")
-  if (ret != 0) skip("ps does not work properly")
+  if (ret != 0) {
+    skip("ps does not work properly")
+  }
   p1 <- processx::process$new("sleep", "10")
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
@@ -45,7 +53,9 @@ test_that("send_signal", {
 
   ps_send_signal(ps, signals()$SIGINT)
   timeout <- Sys.time() + 60
-  while (Sys.time() < timeout && p1$is_alive()) Sys.sleep(0.05)
+  while (Sys.time() < timeout && p1$is_alive()) {
+    Sys.sleep(0.05)
+  }
   expect_false(p1$is_alive())
   expect_false(ps_is_running(ps))
   expect_equal(p1$get_exit_status(), -signals()$SIGINT)
@@ -58,7 +68,9 @@ test_that("terminate", {
 
   ps_terminate(ps)
   timeout <- Sys.time() + 60
-  while (Sys.time() < timeout && p1$is_alive()) Sys.sleep(0.05)
+  while (Sys.time() < timeout && p1$is_alive()) {
+    Sys.sleep(0.05)
+  }
   expect_false(p1$is_alive())
   expect_false(ps_is_running(ps))
   expect_equal(p1$get_exit_status(), -signals()$SIGTERM)

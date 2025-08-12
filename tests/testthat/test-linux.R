@@ -1,4 +1,6 @@
-if (!ps_os_type()[["LINUX"]]) return()
+if (!ps_os_type()[["LINUX"]]) {
+  return()
+}
 
 test_that("status", {
   ## Argument check

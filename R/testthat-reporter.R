@@ -120,19 +120,33 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
       start_test = function(context, test) {
         private$has_error <- FALSE
         super$start_test(context, test)
-        if (private$file_unit == "test")
+        if (private$file_unit == "test") {
           private$files <- ps_open_files(ps_handle())
-        if (private$rconn_unit == "test") private$rconns <- showConnections()
-        if (private$proc_unit == "test") private$tree_id <- ps::ps_mark_tree()
-        if (private$conn_unit == "test")
+        }
+        if (private$rconn_unit == "test") {
+          private$rconns <- showConnections()
+        }
+        if (private$proc_unit == "test") {
+          private$tree_id <- ps::ps_mark_tree()
+        }
+        if (private$conn_unit == "test") {
           private$conns <- ps_connections(ps_handle())
+        }
       },
 
       end_test = function(context, test) {
-        if (private$proc_unit == "test") self$do_proc_cleanup(test)
-        if (private$rconn_unit == "test") self$do_rconn_cleanup(test)
-        if (private$file_unit == "test") self$do_file_cleanup(test)
-        if (private$conn_unit == "test") self$do_conn_cleanup(test)
+        if (private$proc_unit == "test") {
+          self$do_proc_cleanup(test)
+        }
+        if (private$rconn_unit == "test") {
+          self$do_rconn_cleanup(test)
+        }
+        if (private$file_unit == "test") {
+          self$do_file_cleanup(test)
+        }
+        if (private$conn_unit == "test") {
+          self$do_conn_cleanup(test)
+        }
         super$end_test(context, test)
       },
 
@@ -145,14 +159,18 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
 
       start_reporter = function() {
         super$start_reporter()
-        if (private$file_unit == "testsuite")
+        if (private$file_unit == "testsuite") {
           private$files <- ps_open_files(ps_handle())
-        if (private$rconn_unit == "testsuite")
+        }
+        if (private$rconn_unit == "testsuite") {
           private$rconns <- showConnections()
-        if (private$proc_unit == "testsuite")
+        }
+        if (private$proc_unit == "testsuite") {
           private$tree_id <- ps::ps_mark_tree()
-        if (private$conn_unit == "testsuite")
+        }
+        if (private$conn_unit == "testsuite") {
           private$conns <- ps_connections(ps_handle())
+        }
       },
 
       end_reporter = function() {
@@ -178,8 +196,9 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
           while (
             length(ret <- ps::ps_find_tree(private$tree_id)) &&
               Sys.time() < deadline
-          )
+          ) {
             Sys.sleep(0.05)
+          }
           # maybe gc() will clean up something
           if (length(ret) > 0) {
             gc()
@@ -297,7 +316,9 @@ CleanupReporter <- function(reporter = testthat::ProgressReporter) {
             apply(old, 1, paste, collapse = "&")
 
           # is this the final try, or are we all clean?
-          if (done || sum(leftover) == 0) break
+          if (done || sum(leftover) == 0) {
+            break
+          }
 
           # if Unix, then try again after gc()
           # on Windows, gc() after a timeout, then quit

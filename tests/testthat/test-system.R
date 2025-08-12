@@ -58,7 +58,11 @@ test_that("ps_users runs", {
 test_that("ps_cpu_count", {
   log <- ps_cpu_count(logical = TRUE)
   phy <- ps_cpu_count(logical = FALSE)
-  if (!is.na(log) && !is.na(phy)) expect_true(log >= phy)
-  if (!is.na(log)) expect_true(log > 0)
+  if (!is.na(log) && !is.na(phy)) {
+    expect_true(log >= phy)
+  }
+  if (!is.na(log)) {
+    expect_true(log > 0)
+  }
   if (!is.na(phy)) expect_true(phy > 0)
 })

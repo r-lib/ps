@@ -16,7 +16,9 @@ test_that("unit: test, mode: cleanup-fail", {
 
   expect_true(out$running)
   deadline <- Sys.time() + 2
-  while (out$p$is_alive() && Sys.time() < deadline) Sys.sleep(0.05)
+  while (out$p$is_alive() && Sys.time() < deadline) {
+    Sys.sleep(0.05)
+  }
   expect_true(Sys.time() < deadline)
   expect_false(out$p$is_alive())
 })
@@ -107,7 +109,9 @@ test_that("only kill", {
       ## It must be killed by now
       test_that("foobar2", {
         deadline <- Sys.time() + 3
-        while (out$p$is_alive() && Sys.time() < deadline) Sys.sleep(0.05)
+        while (out$p$is_alive() && Sys.time() < deadline) {
+          Sys.sleep(0.05)
+        }
         out$running2 <<- out$p$is_alive()
       })
     }
@@ -146,7 +150,9 @@ test_that("unit: testsuite", {
   expect_true(out$running)
   expect_true(out$running2)
   deadline <- Sys.time() + 3
-  while (out$p$is_alive() && Sys.time() < deadline) Sys.sleep(0.05)
+  while (out$p$is_alive() && Sys.time() < deadline) {
+    Sys.sleep(0.05)
+  }
   expect_false(out$p$is_alive())
 })
 

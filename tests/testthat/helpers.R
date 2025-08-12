@@ -14,7 +14,9 @@ parse_time <- function(x) {
 
 wait_for_status <- function(ps, status, timeout = 5) {
   limit <- Sys.time() + timeout
-  while (ps_status(ps) != status && Sys.time() < limit) Sys.sleep(0.05)
+  while (ps_status(ps) != status && Sys.time() < limit) {
+    Sys.sleep(0.05)
+  }
 }
 
 px <- function() get_tool("px")
@@ -86,9 +88,15 @@ wait_for_string <- function(proc, string, timeout) {
     left <- max(as.double(deadline - Sys.time(), units = "secs"), 0)
     pr <- processx::poll(list(proc), as.integer(left * 1000))
     str <- paste(str, proc$read_error())
-    if (grepl(string, str)) return()
-    if (proc$has_output_connection()) read_output()
-    if (deadline < Sys.time()) stop("Cannot start proces")
+    if (grepl(string, str)) {
+      return()
+    }
+    if (proc$has_output_connection()) {
+      read_output()
+    }
+    if (deadline < Sys.time()) {
+      stop("Cannot start proces")
+    }
     if (!proc$is_alive()) stop("Cannot start process")
   }
 }

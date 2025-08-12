@@ -89,7 +89,9 @@ test_that("is_running", {
 
   p1$kill()
   timeout <- Sys.time() + 5
-  while (ps_is_running(ps) && Sys.time() < timeout) Sys.sleep(0.05)
+  while (ps_is_running(ps) && Sys.time() < timeout) {
+    Sys.sleep(0.05)
+  }
   expect_false(ps_is_running(ps))
 })
 
@@ -231,14 +233,18 @@ test_that("suspend, resume", {
 
   ps_suspend(ps)
   timeout <- Sys.time() + 60
-  while (Sys.time() < timeout && ps_status(ps) != "stopped") Sys.sleep(0.05)
+  while (Sys.time() < timeout && ps_status(ps) != "stopped") {
+    Sys.sleep(0.05)
+  }
   expect_equal(ps_status(ps), "stopped")
   expect_true(p1$is_alive())
   expect_true(ps_is_running(ps))
 
   ps_resume(ps)
   timeout <- Sys.time() + 60
-  while (Sys.time() < timeout && ps_status(ps) == "stopped") Sys.sleep(0.05)
+  while (Sys.time() < timeout && ps_status(ps) == "stopped") {
+    Sys.sleep(0.05)
+  }
   expect_true(ps_status(ps) %in% c("running", "sleeping"))
   expect_true(p1$is_alive())
   expect_true(ps_is_running(ps))
@@ -255,7 +261,9 @@ test_that("kill", {
 
   ps_kill(ps)
   timeout <- Sys.time() + 5
-  while (Sys.time() < timeout && ps_is_running(ps)) Sys.sleep(0.05)
+  while (Sys.time() < timeout && ps_is_running(ps)) {
+    Sys.sleep(0.05)
+  }
   expect_false(p1$is_alive())
   expect_false(ps_is_running(ps))
   if (ps_os_type()[["POSIX"]]) {
@@ -340,7 +348,9 @@ test_that("interrupt", {
   ps_interrupt(ps)
 
   deadline <- Sys.time() + 3
-  while (ps_is_running(ps) && Sys.time() < deadline) Sys.sleep(0.05)
+  while (ps_is_running(ps) && Sys.time() < deadline) {
+    Sys.sleep(0.05)
+  }
   expect_true(Sys.time() < deadline)
   expect_false(ps_is_running(ps))
   if (ps_os_type()[["POSIX"]]) expect_equal(px$get_exit_status(), -2)

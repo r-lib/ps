@@ -82,7 +82,9 @@ ps__system_memory_linux <- function() {
     inactive <-
       mems[["inact_dirty"]] + mems[["inact_clean"]] + mems[["inact_laundry"]]
   }
-  if (length(inactive) == 0) inactive <- NA_real_
+  if (length(inactive) == 0) {
+    inactive <- NA_real_
+  }
 
   slab <- mems[["slab"]] %||% 0
 
@@ -100,7 +102,9 @@ ps__system_memory_linux <- function() {
   # values will be dramatically distorted over those of the host.
   # https://gitlab.com/procps-ng/procps/blob/
   #     24fd2605c51fccc375ab0287cec33aa767f06718/proc/sysinfo.c#L764
-  if (!is.na(avail) && avail > total) avail <- free
+  if (!is.na(avail) && avail > total) {
+    avail <- free
+  }
 
   percent <- (total - avail) / total * 100
 

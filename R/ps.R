@@ -64,8 +64,12 @@ NULL
 #' @export
 
 ps <- function(user = NULL, after = NULL, columns = NULL) {
-  if (!is.null(user)) assert_string(user)
-  if (!is.null(after)) assert_time(after)
+  if (!is.null(user)) {
+    assert_string(user)
+  }
+  if (!is.null(after)) {
+    assert_time(after)
+  }
 
   columns <- unique(columns %||% ps_default_columns)
   if ("*" %in% columns) {

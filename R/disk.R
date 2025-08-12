@@ -25,7 +25,9 @@ ps_disk_partitions <- function(all = FALSE) {
     options = vapply(l, "[[", character(1), 4)
   )
 
-  if (!all) d <- ps__disk_partitions_filter(d)
+  if (!all) {
+    d <- ps__disk_partitions_filter(d)
+  }
 
   d
 }

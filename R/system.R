@@ -5,9 +5,15 @@
 
 ps_pids <- function() {
   os <- ps_os_type()
-  pp <- if (os[["MACOS"]]) ps_pids_macos() else if (os[["LINUX"]])
-    ps_pids_linux() else if (os[["WINDOWS"]]) ps_pids_windows() else
+  pp <- if (os[["MACOS"]]) {
+    ps_pids_macos()
+  } else if (os[["LINUX"]]) {
+    ps_pids_linux()
+  } else if (os[["WINDOWS"]]) {
+    ps_pids_windows()
+  } else {
     stop("Not implemented for this platform")
+  }
 
   sort(pp)
 }
@@ -193,9 +199,15 @@ ps_shared_lib_users <- function(paths, user = ps_username(), filter = NULL) {
     stop("`ps_shared_lib_users()` currently only works on Windows")
   }
   assert_character(paths)
-  if (!is.null(user)) assert_string(user)
-  if (!is.null(filter)) assert_character(filter)
-  if (os[["WINDOWS"]]) paths <- gsub("/", "\\", paths, fixed = TRUE)
+  if (!is.null(user)) {
+    assert_string(user)
+  }
+  if (!is.null(filter)) {
+    assert_character(filter)
+  }
+  if (os[["WINDOWS"]]) {
+    paths <- gsub("/", "\\", paths, fixed = TRUE)
+  }
 
   pids <- ps_pids()
   processes <- not_null(lapply(pids, function(p) {

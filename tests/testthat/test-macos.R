@@ -1,4 +1,6 @@
-if (!ps_os_type()[["MACOS"]]) return()
+if (!ps_os_type()[["MACOS"]]) {
+  return()
+}
 
 test_that("status", {
   ## Argument check

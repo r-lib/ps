@@ -105,7 +105,9 @@ with_process_cleanup <- function(expr) {
 #' @export
 
 print.with_process_cleanup <- function(x, ...) {
-  if (x$visible) print(x$result)
+  if (x$visible) {
+    print(x$result)
+  }
   if (length(x$process_cleanup)) {
     cat("!! Cleaned up the following processes:\n")
     print(x$process_cleanup)

@@ -13,9 +13,15 @@
 #' p
 
 ps_handle <- function(pid = NULL, time = NULL) {
-  if (!is.null(pid)) pid <- assert_pid(pid)
-  if (is.character(pid)) return(ps__str_decode(pid))
-  if (!is.null(time)) assert_time(time)
+  if (!is.null(pid)) {
+    pid <- assert_pid(pid)
+  }
+  if (is.character(pid)) {
+    return(ps__str_decode(pid))
+  }
+  if (!is.null(time)) {
+    assert_time(time)
+  }
   .Call(psll_handle, pid, time)
 }
 
@@ -914,7 +920,9 @@ ps_children <- function(p = ps_handle(), recursive = FALSE) {
     while (length(stack)) {
       pid <- tail(stack, 1)
       stack <- head(stack, -1)
-      if (pid %in% seen) next # nocov (happens _very_ rarely)
+      if (pid %in% seen) {
+        next
+      } # nocov (happens _very_ rarely)
       seen <- c(seen, pid)
       child_pids <- map[map[, 2] == pid, 1]
       for (child_pid in child_pids) {
@@ -963,7 +971,9 @@ ps_descent <- function(p = ps_handle()) {
   branch_pids <- integer()
   current <- p
   current_pid <- ps_pid(p)
-  if (windows) current_time <- ps_create_time(p)
+  if (windows) {
+    current_time <- ps_create_time(p)
+  }
 
   while (TRUE) {
     branch <- c(branch, list(current))
@@ -971,17 +981,23 @@ ps_descent <- function(p = ps_handle()) {
     parent <- fallback(ps_parent(current), NULL)
 
     # Might fail on Windows, if the process does not exist
-    if (is.null(parent)) break
+    if (is.null(parent)) {
+      break
+    }
 
     # If the parent pid is the same, we stop.
     # Also, Windows might have loops
     parent_pid <- ps_pid(parent)
-    if (parent_pid %in% branch_pids) break
+    if (parent_pid %in% branch_pids) {
+      break
+    }
 
     # Need to check for pid reuse on Windows
     if (windows) {
       parent_time <- ps_create_time(parent)
-      if (current_time <= parent_time) break
+      if (current_time <= parent_time) {
+        break
+      }
       current_time <- parent_time
     }
 
@@ -1105,7 +1121,9 @@ ps_open_files <- function(p = ps_handle()) {
 
 ps_connections <- function(p = ps_handle()) {
   assert_ps_handle(p)
-  if (ps_os_type()[["LINUX"]]) return(psl_connections(p))
+  if (ps_os_type()[["LINUX"]]) {
+    return(psl_connections(p))
+  }
 
   l <- not_null(.Call(psll_connections, p))
 

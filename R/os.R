@@ -11,7 +11,9 @@
 #' ps_is_supported()
 
 ps_os_type <- function() {
-  if (is.null(ps_env$os_type)) ps_env$os_type <- .Call(ps__os_type)
+  if (is.null(ps_env$os_type)) {
+    ps_env$os_type <- .Call(ps__os_type)
+  }
   ps_env$os_type
 }
 

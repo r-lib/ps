@@ -17,7 +17,9 @@ test_that("process already finished", {
   expect_output(print(p), format_regexp())
 
   expect_equal(ps_pid(p), pid)
-  if (has_processx()) expect_equal(ps_create_time(p), ct)
+  if (has_processx()) {
+    expect_equal(ps_create_time(p), ct)
+  }
   expect_false(ps_is_running(p))
 
   chk <- function(expr) {
@@ -32,15 +34,23 @@ test_that("process already finished", {
   chk(ps_ppid(p))
   chk(ps_parent(p))
   chk(ps_name(p))
-  if (ps_os_type()[["POSIX"]]) chk(ps_uids(p))
+  if (ps_os_type()[["POSIX"]]) {
+    chk(ps_uids(p))
+  }
   chk(ps_username(p))
-  if (ps_os_type()[["POSIX"]]) chk(ps_gids(p))
+  if (ps_os_type()[["POSIX"]]) {
+    chk(ps_gids(p))
+  }
   chk(ps_terminal(p))
 
-  if (ps_os_type()[["POSIX"]]) chk(ps_send_signal(p, signals()$SIGINT))
+  if (ps_os_type()[["POSIX"]]) {
+    chk(ps_send_signal(p, signals()$SIGINT))
+  }
   chk(ps_suspend(p))
   chk(ps_resume(p))
-  if (ps_os_type()[["POSIX"]]) chk(ps_terminate(p))
+  if (ps_os_type()[["POSIX"]]) {
+    chk(ps_terminate(p))
+  }
 
   ## kill will just work if the process has finished already
   expect_equal(ps_kill(p), "dead")

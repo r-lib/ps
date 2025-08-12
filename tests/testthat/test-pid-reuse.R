@@ -30,15 +30,23 @@ test_that("pid reuse", {
   chk(ps_ppid(p))
   chk(ps_parent(p))
   chk(ps_name(p))
-  if (ps_os_type()[["POSIX"]]) chk(ps_uids(p))
+  if (ps_os_type()[["POSIX"]]) {
+    chk(ps_uids(p))
+  }
   chk(ps_username(p))
-  if (ps_os_type()[["POSIX"]]) chk(ps_gids(p))
+  if (ps_os_type()[["POSIX"]]) {
+    chk(ps_gids(p))
+  }
   chk(ps_terminal(p))
 
-  if (ps_os_type()[["POSIX"]]) chk(ps_send_signal(p, signals()$SIGINT))
+  if (ps_os_type()[["POSIX"]]) {
+    chk(ps_send_signal(p, signals()$SIGINT))
+  }
   chk(ps_suspend(p))
   chk(ps_resume(p))
-  if (ps_os_type()[["POSIX"]]) chk(ps_terminate(p))
+  if (ps_os_type()[["POSIX"]]) {
+    chk(ps_terminate(p))
+  }
 
   # kill will be still OK, the original process is already dead
   expect_equal(ps_kill(p), "dead")

@@ -48,7 +48,9 @@ glob <- local({
   }
 
   test_any <- function(globs, paths) {
-    if (!length(paths)) return(logical())
+    if (!length(paths)) {
+      return(logical())
+    }
     res <- vapply(globs, to_regex, character(1))
     m <- matrix(
       as.logical(unlist(lapply(res, grepl, x = paths))),

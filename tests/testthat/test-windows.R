@@ -1,4 +1,6 @@
-if (!ps_os_type()[["WINDOWS"]]) return()
+if (!ps_os_type()[["WINDOWS"]]) {
+  return()
+}
 
 test_that("uids, gids", {
   p1 <- processx::process$new(px(), c("sleep", "10"))
