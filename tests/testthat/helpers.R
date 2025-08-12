@@ -120,3 +120,27 @@ httpbin <- webfakes::new_app_process(
   webfakes::httpbin_app(),
   opts = webfakes::server_opts(num_threads = 6)
 )
+
+capture_success_failure <- function(expr) {
+  cnd <- NULL
+  n_success <- 0
+  n_failure <- 0
+  failures <- list()
+  withCallingHandlers(
+    expr,
+    expectation_failure = function(cnd) {
+      failures[[length(failures) + 1]] <<- cnd
+      n_failure <<- n_failure + 1
+      invokeRestart("continue_test")
+    },
+    expectation_success = function(cnd) {
+      n_success <<- n_success + 1
+      invokeRestart("continue_test")
+    }
+  )
+  list(
+    n_success = n_success,
+    n_failure = n_failure,
+    failures = failures
+  )
+}

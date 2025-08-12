@@ -1,7 +1,7 @@
 test_that("unit: test, mode: cleanup-fail", {
   out <- list()
   on.exit(if (!is.null(out$p)) out$p$kill(), add = TRUE)
-  expect_failure(
+  status <- capture_success_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(proc_unit = "test"),
       {
@@ -10,9 +10,11 @@ test_that("unit: test, mode: cleanup-fail", {
           out$running <<- out$p$is_alive()
         })
       }
-    ),
-    "did not clean up processes"
+    )
   )
+  expect_true(status$n_failure > 0)
+  fails <- map_chr(status$failures, conditionMessage)
+  expect_match(fails, "did not clean up processes", all = FALSE)
 
   expect_true(out$running)
   deadline <- Sys.time() + 2
@@ -27,7 +29,7 @@ test_that("unit: test, multiple processes", {
   out <- list()
   on.exit(if (!is.null(out$p1)) out$p1$kill(), add = TRUE)
   on.exit(if (!is.null(out$p2)) out$p2$kill(), add = TRUE)
-  expect_failure(
+  status <- capture_success_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(proc_unit = "test"),
       {
@@ -37,9 +39,11 @@ test_that("unit: test, multiple processes", {
           out$running <<- out$p1$is_alive() && out$p2$is_alive()
         })
       }
-    ),
-    "px.*px"
+    )
   )
+  expect_true(status$n_failure > 0)
+  fails <- map_chr(status$failures, conditionMessage)
+  expect_match(fails, "did not clean up processes.*px.*px", all = FALSE)
 
   expect_true(out$running)
   expect_false(out$p1$is_alive())
@@ -49,7 +53,7 @@ test_that("unit: test, multiple processes", {
 test_that("on.exit() works", {
   out <- list()
   on.exit(if (!is.null(out$p)) out$p$kill(), add = TRUE)
-  expect_success(
+  status <- capture_success_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(proc_unit = "test"),
       {
@@ -61,6 +65,8 @@ test_that("on.exit() works", {
       }
     )
   )
+  expect_true(status$n_failure == 0)
+  expect_true(status$n_success > 0)
 
   expect_true(out$running)
   expect_false(out$p$is_alive())
@@ -69,7 +75,7 @@ test_that("on.exit() works", {
 test_that("only report", {
   out <- list()
   on.exit(if (!is.null(out$p)) out$p$kill(), add = TRUE)
-  expect_failure(
+  status <- capture_success_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
         proc_unit = "test",
@@ -82,9 +88,11 @@ test_that("only report", {
           out$running <<- out$p$is_alive()
         })
       }
-    ),
-    "did not clean up processes"
+    )
   )
+  expect_true(status$n_failure > 0)
+  fails <- map_chr(status$failures, conditionMessage)
+  expect_match(fails, "did not clean up processes", all = FALSE)
 
   expect_true(out$running)
   expect_true(out$p$is_alive())
@@ -161,7 +169,7 @@ test_that("R connection cleanup, test, close, fail", {
   tmp <- tempfile()
   on.exit(unlink(tmp), add = TRUE)
   on.exit(try(close(out$conn), silent = TRUE), add = TRUE)
-  expect_failure(
+  status <- capture_success_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(proc_fail = FALSE),
       {
@@ -170,9 +178,11 @@ test_that("R connection cleanup, test, close, fail", {
           out$open <<- isOpen(out$conn)
         })
       }
-    ),
-    "did not close R connections"
+    )
   )
+  expect_true(status$n_failure > 0)
+  fails <- map_chr(status$failures, conditionMessage)
+  expect_match(fails, "did not close R connections", all = FALSE)
 
   expect_true(out$open)
   expect_error(isOpen(out$conn))
@@ -183,7 +193,7 @@ test_that("R connection cleanup, test, do not close, fail", {
   tmp <- tempfile()
   on.exit(unlink(tmp), add = TRUE)
   on.exit(try(close(out$conn), silent = TRUE), add = TRUE)
-  expect_failure(
+  status <- capture_success_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
         proc_fail = FALSE,
@@ -195,9 +205,11 @@ test_that("R connection cleanup, test, do not close, fail", {
           out$open <<- isOpen(out$conn)
         })
       }
-    ),
-    "did not close R connections"
+    )
   )
+  expect_true(status$n_failure > 0)
+  fails <- map_chr(status$failures, conditionMessage)
+  expect_match(fails, "did not close R connections", all = FALSE)
 
   expect_true(out$open)
   expect_true(isOpen(out$conn))
@@ -268,7 +280,7 @@ test_that("connections already open are ignored", {
   tmp <- tempfile()
   on.exit(unlink(tmp), add = TRUE)
   on.exit(try(close(out$conn), silent = TRUE), add = TRUE)
-  expect_success(
+  status <- capture_success_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(proc_fail = FALSE),
       {
@@ -280,6 +292,8 @@ test_that("connections already open are ignored", {
       }
     )
   )
+  expect_true(status$n_failure == 0)
+  expect_true(status$n_success > 0)
 
   expect_error(isOpen(out$conn))
   expect_true(isOpen(conn))
@@ -292,7 +306,7 @@ test_that("File cleanup, test, fail", {
   cat("data\ndata2\n", file = tmp)
   on.exit(unlink(tmp), add = TRUE)
   on.exit(try(close(out$conn), silent = TRUE), add = TRUE)
-  expect_failure(
+  status <- capture_success_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
         proc_fail = FALSE,
@@ -305,9 +319,11 @@ test_that("File cleanup, test, fail", {
           out$open <<- isOpen(out$conn)
         })
       }
-    ),
-    "did not close open files"
+    )
   )
+  expect_true(status$n_failure > 0)
+  fails <- map_chr(status$failures, conditionMessage)
+  expect_match(fails, "did not close open files", all = FALSE)
 
   expect_true(out$open)
   expect_true(isOpen(out$conn))
@@ -319,7 +335,7 @@ test_that("File cleanup, unit: testsuite", {
   tmp <- tempfile()
   on.exit(unlink(tmp), add = TRUE)
   on.exit(try(close(out$conn), silent = TRUE), add = TRUE)
-  expect_failure(
+  status <- capture_success_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
         file_unit = "testsuite",
@@ -338,9 +354,11 @@ test_that("File cleanup, unit: testsuite", {
           out$open2 <<- isOpen(out$conn)
         })
       }
-    ),
-    "did not close open files"
+    )
   )
+  expect_true(status$n_failure > 0)
+  fails <- map_chr(status$failures, conditionMessage)
+  expect_match(fails, "did not close open files", all = FALSE)
 
   expect_true(out$open)
   expect_true(out$open2)
@@ -358,7 +376,7 @@ test_that("files already open are ignored", {
   tmp <- tempfile()
   on.exit(unlink(tmp), add = TRUE)
   on.exit(try(close(out$conn), silent = TRUE), add = TRUE)
-  expect_success(
+  status <- capture_success_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
         proc_fail = FALSE,
@@ -374,6 +392,8 @@ test_that("files already open are ignored", {
       }
     )
   )
+  expect_true(status$n_failure == 0)
+  expect_true(status$n_success > 0)
 
   expect_error(isOpen(out$conn))
   expect_true(isOpen(conn))
@@ -392,7 +412,7 @@ test_that("Network cleanup, test, fail", {
     },
     add = TRUE
   )
-  expect_failure(
+  status <- capture_success_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
         proc_fail = FALSE,
@@ -406,9 +426,11 @@ test_that("Network cleanup, test, fail", {
           out$open <<- isOpen(out$conn)
         })
       }
-    ),
-    "did not close network"
+    )
   )
+  expect_true(status$n_failure > 0)
+  fails <- map_chr(status$failures, conditionMessage)
+  expect_match(fails, "did not close network", all = FALSE)
 
   expect_true(out$open)
   expect_true(isOpen(out$conn))
@@ -419,7 +441,7 @@ test_that("Network cleanup, unit: testsuite", {
   skip_on_cran()
   out <- list()
   on.exit(try(close(out$conn), silent = TRUE), add = TRUE)
-  expect_failure(
+  status <- capture_success_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
         conn_unit = "testsuite",
@@ -438,9 +460,11 @@ test_that("Network cleanup, unit: testsuite", {
           out$open2 <<- isOpen(out$conn)
         })
       }
-    ),
-    "did not close network connections"
+    )
   )
+  expect_true(status$n_failure > 0)
+  fails <- map_chr(status$failures, conditionMessage)
+  expect_match(fails, "did not close network connections", all = FALSE)
 
   expect_true(out$open)
   expect_true(out$open2)
@@ -455,7 +479,7 @@ test_that("Network connections already open are ignored", {
 
   out <- list()
   on.exit(try(close(out$conn), silent = TRUE), add = TRUE)
-  expect_success(
+  status <- capture_success_failure(
     with_reporter(
       CleanupReporter(testthat::SilentReporter)$new(
         proc_fail = FALSE,
@@ -471,6 +495,8 @@ test_that("Network connections already open are ignored", {
       }
     )
   )
+  expect_true(status$n_failure == 0)
+  expect_true(status$n_success > 0)
 
   expect_error(isOpen(out$conn))
   expect_true(isOpen(conn))
