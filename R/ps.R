@@ -300,7 +300,7 @@ ps <- function(user = NULL, after = NULL, columns = NULL) {
     ps_handle = if (c_ps_handle) ps_handle,
 
     # optional
-    cmdline = if (c_vcmdline) cmdline,
+    cmdline = if (c_cmdline) cmdline,
     vcmdline = if (c_vcmdline) vcmdline,
     cwd = if (c_cwd) cwd,
     exe = if (c_exe) exe,
