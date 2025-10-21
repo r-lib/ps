@@ -5,7 +5,7 @@ and may contain loops, in which case ps_descent() only goes up
 until the first repetition.)"><meta property="og:description" content="Query the parent processes recursively, up to the first process.
 (On some platforms, like Windows, the process tree is not a tree
 and may contain loops, in which case ps_descent() only goes up
-until the first repetition.)"><meta name="robots" content="noindex"><script defer data-domain="ps.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
+until the first repetition.)"><meta name="robots" content="noindex"><script src="https://cdn.jsdelivr.net/gh/posit-dev/supported-by-posit/js/badge.min.js" data-max-height="43" data-light-bg="#666f76" data-light-fg="#f9f9f9"></script><script defer data-domain="ps.r-lib.org,all.tidyverse.org" src="https://plausible.io/js/plausible.js"></script></head><body>
     <a href="#container" class="visually-hidden-focusable">Skip to content</a>
 
 
@@ -101,19 +101,19 @@ is the parent process of the previous one.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ps_descent</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=8082, NAME=R, AT=2025-10-03 06:06:05.25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=8129, NAME=R, AT=2025-10-21 07:41:48.75</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=2003, NAME=Runner.Worker, AT=2025-10-03 06:02:51.28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=1952, NAME=Runner.Worker, AT=2025-10-21 07:38:09.53</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=1988, NAME=Runner.Listener, AT=2025-10-03 06:02:49.22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=1937, NAME=Runner.Listener, AT=2025-10-21 07:38:07.59</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=1878, NAME=hosted-compute-, AT=2025-10-03 05:52:45.38</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=1893, NAME=hosted-compute-, AT=2025-10-21 07:37:56.69</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[5]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=1, NAME=systemd, AT=2025-10-03 05:52:25.51</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=1, NAME=systemd, AT=2025-10-21 07:37:35.53</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
