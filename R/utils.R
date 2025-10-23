@@ -145,7 +145,7 @@ assert_pid <- function(x) {
     is.character(x) &&
       length(x) == 1 &&
       !is.na(x) &&
-      grepl("^[A-Za-z]{4}[A-Za-z0-9]{10}$", x)
+      grepl("^[A-Za-z][A-Za-z0-9]{11}$", x)
   ) {
     return(x)
   }

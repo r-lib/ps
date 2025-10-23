@@ -15,9 +15,9 @@ A process string (scalar character), that can be passed to
 }
 \description{
 A convenient format for passing between processes, naming semaphores, or
-using as a directory/file name. Will always be 14 alphanumeric characters,
-with the first and last characters guarantied to be letters. Encodes the
-pid and creation time for a process.
+using as a directory/file name. Will always be 12 alphanumeric characters,
+with the first character guarantied to be a letter. Encodes the pid and
+creation time for a process.
 }
 \examples{
 \dontshow{if (ps::ps_is_supported() && ! ps:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
