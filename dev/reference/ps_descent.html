@@ -67,53 +67,53 @@ is the parent process of the previous one.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other process handle functions:
-<code><a href="ps_children.html">ps_children</a>()</code>,
-<code><a href="ps_cmdline.html">ps_cmdline</a>()</code>,
-<code><a href="ps_connections.html">ps_connections</a>()</code>,
-<code><a href="ps_cpu_times.html">ps_cpu_times</a>()</code>,
-<code><a href="ps_create_time.html">ps_create_time</a>()</code>,
-<code><a href="ps_cwd.html">ps_cwd</a>()</code>,
-<code><a href="ps_environ.html">ps_environ</a>()</code>,
-<code><a href="ps_exe.html">ps_exe</a>()</code>,
-<code><a href="ps_handle.html">ps_handle</a>()</code>,
-<code><a href="ps_interrupt.html">ps_interrupt</a>()</code>,
-<code><a href="ps_is_running.html">ps_is_running</a>()</code>,
-<code><a href="ps_kill.html">ps_kill</a>()</code>,
-<code><a href="ps_memory_info.html">ps_memory_info</a>()</code>,
-<code><a href="ps_name.html">ps_name</a>()</code>,
-<code><a href="ps_num_fds.html">ps_num_fds</a>()</code>,
-<code><a href="ps_num_threads.html">ps_num_threads</a>()</code>,
-<code><a href="ps_open_files.html">ps_open_files</a>()</code>,
-<code><a href="ps_pid.html">ps_pid</a>()</code>,
-<code><a href="ps_ppid.html">ps_ppid</a>()</code>,
-<code><a href="ps_resume.html">ps_resume</a>()</code>,
-<code><a href="ps_send_signal.html">ps_send_signal</a>()</code>,
-<code><a href="ps_shared_libs.html">ps_shared_libs</a>()</code>,
-<code><a href="ps_status.html">ps_status</a>()</code>,
-<code><a href="ps_suspend.html">ps_suspend</a>()</code>,
-<code><a href="ps_terminal.html">ps_terminal</a>()</code>,
-<code><a href="ps_terminate.html">ps_terminate</a>()</code>,
-<code><a href="ps_uids.html">ps_uids</a>()</code>,
-<code><a href="ps_username.html">ps_username</a>()</code></p></div>
+<code><a href="ps_children.html">ps_children()</a></code>,
+<code><a href="ps_cmdline.html">ps_cmdline()</a></code>,
+<code><a href="ps_connections.html">ps_connections()</a></code>,
+<code><a href="ps_cpu_times.html">ps_cpu_times()</a></code>,
+<code><a href="ps_create_time.html">ps_create_time()</a></code>,
+<code><a href="ps_cwd.html">ps_cwd()</a></code>,
+<code><a href="ps_environ.html">ps_environ()</a></code>,
+<code><a href="ps_exe.html">ps_exe()</a></code>,
+<code><a href="ps_handle.html">ps_handle()</a></code>,
+<code><a href="ps_interrupt.html">ps_interrupt()</a></code>,
+<code><a href="ps_is_running.html">ps_is_running()</a></code>,
+<code><a href="ps_kill.html">ps_kill()</a></code>,
+<code><a href="ps_memory_info.html">ps_memory_info()</a></code>,
+<code><a href="ps_name.html">ps_name()</a></code>,
+<code><a href="ps_num_fds.html">ps_num_fds()</a></code>,
+<code><a href="ps_num_threads.html">ps_num_threads()</a></code>,
+<code><a href="ps_open_files.html">ps_open_files()</a></code>,
+<code><a href="ps_pid.html">ps_pid()</a></code>,
+<code><a href="ps_ppid.html">ps_ppid()</a></code>,
+<code><a href="ps_resume.html">ps_resume()</a></code>,
+<code><a href="ps_send_signal.html">ps_send_signal()</a></code>,
+<code><a href="ps_shared_libs.html">ps_shared_libs()</a></code>,
+<code><a href="ps_status.html">ps_status()</a></code>,
+<code><a href="ps_suspend.html">ps_suspend()</a></code>,
+<code><a href="ps_terminal.html">ps_terminal()</a></code>,
+<code><a href="ps_terminate.html">ps_terminate()</a></code>,
+<code><a href="ps_uids.html">ps_uids()</a></code>,
+<code><a href="ps_username.html">ps_username()</a></code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ps_descent</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=8129, NAME=R, AT=2025-10-21 07:41:48.75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=7631, NAME=R, AT=2026-03-31 11:51:58.99</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=1952, NAME=Runner.Worker, AT=2025-10-21 07:38:09.53</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=2167, NAME=Runner.Worker, AT=2026-03-31 11:49:33.13</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=1937, NAME=Runner.Listener, AT=2025-10-21 07:38:07.59</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=2152, NAME=Runner.Listener, AT=2026-03-31 11:49:31.32</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=1893, NAME=hosted-compute-, AT=2025-10-21 07:37:56.69</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=2111, NAME=hosted-compute-, AT=2026-03-31 11:46:28.82</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[5]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=1, NAME=systemd, AT=2025-10-21 07:37:35.53</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=1, NAME=systemd, AT=2026-03-31 11:46:02.39</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
@@ -128,7 +128,7 @@ is the parent process of the previous one.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
   </div></footer></body></html>

@@ -68,34 +68,34 @@ for UNIX sockets.</p></li>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other process handle functions:
-<code><a href="ps_children.html">ps_children</a>()</code>,
-<code><a href="ps_cmdline.html">ps_cmdline</a>()</code>,
-<code><a href="ps_cpu_times.html">ps_cpu_times</a>()</code>,
-<code><a href="ps_create_time.html">ps_create_time</a>()</code>,
-<code><a href="ps_cwd.html">ps_cwd</a>()</code>,
-<code><a href="ps_descent.html">ps_descent</a>()</code>,
-<code><a href="ps_environ.html">ps_environ</a>()</code>,
-<code><a href="ps_exe.html">ps_exe</a>()</code>,
-<code><a href="ps_handle.html">ps_handle</a>()</code>,
-<code><a href="ps_interrupt.html">ps_interrupt</a>()</code>,
-<code><a href="ps_is_running.html">ps_is_running</a>()</code>,
-<code><a href="ps_kill.html">ps_kill</a>()</code>,
-<code><a href="ps_memory_info.html">ps_memory_info</a>()</code>,
-<code><a href="ps_name.html">ps_name</a>()</code>,
-<code><a href="ps_num_fds.html">ps_num_fds</a>()</code>,
-<code><a href="ps_num_threads.html">ps_num_threads</a>()</code>,
-<code><a href="ps_open_files.html">ps_open_files</a>()</code>,
-<code><a href="ps_pid.html">ps_pid</a>()</code>,
-<code><a href="ps_ppid.html">ps_ppid</a>()</code>,
-<code><a href="ps_resume.html">ps_resume</a>()</code>,
-<code><a href="ps_send_signal.html">ps_send_signal</a>()</code>,
-<code><a href="ps_shared_libs.html">ps_shared_libs</a>()</code>,
-<code><a href="ps_status.html">ps_status</a>()</code>,
-<code><a href="ps_suspend.html">ps_suspend</a>()</code>,
-<code><a href="ps_terminal.html">ps_terminal</a>()</code>,
-<code><a href="ps_terminate.html">ps_terminate</a>()</code>,
-<code><a href="ps_uids.html">ps_uids</a>()</code>,
-<code><a href="ps_username.html">ps_username</a>()</code></p></div>
+<code><a href="ps_children.html">ps_children()</a></code>,
+<code><a href="ps_cmdline.html">ps_cmdline()</a></code>,
+<code><a href="ps_cpu_times.html">ps_cpu_times()</a></code>,
+<code><a href="ps_create_time.html">ps_create_time()</a></code>,
+<code><a href="ps_cwd.html">ps_cwd()</a></code>,
+<code><a href="ps_descent.html">ps_descent()</a></code>,
+<code><a href="ps_environ.html">ps_environ()</a></code>,
+<code><a href="ps_exe.html">ps_exe()</a></code>,
+<code><a href="ps_handle.html">ps_handle()</a></code>,
+<code><a href="ps_interrupt.html">ps_interrupt()</a></code>,
+<code><a href="ps_is_running.html">ps_is_running()</a></code>,
+<code><a href="ps_kill.html">ps_kill()</a></code>,
+<code><a href="ps_memory_info.html">ps_memory_info()</a></code>,
+<code><a href="ps_name.html">ps_name()</a></code>,
+<code><a href="ps_num_fds.html">ps_num_fds()</a></code>,
+<code><a href="ps_num_threads.html">ps_num_threads()</a></code>,
+<code><a href="ps_open_files.html">ps_open_files()</a></code>,
+<code><a href="ps_pid.html">ps_pid()</a></code>,
+<code><a href="ps_ppid.html">ps_ppid()</a></code>,
+<code><a href="ps_resume.html">ps_resume()</a></code>,
+<code><a href="ps_send_signal.html">ps_send_signal()</a></code>,
+<code><a href="ps_shared_libs.html">ps_shared_libs()</a></code>,
+<code><a href="ps_status.html">ps_status()</a></code>,
+<code><a href="ps_suspend.html">ps_suspend()</a></code>,
+<code><a href="ps_terminal.html">ps_terminal()</a></code>,
+<code><a href="ps_terminate.html">ps_terminate()</a></code>,
+<code><a href="ps_uids.html">ps_uids()</a></code>,
+<code><a href="ps_username.html">ps_username()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -103,31 +103,31 @@ for UNIX sockets.</p></li>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ps_connections</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 4 × 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      fd family  type        laddr      lport raddr          rport state</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    13 AF_INET SOCK_STREAM 10.1.0.107 <span style="text-decoration: underline;">34</span>174 142.251.108.95   443 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    15 AF_INET SOCK_STREAM 10.1.0.107 <span style="text-decoration: underline;">54</span>704 18.161.170.103    80 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    12 AF_INET SOCK_STREAM 10.1.0.107 <span style="text-decoration: underline;">41</span>070 18.161.170.103   443 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    14 AF_INET SOCK_STREAM 10.1.0.107 <span style="text-decoration: underline;">44</span>892 142.251.108.94   443 CONN…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      fd family  type        laddr      lport raddr         rport state </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    16 AF_INET SOCK_STREAM 10.1.0.160 <span style="text-decoration: underline;">38</span>946 13.35.78.114     80 CONN_…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    15 AF_INET SOCK_STREAM 10.1.0.160 <span style="text-decoration: underline;">45</span>004 172.253.63.94   443 CONN_…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    14 AF_INET SOCK_STREAM 10.1.0.160 <span style="text-decoration: underline;">42</span>466 172.253.62.95   443 CONN_…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    13 AF_INET SOCK_STREAM 10.1.0.160 <span style="text-decoration: underline;">34</span>234 13.35.78.126    443 CONN_…</span>
 <span class="r-in"><span><span class="va">sc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">socketConnection</a></span><span class="op">(</span><span class="st">"httpbin.org"</span>, port <span class="op">=</span> <span class="fl">80</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ps_connections</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 5 × 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      fd family  type        laddr      lport raddr          rport state</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    13 AF_INET SOCK_STREAM 10.1.0.107 <span style="text-decoration: underline;">34</span>174 142.251.108.95   443 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    17 AF_INET SOCK_STREAM 10.1.0.107 <span style="text-decoration: underline;">37</span>138 3.222.43.217      80 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    15 AF_INET SOCK_STREAM 10.1.0.107 <span style="text-decoration: underline;">54</span>704 18.161.170.103    80 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    12 AF_INET SOCK_STREAM 10.1.0.107 <span style="text-decoration: underline;">41</span>070 18.161.170.103   443 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    14 AF_INET SOCK_STREAM 10.1.0.107 <span style="text-decoration: underline;">44</span>892 142.251.108.94   443 CONN…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      fd family  type        laddr      lport raddr         rport state </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    16 AF_INET SOCK_STREAM 10.1.0.160 <span style="text-decoration: underline;">38</span>946 13.35.78.114     80 CONN_…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    15 AF_INET SOCK_STREAM 10.1.0.160 <span style="text-decoration: underline;">45</span>004 172.253.63.94   443 CONN_…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    14 AF_INET SOCK_STREAM 10.1.0.160 <span style="text-decoration: underline;">42</span>466 172.253.62.95   443 CONN_…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    13 AF_INET SOCK_STREAM 10.1.0.160 <span style="text-decoration: underline;">34</span>234 13.35.78.126    443 CONN_…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    18 AF_INET SOCK_STREAM 10.1.0.160 <span style="text-decoration: underline;">55</span>300 32.193.85.54     80 CONN_…</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">sc</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ps_connections</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 4 × 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      fd family  type        laddr      lport raddr          rport state</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    13 AF_INET SOCK_STREAM 10.1.0.107 <span style="text-decoration: underline;">34</span>174 142.251.108.95   443 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    15 AF_INET SOCK_STREAM 10.1.0.107 <span style="text-decoration: underline;">54</span>704 18.161.170.103    80 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    12 AF_INET SOCK_STREAM 10.1.0.107 <span style="text-decoration: underline;">41</span>070 18.161.170.103   443 CONN…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    14 AF_INET SOCK_STREAM 10.1.0.107 <span style="text-decoration: underline;">44</span>892 142.251.108.94   443 CONN…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      fd family  type        laddr      lport raddr         rport state </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    16 AF_INET SOCK_STREAM 10.1.0.160 <span style="text-decoration: underline;">38</span>946 13.35.78.114     80 CONN_…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    15 AF_INET SOCK_STREAM 10.1.0.160 <span style="text-decoration: underline;">45</span>004 172.253.63.94   443 CONN_…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    14 AF_INET SOCK_STREAM 10.1.0.160 <span style="text-decoration: underline;">42</span>466 172.253.62.95   443 CONN_…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    13 AF_INET SOCK_STREAM 10.1.0.160 <span style="text-decoration: underline;">34</span>234 13.35.78.126    443 CONN_…</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -141,7 +141,7 @@ for UNIX sockets.</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
   </div></footer></body></html>

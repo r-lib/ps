@@ -64,14 +64,14 @@
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other disk functions:
-<code><a href="ps_disk_partitions.html">ps_disk_partitions</a>()</code>,
-<code><a href="ps_disk_usage.html">ps_disk_usage</a>()</code></p></div>
+<code><a href="ps_disk_partitions.html">ps_disk_partitions()</a></code>,
+<code><a href="ps_disk_usage.html">ps_disk_usage()</a></code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ps_disk_io_counters</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 15 × 10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A data frame: 13 × 10</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    name  read_count read_merged_count read_bytes read_time write_count</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> loop0          0                28          0         0           0</span>
@@ -82,13 +82,11 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> loop5          0                 0          0         0           0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> loop6          0                 0          0         0           0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> loop7          0                 0          0         0           0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> sda            0             <span style="text-decoration: underline;">22</span>442      <span style="text-decoration: underline;">47</span>104        17          11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> sda1           0             <span style="text-decoration: underline;">19</span>978      <span style="text-decoration: underline;">39</span>936        17          11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> sdb         <span style="text-decoration: underline;">6</span>777           2<span style="text-decoration: underline;">062</span>255   68<span style="text-decoration: underline;">118</span>528     <span style="text-decoration: underline;">35</span>943       <span style="text-decoration: underline;">75</span>526</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> sdb1        <span style="text-decoration: underline;">6</span>743           2<span style="text-decoration: underline;">028</span>391   68<span style="text-decoration: underline;">044</span>800     <span style="text-decoration: underline;">35</span>919       <span style="text-decoration: underline;">75</span>502</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> sdb14          0              <span style="text-decoration: underline;">1</span>264      <span style="text-decoration: underline;">14</span>336         0           0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> sdb15          0             <span style="text-decoration: underline;">17</span>840      <span style="text-decoration: underline;">25</span>088         1           0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> sdb16         34             <span style="text-decoration: underline;">12</span>792      <span style="text-decoration: underline;">25</span>600        23          24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> sda         <span style="text-decoration: underline;">6</span>372           2<span style="text-decoration: underline;">111</span>822    9<span style="text-decoration: underline;">896</span>448     <span style="text-decoration: underline;">40</span>609       <span style="text-decoration: underline;">90</span>795</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> sda1        <span style="text-decoration: underline;">6</span>337           2<span style="text-decoration: underline;">074</span>926    9<span style="text-decoration: underline;">805</span>824     <span style="text-decoration: underline;">40</span>580       <span style="text-decoration: underline;">90</span>763</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> sda14          0              <span style="text-decoration: underline;">1</span>952      <span style="text-decoration: underline;">18</span>432         0           0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> sda15          1             <span style="text-decoration: underline;">18</span>848      <span style="text-decoration: underline;">26</span>624         1           0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> sda16         34             <span style="text-decoration: underline;">11</span>712      <span style="text-decoration: underline;">26</span>112        23          24</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 more variables: write_merged_count &lt;dbl&gt;, write_bytes &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   write_time &lt;dbl&gt;, busy_time &lt;dbl&gt;</span></span>
 </code></pre></div>
@@ -104,7 +102,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
   </div></footer></body></html>
