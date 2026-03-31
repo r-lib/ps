@@ -21,13 +21,13 @@ Source:
 [`DESCRIPTION`](https://github.com/r-lib/ps/blob/main/DESCRIPTION)
 
 Loden J, Daeschler D, Rodola' G, Csárdi G (2026). *ps: List, Query,
-Manipulate System Processes*. R package version 1.9.1.9001,
+Manipulate System Processes*. R package version 1.9.1.9002,
 <https://github.com/r-lib/ps>.
 
     @Manual{,
       title = {ps: List, Query, Manipulate System Processes},
       author = {Jay Loden and Dave Daeschler and Giampaolo Rodola' and Gábor Csárdi},
       year = {2026},
-      note = {R package version 1.9.1.9001},
+      note = {R package version 1.9.1.9002},
       url = {https://github.com/r-lib/ps},
     }
