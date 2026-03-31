@@ -1,6 +1,6 @@
 # ps (development version)
 
-* New `ps_string()` for uniquely identifying a process.
+* New `ps_string()` for uniquely identifying a process (#208, @dansmith01).
 
 # ps 1.9.1
 
