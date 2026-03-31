@@ -72,8 +72,8 @@ ps_fs_stat(c(".", tempdir()))
 #> # A data frame: 2 × 18
 #>   path   dev_major dev_minor  inode  mode type  permissions nlink   uid
 #>   <chr>      <int>     <int>  <dbl> <dbl> <chr>       <int> <dbl> <dbl>
-#> 1 .              8         1 8.67e6 16877 dire…         493     2  1001
-#> 2 /tmp/…         8         1 8.67e6 16832 dire…         448     8  1001
+#> 1 .              8         1 8.91e6 16877 dire…         493     2  1001
+#> 2 /tmp/…         8         1 8.66e6 16832 dire…         448     8  1001
 #> # ℹ 9 more variables: gid <dbl>, rdev_major <int>, rdev_minor <int>,
 #> #   size <dbl>, block_size <dbl>, blocks <dbl>, access_time <dttm>,
 #> #   modification_time <dttm>, change_time <dttm>

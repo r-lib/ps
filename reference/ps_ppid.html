@@ -31,7 +31,7 @@ of the parent."><script src="https://cdn.jsdelivr.net/gh/posit-dev/supported-by-
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Parent pid or parent process of a process</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/ps/blob/main/R/low-level.R" class="external-link"><code>R/low-level.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/ps/blob/v1.9.2/R/low-level.R" class="external-link"><code>R/low-level.R</code></a></small>
       <div class="d-none name"><code>ps_ppid.Rd</code></div>
     </div>
 
@@ -104,11 +104,11 @@ of <code>p</code>. <code>ps_parent()</code> returns a <code>ps_handle</code>.</p
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">p</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=7936, NAME=R, AT=2026-03-31 18:14:52.66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=7371, NAME=R, AT=2026-03-31 18:20:27.39</span>
 <span class="r-in"><span><span class="fu">ps_ppid</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2167</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2150</span>
 <span class="r-in"><span><span class="fu">ps_parent</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=2167, NAME=Runner.Worker, AT=2026-03-31 18:13:32.49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=2150, NAME=Runner.Worker, AT=2026-03-31 18:19:00.66</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

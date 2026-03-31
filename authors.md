@@ -18,7 +18,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/r-lib/ps/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/r-lib/ps/blob/v1.9.2/DESCRIPTION)
 
 Loden J, Daeschler D, Rodola' G, Csárdi G (2026). *ps: List, Query,
 Manipulate System Processes*. R package version 1.9.2,

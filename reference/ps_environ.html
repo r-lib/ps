@@ -33,7 +33,7 @@ named vector, similarly to the return value of Sys.getenv()
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Environment variables of a process</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/ps/blob/main/R/low-level.R" class="external-link"><code>R/low-level.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/ps/blob/v1.9.2/R/low-level.R" class="external-link"><code>R/low-level.R</code></a></small>
       <div class="d-none name"><code>ps_environ.Rd</code></div>
     </div>
 
@@ -131,7 +131,7 @@ on macOS.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">p</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=7936, NAME=R, AT=2026-03-31 18:14:52.66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=7371, NAME=R, AT=2026-03-31 18:20:27.39</span>
 <span class="r-in"><span><span class="va">env</span> <span class="op">&lt;-</span> <span class="fu">ps_environ</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">env</span><span class="op">[[</span><span class="st">"R_HOME"</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/opt/R/4.5.3/lib/R"</span>

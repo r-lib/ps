@@ -121,13 +121,13 @@ Other process handle functions:
 ``` r
 p <- ps_handle()
 p
-#> <ps::ps_handle> PID=7936, NAME=R, AT=2026-03-31 18:14:52.66
+#> <ps::ps_handle> PID=7371, NAME=R, AT=2026-03-31 18:20:27.39
 ps_memory_info(p)
 #>       rss       vms    shared      text       lib      data     dirty 
-#> 275128320 969883648  35598336      4096         0 766345216         0 
+#> 275009536 969973760  35565568      4096         0 766435328         0 
 ps_memory_full_info(p)
 #>       rss       vms    shared      text       lib      data     dirty 
-#> 275128320 969883648  35598336      4096         0 766345216         0 
+#> 275009536 969973760  35565568      4096         0 766435328         0 
 #>    maxrss       uss       pss      swap 
-#> 274714624 255320064 259719168         0 
+#> 274624512 255205376 259594240         0 
 ```

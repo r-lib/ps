@@ -60,7 +60,7 @@ Other process handle functions:
 ``` r
 p <- ps_handle()
 p
-#> <ps::ps_handle> PID=7936, NAME=R, AT=2026-03-31 18:14:52.66
+#> <ps::ps_handle> PID=7371, NAME=R, AT=2026-03-31 18:20:27.39
 ps_name(p)
 #> [1] "R"
 ps_exe(p)
@@ -69,5 +69,5 @@ ps_cmdline(p)
 #> [1] "/opt/R/4.5.3/lib/R/bin/exec/R"                                      
 #> [2] "--no-echo"                                                          
 #> [3] "--no-restore"                                                       
-#> [4] "--file=/home/runner/work/_temp/dbd273f5-fa3f-4749-b24d-3b2b8397de67"
+#> [4] "--file=/home/runner/work/_temp/ec69e292-a376-40b2-8d2e-7fdf0dbafbc0"
 ```

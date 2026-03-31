@@ -35,7 +35,7 @@ creation time for a process."><script src="https://cdn.jsdelivr.net/gh/posit-dev
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Encode a <code>ps_handle</code> as a short string</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/ps/blob/main/R/string.R" class="external-link"><code>R/string.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/ps/blob/v1.9.2/R/string.R" class="external-link"><code>R/string.R</code></a></small>
       <div class="d-none name"><code>ps_string.Rd</code></div>
     </div>
 
@@ -68,11 +68,11 @@ creation time for a process.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="op">(</span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="ps_handle.html">ps_handle</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=7936, NAME=R, AT=2026-03-31 18:14:52.66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=7371, NAME=R, AT=2026-03-31 18:20:27.39</span>
 <span class="r-in"><span><span class="op">(</span><span class="va">str</span> <span class="op">&lt;-</span> <span class="fu">ps_string</span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "aceaaaaaa8qC"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ab43aaaaaGws"</span>
 <span class="r-in"><span><span class="fu"><a href="ps_handle.html">ps_handle</a></span><span class="op">(</span>pid <span class="op">=</span> <span class="va">str</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=7936, NAME=R, AT=2026-03-31 18:14:52.66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;ps::ps_handle&gt; PID=7371, NAME=R, AT=2026-03-31 18:20:27.39</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
