@@ -61,7 +61,7 @@ Other process handle functions:
 ``` r
 p <- ps_handle()
 p
-#> <ps::ps_handle> PID=7574, NAME=R, AT=2026-03-31 12:53:41.66
+#> <ps::ps_handle> PID=7370, NAME=R, AT=2026-03-31 12:55:35.47
 ps_create_time(p)
-#> [1] "2026-03-31 12:53:41 GMT"
+#> [1] "2026-03-31 12:55:35 GMT"
 ```

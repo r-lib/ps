@@ -59,18 +59,18 @@ Other process handle functions:
 ``` r
 ps_descent()
 #> [[1]]
-#> <ps::ps_handle> PID=7574, NAME=R, AT=2026-03-31 12:53:41.66
+#> <ps::ps_handle> PID=7370, NAME=R, AT=2026-03-31 12:55:35.47
 #> 
 #> [[2]]
-#> <ps::ps_handle> PID=2134, NAME=Runner.Worker, AT=2026-03-31 12:37:45.71
+#> <ps::ps_handle> PID=2158, NAME=Runner.Worker, AT=2026-03-31 12:54:18.37
 #> 
 #> [[3]]
-#> <ps::ps_handle> PID=2119, NAME=Runner.Listener, AT=2026-03-31 12:37:43.82
+#> <ps::ps_handle> PID=2143, NAME=Runner.Listener, AT=2026-03-31 12:54:16.41
 #> 
 #> [[4]]
-#> <ps::ps_handle> PID=2043, NAME=hosted-compute-, AT=2026-03-31 12:31:37.29
+#> <ps::ps_handle> PID=2086, NAME=hosted-compute-, AT=2026-03-31 12:54:13.91
 #> 
 #> [[5]]
-#> <ps::ps_handle> PID=1, NAME=systemd, AT=2026-03-31 12:31:10.46
+#> <ps::ps_handle> PID=1, NAME=systemd, AT=2026-03-31 12:53:46.4
 #> 
 ```
