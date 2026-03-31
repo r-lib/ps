@@ -55,9 +55,9 @@ Other process handle functions:
 ``` r
 p <- ps_handle()
 p
-#> <ps::ps_handle> PID=7370, NAME=R, AT=2026-03-31 12:55:35.47
+#> <ps::ps_handle> PID=7346, NAME=R, AT=2026-03-31 12:57:51.54
 ps_pid(p)
-#> [1] 7370
+#> [1] 7346
 ps_pid(p) == Sys.getpid()
 #> [1] TRUE
 ```
