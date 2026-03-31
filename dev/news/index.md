@@ -2,8 +2,14 @@
 
 ## ps (development version)
 
+## ps 1.9.2
+
+CRAN release: 2026-03-31
+
 - New [`ps_string()`](https://ps.r-lib.org/dev/reference/ps_string.md)
-  for uniquely identifying a process.
+  for uniquely identifying a process
+  ([\#208](https://github.com/r-lib/ps/issues/208),
+  [@dansmith01](https://github.com/dansmith01)).
 
 ## ps 1.9.1
 
