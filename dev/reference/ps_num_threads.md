@@ -55,7 +55,7 @@ Other process handle functions:
 ``` r
 p <- ps_handle()
 p
-#> <ps::ps_handle> PID=7101, NAME=R, AT=2026-04-20 11:12:54.203392
+#> <ps::ps_handle> PID=6807, NAME=R, AT=2026-04-20 11:25:55.73826
 ps_num_threads(p)
 #> [1] 3
 ```
