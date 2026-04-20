@@ -74,4 +74,9 @@ separate string.
 }
 
 Use \code{"*"} in \code{columns} to include all columns.
+
+Processes for which a handle cannot be created (e.g. due to insufficient
+permissions, or because the process exited between enumeration and handle
+creation) are silently omitted from the result. This means \code{ps()} may
+return fewer processes than system tools such as \code{tasklist} on Windows.
 }
