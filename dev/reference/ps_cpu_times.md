@@ -72,11 +72,11 @@ Other process handle functions:
 ``` r
 p <- ps_handle()
 p
-#> <ps::ps_handle> PID=7292, NAME=R, AT=2026-03-31 18:22:50.52
+#> <ps::ps_handle> PID=7101, NAME=R, AT=2026-04-20 11:12:54.203392
 ps_cpu_times(p)
 #>            user          system   children_user children_system 
-#>            7.10            0.62            1.11            0.80 
+#>            6.68            0.68            1.08            0.84 
 proc.time()
 #>    user  system elapsed 
-#>   8.218   1.435  12.245 
+#>   7.770   1.525  11.295 
 ```

@@ -49,7 +49,7 @@ Platform-specific fields:
 ``` r
 ps_system_cpu_times()
 #>       user       nice     system       idle     iowait        irq 
-#>      89.04       4.72      40.16     720.74      17.13       0.00 
+#>     148.10       4.45      43.36    1598.05      15.44       0.00 
 #>    softirq      steal      guest guest_nice 
-#>       0.93       0.00       0.00       0.00 
+#>       0.94       0.00       0.00       0.00 
 ```

@@ -25,5 +25,5 @@ Numeric vector of length 3.
 
 ``` r
 ps_loadavg()
-#> [1] 0.92 0.52 0.22
+#> [1] 1.27 0.54 0.20
 ```

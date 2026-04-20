@@ -79,5 +79,5 @@ Other process handle functions:
 ``` r
 p <- ps_handle()
 p
-#> <ps::ps_handle> PID=7292, NAME=R, AT=2026-03-31 18:22:50.52
+#> <ps::ps_handle> PID=7101, NAME=R, AT=2026-04-20 11:12:54.203392
 ```
