@@ -1,5 +1,17 @@
 # Changelog
 
+## ps 1.9.3
+
+CRAN release: 2026-04-20
+
+- On Linux, process create times are now computed using
+  `CLOCK_REALTIME - CLOCK_MONOTONIC` instead of `/proc/stat btime`,
+  giving sub-second precision (previously, integer-second boot time
+  caused up to 1s error). Handle validation accepts both the precise and
+  the legacy boot time, so handles created by older versions of processx
+  continue to work. For <https://github.com/r-lib/processx/issues/394>
+  and <https://github.com/r-lib/processx/issues/402>.
+
 ## ps 1.9.2
 
 CRAN release: 2026-03-31

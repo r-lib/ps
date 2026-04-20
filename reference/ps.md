@@ -140,3 +140,9 @@ Additional columns that can be requested via `columns`:
   [`ps_memory_full_info()`](https://ps.r-lib.org/reference/ps_memory_info.md).
 
 Use `"*"` in `columns` to include all columns.
+
+Processes for which a handle cannot be created (e.g. due to insufficient
+permissions, or because the process exited between enumeration and
+handle creation) are silently omitted from the result. This means `ps()`
+may return fewer processes than system tools such as `tasklist` on
+Windows.

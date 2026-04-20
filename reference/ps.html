@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ps</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.9.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.9.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,7 +29,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Process table</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/ps/blob/v1.9.2/R/ps.R" class="external-link"><code>R/ps.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/ps/blob/main/R/ps.R" class="external-link"><code>R/ps.R</code></a></small>
       <div class="d-none name"><code>ps.Rd</code></div>
     </div>
 
@@ -110,6 +110,10 @@ separate string.</p></li>
 <li><p><code>mem_pss</code>: See <code><a href="ps_memory_info.html">ps_memory_full_info()</a></code>.</p></li>
 <li><p><code>mem_swap</code>: See <code><a href="ps_memory_info.html">ps_memory_full_info()</a></code>.</p></li>
 </ul><p>Use <code>"*"</code> in <code>columns</code> to include all columns.</p>
+<p>Processes for which a handle cannot be created (e.g. due to insufficient
+permissions, or because the process exited between enumeration and handle
+creation) are silently omitted from the result. This means <code>ps()</code> may
+return fewer processes than system tools such as <code>tasklist</code> on Windows.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -61,12 +61,12 @@ Other process handle functions:
 ``` r
 p <- ps_handle()
 ps_num_fds(p)
-#> [1] 21
+#> [1] 22
 f <- file(tmp <- tempfile(), "w")
 ps_num_fds(p)
-#> [1] 22
+#> [1] 23
 close(f)
 unlink(tmp)
 ps_num_fds(p)
-#> [1] 21
+#> [1] 22
 ```
