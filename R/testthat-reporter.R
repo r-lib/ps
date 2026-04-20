@@ -76,6 +76,17 @@ globalVariables("private")
 #' @export
 
 CleanupReporter <- function(reporter = testthat::ProgressReporter) {
+  missing_pkgs <- Filter(
+    function(pkg) !requireNamespace(pkg, quietly = TRUE),
+    c("R6", "testthat", "rlang")
+  )
+  if (length(missing_pkgs) > 0) {
+    stop(
+      "The following package(s) are required for CleanupReporter() but are not installed: ",
+      paste0("'", missing_pkgs, "'", collapse = ", "),
+      "."
+    )
+  }
   R6::R6Class(
     "CleanupReporter",
     inherit = reporter,
