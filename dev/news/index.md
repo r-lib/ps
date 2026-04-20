@@ -2,6 +2,10 @@
 
 ## ps (development version)
 
+## ps 1.9.3
+
+CRAN release: 2026-04-20
+
 - On Linux, process create times are now computed using
   `CLOCK_REALTIME - CLOCK_MONOTONIC` instead of `/proc/stat btime`,
   giving sub-second precision (previously, integer-second boot time

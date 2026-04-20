@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ps</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.9.2.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.9.3.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,9 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="ps-development-version">ps (development version)<a class="anchor" aria-label="anchor" href="#ps-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.9.3" id="ps-193">ps 1.9.3<a class="anchor" aria-label="anchor" href="#ps-193"></a></h2><p class="text-muted">CRAN release: 2026-04-20</p>
 <ul><li>On Linux, process create times are now computed using <code>CLOCK_REALTIME - CLOCK_MONOTONIC</code> instead of <code>/proc/stat btime</code>, giving sub-second precision (previously, integer-second boot time caused up to 1s error). Handle validation accepts both the precise and the legacy boot time, so handles created by older versions of processx continue to work. For <a href="https://github.com/r-lib/processx/issues/394" class="external-link uri">https://github.com/r-lib/processx/issues/394</a> and <a href="https://github.com/r-lib/processx/issues/402" class="external-link uri">https://github.com/r-lib/processx/issues/402</a>.</li>
 </ul></div>
     <div class="section level2">
