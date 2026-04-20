@@ -16,6 +16,7 @@
 #include <utmp.h>
 #include <mntent.h>
 #include <sys/sysinfo.h>
+#include <time.h>
 #include <sched.h>
 #include <sys/vfs.h>
 #ifndef __linux__
@@ -36,7 +37,8 @@
 #define SYS_pidfd_open              434
 #endif
 
-double psll_linux_boot_time = 0;
+double psll_linux_boot_time = 0;        /* precise: CLOCK_REALTIME - CLOCK_MONOTONIC */
+double psll_linux_boot_time_legacy = 0; /* integer seconds from /proc/stat btime */
 double psll_linux_clock_period = 0;
 
 typedef struct {
@@ -50,15 +52,28 @@ typedef struct {
 
 #define PS__TV2DOUBLE(t) ((t).tv_sec + (t).tv_usec / 1000000.0)
 
-#define PS__CHECK_STAT(stat, handle)			\
-  do {							\
-    double starttime = psll_linux_boot_time +		\
-      ((double)(stat.starttime) * psll_linux_clock_period);	\
-    double diff = starttime - (handle)->create_time;	\
-    if (fabs(diff) > psll_linux_clock_period) {		\
-      ps__no_such_process((handle)->pid, 0);		\
-      ps__throw_error();				\
-    }							\
+/* Try both precise (CLOCK_REALTIME-CLOCK_MONOTONIC) and legacy (/proc/stat
+   btime) boot times.  This lets new ps validate handles created by old
+   processx (which used the legacy integer boot time) while also correctly
+   validating handles from new processx (which uses the precise boot time).
+   The two checks are orthogonal: PID-reuse detection depends only on
+   starttime_ticks being different, so accepting either match is safe. */
+#define PS__CHECK_STAT(stat, handle)                                          \
+  do {                                                                        \
+    double ticks_ = (double)(stat.starttime) * psll_linux_clock_period;      \
+    int match_ = 0;                                                           \
+    if (psll_linux_boot_time &&                                               \
+        fabs(psll_linux_boot_time + ticks_ - (handle)->create_time)          \
+            <= psll_linux_clock_period)                                       \
+      match_ = 1;                                                             \
+    if (!match_ && psll_linux_boot_time_legacy &&                             \
+        fabs(psll_linux_boot_time_legacy + ticks_ - (handle)->create_time)   \
+            <= psll_linux_clock_period)                                       \
+      match_ = 1;                                                             \
+    if (!match_) {                                                            \
+      ps__no_such_process((handle)->pid, 0);                                  \
+      ps__throw_error();                                                      \
+    }                                                                         \
   } while (0)
 
 #define PS__CHECK_HANDLE(handle)			\
@@ -270,23 +285,37 @@ void ps__check_for_zombie(ps_handle_t *handle, int err) {
 }
 
 int psll_linux_get_boot_time(void) {
+  struct timespec real_time, mono_time;
+
+  /* Use CLOCK_REALTIME - CLOCK_MONOTONIC for sub-second boot time precision.
+     /proc/stat btime is integer seconds only, causing up to 1s error in
+     create_time. CLOCK_MONOTONIC uses the same boot reference as
+     /proc/<pid>/stat starttime. See https://github.com/r-lib/processx/issues/394 */
+  if (clock_gettime(CLOCK_REALTIME, &real_time) == -1) return -1;
+  if (clock_gettime(CLOCK_MONOTONIC, &mono_time) == -1) return -1;
+
+  psll_linux_boot_time =
+    (real_time.tv_sec - mono_time.tv_sec) +
+    (real_time.tv_nsec - mono_time.tv_nsec) * 1e-9;
+  return 0;
+}
+
+int psll_linux_get_boot_time_legacy(void) {
   int ret;
   char *buf;
-  char *needle = "\nbtime ";
+  const char *needle = "\nbtime ";
   size_t needle_len = strlen(needle);
   char *hit;
   unsigned long btime;
 
   ret = ps__read_file("/proc/stat", &buf, /* buffer= */ 2048);
   if (ret == -1) return -1;
-
   *(buf + ret - 1) = '\0';
   hit = ps__memmem(buf, ret, needle, needle_len);
   if (!hit) return -1;
-
   ret = sscanf(hit + needle_len, "%lu", &btime);
   if (ret != 1) return -1;
-  psll_linux_boot_time = (double) btime;
+  psll_linux_boot_time_legacy = (double) btime;
   return 0;
 }
 
@@ -328,6 +357,26 @@ SEXP psll_handle(SEXP pid, SEXP time) {
   double ctime;
   ps_handle_t *handle;
   SEXP res;
+  int ret;
+
+  /* Initialize both boot times and clock period so PS__CHECK_STAT can try
+     either boot time computation (precise and legacy) for validation. */
+  if (!psll_linux_boot_time) {
+    ret = psll_linux_get_boot_time();
+    if (ret) {
+      ps__set_error_from_errno();
+      ps__throw_error();
+    }
+  }
+  if (!psll_linux_boot_time_legacy) {
+    psll_linux_get_boot_time_legacy(); /* best-effort; failure is non-fatal */
+  }
+  if (!psll_linux_clock_period) {
+    ret = psll_linux_get_clock_period();
+    if (ret) {
+      ps__throw_error();
+    }
+  }
 
   if (!isNull(time))  {
     ctime = REAL(time)[0];
@@ -425,15 +474,33 @@ SEXP psll_ppid(SEXP p) {
 
 SEXP psll_is_running(SEXP p) {
   ps_handle_t *handle = R_ExternalPtrAddr(p);
-  double ctime;
-  int ret;
+  psl_stat_t stat;
+  double ticks;
 
   if (!handle) error("Process pointer cleaned up already");
 
-  ret = psll_linux_ctime(handle->pid, &ctime);
-  if (ret) return ScalarLogical(0);
+  if (psll__parse_stat_file(handle->pid, &stat, 0)) return ScalarLogical(0);
 
-  return ScalarLogical(ctime == handle->create_time);
+  if (!psll_linux_clock_period) {
+    if (psll_linux_get_clock_period()) return ScalarLogical(0);
+  }
+  ticks = (double)stat.starttime * psll_linux_clock_period;
+
+  /* Try precise boot time (CLOCK_REALTIME - CLOCK_MONOTONIC). */
+  if (!psll_linux_boot_time) psll_linux_get_boot_time(); /* ignore failure */
+  if (psll_linux_boot_time &&
+      fabs(psll_linux_boot_time + ticks - handle->create_time)
+          <= psll_linux_clock_period)
+    return ScalarLogical(1);
+
+  /* Try legacy boot time (integer seconds from /proc/stat btime).
+     This handles handles created by old processx, which used the legacy
+     integer boot time for create_time. */
+  if (!psll_linux_boot_time_legacy) psll_linux_get_boot_time_legacy();
+  return ScalarLogical(
+    psll_linux_boot_time_legacy != 0 &&
+    fabs(psll_linux_boot_time_legacy + ticks - handle->create_time)
+        <= psll_linux_clock_period);
 }
 
 SEXP psll_name(SEXP p) {

@@ -52,7 +52,14 @@ test_that("create_time", {
   p1 <- processx::process$new(px(), c("sleep", "10"))
   on.exit(p1$kill(), add = TRUE)
   ps <- ps_handle(p1$get_pid())
-  expect_identical(p1$get_start_time(), ps_create_time(ps))
+  ## processx$get_start_time() applies a before_start lower bound that can
+  ## push the reported time up to one clock tick (10ms) above the kernel's
+  ## recorded time, so exact equality is not guaranteed.
+  expect_equal(
+    as.numeric(p1$get_start_time()),
+    as.numeric(ps_create_time(ps)),
+    tolerance = 0.02
+  )
 })
 
 test_that("is_running", {
