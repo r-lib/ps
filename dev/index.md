@@ -30,16 +30,19 @@ You can install the released version of ps from
 [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
+
 install.packages("ps")
 ```
 
 If you need the development version, install it with
 
 ``` r
+
 pak::pak("r-lib/ps")
 ```
 
 ``` r
+
 library(ps)
 library(pillar) # nicer printing of data frames
 ```
@@ -57,6 +60,7 @@ process ids on the system. This can be useful to iterate over all
 processes.
 
 ``` r
+
 ps_pids()[1:20]
 ```
 
@@ -70,6 +74,7 @@ the `ps_handle` column, you can use these to perform more queries on the
 processes.
 
 ``` r
+
 ps()
 ```
 
@@ -101,6 +106,7 @@ processes and pid reuse. See also “Finished and zombie processes” and
 If `pid` is omitted, a handle to the calling process is returned:
 
 ``` r
+
 p <- ps_handle()
 p
 ```
@@ -114,6 +120,7 @@ p
 `ps_pid(p)` returns the pid of the process.
 
 ``` r
+
 ps_pid(p)
 ```
 
@@ -125,6 +132,7 @@ ps_pid(p)
 returns the creation time of the process (according to the OS).
 
 ``` r
+
 ps_create_time(p)
 ```
 
@@ -140,6 +148,7 @@ manipulates the correct process.
 reuse safely.
 
 ``` r
+
 ps_is_running(p)
 ```
 
@@ -150,6 +159,7 @@ ps_is_running(p)
 `ps_ppid(p)` returns the pid of the parent of `p`.
 
 ``` r
+
 ps_ppid(p)
 ```
 
@@ -160,6 +170,7 @@ ps_ppid(p)
 `ps_parent(p)` returns a process handle to the parent process of `p`.
 
 ``` r
+
 ps_parent(p)
 ```
 
@@ -170,6 +181,7 @@ ps_parent(p)
 `ps_name(p)` returns the name of the program `p` is running.
 
 ``` r
+
 ps_name(p)
 ```
 
@@ -180,6 +192,7 @@ ps_name(p)
 `ps_exe(p)` returns the full path to the executable the `p` is running.
 
 ``` r
+
 ps_exe(p)
 ```
 
@@ -191,6 +204,7 @@ ps_exe(p)
 `p`.
 
 ``` r
+
 ps_cmdline(p)
 ```
 
@@ -202,6 +216,7 @@ ps_cmdline(p)
 dependent, but typically there is `"running"` and `"stopped"`.
 
 ``` r
+
 ps_status(p)
 ```
 
@@ -212,6 +227,7 @@ ps_status(p)
 `ps_username(p)` returns the name of the user the process belongs to.
 
 ``` r
+
 ps_username(p)
 ```
 
@@ -223,6 +239,7 @@ ps_username(p)
 ids of the process. They are only implemented on POSIX systems.
 
 ``` r
+
 if (ps_os_type()[["POSIX"]]) ps_uids(p)
 ```
 
@@ -232,6 +249,7 @@ if (ps_os_type()[["POSIX"]]) ps_uids(p)
 ```
 
 ``` r
+
 if (ps_os_type()[["POSIX"]]) ps_gids(p)
 ```
 
@@ -243,6 +261,7 @@ if (ps_os_type()[["POSIX"]]) ps_gids(p)
 `ps_cwd(p)` returns the current working directory of the process.
 
 ``` r
+
 ps_cwd(p)
 ```
 
@@ -255,6 +274,7 @@ any. For processes without a terminal, and on Windows it returns
 `NA_character_`.
 
 ``` r
+
 ps_terminal(p)
 ```
 
@@ -267,6 +287,7 @@ ps_terminal(p)
 reflect the environment variables at the start of the process.
 
 ``` r
+
 ps_environ(p)[c("TERM", "USER", "SHELL", "R_HOME")]
 ```
 
@@ -281,6 +302,7 @@ ps_environ(p)[c("TERM", "USER", "SHELL", "R_HOME")]
 process.
 
 ``` r
+
 ps_num_threads(p)
 ```
 
@@ -292,6 +314,7 @@ ps_num_threads(p)
 [`proc.time()`](https://rdrr.io/r/base/proc.time.html).
 
 ``` r
+
 ps_cpu_times(p)
 ```
 
@@ -304,6 +327,7 @@ ps_cpu_times(p)
 details.
 
 ``` r
+
 ps_memory_info(p)
 ```
 
@@ -316,6 +340,7 @@ ps_memory_info(p)
 the current process.
 
 ``` r
+
 ps_children(ps_parent(p))
 ```
 
@@ -331,6 +356,7 @@ ps_children(ps_parent(p))
 Windows):
 
 ``` r
+
 ps_num_fds(p)
 ```
 
@@ -339,6 +365,7 @@ ps_num_fds(p)
 ```
 
 ``` r
+
 f <- file(tmp <- tempfile(), "w")
 ps_num_fds(p)
 ```
@@ -348,6 +375,7 @@ ps_num_fds(p)
 ```
 
 ``` r
+
 close(f)
 unlink(tmp)
 ```
@@ -355,6 +383,7 @@ unlink(tmp)
 `ps_open_files(p)` lists all open files:
 
 ``` r
+
 ps_open_files(p)
 ```
 
@@ -369,6 +398,7 @@ ps_open_files(p)
 ```
 
 ``` r
+
 f <- file(tmp <- tempfile(), "w")
 ps_open_files(p)
 ```
@@ -385,6 +415,7 @@ ps_open_files(p)
 ```
 
 ``` r
+
 close(f)
 unlink(tmp)
 ps_open_files(p)
@@ -474,6 +505,7 @@ recipes](http://psutil.readthedocs.io/en/latest/#recipes).
 Using [`ps()`](https://ps.r-lib.org/dev/reference/ps.md) and dplyr:
 
 ``` r
+
 library(dplyr)
 find_procs_by_name <- function(name) {
   ps() |>
@@ -495,6 +527,7 @@ find_procs_by_name("R")
 Without creating the full table of processes:
 
 ``` r
+
 find_procs_by_name <- function(name) {
   procs <- lapply(ps_pids(), function(p) {
     tryCatch({
@@ -525,6 +558,7 @@ find_procs_by_name("R")
 processes, so this is now very easy:
 
 ``` r
+
 px <- processx::process$new("sleep", "2")
 p <- px$as_ps_handle()
 ps_wait(p, 1000)
@@ -535,6 +569,7 @@ ps_wait(p, 1000)
 ```
 
 ``` r
+
 ps_wait(p)
 ```
 
@@ -549,6 +584,7 @@ Again, this is much simpler with
 ps 1.8.0.
 
 ``` r
+
 px1 <- processx::process$new("sleep", "10")
 px2 <- processx::process$new("sleep", "10")
 px3 <- processx::process$new("sleep", "1")
@@ -579,6 +615,7 @@ process, and other threads may start processes as well.
 the IDE to misbehave or crash.
 
 ``` r
+
 kill_proc_tree <- function(pid, include_parent = TRUE, ...) {
   if (pid == Sys.getpid() && include_parent) stop("I refuse to kill myself")
   parent <- ps_handle(pid)
@@ -602,6 +639,7 @@ kill_proc_tree(Sys.getpid(), include_parent = FALSE)
 Process name ending with “sh”:
 
 ``` r
+
 ps() |>
   filter(grepl("sh$", name))
 ```
@@ -627,6 +665,7 @@ ps() |>
 Processes owned by user:
 
 ``` r
+
 ps() |>
   filter(username == Sys.info()[["user"]]) |>
   select(pid, name)
@@ -652,6 +691,7 @@ ps() |>
 Processes consuming more than 100MB of memory:
 
 ``` r
+
 ps() |>
   filter(rss > 100 * 1024 * 1024)
 ```
@@ -685,6 +725,7 @@ ps() |>
 Top 3 memory consuming processes:
 
 ``` r
+
 ps() |>
   top_n(3, rss) |>
   arrange(desc(rss))
@@ -702,6 +743,7 @@ ps() |>
 Top 3 processes which consumed the most CPU time:
 
 ``` r
+
 ps() |>
   mutate(cpu_time = user + system) |>
   top_n(3, cpu_time) |>

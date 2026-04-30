@@ -52,7 +52,7 @@ ps_disk_io_counters()
 #> # A data frame: 13 × 10
 #>    name  read_count read_merged_count read_bytes read_time write_count
 #>    <chr>      <dbl>             <dbl>      <dbl>     <dbl>       <dbl>
-#>  1 loop0          0                28      14336         0           0
+#>  1 loop0          0                28          0         0           0
 #>  2 loop1          0                 0          0         0           0
 #>  3 loop2          0                 0          0         0           0
 #>  4 loop3          0                 0          0         0           0
@@ -60,11 +60,11 @@ ps_disk_io_counters()
 #>  6 loop5          0                 0          0         0           0
 #>  7 loop6          0                 0          0         0           0
 #>  8 loop7          0                 0          0         0           0
-#>  9 sda         7125           2111066    5655552     36488       70640
-#> 10 sda1        6430           2074942    5607424     36458       70608
-#> 11 sda14          0              1952      10240         0           0
-#> 12 sda15        661             17550      15360         2           0
-#> 13 sda16         34             12238      12288        23          24
+#>  9 sda         6459           2106790    3286016     40907       85514
+#> 10 sda1        6424           2068422    3191808     40878       85482
+#> 11 sda14          0              1952      21504         0           0
+#> 12 sda15          1             18848      28160         1           0
+#> 13 sda16         34             13184      24064        23          24
 #> # ℹ 4 more variables: write_merged_count <dbl>, write_bytes <dbl>,
 #> #   write_time <dbl>, busy_time <dbl>
 ```

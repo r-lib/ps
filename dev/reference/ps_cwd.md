@@ -55,7 +55,7 @@ Other process handle functions:
 ``` r
 p <- ps_handle()
 p
-#> <ps::ps_handle> PID=6792, NAME=R, AT=2026-04-20 16:46:53.846902
+#> <ps::ps_handle> PID=7033, NAME=R, AT=2026-04-30 07:36:15.009231
 ps_cwd(p)
 #> [1] "/home/runner/work/ps/ps/docs/dev/reference"
 ```
