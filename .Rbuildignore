@@ -22,4 +22,4 @@
 ^LICENSE\.md$
 ^[\.]?air\.toml$
 ^\.vscode$
-^\.dev$
+^\.cache$
