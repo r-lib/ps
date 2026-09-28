@@ -66,67 +66,67 @@ ps_open_files(p)
 #> # A data frame: 17 × 2
 #>       fd path                                                        
 #>    <int> <chr>                                                       
-#>  1     0 pipe:[31093]                                                
-#>  2     1 pipe:[31094]                                                
-#>  3     2 pipe:[31095]                                                
-#>  4     3 /home/runner/work/_temp/1a362674-bafb-44d0-908a-cc673aea222d
+#>  1     0 pipe:[29925]                                                
+#>  2     1 pipe:[29926]                                                
+#>  3     2 pipe:[29927]                                                
+#>  4     3 /home/runner/work/_temp/7143c4ab-b2ee-4b72-875f-a4ed8acb126c
 #>  5     4 anon_inode:[eventpoll]                                      
 #>  6     5 anon_inode:[io_uring]                                       
 #>  7     6 anon_inode:[io_uring]                                       
-#>  8     7 pipe:[32407]                                                
-#>  9     8 pipe:[32407]                                                
-#> 10     9 pipe:[32408]                                                
-#> 11    10 pipe:[32408]                                                
+#>  8     7 pipe:[29419]                                                
+#>  9     8 pipe:[29419]                                                
+#> 10     9 pipe:[29420]                                                
+#> 11    10 pipe:[29420]                                                
 #> 12    11 anon_inode:[eventfd]                                        
-#> 13    12 pipe:[30306]                                                
-#> 14    13 pipe:[30306]                                                
-#> 15    18 /tmp/Rtmpw3u4Ws/Rf1b795bcc24a9 (deleted)                    
-#> 16   142 pipe:[14118]                                                
-#> 17   145 pipe:[14119]                                                
+#> 13    12 pipe:[29424]                                                
+#> 14    13 pipe:[29424]                                                
+#> 15    18 /tmp/RtmpQ0MkLA/Rf1b1048e7f2e4 (deleted)                    
+#> 16   142 pipe:[12440]                                                
+#> 17   145 pipe:[12441]                                                
 f <- file(tmp <- tempfile(), "w")
 ps_open_files(p)
 #> # A data frame: 18 × 2
 #>       fd path                                                        
 #>    <int> <chr>                                                       
-#>  1     0 pipe:[31093]                                                
-#>  2     1 pipe:[31094]                                                
-#>  3     2 pipe:[31095]                                                
-#>  4     3 /home/runner/work/_temp/1a362674-bafb-44d0-908a-cc673aea222d
+#>  1     0 pipe:[29925]                                                
+#>  2     1 pipe:[29926]                                                
+#>  3     2 pipe:[29927]                                                
+#>  4     3 /home/runner/work/_temp/7143c4ab-b2ee-4b72-875f-a4ed8acb126c
 #>  5     4 anon_inode:[eventpoll]                                      
 #>  6     5 anon_inode:[io_uring]                                       
 #>  7     6 anon_inode:[io_uring]                                       
-#>  8     7 pipe:[32407]                                                
-#>  9     8 pipe:[32407]                                                
-#> 10     9 pipe:[32408]                                                
-#> 11    10 pipe:[32408]                                                
+#>  8     7 pipe:[29419]                                                
+#>  9     8 pipe:[29419]                                                
+#> 10     9 pipe:[29420]                                                
+#> 11    10 pipe:[29420]                                                
 #> 12    11 anon_inode:[eventfd]                                        
-#> 13    12 pipe:[30306]                                                
-#> 14    13 pipe:[30306]                                                
-#> 15    18 /tmp/Rtmpw3u4Ws/Rf1b795bcc24a9 (deleted)                    
-#> 16    19 /tmp/Rtmpw3u4Ws/file1b796b8b650d                            
-#> 17   142 pipe:[14118]                                                
-#> 18   145 pipe:[14119]                                                
+#> 13    12 pipe:[29424]                                                
+#> 14    13 pipe:[29424]                                                
+#> 15    18 /tmp/RtmpQ0MkLA/Rf1b1048e7f2e4 (deleted)                    
+#> 16    19 /tmp/RtmpQ0MkLA/file1b104b154563                            
+#> 17   142 pipe:[12440]                                                
+#> 18   145 pipe:[12441]                                                
 close(f)
 unlink(tmp)
 ps_open_files(p)
 #> # A data frame: 17 × 2
 #>       fd path                                                        
 #>    <int> <chr>                                                       
-#>  1     0 pipe:[31093]                                                
-#>  2     1 pipe:[31094]                                                
-#>  3     2 pipe:[31095]                                                
-#>  4     3 /home/runner/work/_temp/1a362674-bafb-44d0-908a-cc673aea222d
+#>  1     0 pipe:[29925]                                                
+#>  2     1 pipe:[29926]                                                
+#>  3     2 pipe:[29927]                                                
+#>  4     3 /home/runner/work/_temp/7143c4ab-b2ee-4b72-875f-a4ed8acb126c
 #>  5     4 anon_inode:[eventpoll]                                      
 #>  6     5 anon_inode:[io_uring]                                       
 #>  7     6 anon_inode:[io_uring]                                       
-#>  8     7 pipe:[32407]                                                
-#>  9     8 pipe:[32407]                                                
-#> 10     9 pipe:[32408]                                                
-#> 11    10 pipe:[32408]                                                
+#>  8     7 pipe:[29419]                                                
+#>  9     8 pipe:[29419]                                                
+#> 10     9 pipe:[29420]                                                
+#> 11    10 pipe:[29420]                                                
 #> 12    11 anon_inode:[eventfd]                                        
-#> 13    12 pipe:[30306]                                                
-#> 14    13 pipe:[30306]                                                
-#> 15    18 /tmp/Rtmpw3u4Ws/Rf1b795bcc24a9 (deleted)                    
-#> 16   142 pipe:[14118]                                                
-#> 17   145 pipe:[14119]                                                
+#> 13    12 pipe:[29424]                                                
+#> 14    13 pipe:[29424]                                                
+#> 15    18 /tmp/RtmpQ0MkLA/Rf1b1048e7f2e4 (deleted)                    
+#> 16   142 pipe:[12440]                                                
+#> 17   145 pipe:[12441]                                                
 ```
