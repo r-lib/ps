@@ -1206,7 +1206,7 @@ SEXP ps__disk_partitions(SEXP rall) {
   char opts[20];
   HANDLE mp_h;
   BOOL mp_flag= TRUE;
-  LPTSTR fs_type[MAX_PATH + 1] = { 0 };
+  TCHAR fs_type[MAX_PATH + 1] = { 0 };
   DWORD pflags = 0;
 
   SEXP result;
