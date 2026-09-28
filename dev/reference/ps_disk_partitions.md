@@ -47,9 +47,9 @@ ps_disk_partitions(all = TRUE)
 #> # ℹ 14 more rows
 ps_disk_partitions()
 #> # A data frame: 3 × 4
-#>   device     mountpoint fstype options                                 
-#> * <chr>      <chr>      <chr>  <chr>                                   
-#> 1 /dev/root  /          ext4   rw,relatime,discard,journal_async_commi…
-#> 2 /dev/sda16 /boot      ext4   rw,relatime,discard                     
-#> 3 /dev/sda15 /boot/efi  vfat   rw,relatime,fmask=0077,dmask=0077,codep…
+#>   device          mountpoint fstype options                            
+#> * <chr>           <chr>      <chr>  <chr>                              
+#> 1 /dev/root       /          ext4   rw,relatime,discard,journal_async_…
+#> 2 /dev/nvme0n1p16 /boot      ext4   rw,relatime,discard                
+#> 3 /dev/nvme0n1p15 /boot/efi  vfat   rw,relatime,fmask=0077,dmask=0077,…
 ```

@@ -61,7 +61,7 @@ Other process handle functions:
 ``` r
 p <- ps_handle()
 p
-#> <ps::ps_handle> PID=6787, NAME=R, AT=2026-09-28 18:45:31.50817
+#> <ps::ps_handle> PID=6543, NAME=R, AT=2026-09-28 21:24:26.535115
 ps_terminal(p)
 #> [1] NA
 ```
