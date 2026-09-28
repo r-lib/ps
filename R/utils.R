@@ -247,11 +247,8 @@ get_tool <- function(prog) {
   }
   exe <- system.file(package = "ps", "bin", .Platform$r_arch, prog)
   if (exe == "") {
-    pkgpath <- system.file(package = "ps")
-    if (basename(pkgpath) == "inst") {
-      pkgpath <- dirname(pkgpath)
-    }
-    exe <- file.path(pkgpath, "src", prog)
+    # Not system.file(), because the pkgload shim resolves symlinks
+    exe <- file.path(find.package("ps"), "src", prog)
     if (!file.exists(exe)) return("")
   }
   exe
