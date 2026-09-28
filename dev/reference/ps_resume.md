@@ -54,7 +54,7 @@ Other process handle functions:
 px <- processx::process$new("sleep", "10")
 p <- ps_handle(px$get_pid())
 p
-#> <ps::ps_handle> PID=8330, NAME=sleep, AT=2026-09-28 15:58:06.832643
+#> <ps::ps_handle> PID=8148, NAME=sleep, AT=2026-09-28 16:11:09.616733
 ps_suspend(p)
 #> NULL
 ps_status(p)

@@ -98,7 +98,7 @@ Other process handle functions:
 ``` r
 p <- ps_handle()
 p
-#> <ps::ps_handle> PID=6928, NAME=R, AT=2026-09-28 15:57:48.312643
+#> <ps::ps_handle> PID=6745, NAME=R, AT=2026-09-28 16:10:48.236733
 env <- ps_environ(p)
 env[["R_HOME"]]
 #> [1] "/opt/R/4.6.1/lib/R"

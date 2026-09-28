@@ -27,9 +27,9 @@ place of a pid.
 
 ``` r
 (p <- ps_handle())
-#> <ps::ps_handle> PID=6928, NAME=R, AT=2026-09-28 15:57:48.312643
+#> <ps::ps_handle> PID=6745, NAME=R, AT=2026-09-28 16:10:48.236733
 (str <- ps_string(p))
-#> [1] "abXUaaaaaZCk"
+#> [1] "abUXaaaaa5KE"
 ps_handle(pid = str)
-#> <ps::ps_handle> PID=6928, NAME=R, AT=2026-09-28 15:57:48.312643
+#> <ps::ps_handle> PID=6745, NAME=R, AT=2026-09-28 16:10:48.236733
 ```

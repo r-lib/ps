@@ -62,6 +62,6 @@ Other process handle functions:
 p <- ps_parent(ps_handle())
 ps_children(p)
 #> [[1]]
-#> <ps::ps_handle> PID=6928, NAME=R, AT=2026-09-28 15:57:48.312643
+#> <ps::ps_handle> PID=6745, NAME=R, AT=2026-09-28 16:10:48.236733
 #> 
 ```
