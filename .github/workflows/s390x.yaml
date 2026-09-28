@@ -7,8 +7,8 @@ jobs:
   s390x:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: r-hub/actions/ctr-start@main
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: r-hub/actions/ctr-start@cf6c8eff3145ef225104294e6b0c023de4bba9c6 # v1.7.7
         with:
           image: ghcr.io/r-hub/containers/s390x
           platform: linux/s390x
@@ -20,14 +20,14 @@ jobs:
           R.version[["platform"]]
         shell: Rscript {0}
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - uses: r-lib/actions/setup-r-dependencies@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2-branch
         with:
           pak-version: none
           cache-version: s390x-1
           extra-packages: any::rcmdcheck
           needs: check
 
-      - uses: r-lib/actions/check-r-package@v2
+      - uses: r-lib/actions/check-r-package@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2-branch
         with:
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
           upload-results: never
@@ -35,7 +35,7 @@ jobs:
         env:
           NOT_CRAN: true
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: failure()
         with:
           name: ${{ format('{0}-{1}-results', runner.os, runner.arch) }}

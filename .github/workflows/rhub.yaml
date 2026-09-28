@@ -33,7 +33,7 @@ jobs:
 
     steps:
     # NO NEED TO CHECKOUT HERE
-    - uses: r-hub/actions/setup@main
+    - uses: r-hub/actions/setup@cf6c8eff3145ef225104294e6b0c023de4bba9c6 # v1.7.7
       with:
         config: ${{ github.event.inputs.config }}
       id: rhub-setup
@@ -51,16 +51,16 @@ jobs:
       image: ${{ matrix.config.container }}
 
     steps:
-      - uses: r-hub/actions/checkout@main
-      - uses: r-hub/actions/platform-info@main
+      - uses: r-hub/actions/checkout@cf6c8eff3145ef225104294e6b0c023de4bba9c6 # v1.7.7
+      - uses: r-hub/actions/platform-info@cf6c8eff3145ef225104294e6b0c023de4bba9c6 # v1.7.7
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
-      - uses: r-hub/actions/setup-deps@main
+      - uses: r-hub/actions/setup-deps@cf6c8eff3145ef225104294e6b0c023de4bba9c6 # v1.7.7
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
-      - uses: r-hub/actions/run-check@main
+      - uses: r-hub/actions/run-check@cf6c8eff3145ef225104294e6b0c023de4bba9c6 # v1.7.7
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
@@ -76,20 +76,20 @@ jobs:
         config: ${{ fromJson(needs.setup.outputs.platforms) }}
 
     steps:
-      - uses: r-hub/actions/checkout@main
-      - uses: r-hub/actions/setup-r@main
+      - uses: r-hub/actions/checkout@cf6c8eff3145ef225104294e6b0c023de4bba9c6 # v1.7.7
+      - uses: r-hub/actions/setup-r@cf6c8eff3145ef225104294e6b0c023de4bba9c6 # v1.7.7
         with:
           job-config: ${{ matrix.config.job-config }}
           token: ${{ secrets.RHUB_TOKEN }}
-      - uses: r-hub/actions/platform-info@main
+      - uses: r-hub/actions/platform-info@cf6c8eff3145ef225104294e6b0c023de4bba9c6 # v1.7.7
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
-      - uses: r-hub/actions/setup-deps@main
+      - uses: r-hub/actions/setup-deps@cf6c8eff3145ef225104294e6b0c023de4bba9c6 # v1.7.7
         with:
           job-config: ${{ matrix.config.job-config }}
           token: ${{ secrets.RHUB_TOKEN }}
-      - uses: r-hub/actions/run-check@main
+      - uses: r-hub/actions/run-check@cf6c8eff3145ef225104294e6b0c023de4bba9c6 # v1.7.7
         with:
           job-config: ${{ matrix.config.job-config }}
           token: ${{ secrets.RHUB_TOKEN }}

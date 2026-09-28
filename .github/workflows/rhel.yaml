@@ -21,7 +21,7 @@ jobs:
       image: ghcr.io/r-hub/containers/${{ matrix.config.os }}:latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Register
         run: |
@@ -36,12 +36,12 @@ jobs:
           rig add ${{ matrix.config.r }}
         shell: bash
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - uses: r-lib/actions/setup-r-dependencies@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2-branch
         with:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - uses: r-lib/actions/check-r-package@v2
+      - uses: r-lib/actions/check-r-package@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2-branch
         with:
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
         env:
