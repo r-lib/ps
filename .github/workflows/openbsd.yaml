@@ -26,9 +26,9 @@ jobs:
           release: ${{ github.event.inputs.release || '7.9' }}
       - uses: r-hub/actions/platform-info@02be5ffbeae2b0d553da66acded089da11a1fb8f # v1.8.1
 
-      - name: Install system packages (for pingr)
+      - name: Install system packages
         run: |
-          pkg_add -I libbind
+          pkg_add -I libuv libbind
           cd /usr/local/lib && ln -s libbind/libbind.so* .
         shell: openbsd {0}
 
