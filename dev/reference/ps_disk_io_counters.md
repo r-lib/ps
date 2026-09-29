@@ -50,21 +50,21 @@ Other disk functions:
 ``` r
 ps_disk_io_counters()
 #> # A data frame: 13 × 10
-#>    name  read_count read_merged_count read_bytes read_time write_count
-#>    <chr>      <dbl>             <dbl>      <dbl>     <dbl>       <dbl>
-#>  1 loop0          0                28       2048         0           0
-#>  2 loop1          0                 0          0         0           0
-#>  3 loop2          0                 0          0         0           0
-#>  4 loop3          0                 0          0         0           0
-#>  5 loop4          0                 0          0         0           0
-#>  6 loop5          0                 0          0         0           0
-#>  7 loop6          0                 0          0         0           0
-#>  8 loop7          0                 0          0         0           0
-#>  9 sda         8649           2364582    7283200     35163       90690
-#> 10 sda1        8615           2328574    7207424     35134       90658
-#> 11 sda14          0              1952      16896         0           0
-#> 12 sda15          0             18072      22528         1           0
-#> 13 sda16         34             11600      18432        23          24
+#>    name   read_count read_merged_count read_bytes read_time write_count
+#>    <chr>       <dbl>             <dbl>      <dbl>     <dbl>       <dbl>
+#>  1 loop0           0                20          0         0           0
+#>  2 loop1           0                 0          0         0           0
+#>  3 loop2           0                 0          0         0           0
+#>  4 loop3           0                 0          0         0           0
+#>  5 loop4           0                 0          0         0           0
+#>  6 loop5           0                 0          0         0           0
+#>  7 loop6           0                 0          0         0           0
+#>  8 loop7           0                 0          0         0           0
+#>  9 nvme0…       8646           2468133   43964928     54650       84061
+#> 10 nvme0…       8612           2433198   43915264     54609       84029
+#> 11 nvme0…          0              1952      11264         0           0
+#> 12 nvme0…          0             17144      13824         1           0
+#> 13 nvme0…         34             11455      10752        28          24
 #> # ℹ 4 more variables: write_merged_count <dbl>, write_bytes <dbl>,
 #> #   write_time <dbl>, busy_time <dbl>
 ```
