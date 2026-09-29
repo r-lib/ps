@@ -59,7 +59,7 @@ Other process handle functions:
 ``` r
 p <- ps_handle()
 p
-#> <ps::ps_handle> PID=6746, NAME=R, AT=2026-09-29 07:44:49.989069
+#> <ps::ps_handle> PID=6867, NAME=R, AT=2026-09-29 08:12:30.658211
 ps_is_running(p)
 #> [1] TRUE
 ```

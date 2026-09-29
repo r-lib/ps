@@ -64,11 +64,11 @@ Other process handle functions:
 px <- processx::process$new("sleep", "10")
 p <- ps_handle(px$get_pid())
 p
-#> <ps::ps_handle> PID=8176, NAME=sleep, AT=2026-09-29 07:45:08.739069
+#> <ps::ps_handle> PID=8306, NAME=sleep, AT=2026-09-29 08:12:49.708211
 ps_send_signal(p, signals()$SIGINT)
 #> NULL
 p
-#> <ps::ps_handle> PID=8176, NAME=???, AT=2026-09-29 07:45:08.739069
+#> <ps::ps_handle> PID=8306, NAME=???, AT=2026-09-29 08:12:49.708211
 ps_is_running(p)
 #> [1] FALSE
 px$get_exit_status()
