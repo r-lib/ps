@@ -21,10 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-      - uses: r-hub/actions/setup-r-openbsd@cf6c8eff3145ef225104294e6b0c023de4bba9c6 # v1.7.7
+      - uses: r-hub/actions/setup-r-openbsd@abcba171160794c449c994f558d4573f248842ce # v1.8.0
         with:
           release: ${{ github.event.inputs.release || '7.6' }}
-      - uses: r-hub/actions/platform-info@cf6c8eff3145ef225104294e6b0c023de4bba9c6 # v1.7.7
+      - uses: r-hub/actions/platform-info@abcba171160794c449c994f558d4573f248842ce # v1.8.0
 
       - name: Install system packages (for pingr)
         run: |
