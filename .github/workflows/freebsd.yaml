@@ -26,10 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-      - uses: r-hub/actions/setup-r-freebsd@abcba171160794c449c994f558d4573f248842ce # v1.8.0
+      - uses: r-hub/actions/setup-r-freebsd@02be5ffbeae2b0d553da66acded089da11a1fb8f # v1.8.1
         with:
           release: ${{ github.event.inputs.release || '14.1' }}
-      - uses: r-hub/actions/platform-info@abcba171160794c449c994f558d4573f248842ce # v1.8.0
+      - uses: r-hub/actions/platform-info@02be5ffbeae2b0d553da66acded089da11a1fb8f # v1.8.1
 
       - uses: r-lib/actions/setup-r-dependencies@a51a8012b0aab7c32ef9d19bf54da93f3254335e # v2-branch
         with:
